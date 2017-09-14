@@ -4,17 +4,17 @@
  * 下载表 - 数据层
  *
  * @package   NiPHPCMS
- * @category  admin\model\
+ * @category  manage\model
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Download.php v1.0.1 $
- * @link      http://www.NiPHP.com
- * @since     2016/11/03
+ * @link      www.NiPHP.com
+ * @since     2017/09/13
  */
-namespace app\admin\model;
+namespace app\manage\model;
 
 use think\Model;
-use traits\model\SoftDelete;
+use think\model\concern\SoftDelete
 
 class Download extends Model
 {

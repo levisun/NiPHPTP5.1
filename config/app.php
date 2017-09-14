@@ -50,7 +50,7 @@ return [
     'controller_suffix'      => false,
 
     // 默认模块名
-    'default_module'         => 'index',
+    'default_module'         => 'web',
     // 禁止访问模块
     'deny_module_list'       => ['common'],
     // 默认控制器名
@@ -116,5 +116,4 @@ return [
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
-
 ];

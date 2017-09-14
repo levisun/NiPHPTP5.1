@@ -16,8 +16,7 @@ namespace app\manage\logic\account;
 use app\manage\logic\Base;
 
 use app\manage\model\Admin as ModelAdmin;
-
-use IpLocation as ExtendIpLocation;
+use app\manage\model\RequestLog as ModelRequestLog;
 
 class Login extends Base
 {

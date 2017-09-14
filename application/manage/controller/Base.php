@@ -14,9 +14,10 @@
 namespace app\manage\controller;
 
 use think\Controller;
+use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
-use think\facade\Config;
+use think\facade\Url;
 
 class Base extends Controller
 {
@@ -54,7 +55,7 @@ class Base extends Controller
     {
         $lang_path  = Env::get('app_path') . $this->request->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-        $lang_paht .= Lang::detect() . DIRECTORY_SEPARATOR;
+        $lang_path .= Lang::detect() . DIRECTORY_SEPARATOR;
 
         // 加载全局语言包
         Lang::load($lang_path . Lang::detect() . '.php');
@@ -90,14 +91,14 @@ class Base extends Controller
 
         // 获得域名地址
         $domain  = $this->request->domain();
-        $domain .= substr($this->request->baseFile(), 0, -10);
-        $default_theme  = $domain . '/public/theme/' . $this->request->module();
+        $domain .= substr($this->request->baseFile(), 0, -9);
+        $default_theme  = $domain . 'theme/' . $this->request->module();
         $default_theme .= '/'. Config::get('default_theme') . '/';
 
         $replace = [
             '__DOMAIN__'   => $domain,
             '__PHP_SELF__' => basename($this->request->baseFile()),
-            '__STATIC__'   => $domain . '/public/static/',
+            '__STATIC__'   => $domain . 'static/',
             '__THEME__'    => Config::get('default_theme'),
             '__CSS__'      => $default_theme . 'css/',
             '__JS__'       => $default_theme . 'js/',
@@ -111,7 +112,7 @@ class Base extends Controller
             $replace['__SUB_TITLE__']  = $this->authData['sub_title'];
             $replace['__BREADCRUMB__'] = $this->authData['breadcrumb'];
         }
-        $replace['__TITLE__'] = $this->authData['title'];
+        // $replace['__TITLE__'] = $this->authData['title'];
 
         $this->view->replace($replace);
 
