@@ -4,43 +4,41 @@
  * 全局 - 业务层
  *
  * @package   NiPHPCMS
- * @category  manage\logic\
+ * @category  manage\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Base.php v1.0.1 $
- * @link      http://www.NiPHP.com
- * @since     2016/10/22
+ * @link      www.NiPHP.com
+ * @since     2017/09/13
  */
 namespace app\manage\logic;
 
-
 class Base
 {
+    public function __construct()
+    {
+        # code...
+    }
 
-	public function __construct()
-	{
-		# code...
-	}
-
-	protected function added($added_data, $model)
-	{
+    protected function added($added_data, $model)
+    {
         $model->data($added_data)
         ->allowField(true)
         ->isUpdate(false)
         ->save();
 
         return $model->id ? true : false;
-	}
+    }
 
-	protected function remove($map, $model)
-	{
-		$result =
+    protected function remove($map, $model)
+    {
+        $result =
         $model->field(true)
         ->where($map)
         ->value('id', 0);
 
         if (!$result) {
-        	return false;
+            return false;
         }
 
         $result =
@@ -48,17 +46,17 @@ class Base
         ->delete();
 
         return $result ? true : false;
-	}
+    }
 
-	protected function phyRemove($map, $model)
-	{
-		$result =
+    protected function phyRemove($map, $model)
+    {
+        $result =
         $model->field(true)
         ->where($map)
         ->value('id', 0);
 
         if (!$result) {
-        	return false;
+            return false;
         }
 
         $result =
@@ -67,15 +65,15 @@ class Base
         ->delete();
 
         return $result ? true : false;
-	}
+    }
 
-	protected function update($update_data, $map, $model)
-	{
+    protected function update($update_data, $map, $model)
+    {
         $result =
         $model->allowField(true)
         ->isUpdate(true)
         ->save($update_data, $map);
 
         return $result ? true : false;
-	}
+    }
 }

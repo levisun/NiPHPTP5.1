@@ -4,12 +4,12 @@
  * 全局 - 控制器
  *
  * @package   NiPHPCMS
- * @category  manage\controller\
+ * @category  manage\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Base.php v1.0.1 $
- * @link      http://www.NiPHP.com
- * @since     2016/10/22
+ * @link      www.NiPHP.com
+ * @since     2017/09/13
  */
 namespace app\manage\controller;
 
@@ -20,34 +20,39 @@ use think\facade\Config;
 
 class Base extends Controller
 {
-	// 权限数据
-	protected $authData = [];
+    // 权限数据
+    protected $authData = [];
 
-	protected function initialize()
-	{
-		# code...
-	}
+    protected function initialize()
+    {
+        // 权限
+        $this->auth();
+        // 语言
+        $this->lang();
+        // 模板
+        $this->theme();
+    }
 
-	/**
-	 * 权限
-	 * @access protected
-	 * @param
-	 * @return void
-	 */
-	private function auth()
-	{
-		# code...
-	}
+    /**
+     * 权限
+     * @access protected
+     * @param
+     * @return void
+     */
+    private function auth()
+    {
+        $this->authData = [];
+    }
 
-	/**
-	 * 加载语言包
-	 * @access protected
-	 * @param
-	 * @return void
-	 */
-	private function lang()
-	{
-		$lang_path  = Env::get('app_path') . $this->request->module();
+    /**
+     * 加载语言包
+     * @access protected
+     * @param
+     * @return void
+     */
+    private function lang()
+    {
+        $lang_path  = Env::get('app_path') . $this->request->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
         $lang_paht .= Lang::detect() . DIRECTORY_SEPARATOR;
 
@@ -58,21 +63,21 @@ class Base extends Controller
         $lang_name  = strtolower($this->request->controller()) . '_';
         $lang_name .= strtolower($this->request->action());
         Lang::load($lang_path . $lang_name . '.php');
-	}
+    }
 
-	/**
-	 * 模版设置
-	 * @access protected
-	 * @param
-	 * @return void
-	 */
-	private function theme()
-	{
-		$view_path  = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
-		$view_path .= 'theme' . DIRECTORY_SEPARATOR . $this->request->module();
-		$view_path .= Config::get('default_theme') . DIRECTORY_SEPARATOR;
+    /**
+     * 模版设置
+     * @access protected
+     * @param
+     * @return void
+     */
+    private function theme()
+    {
+        $view_path  = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+        $view_path .= 'theme' . DIRECTORY_SEPARATOR . $this->request->module();
+        $view_path .= Config::get('default_theme') . DIRECTORY_SEPARATOR;
 
-		$template = Config::get('template');
+        $template = Config::get('template');
         $template['view_path'] = $view_path;
         $this->view->engine($template);
 
@@ -112,25 +117,25 @@ class Base extends Controller
 
         $this->assign('button_search', 0);
         $this->assign('button_added', 0);
-	}
+    }
 
-	/**
+    /**
      * 数据合法验证
      * @access protected
      * @param  string $validate_name 验证器名
      * @return mexid                 返回true or false or 提示信息
      */
-	protected function illegal($validate_name)
-	{
-		if ($this->request->isPost()) {
+    protected function illegal($validate_name)
+    {
+        if ($this->request->isPost()) {
             $data = $this->request->post();
         } else {
             $data = ['id' => $this->request->param('id/f')];
         }
 
-		$result = $this->validate($data, $validate_name);
+        $result = $this->validate($data, $validate_name);
         if (true !== $result) {
             $this->error($result);
         }
-	}
+    }
 }
