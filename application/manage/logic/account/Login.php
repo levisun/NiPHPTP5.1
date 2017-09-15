@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 全局 - 业务层
+ * 登录 - 帐户 - 业务层
  *
  * @package   NiPHPCMS
  * @category  manage\logic\account
@@ -13,12 +13,13 @@
  */
 namespace app\manage\logic\account;
 
-use app\manage\logic\Base;
+use think\Loader;
+use think\facade\Session;
 
 use app\manage\model\Admin as ModelAdmin;
 use app\manage\model\RequestLog as ModelRequestLog;
 
-class Login extends Base
+class Login
 {
 
     /**
@@ -29,7 +30,8 @@ class Login extends Base
      */
     public function getUserData($username)
     {
-        $admin = new ModelAdmin;
+        // $admin = new ModelAdmin;
+        $admin = Loader::model('Admin');
 
         $map = ['a.username' => $username];
         $result =
@@ -77,7 +79,8 @@ class Login extends Base
 
         $map = ['id' => $user_id];
 
-        $admin = new ModelAdmin;
+        // $admin = new ModelAdmin;
+        $admin = Loader::model('Admin');
 
         $result =
         $admin->allowField(true)
@@ -100,32 +103,6 @@ class Login extends Base
     }
 
     /**
-     * 登录成功清除请求错误日志
-     * @access public
-     * @param
-     * @return void
-     */
-    public function removeLockIp($login_ip, $module)
-    {
-        $request_log = new ModelRequestLog;
-
-        // 删除过期的日志(保留一个月)
-        $map = [
-            ['create_time', 'ELT', strtotime('-30 days')]
-        ];
-        $request_log->where($map)
-        ->delete();
-
-
-        $map = [
-            'ip'     => $login_ip,
-            'module' => $module,
-        ];
-        $request_log->where($map)
-        ->delete();
-    }
-
-    /**
      * 请求错误锁定IP
      * @access public
      * @param
@@ -133,7 +110,8 @@ class Login extends Base
      */
     public function lockIp($login_ip, $module)
     {
-        $request_log = new ModelRequestLog;
+        // $request_log = new ModelRequestLog;
+        $request_log = Loader::model('RequestLog');
 
         // 错误请求超过三次锁定IP
         $map = [
@@ -188,5 +166,31 @@ class Login extends Base
         }
 
         return false;
+    }
+
+    /**
+     * 登录成功清除请求错误日志
+     * @access public
+     * @param
+     * @return void
+     */
+    public function removeLockIp($login_ip, $module)
+    {
+        // $request_log = new ModelRequestLog;
+        $request_log = Loader::model('RequestLog');
+
+        // 删除过期的日志(保留一个月)
+        $map = [
+            ['create_time', 'ELT', strtotime('-30 days')]
+        ];
+        $request_log->where($map)
+        ->delete();
+
+        $map = [
+            'ip'     => $login_ip,
+            'module' => $module,
+        ];
+        $request_log->where($map)
+        ->delete();
     }
 }

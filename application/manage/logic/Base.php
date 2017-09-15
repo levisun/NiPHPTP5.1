@@ -13,6 +13,8 @@
  */
 namespace app\manage\logic;
 
+use think\facade\Session;
+
 class Base
 {
     public function __construct()

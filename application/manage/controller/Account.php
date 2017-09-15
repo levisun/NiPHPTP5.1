@@ -29,12 +29,24 @@ class Account extends Base
     public function login()
     {
         if ($this->request->isPost()) {
-            $result =
-            action(
-                'Login/login',
-                $this->request->only(['username', 'password'], 'post'),
-                'controller\account'
-            );
+            // 验证请求数据
+            $validata = $this->request->only(['username', 'password', 'captcha'], 'post');
+            $result = $this->validate($validata, 'Admin.login');
+            if ($result !== true) {
+                $this->error($result);
+            }
+
+            $params = [
+                'form_data' => $this->request->only(['username', 'password'], 'post'),
+                'login_ip'  => $this->request->ip(0, true),
+                'module'    => $this->request->module(),
+            ];
+            $result = Loader::action('Login/login', $params, 'controller\account');
+            if ($result === true) {
+                # code...
+            } else {
+
+            }
         }
 
         return $this->fetch();
@@ -42,6 +54,6 @@ class Account extends Base
 
     public function logout()
     {
-        # code...
+        Loader::action('Login/logout', [], 'controller\account');
     }
 }

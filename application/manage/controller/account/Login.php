@@ -13,47 +13,44 @@
  */
 namespace app\manage\controller\account;
 
+use think\Loader;
 use think\Request;
+
 
 use app\manage\logic\account\Login as LogicAccountLogin;
 
 class Login
 {
-    protected $request;
-
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
 	/**
      * 登录
      * @access public
-     * @param
-     * @return void
+     * @param  array  $form_data POST提交数据
+     * @param  string $login_ip  登录IP
+     * @param  string $module    模块
+     * @return boolean
      */
-    public function login($username, $password)
+    public function login($form_data, $login_ip, $module)
     {
-        $login = new LogicAccountLogin;
-        $login_ip = $this->request->ip(0, true);
-        $module   = $this->request->module();
+        // $login = new LogicAccountLogin;
+        $login = Loader::model('Login', 'logic\account');
 
         if ($login->lockIp($login_ip, $module)) {
-            return 40001;
+            return false;
         }
 
         // 获得用户信息
-        $user_data = $login->getUser($username);
+        $user_data = $login->getUser($form_data['username']);
         if (false === $user_data) {
             // 用户不存在
             $login->lockIp($login_ip, $module);
-            return 40001;
+            return false;
         }
 
         // 登录密码错误
-        if (!$login->checkPassword($form_pwd, $user_data['password'], $user_data['salt'])) {
+        if (!$login->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
             $login->lockIp($login_ip, $module);
-            return 40001;
+            return false;
         }
 
         // 更新登录信息
@@ -65,7 +62,7 @@ class Login
         // 清除锁定IP
         $login->removeLockIp($login_ip, $module);
 
-        return 0;
+        return true;
 
     }
 }

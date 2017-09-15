@@ -14,6 +14,7 @@
 namespace app\manage\controller;
 
 use think\Controller;
+use think\Loader;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
