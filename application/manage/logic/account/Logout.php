@@ -13,8 +13,6 @@
  */
 namespace app\manage\logic\account;
 
-use think\facade\Session;
-
 class Logout
 {
 
@@ -26,8 +24,6 @@ class Logout
      */
     public function removeAuth()
     {
-        Session::delete('ADMIN_DATA');
-        Session::delete(Config::get('USER_AUTH_KEY'));
-        Session::delete('_ACCESS_LIST');
+        session(null);
     }
 }

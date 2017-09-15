@@ -1,15 +1,28 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006-2016 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: 流年 <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+/**
+ *
+ * 应用公共文件
+ *
+ * @package   NiPHPCMS
+ * @category  application
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @version   CVS: $Id: common.php v1.0.1 $
+ * @link      www.NiPHP.com
+ * @since     2017/09/13
+ */
 
-// 应用公共文件
+/**
+ * 实例化Logic
+ * @param string $name         Logic名称
+ * @param string $layer        业务层名称
+ * @param bool   $appendSuffix 是否添加类名后缀
+ * @return \think\Model
+ */
+function logic($name = '', $layer = 'logic', $appendSuffix = false)
+{
+    return model($name, $layer, $appendSuffix);
+}
 
 /**
  * 过滤XSS

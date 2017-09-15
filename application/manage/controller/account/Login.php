@@ -13,12 +13,6 @@
  */
 namespace app\manage\controller\account;
 
-use think\Loader;
-use think\Request;
-
-
-use app\manage\logic\account\Login as LogicAccountLogin;
-
 class Login
 {
 
@@ -32,8 +26,7 @@ class Login
      */
     public function login($form_data, $login_ip, $module)
     {
-        // $login = new LogicAccountLogin;
-        $login = Loader::model('Login', 'logic\account');
+        $login = logic('Login', 'logic\account');
 
         if ($login->lockIp($login_ip, $module)) {
             return false;

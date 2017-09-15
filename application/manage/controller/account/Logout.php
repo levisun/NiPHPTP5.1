@@ -13,11 +13,6 @@
  */
 namespace app\manage\controller\account;
 
-use think\Request;
-
-use app\manage\logic\account\Login as LogicAccountLogin;
-use app\manage\logic\account\Logout as LogicAccountLogout;
-
 class Logout
 {
     protected $request;
@@ -35,7 +30,7 @@ class Logout
      */
     public function logout()
     {
-        $logout = new LogicAccountLogout;
+        $logout = logic('Logout', 'logic\account');
         $logout->removeAuth();
     }
 }

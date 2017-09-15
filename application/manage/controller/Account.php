@@ -15,8 +15,6 @@ namespace app\manage\controller;
 
 use app\manage\controller\Base;
 
-use app\manage\controller\account\Login as AccountLogin;
-
 class Account extends Base
 {
 
@@ -41,7 +39,7 @@ class Account extends Base
                 'login_ip'  => $this->request->ip(0, true),
                 'module'    => $this->request->module(),
             ];
-            $result = Loader::action('Login/login', $params, 'controller\account');
+            $result = action('Login/login', $params, 'controller\account');
             if ($result === true) {
                 # code...
             } else {
@@ -54,6 +52,6 @@ class Account extends Base
 
     public function logout()
     {
-        Loader::action('Login/logout', [], 'controller\account');
+        action('Login/logout', [], 'controller\account');
     }
 }

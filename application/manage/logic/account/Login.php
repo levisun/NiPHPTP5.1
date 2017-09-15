@@ -13,12 +13,6 @@
  */
 namespace app\manage\logic\account;
 
-use think\Loader;
-use think\facade\Session;
-
-use app\manage\model\Admin as ModelAdmin;
-use app\manage\model\RequestLog as ModelRequestLog;
-
 class Login
 {
 
@@ -30,8 +24,7 @@ class Login
      */
     public function getUserData($username)
     {
-        // $admin = new ModelAdmin;
-        $admin = Loader::model('Admin');
+        $admin = model('Admin');
 
         $map = ['a.username' => $username];
         $result =
@@ -79,8 +72,7 @@ class Login
 
         $map = ['id' => $user_id];
 
-        // $admin = new ModelAdmin;
-        $admin = Loader::model('Admin');
+        $admin = model('Admin');
 
         $result =
         $admin->allowField(true)
@@ -98,8 +90,8 @@ class Login
      */
     public function createAuth($user_data)
     {
-        Session::set('ADMIN_DATA', $user_data);
-        Session::set(Config::get('USER_AUTH_KEY'), $user_data['id']);
+        session('ADMIN_DATA', $user_data);
+        session(Config('USER_AUTH_KEY'), $user_data['id']);
     }
 
     /**
@@ -110,8 +102,7 @@ class Login
      */
     public function lockIp($login_ip, $module)
     {
-        // $request_log = new ModelRequestLog;
-        $request_log = Loader::model('RequestLog');
+        $request_log = model('RequestLog');
 
         // 错误请求超过三次锁定IP
         $map = [
@@ -176,8 +167,7 @@ class Login
      */
     public function removeLockIp($login_ip, $module)
     {
-        // $request_log = new ModelRequestLog;
-        $request_log = Loader::model('RequestLog');
+        $request_log = model('RequestLog');
 
         // 删除过期的日志(保留一个月)
         $map = [
