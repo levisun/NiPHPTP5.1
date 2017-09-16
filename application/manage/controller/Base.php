@@ -19,8 +19,6 @@ use think\facade\Lang;
 
 class Base extends Controller
 {
-    // 权限数据
-    protected $authData = [];
 
     protected function initialize()
     {
@@ -40,7 +38,14 @@ class Base extends Controller
      */
     private function auth()
     {
-        $this->authData = [];
+        if (session('?' . config('user_auth_key'))) {
+            $rbac = logic('Rabc', 'logic\account');
+            if (!$rbac->checkAuth(session(config('user_auth_key')))) {
+                $this->redirect(url('settings/info'));
+            }
+        } else {
+            $this->redirect(url('login'));
+        }
     }
 
     /**

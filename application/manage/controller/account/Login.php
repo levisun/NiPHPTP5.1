@@ -56,6 +56,5 @@ class Login
         $login->removeLockIp($login_ip, $module);
 
         return true;
-
     }
 }

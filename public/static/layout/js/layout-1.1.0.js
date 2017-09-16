@@ -283,8 +283,8 @@ Layout.checked = function(element) {
  * 分割字符串为数组
  */
 Layout.explode = function (delimiter, string) {
-    var array = new Array();
     string = string.toString();
+    var array = new Array();
     array = string.split(delimiter);
     return array;
 }

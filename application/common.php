@@ -12,16 +12,37 @@
  * @since     2017/09/13
  */
 
+function action($url, $vars = [], $layer = '')
+{
+    if (!$layer) {
+        $layer = 'controller\\' . strtolower(request()->controller());
+    }
+    return app()->action($url, $vars, $layer);
+}
+
 /**
  * 实例化Logic
- * @param string $name         Logic名称
- * @param string $layer        业务层名称
- * @param bool   $appendSuffix 是否添加类名后缀
+ * @param string $name   Logic名称
+ * @param string $layer  业务层名称
+ * @param bool   $module 模块名
  * @return \think\Model
  */
-function logic($name = '', $layer = 'logic', $appendSuffix = false)
+function logic($name = '', $layer = '', $module = '')
 {
-    return model($name, $layer, $appendSuffix);
+    if (!$layer) {
+        $layer = 'logic\\' . strtolower(request()->controller());
+    }
+
+    $module = $module ? $module : request()->module();
+
+    return app()->model($name, $layer, false, $module);
+}
+
+function model($name = '', $layer = 'model', $module = '')
+{
+    $module = $module ? $module : request()->module();
+
+    return app()->model($name, $layer, false, $module);
 }
 
 /**

@@ -91,7 +91,7 @@ class Login
     public function createAuth($user_data)
     {
         session('ADMIN_DATA', $user_data);
-        session(Config('USER_AUTH_KEY'), $user_data['id']);
+        session(config('user_auth_key'), $user_data['id']);
     }
 
     /**

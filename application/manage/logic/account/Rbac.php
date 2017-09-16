@@ -8,7 +8,7 @@
  * @category  manage\logic\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Login.php v1.0.1 $
+ * @version   CVS: $Id: Rbac.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/09/13
  */
@@ -16,22 +16,41 @@ namespace app\manage\logic\account;
 
 class Rbac
 {
+    private $model;
+
+    private $module;
+    private $controller;
+    private $action;
+
     private $user_auth_on;
-    private $require_auth_module = [];
+    private $user_auth_type;
+
+    private $require_auth_module;
     private $not_auth_module;
+
+    private $require_auth_controller;
+    private $not_auth_controller;
+
+    private $require_auth_action;
+    private $not_auth_action;
 
     public function __construct()
     {
+        $this->model = \think\Loader::model('Node', 'model', false, 'admin');
+
         $this->module     = strtoupper(request()->module());
         $this->controller = strtoupper(request()->controller());
         $this->action     = strtoupper(request()->action());
 
         // 是否需要认证
-        $this->user_auth_on        = config('user_auth_on');
+        $this->user_auth_on = config('user_auth_on');
+        // 验证类型
+        $this->user_auth_type = config('user_auth_type');
+
         // 需要认证模块
         $this->require_auth_module = strtoupper(config('require_auth_module'));
         // 无需认证模块
-        $this->not_auth_module     = strtoupper(config('not_auth_module'));
+        $this->not_auth_module = strtoupper(config('not_auth_module'));
 
         // 需要认证的控制器
         $this->require_auth_controller = strtoupper(config('require_auth_controller'));
@@ -42,21 +61,15 @@ class Rbac
         $this->require_auth_action = strtoupper(config('require_auth_action'));
         // 无需认证的方法
         $this->not_auth_action = strtoupper(config('not_auth_action'));
-
-        // USER_AUTH_ON
-// USER_AUTH_TYPE 认证类型
-// USER_AUTH_KEY 认证识别号
-// REQUIRE_AUTH_MODULE
-// NOT_AUTH_MODULE
-// USER_AUTH_GATEWAY 认证网关
-// RBAC_DB_DSN  数据库连接DSN
-// RBAC_ROLE_TABLE 角色表名称
-// RBAC_USER_TABLE 用户表名称
-// RBAC_ACCESS_TABLE 权限表名称
-// RBAC_NODE_TABLE 节点表名称
     }
 
-    public function checkAccess()
+    /**
+     * 检查当前操作是否需要认证
+     * @access private
+     * @param
+     * @return boolean
+     */
+    private function checkAccess()
     {
         if (!$this->user_auth_on) {
             return false;
@@ -107,6 +120,103 @@ class Rbac
                 }
             }
         }
+    }
 
+    /**
+     * 获得当前认证号对应权限
+     * @access private
+     * @param  int     $auth_id
+     * @param  int     $level
+     * @param  int     $pid
+     * @return array
+     */
+    private function getAuth($auth_id, $level = 1, $pid = 0)
+    {
+        $map = [
+            'role.status'        => 1,
+            'node.status'        => 1,
+            'node.level'         => $level,
+            'node.pid'           => $pid,
+            'role_admin.user_id' => $auth_id
+        ];
+
+        $result =
+        $this->model->view('node', ['id', 'name'])
+        ->view('role_admin', [], 1)
+        ->view('role', [], 'role.id=role_admin.role_id')
+        ->view('access', [], ['access.role_id=role.id', 'access.node_id=node.id'])
+        ->where($map)
+        ->select();
+
+        $auth = [];
+        foreach ($result as $key => $value) {
+            $auth[] = $value->toArray();
+        }
+
+        return $auth;
+    }
+
+    /**
+     * 取得当前认证号的所有权限列表
+     * @access private
+     * @param  int     $auth_id
+     * @return array
+     */
+    private function getAccessList($auth_id)
+    {
+        $access = [];
+
+        $module = $this->getAuth($auth_id);
+
+        $controller = $action = [];
+        foreach ($module as $m) {
+            $controller = $this->getAuth($auth_id, 2, $m['id']);
+
+            foreach ($controller as $c) {
+                $action = $this->getAuth($auth_id, 3, $c['id']);
+                $_a = [];
+                foreach ($action as $a) {
+                    $_a[$a['name']] = $a['id'];
+                }
+                $access[strtoupper($m['name'])][strtoupper($c['name'])] = array_change_key_case($_a, CASE_UPPER);
+            }
+        }
+
+        return $access;
+    }
+
+    /**
+     * 权限认证的过滤器方法
+     * @access private
+     * @param  int     $auth_id
+     * @return array
+     */
+    private function accessDecision($auth_id)
+    {
+        if ($this->user_auth_type == 2) {
+            $_access_list = $this->getAccessList($auth_id);
+        } else {
+            if (session('?_access_list')) {
+                $_access_list = session('_access_list');
+            } else {
+                session('_access_list', $this->getAccessList($auth_id));
+            }
+        }
+
+        if (isset($_access_list[$this->module][$this->controller][$this->action])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function checkAuth($auth_id)
+    {
+        // 检查当前操作是否需要认证
+        if ($this->checkAccess()) {
+            return $this->accessDecision($auth_id);
+        } else {
+            return true;
+        }
     }
 }
