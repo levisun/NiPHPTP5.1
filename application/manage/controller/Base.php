@@ -31,6 +31,26 @@ class Base extends Controller
     }
 
     /**
+     * 数据合法验证
+     * @access protected
+     * @param  string $validate_name 验证器名
+     * @return mexid                 返回true or false or 提示信息
+     */
+    protected function illegal($validate_name)
+    {
+        if ($this->request->isPost()) {
+            $data = $this->request->post();
+        } else {
+            $data = ['id' => $this->request->param('id/f')];
+        }
+
+        $result = $this->validate($data, $validate_name);
+        if (true !== $result) {
+            $this->error($result);
+        }
+    }
+
+    /**
      * 权限
      * @access protected
      * @param
@@ -43,7 +63,7 @@ class Base extends Controller
             if (!$rbac->checkAuth(session(config('user_auth_key')))) {
                 $this->redirect(url('settings/info'));
             }
-        } else {
+        } elseif ($this->request->controller() != 'Account') {
             $this->redirect(url('login'));
         }
     }
@@ -81,7 +101,7 @@ class Base extends Controller
         $view_path .= 'theme' . DIRECTORY_SEPARATOR . $this->request->module();
         $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
 
-        $template = config('template');
+        $template = config('template.');
         $template['view_path'] = $view_path;
         $this->view->engine($template);
 
@@ -121,25 +141,5 @@ class Base extends Controller
 
         $this->assign('button_search', 0);
         $this->assign('button_added', 0);
-    }
-
-    /**
-     * 数据合法验证
-     * @access protected
-     * @param  string $validate_name 验证器名
-     * @return mexid                 返回true or false or 提示信息
-     */
-    protected function illegal($validate_name)
-    {
-        if ($this->request->isPost()) {
-            $data = $this->request->post();
-        } else {
-            $data = ['id' => $this->request->param('id/f')];
-        }
-
-        $result = $this->validate($data, $validate_name);
-        if (true !== $result) {
-            $this->error($result);
-        }
     }
 }
