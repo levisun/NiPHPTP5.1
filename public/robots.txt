@@ -1,2 +1,17 @@
+#
+# robots.txt for NiPHPCMS
+#
 User-agent: *
-Disallow:
+Disallow: /application/
+Disallow: /install/
+Disallow: /public/
+Disallow: /runtime/
+Disallow: /thinkphp/
+Disallow: /vendor/
+
+Disallow: /backup/
+Disallow: /static/
+Disallow: /theme/
+Disallow: /upload/
+
+Disallow: /admin.php

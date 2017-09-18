@@ -30,7 +30,7 @@ class Account extends Base
             // 验证请求数据
             $validata = $this->request->only(['username', 'password', 'captcha'], 'post');
             $result = $this->validate($validata, 'Admin.login');
-            if ($result !== true) {
+            if (true !== $result) {
                 $this->error($result);
             }
 
@@ -40,7 +40,7 @@ class Account extends Base
                 'module'    => $this->request->module(),
             ];
             $result = action('Login/login', $params, 'controller\account');
-            if ($result === true) {
+            if (true === $result) {
                 # code...
             } else {
 

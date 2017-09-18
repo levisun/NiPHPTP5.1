@@ -36,7 +36,7 @@ class Rbac
 
     public function __construct()
     {
-        $this->model = \think\Loader::model('Node', 'model', false, 'admin');
+        $this->model = model('Node', 'model', 'admin');
 
         $this->module     = strtoupper(request()->module());
         $this->controller = strtoupper(request()->controller());
