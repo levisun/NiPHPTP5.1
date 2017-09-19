@@ -195,6 +195,7 @@ class Rbac
     {
         if ($this->user_auth_type == 2) {
             $_access_list = $this->getAccessList($auth_id);
+            session('_access_list', $_access_list);
         } else {
             if (session('?_access_list')) {
                 $_access_list = session('_access_list');
@@ -210,6 +211,12 @@ class Rbac
         }
     }
 
+    /**
+     * 审核用户操作权限
+     * @access public
+     * @param  int     $auth_id
+     * @return boolean
+     */
     public function checkAuth($auth_id)
     {
         // 检查当前操作是否需要认证

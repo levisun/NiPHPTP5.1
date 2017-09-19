@@ -84,7 +84,7 @@ class Base extends Controller
         Lang::load($lang_path . Lang::detect() . '.php');
 
         // 加载对应语言包
-        $lang_name  = strtolower($this->request->controller()) . '_';
+        $lang_name  = strtolower($this->request->controller()) . DIRECTORY_SEPARATOR;
         $lang_name .= strtolower($this->request->action());
         Lang::load($lang_path . $lang_name . '.php');
     }
@@ -99,7 +99,7 @@ class Base extends Controller
     {
         $view_path  = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
         $view_path .= 'theme' . DIRECTORY_SEPARATOR . $this->request->module();
-        $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
+        $view_path .= DIRECTORY_SEPARATOR . config('default_theme') . DIRECTORY_SEPARATOR;
 
         $template = config('template.');
         $template['view_path'] = $view_path;
@@ -123,19 +123,22 @@ class Base extends Controller
             '__PHP_SELF__' => basename($this->request->baseFile()),
             '__STATIC__'   => $domain . 'static/',
             '__THEME__'    => config('default_theme'),
-            '__CSS__'      => $default_theme . 'css/',
-            '__JS__'       => $default_theme . 'js/',
-            '__IMG__'      => $default_theme . 'images/',
+            '__CSS__'      => $default_theme . 'static/css/',
+            '__JS__'       => $default_theme . 'static/js/',
+            '__IMG__'      => $default_theme . 'static/images/',
         ];
 
         // 注入常用模板变量
-        if (!empty($this->authData['auth_menu'])) {
-            $replace['__ADMIN_DATA__'] = $this->authData['admin_data'];
-            $replace['__MENU__']       = $this->authData['auth_menu'];
-            $replace['__SUB_TITLE__']  = $this->authData['sub_title'];
-            $replace['__BREADCRUMB__'] = $this->authData['breadcrumb'];
+        $common = logic('Common', 'logic\account');
+        $auth_data = $common->getSysData();
+
+        $replace['__TITLE__'] = $auth_data['title'];
+        if (!empty($auth_data['auth_menu'])) {
+            $replace['__ADMIN_DATA__'] = $auth_data['admin_data'];
+            $replace['__MENU__']       = $auth_data['auth_menu'];
+            $replace['__SUB_TITLE__']  = $auth_data['sub_title'];
+            $replace['__BREADCRUMB__'] = $auth_data['breadcrumb'];
         }
-        // $replace['__TITLE__'] = $this->authData['title'];
 
         $this->view->replace($replace);
 

@@ -13,7 +13,7 @@
  */
 namespace app\manage\validate;
 
-use think\facade\Validate;
+use think\Validate;
 
 class Admin extends Validate
 {
