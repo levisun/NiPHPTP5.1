@@ -45,6 +45,7 @@ Temporary Items
 #Project
 *.back
 *.log
+
 public/backup/*.zip
 public/upload/*/*/*.jpg
 public/upload/*/*/*.png

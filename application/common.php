@@ -20,7 +20,7 @@
  */
 function action($url, $vars = [], $layer = '')
 {
-    $layer = $layer ? $layer : 'controller\\' . strtolower(request()->controller());
+    // $layer = $layer ? $layer : 'controller\\' . strtolower(request()->controller());
 
     return app()->action($url, $vars, $layer);
 }
@@ -34,7 +34,7 @@ function action($url, $vars = [], $layer = '')
  */
 function logic($name = '', $layer = '', $module = '')
 {
-    $layer = $layer ? $layer : 'logic\\' . strtolower(request()->controller());
+    // $layer = $layer ? $layer : 'logic\\' . strtolower(request()->controller());
     $module = $module ? $module : request()->module();
 
     return app()->model($name, $layer, false, $module);
