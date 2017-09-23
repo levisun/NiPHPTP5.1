@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * 账户 - 控制器
+ * 登录 - 账户 - 验证器
  *
  * @package   NiPHPCMS
- * @category  admin\validate
+ * @category  admin\validate\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: AccountLogin.php v1.0.1 $
@@ -20,7 +20,7 @@ class Login extends Validate
     protected $rule = [
         'username' => ['require', 'length:6,20', /*'token'*/],
         'password' => ['require', 'max:30'],
-        'captcha'  => ['require', 'length:5', 'captcha'],
+        // 'captcha'  => ['require', 'length:5', 'captcha'],
     ];
 
     protected $message = [

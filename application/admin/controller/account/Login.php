@@ -28,27 +28,29 @@ class Login
     {
         // 验证请求数据
         $result = validate($form_data, 'Login', 'validate\account');
-        halt($result);
         if (true !== $result) {
             return $result;
         }
 
+        // 实例化登录业务逻辑类
         $login = logic('Login', 'logic\account');
 
-        if ($login->lockIp($login_ip, $module)) {
+        // IP锁定 直接返回false
+        if ($login->isLockIp($login_ip, $module)) {
             return false;
         }
 
         // 获得用户信息
         $user_data = $login->getUserData($form_data['username']);
         if (false === $user_data) {
-            // 用户不存在
+            // 用户不存在 锁定IP
             $login->lockIp($login_ip, $module);
             return false;
         }
 
         // 登录密码错误
         if (!$login->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
+            // 密码错误 锁定IP
             $login->lockIp($login_ip, $module);
             return false;
         }
@@ -59,7 +61,7 @@ class Login
         // 生成登录用户认证信息
         $login->createAuth($user_data);
 
-        // 清除锁定IP
+        // 登录成功 清除锁定IP
         $login->removeLockIp($login_ip, $module);
 
         return true;

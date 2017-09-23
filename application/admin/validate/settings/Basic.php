@@ -1,0 +1,28 @@
+<?php
+/**
+ *
+ * 基础设置 - 设置 - 验证器
+ *
+ * @package   NiPHPCMS
+ * @category  admin\validate\settings
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @version   CVS: $Id: AccountLogin.php v1.0.1 $
+ * @link      www.NiPHP.com
+ * @since     2017/09/13
+ */
+namespace app\admin\validate\settings;
+
+use think\Validate;
+
+class Basic extends Validate
+{
+    protected $rule = [
+        'website_name' => ['require', 'max:500'],
+    ];
+
+    protected $message = [
+        'website_name.require' => '{%please enter website name}',
+        'website_name.max'     => '{%website name length shall not exceed 500}',
+    ];
+}

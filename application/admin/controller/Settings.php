@@ -40,7 +40,20 @@ class Settings extends Base
     public function basic()
     {
         if ($this->request->isPost()) {
-            action('Basic/saveBasicConfig', [], 'controller\settings');
+            $params = [
+                'form_data' => [
+                    'website_name'        => $this->request->post('website_name'),
+                    'website_keywords'    => $this->request->post('website_keywords'),
+                    'website_description' => $this->request->post('website_description'),
+                    'bottom_message'      => $this->request->post('bottom_message', '', 'trim,htmlspecialchars'),
+                    'copyright'           => $this->request->post('copyright'),
+                    'script'              => $this->request->post('script', '', 'trim,htmlspecialchars'),
+                ],
+            ];
+
+            $result = action('Basic/saveBasicConfig', $params, 'controller\settings');
+
+            $this->message($result);
         }
 
         $result = action('Basic/getBasicConfig', [], 'controller\settings');

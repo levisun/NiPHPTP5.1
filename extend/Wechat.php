@@ -1,223 +1,200 @@
 <?php
 /**
- *    微信公众平台PHP-SDK, 官方API部分
+ *  微信公众平台PHP-SDK, 官方API部分
  *  @author  dodge <dodgepudding@gmail.com>
  *  @link https://github.com/dodgepudding/wechat-php-sdk
  *  @version 1.2
  *  usage:
  *   $options = array(
- *            'token'=>'tokenaccesskey', //填写你设定的key
- *            'encodingaeskey'=>'encodingaeskey', //填写加密用的EncodingAESKey
- *            'appid'=>'wxdk1234567890', //填写高级调用功能的app id
- *            'appsecret'=>'xxxxxxxxxxxxxxxxxxx' //填写高级调用功能的密钥
- *        );
- *     $weObj = new Wechat($options);
+ *          'token'=>'tokenaccesskey', //填写你设定的key
+ *          'encodingaeskey'=>'encodingaeskey', //填写加密用的EncodingAESKey
+ *          'appid'=>'wxdk1234567890', //填写高级调用功能的app id
+ *          'appsecret'=>'xxxxxxxxxxxxxxxxxxx' //填写高级调用功能的密钥
+ *      );
+ *   $weObj = new Wechat($options);
  *   $weObj->valid();
  *   $type = $weObj->getRev()->getRevType();
  *   switch($type) {
- *           case Wechat::MSGTYPE_TEXT:
- *               $weObj->text("hello, I'm wechat")->reply();
- *               exit;
- *               break;
- *           case Wechat::MSGTYPE_EVENT:
- *               ....
- *               break;
- *           case Wechat::MSGTYPE_IMAGE:
- *               ...
- *               break;
- *           default:
- *               $weObj->text("help info")->reply();
+ *          case Wechat::MSGTYPE_TEXT:
+ *              $weObj->text("hello, I'm wechat")->reply();
+ *              exit;
+ *              break;
+ *          case Wechat::MSGTYPE_EVENT:
+ *              ....
+ *              break;
+ *          case Wechat::MSGTYPE_IMAGE:
+ *              ...
+ *              break;
+ *          default:
+ *              $weObj->text("help info")->reply();
  *   }
  *
  *   //获取菜单操作:
  *   $menu = $weObj->getMenu();
  *   //设置菜单
  *   $newmenu =  array(
- *           "button"=>
- *               array(
- *                   array('type'=>'click','name'=>'最新消息','key'=>'MENU_KEY_NEWS'),
- *                   array('type'=>'view','name'=>'我要搜索','url'=>'http://www.baidu.com'),
- *                   )
+ *          "button"=>
+ *              array(
+ *                  array('type'=>'click','name'=>'最新消息','key'=>'MENU_KEY_NEWS'),
+ *                  array('type'=>'view','name'=>'我要搜索','url'=>'http://www.baidu.com'),
+ *                  )
  *          );
  *   $result = $weObj->createMenu($newmenu);
  */
-namespace net;
-
 class Wechat
 {
-    const MSGTYPE_TEXT                     = 'text';
-    const MSGTYPE_IMAGE                    = 'image';
-    const MSGTYPE_LOCATION                 = 'location';
-    const MSGTYPE_LINK                     = 'link';
-    const MSGTYPE_EVENT                    = 'event';
-    const MSGTYPE_MUSIC                    = 'music';
-    const MSGTYPE_NEWS                     = 'news';
-    const MSGTYPE_VOICE                    = 'voice';
-    const MSGTYPE_VIDEO                    = 'video';
-    const MSGTYPE_SHORTVIDEO               = 'shortvideo';
-
-    const EVENT_SUBSCRIBE                  = 'subscribe';            // 订阅
-    const EVENT_UNSUBSCRIBE                = 'unsubscribe';          // 取消订阅
-    const EVENT_SCAN                       = 'SCAN';                 // 扫描带参数二维码
-    const EVENT_LOCATION                   = 'LOCATION';             // 上报地理位置
-
-    const EVENT_MENU_VIEW                  = 'VIEW';                 // 菜单 - 点击菜单跳转链接
-    const EVENT_MENU_CLICK                 = 'CLICK';                // 菜单 - 点击菜单拉取消息
-    const EVENT_MENU_SCAN_PUSH             = 'scancode_push';        // 菜单 - 扫码推事件(客户端跳URL)
-    const EVENT_MENU_SCAN_WAITMSG          = 'scancode_waitmsg';     // 菜单 - 扫码推事件(客户端不跳URL)
-    const EVENT_MENU_PIC_SYS               = 'pic_sysphoto';         // 菜单 - 弹出系统拍照发图
-    const EVENT_MENU_PIC_PHOTO             = 'pic_photo_or_album';   // 菜单 - 弹出拍照或者相册发图
-    const EVENT_MENU_PIC_WEIXIN            = 'pic_weixin';           // 菜单 - 弹出微信相册发图器
-    const EVENT_MENU_LOCATION              = 'location_select';      // 菜单 - 弹出地理位置选择器
-
-    const EVENT_SEND_MASS                  = 'MASSSENDJOBFINISH';    // 发送结果 - 高级群发完成
-    const EVENT_SEND_TEMPLATE              = 'TEMPLATESENDJOBFINISH';// 发送结果 - 模板消息发送结果
-
-    const EVENT_KF_SEESION_CREATE          = 'kfcreatesession';      // 多客服 - 接入会话
-    const EVENT_KF_SEESION_CLOSE           = 'kfclosesession';       // 多客服 - 关闭会话
-    const EVENT_KF_SEESION_SWITCH          = 'kfswitchsession';      // 多客服 - 转接会话
-
-    const EVENT_CARD_PASS                  = 'card_pass_check';      // 卡券 - 审核通过
-    const EVENT_CARD_NOTPASS               = 'card_not_pass_check';  // 卡券 - 审核未通过
-    const EVENT_CARD_USER_GET              = 'user_get_card';        // 卡券 - 用户领取卡券
-    const EVENT_CARD_USER_DEL              = 'user_del_card';        // 卡券 - 用户删除卡券
-
-    const EVENT_MERCHANT_ORDER             = 'merchant_order';       //微信小店 - 订单付款通知
-
-    const API_URL_PREFIX                   = 'https://api.weixin.qq.com/cgi-bin';
-    const AUTH_URL                         = '/token?grant_type=client_credential&';
-
-    const MENU_CREATE_URL                  = '/menu/create?';
-    const MENU_GET_URL                     = '/menu/get?';
-    const MENU_DELETE_URL                  = '/menu/delete?';
-    const MENU_ADDCONDITIONAL_URL          = '/menu/addconditional?';
-    const MENU_DELCONDITIONAL_URL          = '/menu/delconditional?';
-    const MENU_TRYMATCH_URL                = '/menu/trymatch?';
-
-    const GET_TICKET_URL                   = '/ticket/getticket?';
-    const CALLBACKSERVER_GET_URL           = '/getcallbackip?';
-    const QRCODE_CREATE_URL                = '/qrcode/create?';
-    const QR_SCENE                         = 0;
-    const QR_LIMIT_SCENE                   = 1;
-    const QRCODE_IMG_URL                   = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=';
-    const SHORT_URL                        = '/shorturl?';
-
-    const USER_GET_URL                     = '/user/get?';
-    const USER_INFO_URL                    = '/user/info?';
-    const USERS_INFO_URL                   = '/user/info/batchget?';
-    const USER_UPDATEREMARK_URL            = '/user/info/updateremark?';
-    const GROUP_GET_URL                    = '/groups/get?';
-    const USER_GROUP_URL                   = '/groups/getid?';
-
-    const GROUP_CREATE_URL                 = '/groups/create?';
-    const GROUP_UPDATE_URL                 = '/groups/update?';
-    const GROUP_MEMBER_UPDATE_URL          = '/groups/members/update?';
-    const GROUP_MEMBER_BATCHUPDATE_URL     = '/groups/members/batchupdate?';
-
-    const CUSTOM_SEND_URL                  = '/message/custom/send?';
-    const MEDIA_UPLOADNEWS_URL             = '/media/uploadnews?';
-    const MASS_SEND_URL                    = '/message/mass/send?';
-
-    const TEMPLATE_SET_INDUSTRY_URL        = '/template/api_set_industry?';
-    const TEMPLATE_ADD_TPL_URL             = '/template/api_add_template?';
-    const TEMPLATE_SEND_URL                = '/message/template/send?';
-
-    const MASS_SEND_GROUP_URL              = '/message/mass/sendall?';
-    const MASS_DELETE_URL                  = '/message/mass/delete?';
-    const MASS_PREVIEW_URL                 = '/message/mass/preview?';
-    const MASS_QUERY_URL                   = '/message/mass/get?';
-
-    const UPLOAD_MEDIA_URL                 = 'http://file.api.weixin.qq.com/cgi-bin';
-
-    const MEDIA_UPLOAD_URL                 = '/media/upload?';
-    const MEDIA_UPLOADIMG_URL              = '/media/uploadimg?';//图片上传接口
-    const MEDIA_GET_URL                    = '/media/get?';
-    const MEDIA_VIDEO_UPLOAD               = '/media/uploadvideo?';
-    const MEDIA_FOREVER_UPLOAD_URL         = '/material/add_material?';
-    const MEDIA_FOREVER_NEWS_UPLOAD_URL    = '/material/add_news?';
-    const MEDIA_FOREVER_NEWS_UPDATE_URL    = '/material/update_news?';
-    const MEDIA_FOREVER_GET_URL            = '/material/get_material?';
-    const MEDIA_FOREVER_DEL_URL            = '/material/del_material?';
-    const MEDIA_FOREVER_COUNT_URL          = '/material/get_materialcount?';
-    const MEDIA_FOREVER_BATCHGET_URL       = '/material/batchget_material?';
-
-    const OAUTH_PREFIX                     = 'https://open.weixin.qq.com/connect/oauth2';
-    const OAUTH_AUTHORIZE_URL              = '/authorize?';
+    const MSGTYPE_TEXT = 'text';
+    const MSGTYPE_IMAGE = 'image';
+    const MSGTYPE_LOCATION = 'location';
+    const MSGTYPE_LINK = 'link';
+    const MSGTYPE_EVENT = 'event';
+    const MSGTYPE_MUSIC = 'music';
+    const MSGTYPE_NEWS = 'news';
+    const MSGTYPE_VOICE = 'voice';
+    const MSGTYPE_VIDEO = 'video';
+    const MSGTYPE_SHORTVIDEO = 'shortvideo';
+    const EVENT_SUBSCRIBE = 'subscribe';       //订阅
+    const EVENT_UNSUBSCRIBE = 'unsubscribe';   //取消订阅
+    const EVENT_SCAN = 'SCAN';                 //扫描带参数二维码
+    const EVENT_LOCATION = 'LOCATION';         //上报地理位置
+    const EVENT_MENU_VIEW = 'VIEW';                     //菜单 - 点击菜单跳转链接
+    const EVENT_MENU_CLICK = 'CLICK';                   //菜单 - 点击菜单拉取消息
+    const EVENT_MENU_SCAN_PUSH = 'scancode_push';       //菜单 - 扫码推事件(客户端跳URL)
+    const EVENT_MENU_SCAN_WAITMSG = 'scancode_waitmsg'; //菜单 - 扫码推事件(客户端不跳URL)
+    const EVENT_MENU_PIC_SYS = 'pic_sysphoto';          //菜单 - 弹出系统拍照发图
+    const EVENT_MENU_PIC_PHOTO = 'pic_photo_or_album';  //菜单 - 弹出拍照或者相册发图
+    const EVENT_MENU_PIC_WEIXIN = 'pic_weixin';         //菜单 - 弹出微信相册发图器
+    const EVENT_MENU_LOCATION = 'location_select';      //菜单 - 弹出地理位置选择器
+    const EVENT_SEND_MASS = 'MASSSENDJOBFINISH';        //发送结果 - 高级群发完成
+    const EVENT_SEND_TEMPLATE = 'TEMPLATESENDJOBFINISH';//发送结果 - 模板消息发送结果
+    const EVENT_KF_SEESION_CREATE = 'kfcreatesession';  //多客服 - 接入会话
+    const EVENT_KF_SEESION_CLOSE = 'kfclosesession';    //多客服 - 关闭会话
+    const EVENT_KF_SEESION_SWITCH = 'kfswitchsession';  //多客服 - 转接会话
+    const EVENT_CARD_PASS = 'card_pass_check';          //卡券 - 审核通过
+    const EVENT_CARD_NOTPASS = 'card_not_pass_check';   //卡券 - 审核未通过
+    const EVENT_CARD_USER_GET = 'user_get_card';        //卡券 - 用户领取卡券
+    const EVENT_CARD_USER_DEL = 'user_del_card';        //卡券 - 用户删除卡券
+    const EVENT_MERCHANT_ORDER = 'merchant_order';        //微信小店 - 订单付款通知
+    const API_URL_PREFIX = 'https://api.weixin.qq.com/cgi-bin';
+    const AUTH_URL = '/token?grant_type=client_credential&';
+    const MENU_CREATE_URL = '/menu/create?';
+    const MENU_GET_URL = '/menu/get?';
+    const MENU_DELETE_URL = '/menu/delete?';
+    const MENU_ADDCONDITIONAL_URL = '/menu/addconditional?';
+    const MENU_DELCONDITIONAL_URL = '/menu/delconditional?';
+    const MENU_TRYMATCH_URL = '/menu/trymatch?';
+    const GET_TICKET_URL = '/ticket/getticket?';
+    const CALLBACKSERVER_GET_URL = '/getcallbackip?';
+    const QRCODE_CREATE_URL='/qrcode/create?';
+    const QR_SCENE = 0;
+    const QR_LIMIT_SCENE = 1;
+    const QRCODE_IMG_URL='https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=';
+    const SHORT_URL='/shorturl?';
+    const USER_GET_URL='/user/get?';
+    const USER_INFO_URL='/user/info?';
+    const USERS_INFO_URL='/user/info/batchget?';
+    const USER_UPDATEREMARK_URL='/user/info/updateremark?';
+    const GROUP_GET_URL='/groups/get?';
+    const USER_GROUP_URL='/groups/getid?';
+    const GROUP_CREATE_URL='/groups/create?';
+    const GROUP_UPDATE_URL='/groups/update?';
+    const GROUP_MEMBER_UPDATE_URL='/groups/members/update?';
+    const GROUP_MEMBER_BATCHUPDATE_URL='/groups/members/batchupdate?';
+    const CUSTOM_SEND_URL='/message/custom/send?';
+    const MEDIA_UPLOADNEWS_URL = '/media/uploadnews?';
+    const MASS_SEND_URL = '/message/mass/send?';
+    const TEMPLATE_SET_INDUSTRY_URL = '/template/api_set_industry?';
+    const TEMPLATE_ADD_TPL_URL = '/template/api_add_template?';
+    const TEMPLATE_SEND_URL = '/message/template/send?';
+    const MASS_SEND_GROUP_URL = '/message/mass/sendall?';
+    const MASS_DELETE_URL = '/message/mass/delete?';
+    const MASS_PREVIEW_URL = '/message/mass/preview?';
+    const MASS_QUERY_URL = '/message/mass/get?';
+    const UPLOAD_MEDIA_URL = 'http://file.api.weixin.qq.com/cgi-bin';
+    const MEDIA_UPLOAD_URL = '/media/upload?';
+    const MEDIA_UPLOADIMG_URL = '/media/uploadimg?';//图片上传接口
+    const MEDIA_GET_URL = '/media/get?';
+    const MEDIA_VIDEO_UPLOAD = '/media/uploadvideo?';
+    const MEDIA_FOREVER_UPLOAD_URL = '/material/add_material?';
+    const MEDIA_FOREVER_NEWS_UPLOAD_URL = '/material/add_news?';
+    const MEDIA_FOREVER_NEWS_UPDATE_URL = '/material/update_news?';
+    const MEDIA_FOREVER_GET_URL = '/material/get_material?';
+    const MEDIA_FOREVER_DEL_URL = '/material/del_material?';
+    const MEDIA_FOREVER_COUNT_URL = '/material/get_materialcount?';
+    const MEDIA_FOREVER_BATCHGET_URL = '/material/batchget_material?';
+    const OAUTH_PREFIX = 'https://open.weixin.qq.com/connect/oauth2';
+    const OAUTH_AUTHORIZE_URL = '/authorize?';
     ///多客服相关地址
-    const CUSTOM_SERVICE_GET_RECORD        = '/customservice/getrecord?';
-    const CUSTOM_SERVICE_GET_KFLIST        = '/customservice/getkflist?';
-    const CUSTOM_SERVICE_GET_ONLINEKFLIST  = '/customservice/getonlinekflist?';
-
-    const API_BASE_URL_PREFIX              = 'https://api.weixin.qq.com'; // 以下API接口URL需要使用此前缀
-
-    const OAUTH_TOKEN_URL                  = '/sns/oauth2/access_token?';
-    const OAUTH_REFRESH_URL                = '/sns/oauth2/refresh_token?';
-    const OAUTH_USERINFO_URL               = '/sns/userinfo?';
-    const OAUTH_AUTH_URL                   = '/sns/auth?';
+    const CUSTOM_SERVICE_GET_RECORD = '/customservice/getrecord?';
+    const CUSTOM_SERVICE_GET_KFLIST = '/customservice/getkflist?';
+    const CUSTOM_SERVICE_GET_ONLINEKFLIST = '/customservice/getonlinekflist?';
+    const API_BASE_URL_PREFIX = 'https://api.weixin.qq.com'; //以下API接口URL需要使用此前缀
+    const OAUTH_TOKEN_URL = '/sns/oauth2/access_token?';
+    const OAUTH_REFRESH_URL = '/sns/oauth2/refresh_token?';
+    const OAUTH_USERINFO_URL = '/sns/userinfo?';
+    const OAUTH_AUTH_URL = '/sns/auth?';
     ///多客服相关地址
-    const CUSTOM_SESSION_CREATE            = '/customservice/kfsession/create?';
-    const CUSTOM_SESSION_CLOSE             = '/customservice/kfsession/close?';
-    const CUSTOM_SESSION_SWITCH            = '/customservice/kfsession/switch?';
-    const CUSTOM_SESSION_GET               = '/customservice/kfsession/getsession?';
-    const CUSTOM_SESSION_GET_LIST          = '/customservice/kfsession/getsessionlist?';
-    const CUSTOM_SESSION_GET_WAIT          = '/customservice/kfsession/getwaitcase?';
-
-    const CS_KF_ACCOUNT_ADD_URL            = '/customservice/kfaccount/add?';
-    const CS_KF_ACCOUNT_UPDATE_URL         = '/customservice/kfaccount/update?';
-    const CS_KF_ACCOUNT_DEL_URL            = '/customservice/kfaccount/del?';
+    const CUSTOM_SESSION_CREATE = '/customservice/kfsession/create?';
+    const CUSTOM_SESSION_CLOSE = '/customservice/kfsession/close?';
+    const CUSTOM_SESSION_SWITCH = '/customservice/kfsession/switch?';
+    const CUSTOM_SESSION_GET = '/customservice/kfsession/getsession?';
+    const CUSTOM_SESSION_GET_LIST = '/customservice/kfsession/getsessionlist?';
+    const CUSTOM_SESSION_GET_WAIT = '/customservice/kfsession/getwaitcase?';
+    const CS_KF_ACCOUNT_ADD_URL = '/customservice/kfaccount/add?';
+    const CS_KF_ACCOUNT_UPDATE_URL = '/customservice/kfaccount/update?';
+    const CS_KF_ACCOUNT_DEL_URL = '/customservice/kfaccount/del?';
     const CS_KF_ACCOUNT_UPLOAD_HEADIMG_URL = '/customservice/kfaccount/uploadheadimg?';
     ///卡券相关地址
-    const CARD_CREATE                      = '/card/create?';
-    const CARD_DELETE                      = '/card/delete?';
-    const CARD_UPDATE                      = '/card/update?';
-    const CARD_GET                         = '/card/get?';
-    const CARD_USER_GETCARDLIST            = '/card/user/getcardlist?';
-    const CARD_BATCHGET                    = '/card/batchget?';
-    const CARD_MODIFY_STOCK                = '/card/modifystock?';
-    const CARD_LOCATION_BATCHADD           = '/card/location/batchadd?';
-    const CARD_LOCATION_BATCHGET           = '/card/location/batchget?';
-    const CARD_GETCOLORS                   = '/card/getcolors?';
-    const CARD_QRCODE_CREATE               = '/card/qrcode/create?';
-    const CARD_CODE_CONSUME                = '/card/code/consume?';
-    const CARD_CODE_DECRYPT                = '/card/code/decrypt?';
-    const CARD_CODE_GET                    = '/card/code/get?';
-    const CARD_CODE_UPDATE                 = '/card/code/update?';
-    const CARD_CODE_UNAVAILABLE            = '/card/code/unavailable?';
-    const CARD_TESTWHILELIST_SET           = '/card/testwhitelist/set?';
-    const CARD_MEETINGCARD_UPDATEUSER      = '/card/meetingticket/updateuser?';     // 更新会议门票
-    const CARD_MEMBERCARD_ACTIVATE         = '/card/membercard/activate?';          // 激活会员卡
-    const CARD_MEMBERCARD_UPDATEUSER       = '/card/membercard/updateuser?';        // 更新会员卡
-    const CARD_MOVIETICKET_UPDATEUSER      = '/card/movieticket/updateuser?';       // 更新电影票(未加方法)
-    const CARD_BOARDINGPASS_CHECKIN        = '/card/boardingpass/checkin?';         // 飞机票-在线选座(未加方法)
-    const CARD_LUCKYMONEY_UPDATE           = '/card/luckymoney/updateuserbalance?'; // 更新红包金额
-
-    const SEMANTIC_API_URL                 = '/semantic/semproxy/search?';          // 语义理解
+    const CARD_CREATE                     = '/card/create?';
+    const CARD_DELETE                     = '/card/delete?';
+    const CARD_UPDATE                     = '/card/update?';
+    const CARD_GET                        = '/card/get?';
+        const CARD_USER_GETCARDLIST         = '/card/user/getcardlist?';
+        const CARD_BATCHGET                   = '/card/batchget?';
+    const CARD_MODIFY_STOCK               = '/card/modifystock?';
+    const CARD_LOCATION_BATCHADD          = '/card/location/batchadd?';
+    const CARD_LOCATION_BATCHGET          = '/card/location/batchget?';
+    const CARD_GETCOLORS                  = '/card/getcolors?';
+    const CARD_QRCODE_CREATE              = '/card/qrcode/create?';
+    const CARD_CODE_CONSUME               = '/card/code/consume?';
+    const CARD_CODE_DECRYPT               = '/card/code/decrypt?';
+    const CARD_CODE_GET                   = '/card/code/get?';
+    const CARD_CODE_UPDATE                = '/card/code/update?';
+    const CARD_CODE_UNAVAILABLE           = '/card/code/unavailable?';
+    const CARD_TESTWHILELIST_SET          = '/card/testwhitelist/set?';
+    const CARD_MEETINGCARD_UPDATEUSER      = '/card/meetingticket/updateuser?';    //更新会议门票
+    const CARD_MEMBERCARD_ACTIVATE        = '/card/membercard/activate?';      //激活会员卡
+    const CARD_MEMBERCARD_UPDATEUSER      = '/card/membercard/updateuser?';    //更新会员卡
+    const CARD_MOVIETICKET_UPDATEUSER     = '/card/movieticket/updateuser?';   //更新电影票(未加方法)
+    const CARD_BOARDINGPASS_CHECKIN       = '/card/boardingpass/checkin?';     //飞机票-在线选座(未加方法)
+    const CARD_LUCKYMONEY_UPDATE          = '/card/luckymoney/updateuserbalance?';     //更新红包金额
+    const SEMANTIC_API_URL = '/semantic/semproxy/search?'; //语义理解
     ///数据分析接口
     static $DATACUBE_URL_ARR = array(        //用户分析
             'user' => array(
-                    'summary'  => '/datacube/getusersummary?',        // 获取用户增减数据（getusersummary）
-                    'cumulate' => '/datacube/getusercumulate?',       // 获取累计用户数据（getusercumulate）
+                    'summary' => '/datacube/getusersummary?',       //获取用户增减数据（getusersummary）
+                    'cumulate' => '/datacube/getusercumulate?',     //获取累计用户数据（getusercumulate）
             ),
             'article' => array(            //图文分析
-                    'summary'   => '/datacube/getarticlesummary?',        //获取图文群发每日数据（getarticlesummary）
-                    'total'     => '/datacube/getarticletotal?',        //获取图文群发总数据（getarticletotal）
-                    'read'      => '/datacube/getuserread?',            //获取图文统计数据（getuserread）
-                    'readhour'  => '/datacube/getuserreadhour?',        //获取图文统计分时数据（getuserreadhour）
-                    'share'     => '/datacube/getusershare?',            //获取图文分享转发数据（getusershare）
-                    'sharehour' => '/datacube/getusersharehour?',        //获取图文分享转发分时数据（getusersharehour）
+                    'summary' => '/datacube/getarticlesummary?',        //获取图文群发每日数据（getarticlesummary）
+                    'total' => '/datacube/getarticletotal?',        //获取图文群发总数据（getarticletotal）
+                    'read' => '/datacube/getuserread?',         //获取图文统计数据（getuserread）
+                    'readhour' => '/datacube/getuserreadhour?',     //获取图文统计分时数据（getuserreadhour）
+                    'share' => '/datacube/getusershare?',           //获取图文分享转发数据（getusershare）
+                    'sharehour' => '/datacube/getusersharehour?',       //获取图文分享转发分时数据（getusersharehour）
             ),
             'upstreammsg' => array(        //消息分析
-                    'summary'  => '/datacube/getupstreammsg?',        //获取消息发送概况数据（getupstreammsg）
-                    'hour'     => '/datacube/getupstreammsghour?',    //获取消息分送分时数据（getupstreammsghour）
-                    'week'     => '/datacube/getupstreammsgweek?',    //获取消息发送周数据（getupstreammsgweek）
-                    'month'    => '/datacube/getupstreammsgmonth?',    //获取消息发送月数据（getupstreammsgmonth）
-                    'dist'     => '/datacube/getupstreammsgdist?',    //获取消息发送分布数据（getupstreammsgdist）
-                    'distweek' => '/datacube/getupstreammsgdistweek?',    //获取消息发送分布周数据（getupstreammsgdistweek）
+                    'summary' => '/datacube/getupstreammsg?',       //获取消息发送概况数据（getupstreammsg）
+                    'hour' => '/datacube/getupstreammsghour?',  //获取消息分送分时数据（getupstreammsghour）
+                    'week' => '/datacube/getupstreammsgweek?',  //获取消息发送周数据（getupstreammsgweek）
+                    'month' => '/datacube/getupstreammsgmonth?',    //获取消息发送月数据（getupstreammsgmonth）
+                    'dist' => '/datacube/getupstreammsgdist?',  //获取消息发送分布数据（getupstreammsgdist）
+                    'distweek' => '/datacube/getupstreammsgdistweek?',  //获取消息发送分布周数据（getupstreammsgdistweek）
                     'distmonth' => '/datacube/getupstreammsgdistmonth?',    //获取消息发送分布月数据（getupstreammsgdistmonth）
             ),
             'interface' => array(        //接口分析
-                    'summary' => '/datacube/getinterfacesummary?',    //获取接口分析数据（getinterfacesummary）
-                    'summaryhour' => '/datacube/getinterfacesummaryhour?',    //获取接口分析分时数据（getinterfacesummaryhour）
+                    'summary' => '/datacube/getinterfacesummary?',  //获取接口分析数据（getinterfacesummary）
+                    'summaryhour' => '/datacube/getinterfacesummaryhour?',  //获取接口分析分时数据（getinterfacesummaryhour）
             )
     );
     ///微信摇一摇周边
@@ -1548,45 +1525,45 @@ class Wechat
      * 创建菜单(认证后的订阅号可用)
      * @param array $data 菜单数组数据
      * example:
-     *     array (
-     *         'button' => array (
-     *           0 => array (
-     *             'name' => '扫码',
-     *             'sub_button' => array (
-     *                 0 => array (
-     *                   'type' => 'scancode_waitmsg',
-     *                   'name' => '扫码带提示',
-     *                   'key' => 'rselfmenu_0_0',
-     *                 ),
-     *                 1 => array (
-     *                   'type' => 'scancode_push',
-     *                   'name' => '扫码推事件',
-     *                   'key' => 'rselfmenu_0_1',
-     *                 ),
-     *             ),
-     *           ),
-     *           1 => array (
-     *             'name' => '发图',
-     *             'sub_button' => array (
-     *                 0 => array (
-     *                   'type' => 'pic_sysphoto',
-     *                   'name' => '系统拍照发图',
-     *                   'key' => 'rselfmenu_1_0',
-     *                 ),
-     *                 1 => array (
-     *                   'type' => 'pic_photo_or_album',
-     *                   'name' => '拍照或者相册发图',
-     *                   'key' => 'rselfmenu_1_1',
-     *                 )
-     *             ),
-     *           ),
-     *           2 => array (
-     *             'type' => 'location_select',
-     *             'name' => '发送位置',
-     *             'key' => 'rselfmenu_2_0'
-     *           ),
-     *         ),
-     *     )
+     *  array (
+     *      'button' => array (
+     *        0 => array (
+     *          'name' => '扫码',
+     *          'sub_button' => array (
+     *              0 => array (
+     *                'type' => 'scancode_waitmsg',
+     *                'name' => '扫码带提示',
+     *                'key' => 'rselfmenu_0_0',
+     *              ),
+     *              1 => array (
+     *                'type' => 'scancode_push',
+     *                'name' => '扫码推事件',
+     *                'key' => 'rselfmenu_0_1',
+     *              ),
+     *          ),
+     *        ),
+     *        1 => array (
+     *          'name' => '发图',
+     *          'sub_button' => array (
+     *              0 => array (
+     *                'type' => 'pic_sysphoto',
+     *                'name' => '系统拍照发图',
+     *                'key' => 'rselfmenu_1_0',
+     *              ),
+     *              1 => array (
+     *                'type' => 'pic_photo_or_album',
+     *                'name' => '拍照或者相册发图',
+     *                'key' => 'rselfmenu_1_1',
+     *              )
+     *          ),
+     *        ),
+     *        2 => array (
+     *          'type' => 'location_select',
+     *          'name' => '发送位置',
+     *          'key' => 'rselfmenu_2_0'
+     *        ),
+     *      ),
+     *  )
      * type可以选择为以下几种，其中5-8除了收到菜单事件以外，还会单独收到对应类型的信息。
      * 1、click：点击推事件
      * 2、view：跳转URL
@@ -2049,7 +2026,7 @@ class Wechat
 
     /**
      * 高级群发消息, 根据OpenID列表群发图文消息(订阅号不可用)
-     *     注意：视频需要在调用uploadMedia()方法后，再使用 uploadMpVideo() 方法生成，
+     *  注意：视频需要在调用uploadMedia()方法后，再使用 uploadMpVideo() 方法生成，
      *             然后获得的 mediaid 才能用于群发，且消息类型为 mpvideo 类型。
      * @param array $data 消息结构
      * {
@@ -2082,7 +2059,7 @@ class Wechat
 
     /**
      * 高级群发消息, 根据群组id群发图文消息(认证后的订阅号可用)
-     *     注意：视频需要在调用uploadMedia()方法后，再使用 uploadMpVideo() 方法生成，
+     *  注意：视频需要在调用uploadMedia()方法后，再使用 uploadMpVideo() 方法生成，
      *             然后获得的 mediaid 才能用于群发，且消息类型为 mpvideo 类型。
      * @param array $data 消息结构
      * {
@@ -2136,7 +2113,7 @@ class Wechat
 
     /**
      * 高级群发消息, 预览群发消息(认证后的订阅号可用)
-     *     注意：视频需要在调用uploadMedia()方法后，再使用 uploadMpVideo() 方法生成，
+     *  注意：视频需要在调用uploadMedia()方法后，再使用 uploadMpVideo() 方法生成，
      *             然后获得的 mediaid 才能用于群发，且消息类型为 mpvideo 类型。
      * @param array $data 消息结构
      * {
@@ -2718,7 +2695,7 @@ class Wechat
             "data":{
                 "参数名1": {
                     "value":"参数",
-                    "color":"#173177"     //参数颜色
+                    "color":"#173177"    //参数颜色
                     },
                 "Date":{
                     "value":"06月07日 19时24分",
@@ -2820,10 +2797,10 @@ class Wechat
      "kf_online_list": [
      {
      "kf_account": "test1@test",    //客服账号@微信别名
-     "status": 1,            //客服在线状态 1：pc在线，2：手机在线,若pc和手机同时在线则为 1+2=3
-     "kf_id": "1001",        //客服工号
-     "auto_accept": 0,        //客服设置的最大自动接入数
-     "accepted_case": 1        //客服当前正在接待的会话数
+     "status": 1,           //客服在线状态 1：pc在线，2：手机在线,若pc和手机同时在线则为 1+2=3
+     "kf_id": "1001",       //客服工号
+     "auto_accept": 0,      //客服设置的最大自动接入数
+     "accepted_case": 1     //客服当前正在接待的会话数
      }
      ]
      }
@@ -4693,7 +4670,7 @@ class Prpcrypt
             mcrypt_generic_deinit($module);
             mcrypt_module_close($module);
 
-            //            print(base64_encode($encrypted));
+            //          print(base64_encode($encrypted));
             //使用BASE64对加密后的字符串进行编码
             return array(ErrorCode::$OK, base64_encode($encrypted));
         } catch (Exception $e) {

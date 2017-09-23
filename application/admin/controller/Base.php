@@ -30,23 +30,12 @@ class Base extends Controller
         $this->theme();
     }
 
-    /**
-     * 数据合法验证
-     * @access protected
-     * @param  string $validate_name 验证器名
-     * @return mexid  返回true or false or 提示信息
-     */
-    protected function illegal($validate_name)
+    public function message($return_data, $lang = '', $url = '')
     {
-        if ($this->request->isPost()) {
-            $data = $this->request->post();
+        if (true === $return_data) {
+            $this->success('success');
         } else {
-            $data = ['id' => $this->request->param('id/f')];
-        }
-
-        $result = $this->validate($data, $validate_name);
-        if (true !== $result) {
-            $this->error($result);
+            $this->error($return_data);
         }
     }
 
@@ -130,7 +119,7 @@ class Base extends Controller
 
         // 注入常用模板变量
         $common = logic('Common', 'logic\account');
-        $auth_data = $common->getSysData();
+        $auth_data = $common->createSysData();
 
         $replace['__TITLE__'] = $auth_data['title'];
         if (!empty($auth_data['auth_menu'])) {

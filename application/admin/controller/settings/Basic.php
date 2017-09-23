@@ -28,8 +28,15 @@ class Basic
         return $basic->getBasicConfig();
     }
 
-    public function saveBasicConfig($params)
+    public function saveBasicConfig($form_data)
     {
-        validate();
+        // 验证请求数据
+        $result = validate($form_data, 'Basic', 'validate\settings');
+        if (true !== $result) {
+            return $result;
+        }
+
+        $basic = logic('Basic', 'logic\settings');
+        return $basic->saveBasicConfig($form_data);
     }
 }

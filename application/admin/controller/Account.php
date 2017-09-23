@@ -28,7 +28,14 @@ class Account extends Base
     {
         if ($this->request->isPost()) {
             $params = [
-                'form_data' => $this->request->only(['username', 'password'], 'post'),
+                'form_data' => $this->request->only(
+                    [
+                        'username',
+                        'password',
+                        'captcha'
+                    ],
+                    'post'
+                ),
                 'login_ip'  => $this->request->ip(0, true),
                 'module'    => $this->request->module(),
             ];
@@ -36,7 +43,6 @@ class Account extends Base
             if (true === $result) {
                 $this->success('success', 'settings/info');
             } else {
-                halt($result);
                 $msg = $result === false ? lang('error') : $result;
                 $this->error($msg);
             }

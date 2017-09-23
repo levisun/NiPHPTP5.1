@@ -15,6 +15,7 @@ namespace app\admin\logic\account;
 
 class Common
 {
+    // 不获得系统设置数据与权限菜单的方法
     protected $_action = [
         'login',
         'logout',
@@ -22,6 +23,7 @@ class Common
         'delupload',
     ];
 
+    // 控制器默认方法
     protected $bn = [
         'Settings' => 'info',
         'Theme'    => 'template',
@@ -34,38 +36,57 @@ class Common
         'Expand'   => 'log',
     ];
 
+    // 请求参数
     protected $request = [];
+    // 菜单语言包
     protected $navAndMenu = [];
 
     public function __construct()
     {
         $this->request = [
+            // 请求模块
             'module'     => request()->module(),
+            // 请求控制器
             'controller' => request()->controller(),
+            // 请求方法
             'action'     => request()->action(),
+            // 语言
             'lang'       => lang(':detect'),
+            // 请求参数
             'param'      => [
                 'cid' => request()->param('cid'),
                 'pid' => request()->param('pid'),
             ],
         ];
+
         $this->navAndMenu = [
             'nav'  => lang('_nav'),
             'menu' => lang('_menu'),
         ];
     }
 
-    public function getSysData()
+    /**
+     * 生成系统数据
+     * @access public
+     * @param
+     * @return array
+     */
+    public function createSysData()
     {
         $auth_data = [];
         if (in_array($this->request['action'], $this->_action)) {
             $auth_data = ['title' => $this->getWebSiteTitle()];
         } else {
             $auth_data = [
+                // 管理员数据
                 'admin_data' => session('admin_data'),
+                // 权限菜单
                 'auth_menu'  => $this->getAuthMenu(),
+                // 系统标题
                 'title'      => $this->getWebSiteTitle(),
+                // 面包屑
                 'breadcrumb' => $this->getBreadcrumb(),
+                // 副标题
                 'sub_title'  => $this->navAndMenu['menu'][
                     strtolower($this->request['controller'] . '_' . $this->request['action'])
                 ]
@@ -128,6 +149,7 @@ class Common
             ['lang', '=', lang(':detect')],
         ];
 
+        // 实例化栏目表模型
         $category = model('Category');
 
         $result =
@@ -155,13 +177,15 @@ class Common
     {
         if (in_array($this->request['action'], $this->_action)) {
             if ('upload' == $this->request['action']) {
-                return lang('upload file') . ' - NIPHPCMS';
+                $title = lang('upload file') . ' - NIPHPCMS';
+            } else {
+                $title =  lang('admin login') . ' - NIPHPCMS';
             }
-            return  lang('admin login') . ' - NIPHPCMS';
+        } else {
+            $title = $this->navAndMenu['menu'][strtolower($this->request['controller'] . '_' . $this->request['action'])];
+            $title .= ' - ' . $this->navAndMenu['nav'][strtolower($this->request['controller'])] . ' - NIPHPCMS';
         }
 
-        $title = $this->navAndMenu['menu'][strtolower($this->request['controller'] . '_' . $this->request['action'])];
-        $title .= ' - ' . $this->navAndMenu['nav'][strtolower($this->request['controller'])] . ' - NIPHPCMS';
         return $title;
     }
 
@@ -173,25 +197,24 @@ class Common
      */
     protected function getAuthMenu()
     {
-        if (!session('?_access_list')) {
-            return false;
-        }
-        $auth = session('_access_list');
-        $auth = $auth[strtoupper($this->request['module'])];
-        $this->navAndMenu['nav'] = lang('_nav');
-        $this->navAndMenu['menu'] = lang('_menu');
-        $auth_menu = array();
-        foreach ($auth as $key => $value) {
-            $controller = strtolower($key);
-            foreach ($value as $k => $val) {
-                $action = strtolower($k);
-                $auth_menu[$controller]['icon'] = config('app.icon.' . $controller);
-                $auth_menu[$controller]['name'] = $this->navAndMenu['nav'][$controller];
-                $auth_menu[$controller]['menu'][] = [
-                    'action' => $action,
-                    'url'    => url($controller . '/' . $action),
-                    'lang'   => $this->navAndMenu['menu'][$controller . '_' . $action],
-                ];
+        $auth_menu = [];
+        if (session('?_access_list')) {
+            $auth = session('_access_list');
+            $auth = $auth[strtoupper($this->request['module'])];
+
+            foreach ($auth as $key => $value) {
+                $controller = strtolower($key);
+
+                foreach ($value as $k => $val) {
+                    $action = strtolower($k);
+                    $auth_menu[$controller]['icon'] = config('app.icon.' . $controller);
+                    $auth_menu[$controller]['name'] = $this->navAndMenu['nav'][$controller];
+                    $auth_menu[$controller]['menu'][] = [
+                        'action' => $action,
+                        'url'    => url($controller . '/' . $action),
+                        'lang'   => $this->navAndMenu['menu'][$controller . '_' . $action],
+                    ];
+                }
             }
         }
         return $auth_menu;

@@ -133,11 +133,11 @@ class Rbac
     private function getAuth($auth_id, $level = 1, $pid = 0)
     {
         $map = [
-            'role.status'        => 1,
-            'node.status'        => 1,
-            'node.level'         => $level,
-            'node.pid'           => $pid,
-            'role_admin.user_id' => $auth_id
+            ['role.status', '=', 1],
+            ['node.status', '=', 1],
+            ['node.level', '=', $level],
+            ['node.pid', '=', $pid],
+            ['role_admin.user_id', '=', $auth_id],
         ];
 
         $result =

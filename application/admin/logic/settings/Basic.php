@@ -29,6 +29,7 @@ class Basic
             ['lang', '=', lang(':detect')],
         ];
 
+        // 实例化设置表模型
         $config = model('Config');
 
         $result =
@@ -43,5 +44,22 @@ class Basic
         }
 
         return $data;
+    }
+
+    public function saveBasicConfig($form_data)
+    {
+        // 实例化设置表模型
+        $config = model('Config');
+
+        foreach ($form_data as $key => $value) {
+            $map = ['name' => $key];
+            $data = ['value' => $value];
+
+            $config->allowField(true)
+            ->isUpdate(true)
+            ->save($data, $map);
+        }
+
+        return true;
     }
 }
