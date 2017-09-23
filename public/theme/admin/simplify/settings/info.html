@@ -1,0 +1,178 @@
+<div class="row m-top-md">
+    <div class="col-lg-3 col-sm-6">
+        <div class="statistic-box bg-danger m-bottom-md">
+            <div class="statistic-title">
+                {:lang('member')}
+            </div>
+
+            <div class="statistic-value">
+                {:lang('member count')}:{$data.member.count}
+            </div>
+
+            <div class="m-top-md">{:lang('member reg')}:{$data.member.reg}</div>
+
+            <div class="statistic-icon-background">
+                <i class="ion-person-add"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="statistic-box bg-info m-bottom-md">
+            <div class="statistic-title">
+                {:lang('feedback or message')}
+            </div>
+
+            <div class="statistic-value">
+                {:lang('feedback')}:{$data.feedback}
+            </div>
+
+            <div class="m-top-md">{:lang('message')}:{$data.message}</div>
+
+            <div class="statistic-icon-background">
+                <i class="ion-eye"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-sm-6">
+        <div class="statistic-box bg-purple m-bottom-md">
+            <div class="statistic-title">
+                {:lang('tg')}
+            </div>
+
+            <div class="statistic-value">
+                {:lang('ads')}:{$data.ads}
+            </div>
+
+            <div class="m-top-md">{:lang('link')}:{$data.link}</div>
+
+            <div class="statistic-icon-background">
+                <i class="ion-stats-bars"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="col-lg-3 col-sm-6">
+        <div class="statistic-box bg-success m-bottom-md">
+            <div class="statistic-title">
+                Today Earnings
+            </div>
+
+            <div class="statistic-value">
+                $124.45k
+            </div>
+
+            <div class="m-top-md">7% Higher than last week</div>
+
+            <div class="statistic-icon-background">
+                <i class="ion-ios7-cart-outline"></i>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="smart-widget">
+            <div class="smart-widget-header">
+                {:lang('sys info')}
+                <span class="smart-widget-option">
+                    <span class="refresh-icon-animated">
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                    </span>
+                    <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </span>
+            </div>
+            <div class="smart-widget-inner table-responsive">
+                <table class="table table-striped no-margin">
+                    <tbody>
+                        <tr>
+                            <th>{:lang('sys name')}</th>
+                            <td>NIPHPCMS</td>
+                        </tr>
+                        <tr>
+                            <th>{:lang('sys version')}</th>
+                            <td>SYS:{$Think.NP_VERSION} / TP:{$data.tp_version}</td>
+                        </tr>
+                        <tr>
+                            <th>{:lang('os')}</th>
+                            <td>{$data.os}</td>
+                        </tr>
+                        <tr>
+                            <th>{:lang('php env')}</th>
+                            <td>{$Think.PHP_VERSION} / {$data.env}</td>
+                        </tr>
+                        <tr>
+                            <th>{:lang('db')}</th>
+                            <td>{$data.db_type} {$data.db_version}</td>
+                        </tr>
+                        <tr>
+                            <th>{:lang('copy')}</th>
+                            <td>失眠小枕头 [levisun.mail@gmail.com]</td>
+                        </tr>
+                        <tr>
+                            <th>{:lang('table error')}</th>
+                            {egt name="data.table_error" value="1000"}
+                            <td style="background-color:red;color:#fff;font-weight:bold;">
+                            {else/}
+                            <td>
+                            {/egt}
+                            <a href="{:url('expand/databack', array('method' => 'optimize'))}">
+                            {$data.table_error}
+                            </a>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>在线升级</th>
+                            <td>检测更新</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- ./smart-widget-inner -->
+        </div><!-- ./smart-widget -->
+    </div><!-- ./col -->
+    <div class="col-lg-6">
+        <div class="smart-widget">
+            <div class="smart-widget-header">
+                {:lang('visit')}
+                <span class="smart-widget-option">
+                    <span class="refresh-icon-animated">
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                    </span>
+
+                    <a href="#" class="widget-collapse-option" data-toggle="collapse">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </span>
+            </div>
+            <div class="smart-widget-inner">
+                <div class="smart-widget-body no-padding">
+                    <div class="padding-md">
+                        <div id="placeholder" style="height:250px;"></div>
+                    </div>
+
+                    <!-- <div class="bg-grey">
+                        <div class="row">
+                            <div class="col-xs-4 text-center">
+                                <h3 class="m-top-sm">3491</h3>
+                                <small class="m-bottom-sm block">Total Sales</small>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h3 class="m-top-sm">721</h3>
+                                <small class="m-bottom-sm block">New Orders</small>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h3 class="m-top-sm">$8103</h3>
+                                <small class="m-bottom-sm block">Total Earnings</small>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div><!-- ./smart-widget-inner -->
+        </div><!-- ./smart-widget -->
+    </div><!-- ./col -->
+</div>

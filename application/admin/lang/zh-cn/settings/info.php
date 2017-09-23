@@ -1,0 +1,22 @@
+<?php
+return [
+    'member' => '会员',
+    'member count' => '总人数',
+    'member reg' => '新注册',
+    'feedback or message' => '反馈/留言',
+    'feedback'    => '反馈',
+    'message'     => '留言',
+    'tg'          => '推广',
+    'ads'         => '广告',
+    'link'        => '友情链接',
+    'sys info'    => '系统信息',
+    'sys name'    => '系统名称',
+    'sys version' => '系统版本',
+    'os'          => '操作系统',
+    'php env'     => 'PHP/解译引擎',
+    'db'          => '数据库',
+    'copy'        => '版权所有',
+    'table error' => '表碎片',
+    'visit' => '访问统计',
+    'day visit' => '日访问',
+];

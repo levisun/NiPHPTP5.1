@@ -1,5 +1,8 @@
 <?php
 return [
+    'website home'          => '首页',
+    'button save'           => '保存',
+
     // 导航
     '_nav' => [
         'settings'          => '设置',
@@ -15,7 +18,7 @@ return [
 
     '_menu' => [
         'settings_info'     => '系统信息',
-        'settings_basic'    => '基本设置',
+        'settings_basic'    => '基础设置',
         'settings_lang'     => '语言设置',
         'settings_image'    => '图片设置',
         'settings_safe'     => '安全与效率设置',

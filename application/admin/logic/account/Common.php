@@ -13,8 +13,6 @@
  */
 namespace app\admin\logic\account;
 
-use think\facade\Lang;
-
 class Common
 {
     protected $_action = [
@@ -45,7 +43,7 @@ class Common
             'module'     => request()->module(),
             'controller' => request()->controller(),
             'action'     => request()->action(),
-            'lang'       => Lang::detect(),
+            'lang'       => lang(':detect'),
             'param'      => [
                 'cid' => request()->param('cid'),
                 'pid' => request()->param('pid'),
@@ -126,8 +124,8 @@ class Common
     protected function getBreadcrumbParent($parent_id)
     {
         $map = [
-            'id'   => $parent_id,
-            'lang' => Lang::detect()
+            ['id', '=', $parent_id],
+            ['lang', '=', lang(':detect')],
         ];
 
         $category = model('Category');
@@ -187,7 +185,7 @@ class Common
             $controller = strtolower($key);
             foreach ($value as $k => $val) {
                 $action = strtolower($k);
-                $auth_menu[$controller]['icon'] = config($k);
+                $auth_menu[$controller]['icon'] = config('app.icon.' . $controller);
                 $auth_menu[$controller]['name'] = $this->navAndMenu['nav'][$controller];
                 $auth_menu[$controller]['menu'][] = [
                     'action' => $action,

@@ -34,7 +34,7 @@ class Base extends Controller
      * 数据合法验证
      * @access protected
      * @param  string $validate_name 验证器名
-     * @return mexid                 返回true or false or 提示信息
+     * @return mexid  返回true or false or 提示信息
      */
     protected function illegal($validate_name)
     {
@@ -135,10 +135,10 @@ class Base extends Controller
         $replace['__TITLE__'] = $auth_data['title'];
         if (!empty($auth_data['auth_menu'])) {
             $replace['__SUB_TITLE__']  = $auth_data['sub_title'];
+            $replace['__BREADCRUMB__'] = $auth_data['breadcrumb'];
 
             $this->assign('__ADMIN_DATA__', $auth_data['admin_data']);
             $this->assign('__MENU__', $auth_data['auth_menu']);
-            $this->assign('__BREADCRUMB__', $auth_data['breadcrumb']);
         }
 
         $this->view->replace($replace);

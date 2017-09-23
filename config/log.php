@@ -18,5 +18,10 @@ return [
     // 日志保存目录
     'path'  => '',
     // 日志记录级别
-    'level' => ['error', 'notice', 'sql'],
+    'level' => [],
+    'apart_level' => [
+        'error',
+        'notice',
+        'sql',
+    ],
 ];

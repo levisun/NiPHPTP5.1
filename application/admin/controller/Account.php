@@ -22,18 +22,11 @@ class Account extends Base
      * 登录
      * @access public
      * @param
-     * @return void
+     * @return mixed
      */
     public function login()
     {
         if ($this->request->isPost()) {
-            // 验证请求数据
-            $validata = $this->request->only(['username', 'password', 'captcha'], 'post');
-            $result = $this->validate($validata, 'AccountLogin');
-            if (true !== $result) {
-                $this->error($result);
-            }
-
             $params = [
                 'form_data' => $this->request->only(['username', 'password'], 'post'),
                 'login_ip'  => $this->request->ip(0, true),
@@ -43,7 +36,9 @@ class Account extends Base
             if (true === $result) {
                 $this->success('success', 'settings/info');
             } else {
-                $this->error('error');
+                halt($result);
+                $msg = $result === false ? lang('error') : $result;
+                $this->error($msg);
             }
         }
 

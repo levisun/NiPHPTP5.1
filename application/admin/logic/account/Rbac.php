@@ -201,6 +201,7 @@ class Rbac
                 $_access_list = session('_access_list');
             } else {
                 session('_access_list', $this->getAccessList($auth_id));
+                $_access_list = session('_access_list');
             }
         }
 

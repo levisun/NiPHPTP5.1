@@ -18,10 +18,33 @@ use app\admin\controller\Base;
 class Settings extends Base
 {
 
+    /**
+     * 系统信息
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function info()
     {
-        action('Info/info', [], 'controller\settings');
+        $result = action('Info/info', [], 'controller\settings');
+        $this->assign('data', $result);
+        return $this->fetch();
+    }
 
+    /**
+     * 基础设置
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function basic()
+    {
+        if ($this->request->isPost()) {
+            action('Basic/saveBasicConfig', [], 'controller\settings');
+        }
+
+        $result = action('Basic/getBasicConfig', [], 'controller\settings');
+        $this->assign('data', $result);
         return $this->fetch();
     }
 }

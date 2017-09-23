@@ -12,6 +12,56 @@
  * @since     2017/09/13
  */
 
+use think\facade\Lang;
+
+/**
+ * 实例化验证器
+ * @param string    $name 验证器名称
+ * @param string    $layer 业务层名称
+ * @param bool      $appendSuffix 是否添加类名后缀
+ * @return \think\Validate
+ */
+function validate($data, $validate, $layer = 'validate', $module = '')
+{
+    if (is_array($validate)) {
+        $v = app()->validate();
+        $v->rule($validate);
+    } else {
+        if (strpos($validate, '.')) {
+            // 支持场景
+            list($validate, $scene) = explode('.', $validate);
+        }
+
+        $v = app()->validate($validate, $layer, false, $module);
+        if (!empty($scene)) {
+            $v->scene($scene);
+        }
+    }
+
+    if (!$v->check($data)) {
+        return $v->getError();
+    } else {
+        return true;
+    }
+}
+
+/**
+ * 获取语言变量值
+ * @param  string $name 语言变量名
+ * @param  array  $vars 动态变量值
+ * @param  string $lang 语言
+ * @return mixed
+ */
+function lang($name, $vars = [], $lang = '')
+{
+    if ($name == ':detect') {
+        return Lang::detect();
+    } else {
+        return Lang::get($name, $vars, $lang);
+    }
+
+}
+
 /**
  * 实例化Controller
  * @param string $name   Controller名称
@@ -20,8 +70,6 @@
  */
 function action($url, $vars = [], $layer = '')
 {
-    // $layer = $layer ? $layer : 'controller\\' . strtolower(request()->controller());
-
     return app()->action($url, $vars, $layer);
 }
 
@@ -34,7 +82,6 @@ function action($url, $vars = [], $layer = '')
  */
 function logic($name = '', $layer = '', $module = '')
 {
-    // $layer = $layer ? $layer : 'logic\\' . strtolower(request()->controller());
     $module = $module ? $module : request()->module();
 
     return app()->model($name, $layer, false, $module);

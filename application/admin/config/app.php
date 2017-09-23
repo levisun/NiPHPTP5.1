@@ -3,6 +3,19 @@ return [
     // 模板
     'default_theme'           => 'simplify',
 
+    // icon
+    'icon'                    => [
+        'settings' => 'cogs',
+        'theme'    => 'dashboard',
+        'category' => 'reorder',
+        'content'  => 'edit',
+        'user'     => 'group',
+        'wechat'   => 'comments',
+        'mall'     => 'shopping-cart',
+        'book'     => 'book',
+        'expand'   => 'wrench',
+    ],
+
 	// 默认控制器名
     'default_controller'      => 'Account',
     // 默认操作名

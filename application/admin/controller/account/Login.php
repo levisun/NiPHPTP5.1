@@ -26,6 +26,13 @@ class Login
      */
     public function login($form_data, $login_ip, $module)
     {
+        // 验证请求数据
+        $result = validate($form_data, 'Login', 'validate\account');
+        halt($result);
+        if (true !== $result) {
+            return $result;
+        }
+
         $login = logic('Login', 'logic\account');
 
         if ($login->lockIp($login_ip, $module)) {
