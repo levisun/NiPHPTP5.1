@@ -46,13 +46,20 @@ class Basic
         return $data;
     }
 
+    /**
+     * 保存修改基础设置
+     * @access public
+     * @param  array  $form_data
+     * @return mixed
+     */
     public function saveBasicConfig($form_data)
     {
         // 实例化设置表模型
         $config = model('Config');
 
+        $map = $data = [];
         foreach ($form_data as $key => $value) {
-            $map = ['name' => $key];
+            $map  = ['name' => $key];
             $data = ['value' => $value];
 
             $config->allowField(true)

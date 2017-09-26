@@ -37,7 +37,7 @@ class Login
 
         // IP锁定 直接返回false
         if ($login->isLockIp($login_ip, $module)) {
-            return false;
+            return lang('error username or password');
         }
 
         // 获得用户信息
@@ -45,14 +45,14 @@ class Login
         if (false === $user_data) {
             // 用户不存在 锁定IP
             $login->lockIp($login_ip, $module);
-            return false;
+            return lang('error username or password');
         }
 
         // 登录密码错误
         if (!$login->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
             $login->lockIp($login_ip, $module);
-            return false;
+            return lang('error username or password');
         }
 
         // 更新登录信息

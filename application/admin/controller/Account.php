@@ -32,7 +32,8 @@ class Account extends Base
                     [
                         'username',
                         'password',
-                        'captcha'
+                        'captcha',
+                        '__token__',
                     ],
                     'post'
                 ),

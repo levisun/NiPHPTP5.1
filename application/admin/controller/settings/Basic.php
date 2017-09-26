@@ -28,6 +28,12 @@ class Basic
         return $basic->getBasicConfig();
     }
 
+    /**
+     * 保存修改基础设置
+     * @access public
+     * @param  array  $form_data
+     * @return mixed
+     */
     public function saveBasicConfig($form_data)
     {
         // 验证请求数据

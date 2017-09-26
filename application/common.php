@@ -16,10 +16,11 @@ use think\facade\Lang;
 
 /**
  * 实例化验证器
- * @param string    $name 验证器名称
- * @param string    $layer 业务层名称
- * @param bool      $appendSuffix 是否添加类名后缀
- * @return \think\Validate
+ * @param  array  $data     验证数据
+ * @param  string $validate 验证器名
+ * @param  string $layer    业务层名
+ * @param  srring $module   模块名
+ * @return mixed
  */
 function validate($data, $validate, $layer = 'validate', $module = '')
 {
@@ -64,8 +65,8 @@ function lang($name, $vars = [], $lang = '')
 
 /**
  * 实例化Controller
- * @param string $name   Controller名称
- * @param string $layer  业务层名称
+ * @param  string $name  Controller名称
+ * @param  string $layer 业务层名称
  * @return mixed
  */
 function action($url, $vars = [], $layer = '')
@@ -75,9 +76,9 @@ function action($url, $vars = [], $layer = '')
 
 /**
  * 实例化Logic
- * @param string $name   Logic名称
- * @param string $layer  业务层名称
- * @param bool   $module 模块名
+ * @param  string $name   Logic名称
+ * @param  string $layer  业务层名称
+ * @param  string $module 模块名
  * @return \think\Model
  */
 function logic($name = '', $layer = '', $module = '')
@@ -91,7 +92,7 @@ function logic($name = '', $layer = '', $module = '')
  * 实例化Model
  * @param string $name   Model名称
  * @param string $layer  业务层名称
- * @param bool   $module 模块名
+ * @param string $module 模块名
  * @return \think\Model
  */
 function model($name = '', $layer = 'model', $module = '')
@@ -246,7 +247,6 @@ function escape_xss($data)
 
         // 全角转半角
         $strtr = [
-            // '\'' => '&#39;', '"' => '&quot;', '<' => '&lt;', '>' => '&gt;',
             '０' => '0', '１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
             '６' => '6', '７' => '7', '８' => '8', '９' => '9',
 

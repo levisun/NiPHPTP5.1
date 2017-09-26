@@ -30,10 +30,18 @@ class Base extends Controller
         $this->theme();
     }
 
-    public function message($return_data, $lang = '', $url = '')
+    /**
+     * 显示提示信息
+     * @access protected
+     * @param  bool|srting $resutn_data 返回数据
+     * @param  string      $msg         提示信息
+     * @param  string      $url         跳转链接
+     * @return void
+     */
+    protected function showMessage($return_data, $msg = '', $url = null)
     {
         if (true === $return_data) {
-            $this->success('success');
+            $this->success($msg, $url);
         } else {
             $this->error($return_data);
         }

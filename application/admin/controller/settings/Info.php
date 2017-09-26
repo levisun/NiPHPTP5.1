@@ -25,6 +25,7 @@ class Info
     public function info()
     {
         $info = logic('Info', 'logic\settings');
+
         return [
             // 操作系统
             'os'          => PHP_OS,

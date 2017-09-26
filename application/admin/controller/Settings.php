@@ -28,6 +28,7 @@ class Settings extends Base
     {
         $result = action('Info/info', [], 'controller\settings');
         $this->assign('data', $result);
+        $this->assign('json_data', json_encode($result));
         return $this->fetch();
     }
 
@@ -48,16 +49,22 @@ class Settings extends Base
                     'bottom_message'      => $this->request->post('bottom_message', '', 'trim,htmlspecialchars'),
                     'copyright'           => $this->request->post('copyright'),
                     'script'              => $this->request->post('script', '', 'trim,htmlspecialchars'),
+                    '__token__'           => $this->request->post('__token__'),
                 ],
             ];
 
             $result = action('Basic/saveBasicConfig', $params, 'controller\settings');
 
-            $this->message($result);
+            $this->showMessage($result);
         }
 
         $result = action('Basic/getBasicConfig', [], 'controller\settings');
         $this->assign('data', $result);
+        return $this->fetch();
+    }
+
+    public function image()
+    {
         return $this->fetch();
     }
 }
