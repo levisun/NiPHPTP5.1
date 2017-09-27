@@ -40,6 +40,16 @@ if (window.location.host == "localhost") {
     Layout.phpself = "";
 }
 
+Layout.htmlDecode = function(string) {
+    string = string.toString();
+    string = string.replace(/&amp;/g, '&');
+    string = string.replace(/&lt;/g, '<');
+    string = string.replace(/&gt;/g, '>');
+    string = string.replace(/&quot;/g, '"');
+    string = string.replace(/&#039;/g, '\'');
+    return string;
+}
+
 /**
  * 判断微信端
  */
@@ -75,14 +85,14 @@ Layout.isMobile = function () {
  */
 Layout.scrollBot = function (params, function_name) {
     jQuery("body").attr("Layout-scroll-page", 1);
-    jQuery("body").attr("Layout-scroll-bot", "true");
+    jQuery("body").attr("Layout-scroll-bool", "true");
     jQuery(window).scroll(function () {
-        var is = jQuery("body").attr("Layout-scroll-bot");
+        var is = jQuery("body").attr("Layout-scroll-bool");
         if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) / 1.05) {
             var page_num = jQuery("body").attr("Layout-scroll-page");
                 page_num++;
             jQuery("body").attr("Layout-scroll-page", page_num);
-            jQuery("body").attr("Layout-scroll-bot", "false");
+            jQuery("body").attr("Layout-scroll-bool", "false");
 
             params["data"]["p"] = page_num;
             var result = Layout.ajax(params);
@@ -90,7 +100,7 @@ Layout.scrollBot = function (params, function_name) {
             window[function_name](result);
 
             setTimeout(function () {
-                jQuery("body").attr("Layout-scroll-bot", "true");
+                jQuery("body").attr("Layout-scroll-bool", "true");
             }, 1500);
         }
     });

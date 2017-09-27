@@ -19,9 +19,22 @@ use think\facade\Lang;
 
 class Base extends Controller
 {
+    // 请求参数
+    protected $requestParam = [];
 
     protected function initialize()
     {
+        $this->requestParam = [
+            // 请求模块
+            'module'     => strtolower($this->request->module()),
+            // 请求控制器
+            'controller' => strtolower($this->request->controller()),
+            // 请求方法
+            'action'     => strtolower($this->request->action()),
+            // 语言
+            'lang'       => lang(':detect'),
+        ];
+
         // 权限
         $this->auth();
         // 语言
@@ -60,7 +73,7 @@ class Base extends Controller
             if (!$rbac->checkAuth(session(config('user_auth_key')))) {
                 $this->error('no permission', 'settings/info');
             }
-        } elseif ($this->request->controller() != 'Account') {
+        } elseif ($this->requestParam['controller'] != 'account') {
             $this->redirect(url('account/login'));
         }
     }
@@ -81,8 +94,8 @@ class Base extends Controller
         Lang::load($lang_path . Lang::detect() . '.php');
 
         // 加载对应语言包
-        $lang_name  = strtolower($this->request->controller()) . DIRECTORY_SEPARATOR;
-        $lang_name .= strtolower($this->request->action());
+        $lang_name  = $this->requestParam['controller'] . DIRECTORY_SEPARATOR;
+        $lang_name .= $this->requestParam['action'];
         Lang::load($lang_path . $lang_name . '.php');
     }
 
@@ -135,10 +148,13 @@ class Base extends Controller
             $replace['__BREADCRUMB__'] = $auth_data['breadcrumb'];
 
             $this->assign('__ADMIN_DATA__', $auth_data['admin_data']);
-            $this->assign('__MENU__', $auth_data['auth_menu']);
+
+            $this->assign('auth_menu', json_encode($auth_data['auth_menu']));
         }
 
         $this->view->replace($replace);
+
+        $this->assign('request_param', json_encode($this->requestParam));
 
         $this->assign('button_search', 0);
         $this->assign('button_added', 0);

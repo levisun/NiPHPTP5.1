@@ -27,7 +27,6 @@ class Settings extends Base
     public function info()
     {
         $result = action('Info/info', [], 'controller\settings');
-        $this->assign('data', $result);
         $this->assign('json_data', json_encode($result));
         return $this->fetch();
     }
@@ -59,7 +58,7 @@ class Settings extends Base
         }
 
         $result = action('Basic/getBasicConfig', [], 'controller\settings');
-        $this->assign('data', $result);
+        $this->assign('basic_data', json_encode($result));
         return $this->fetch();
     }
 

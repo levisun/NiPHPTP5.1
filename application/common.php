@@ -33,6 +33,8 @@ function validate($data, $validate, $layer = 'validate', $module = '')
             list($validate, $scene) = explode('.', $validate);
         }
 
+        $module = $module ? $module : request()->module();
+
         $v = app()->validate($validate, $layer, false, $module);
         if (!empty($scene)) {
             $v->scene($scene);

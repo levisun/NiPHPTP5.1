@@ -37,13 +37,13 @@ class Common
     ];
 
     // 请求参数
-    protected $request = [];
+    protected $requestParam = [];
     // 菜单语言包
     protected $navAndMenu = [];
 
     public function __construct()
     {
-        $this->request = [
+        $this->requestParam = [
             // 请求模块
             'module'     => request()->module(),
             // 请求控制器
@@ -74,7 +74,7 @@ class Common
     public function createSysData()
     {
         $auth_data = [];
-        if (in_array($this->request['action'], $this->_action)) {
+        if (in_array($this->requestParam['action'], $this->_action)) {
             $auth_data = ['title' => $this->getWebSiteTitle()];
         } else {
             $auth_data = [
@@ -88,7 +88,7 @@ class Common
                 'breadcrumb' => $this->getBreadcrumb(),
                 // 副标题
                 'sub_title'  => $this->navAndMenu['menu'][
-                    strtolower($this->request['controller'] . '_' . $this->request['action'])
+                    strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])
                 ]
             ];
         }
@@ -107,12 +107,12 @@ class Common
         $breadcrumb .= lang('website home') . '</a></li>';
 
         $breadcrumb .= '<li><a href="';
-        $breadcrumb .= url($this->request['controller'] . '/' . $this->bn[$this->request['controller']]);
-        $breadcrumb .= '">' . $this->navAndMenu['nav'][strtolower($this->request['controller'])] . '</a></li>';
+        $breadcrumb .= url($this->requestParam['controller'] . '/' . $this->bn[$this->requestParam['controller']]);
+        $breadcrumb .= '">' . $this->navAndMenu['nav'][strtolower($this->requestParam['controller'])] . '</a></li>';
 
         $breadcrumb .= '<li><a href="';
-        $breadcrumb .= url($this->request['controller'] . '/' . $this->request['action']) . '">';
-        $breadcrumb .= $this->navAndMenu['menu'][strtolower($this->request['controller'] . '_' . $this->request['action'])];
+        $breadcrumb .= url($this->requestParam['controller'] . '/' . $this->requestParam['action']) . '">';
+        $breadcrumb .= $this->navAndMenu['menu'][strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])];
         $breadcrumb .= '</a></li>';
 
         if (request()->param('cid')) {
@@ -175,15 +175,15 @@ class Common
      */
     protected function getWebSiteTitle()
     {
-        if (in_array($this->request['action'], $this->_action)) {
-            if ('upload' == $this->request['action']) {
+        if (in_array($this->requestParam['action'], $this->_action)) {
+            if ('upload' == $this->requestParam['action']) {
                 $title = lang('upload file') . ' - NIPHPCMS';
             } else {
                 $title =  lang('admin login') . ' - NIPHPCMS';
             }
         } else {
-            $title = $this->navAndMenu['menu'][strtolower($this->request['controller'] . '_' . $this->request['action'])];
-            $title .= ' - ' . $this->navAndMenu['nav'][strtolower($this->request['controller'])] . ' - NIPHPCMS';
+            $title = $this->navAndMenu['menu'][strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])];
+            $title .= ' - ' . $this->navAndMenu['nav'][strtolower($this->requestParam['controller'])] . ' - NIPHPCMS';
         }
 
         return $title;
@@ -200,7 +200,7 @@ class Common
         $auth_menu = [];
         if (session('?_access_list')) {
             $auth = session('_access_list');
-            $auth = $auth[strtoupper($this->request['module'])];
+            $auth = $auth[strtoupper($this->requestParam['module'])];
 
             foreach ($auth as $key => $value) {
                 $controller = strtolower($key);

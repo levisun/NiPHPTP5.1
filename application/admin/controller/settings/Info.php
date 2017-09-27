@@ -15,7 +15,6 @@ namespace app\admin\controller\settings;
 
 class Info
 {
-
     /**
      * 系统信息
      * @access public
@@ -26,31 +25,100 @@ class Info
     {
         $info = logic('Info', 'logic\settings');
 
+        $member = $info->member();
+
         return [
-            // 操作系统
-            'os'          => PHP_OS,
-            // 运行环境
-            'env'         => request()->server('SERVER_SOFTWARE'),
-            // 框架版本
-            'tp_version'  => App()->version(),
-            // 数据库类型
-            'db_type'     => config('database.type'),
-            // 数据库版本
-            'db_version'  => $info->dbVersion(),
+            'sys_info' => [
+                [
+                    'name'  => lang('sys name'),
+                    'value' => 'NIPHPCMS',
+                ],
+                // 系统与框架版本
+                [
+                    'name'  => lang('sys version'),
+                    'value' => NP_VERSION . App()->version(),
+                ],
+                // 操作系统
+                [
+                    'name'  => lang('sys os'),
+                    'value' => PHP_OS,
+                ],
+                // 运行环境
+                [
+                    'name'  => lang('sys env'),
+                    'value' => PHP_VERSION . request()->server('SERVER_SOFTWARE'),
+                ],
+                // 数据库类型与版本
+                [
+                    'name'  => lang('sys db'),
+                    'value' => config('database.type') . $info->dbVersion(),
+                ],
+                [
+                    'name'  => lang('sys copy'),
+                    'value' => '失眠小枕头 [levisun.mail@gmail.com]',
+                ],
+                // 表错误统计
+                [
+                    'name'  => lang('sys table error'),
+                    'value' => '<a href="' . url('expand/databack', array('method' => 'optimize')) . '">' . $info->dbTableErr() . '</a>',
+                ],
+                [
+                    'name'  => lang('sys upgrade'),
+                    'value' => '',
+                ],
+            ],
+            'sys_make' => [
+                // 会员统计
+                'member' => [
+                    'name'  => lang('member'),
+                    'value' => [
+                        [
+                            'name'  => lang('member count'),
+                            'value' => $member['count'],
+                        ],
+                        [
+                            'name'  => lang('member reg'),
+                            'value' => $member['reg'],
+                        ],
+                    ],
+                ],
+                // 反馈与留言统计
+                'feed_msg' => [
+                    'name'  => lang('feedback and message'),
+                    'value' => [
+                        [
+                            'name'  => lang('feedback'),
+                            'value' => $info->feedback(),
+                        ],
+                        [
+                            'name'  => lang('message'),
+                            'value' => $info->message(),
+                        ],
+                    ],
+                ],
+                // 广告与友情链接统计
+                'ads_link' => [
+                    'name'  => lang('tg'),
+                    'value' => [
+                        [
+                            'name'  => lang('ads'),
+                            'value' => $info->ads(),
+                        ],
+                        [
+                            'name'  => lang('link'),
+                            'value' => $info->link(),
+                        ],
+                    ],
+                ],
+            ],
+
             // 访问统计
-            'visit'       => $info->visit(),
-            // 表错误统计
-            'table_error' => $info->dbTableErr(),
-            // 会员统计
-            'member'      => $info->member(),
-            // 反馈统计
-            'feedback'    => $info->feedback(),
-            // 留言统计
-            'message'     => $info->message(),
-            // 友情链接统计
-            'link'        => $info->link(),
-            // 广告统计
-            'ads'         => $info->ads(),
+            'visit_info' => [
+                [
+                    'name'  => 'visit',
+                    'value' => $info->visit(),
+                ],
+            ],
         ];
     }
 }

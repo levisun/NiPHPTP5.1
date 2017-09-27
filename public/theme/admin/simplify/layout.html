@@ -52,7 +52,7 @@ jQuery(function  ()  {
     var d1 = [];
     for (var i = 0; i <= 10; i += 1) {
         //d1.push([i, parseInt(Math.random() * 30)]);
-        d1 = [{$data.visit.count|raw}];
+        d1 = [visit_info["value"]];
     }
 
     function plotWithOptions() {
@@ -113,6 +113,7 @@ jQuery(function  ()  {
 {/eq}
 
 var domain = Layout.domain;
+var request_param = {$request_param|raw};
 
 // parent.document.title = "__TITLE__";
 

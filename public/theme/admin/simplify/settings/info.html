@@ -1,15 +1,11 @@
 <div class="row m-top-md">
     <div class="col-lg-3 col-sm-6">
         <div class="statistic-box bg-danger m-bottom-md">
-            <div class="statistic-title">
-                {:lang('member')}
-            </div>
+            <div class="statistic-title"></div>
 
-            <div class="statistic-value">
-                {:lang('member count')}:{$data.member.count}
-            </div>
+            <div class="statistic-value"></div>
 
-            <div class="m-top-md">{:lang('member reg')}:{$data.member.reg}</div>
+            <div class="m-top-md"></div>
 
             <div class="statistic-icon-background">
                 <i class="ion-person-add"></i>
@@ -19,15 +15,11 @@
 
     <div class="col-lg-3 col-sm-6">
         <div class="statistic-box bg-info m-bottom-md">
-            <div class="statistic-title">
-                {:lang('feedback or message')}
-            </div>
+            <div class="statistic-title"></div>
 
-            <div class="statistic-value">
-                {:lang('feedback')}:{$data.feedback}
-            </div>
+            <div class="statistic-value"></div>
 
-            <div class="m-top-md">{:lang('message')}:{$data.message}</div>
+            <div class="m-top-md"></div>
 
             <div class="statistic-icon-background">
                 <i class="ion-eye"></i>
@@ -37,15 +29,11 @@
 
     <div class="col-lg-3 col-sm-6">
         <div class="statistic-box bg-purple m-bottom-md">
-            <div class="statistic-title">
-                {:lang('tg')}
-            </div>
+            <div class="statistic-title"></div>
 
-            <div class="statistic-value">
-                {:lang('ads')}:{$data.ads}
-            </div>
+            <div class="statistic-value"></div>
 
-            <div class="m-top-md">{:lang('link')}:{$data.link}</div>
+            <div class="m-top-md"></div>
 
             <div class="statistic-icon-background">
                 <i class="ion-stats-bars"></i>
@@ -88,49 +76,7 @@
             </div>
             <div class="smart-widget-inner table-responsive">
                 <table class="table table-striped no-margin">
-                    <tbody>
-                        <tr>
-                            <th>{:lang('sys name')}</th>
-                            <td>NIPHPCMS</td>
-                        </tr>
-                        <tr>
-                            <th>{:lang('sys version')}</th>
-                            <td>SYS:{$Think.NP_VERSION} / TP:{$data.tp_version}</td>
-                        </tr>
-                        <tr>
-                            <th>{:lang('os')}</th>
-                            <td>{$data.os}</td>
-                        </tr>
-                        <tr>
-                            <th>{:lang('php env')}</th>
-                            <td>{$Think.PHP_VERSION} / {$data.env}</td>
-                        </tr>
-                        <tr>
-                            <th>{:lang('db')}</th>
-                            <td>{$data.db_type} {$data.db_version}</td>
-                        </tr>
-                        <tr>
-                            <th>{:lang('copy')}</th>
-                            <td>失眠小枕头 [levisun.mail@gmail.com]</td>
-                        </tr>
-                        <tr>
-                            <th>{:lang('table error')}</th>
-                            {egt name="data.table_error" value="1000"}
-                            <td style="background-color:red;color:#fff;font-weight:bold;">
-                            {else/}
-                            <td>
-                            {/egt}
-                            <a href="{:url('expand/databack', array('method' => 'optimize'))}">
-                            {$data.table_error}
-                            </a>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <th>在线升级</th>
-                            <td>检测更新</td>
-                        </tr>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div><!-- ./smart-widget-inner -->
         </div><!-- ./smart-widget -->
@@ -172,10 +118,33 @@
                         </div>
                     </div> -->
                 </div>
-            </div><!-- ./smart-widget-inner -->
-        </div><!-- ./smart-widget -->
-    </div><!-- ./col -->
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-var json_data = {$json_data|raw};
+var json_data  = {$json_data|raw};
+var sys_info   = json_data["sys_info"],
+    sys_make   = json_data["sys_make"],
+    visit_info = json_data["visit_info"];
+
+jQuery(function(){
+    var h = "";
+    for (var i = 0; i < sys_info.length; i++) {
+        h = h + "<tr><th>"+sys_info[i]["name"]+"</th><td>"+sys_info[i]["value"]+"</td></tr>";
+    }
+    jQuery(".no-margin tbody").append(h);
+
+    jQuery(".bg-danger .statistic-title").text(sys_make["member"]["name"]);
+    jQuery(".bg-danger .statistic-value").text(sys_make["member"]["value"][0]["name"]+":"+sys_make["member"]["value"][0]["value"]);
+    jQuery(".bg-danger .m-top-md").text(sys_make["member"]["value"][1]["name"]+":"+sys_make["member"]["value"][1]["value"]);
+
+    jQuery(".bg-info .statistic-title").text(sys_make["feed_msg"]["name"]);
+    jQuery(".bg-info .statistic-value").text(sys_make["feed_msg"]["value"][0]["name"]+":"+sys_make["feed_msg"]["value"][0]["value"]);
+    jQuery(".bg-info .m-top-md").text(sys_make["feed_msg"]["value"][1]["name"]+":"+sys_make["feed_msg"]["value"][1]["value"]);
+
+    jQuery(".bg-purple .statistic-title").text(sys_make["ads_link"]["name"]);
+    jQuery(".bg-purple .statistic-value").text(sys_make["ads_link"]["value"][0]["name"]+":"+sys_make["ads_link"]["value"][0]["value"]);
+    jQuery(".bg-purple .m-top-md").text(sys_make["ads_link"]["value"][1]["name"]+":"+sys_make["ads_link"]["value"][1]["value"]);
+});
 </script>
