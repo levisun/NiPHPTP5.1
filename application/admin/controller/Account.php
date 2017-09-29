@@ -42,7 +42,7 @@ class Account extends Base
             ];
             $result = action('Login/login', $params, 'controller\account');
             if (true === $result) {
-                $this->success('success', 'settings/info');
+                $this->success(lang('success login'), 'settings/info');
             } else {
                 $msg = $result === false ? lang('error') : $result;
                 $this->error($msg);

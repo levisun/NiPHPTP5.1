@@ -80,7 +80,7 @@ Layout.selectRegion = function (element, url) {
  */
 Layout.newWinUpload = function (element, url) {
     jQuery(document).on("click", element, function(){
-        var width = 530, height = 120;
+        var width = 530, height = 520;
         var left = (screen.width - width) / 2;
         var top = (screen.height - height) / 2 - 50;
 
@@ -91,8 +91,9 @@ Layout.newWinUpload = function (element, url) {
         // 返回input和img的ID
         var id = jQuery(this).attr("data-id");
 
+        // alert(Layout.domain)
         window.open(
-            Layout.domain + Layout.phpself + url + "?type=" + type + "&id=" + id + "&model=" + model,
+            url + "?type=" + type + "&id=" + id + "&model=" + model,
             "uploadFile",
             "width=" + width + ",height=" + height + ",top=" + top + ",left=" + left
             );

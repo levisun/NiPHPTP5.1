@@ -2,6 +2,11 @@
 return [
     'website home'          => '首页',
     'button save'           => '保存',
+    'delete cache'          => '清除缓存',
+    'update admin'          => '修改管理员信息',
+    'logout'                => '注销',
+    'upload file'           => '上传文件',
+    'button upload'         => '上传',
 
     // 导航
     '_nav' => [

@@ -43,6 +43,14 @@ class Base extends Controller
         $this->theme();
     }
 
+    public function upload()
+    {
+        if ($this->request->isPost()) {
+            # code...
+        }
+        return $this->fetch('./upload');
+    }
+
     /**
      * 显示提示信息
      * @access protected
@@ -62,7 +70,7 @@ class Base extends Controller
 
     /**
      * 权限
-     * @access protected
+     * @access private
      * @param
      * @return void
      */
@@ -70,8 +78,13 @@ class Base extends Controller
     {
         if (session('?' . config('user_auth_key'))) {
             $rbac = logic('Rbac', 'logic\account');
+            // 审核用户权限
             if (!$rbac->checkAuth(session(config('user_auth_key')))) {
                 $this->error('no permission', 'settings/info');
+            }
+            // 登录页重定向
+            if ($this->requestParam['action'] == 'login') {
+                $this->redirect(url('settings/info'));
             }
         } elseif ($this->requestParam['controller'] != 'account') {
             $this->redirect(url('account/login'));

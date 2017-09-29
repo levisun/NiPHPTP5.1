@@ -46,7 +46,7 @@ class Info
                 // 运行环境
                 [
                     'name'  => lang('sys env'),
-                    'value' => PHP_VERSION . request()->server('SERVER_SOFTWARE'),
+                    'value' => request()->server('SERVER_SOFTWARE'),
                 ],
                 // 数据库类型与版本
                 [

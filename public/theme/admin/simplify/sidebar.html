@@ -43,26 +43,23 @@
 </aside>
 <script type="text/javascript">
 var auth_menu = {$auth_menu|raw};
-
-jQuery(function(){
-    var h = "";
-    for (key in auth_menu) {
-        var open = "";
-        if (key == request_param["controller"]) {
-            open = "open";
-        }
-        h = h + "<li class='openable bg-palette4 "+open+"'><a href='#'><span class='menu-content block'><span class='menu-icon'><i class='block fa fa-"+auth_menu[key]["icon"]+" fa-lg'></i></span><span class='text m-left-sm'>"+auth_menu[key]["name"]+"</span><span class='submenu-icon'></span></span><span class='menu-content-hover block'>"+auth_menu[key]["name"]+"</span></a><ul class='submenu bg-palette4'>";
-
-        for (k in auth_menu[key]["menu"]) {
-            var active = "";
-            if (auth_menu[key]["menu"][k]["action"] == request_param["action"]) {
-                active = "class='active'";
-            }
-            h = h + "<li "+active+"><a href='"+auth_menu[key]["menu"][k]["url"]+"'><span class='submenu-label'>"+auth_menu[key]["menu"][k]["lang"]+"</span></a></li>";
-        }
-
-        h = h + "</ul></li>";
+var sidebar = "";
+for (key in auth_menu) {
+    var opens = "";
+    if (key == request_param["controller"]) {
+        opens = "open";
     }
-    jQuery(".main-menu ul").append(h);
-});
+    sidebar = sidebar + "<li class='openable bg-palette4 "+opens+"'><a href='#'><span class='menu-content block'><span class='menu-icon'><i class='block fa fa-"+auth_menu[key]["icon"]+" fa-lg'></i></span><span class='text m-left-sm'>"+auth_menu[key]["name"]+"</span><span class='submenu-icon'></span></span><span class='menu-content-hover block'>"+auth_menu[key]["name"]+"</span></a><ul class='submenu bg-palette4'>";
+
+    for (k in auth_menu[key]["menu"]) {
+        var active = "";
+        if (auth_menu[key]["menu"][k]["action"] == request_param["action"]) {
+            active = "class='active'";
+        }
+        sidebar = sidebar + "<li "+active+"><a href='"+auth_menu[key]["menu"][k]["url"]+"'><span class='submenu-label'>"+auth_menu[key]["menu"][k]["lang"]+"</span></a></li>";
+    }
+
+    sidebar = sidebar + "</ul></li>";
+}
+jQuery(".main-menu ul").append(sidebar);
 </script>

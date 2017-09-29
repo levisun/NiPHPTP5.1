@@ -25,5 +25,6 @@ class Logout
     public function removeAuth()
     {
         session(null);
+        cookie(null);
     }
 }

@@ -19,8 +19,6 @@ class Common
     protected $_action = [
         'login',
         'logout',
-        'upload',
-        'delupload',
     ];
 
     // 控制器默认方法
@@ -86,11 +84,15 @@ class Common
                 'title'      => $this->getWebSiteTitle(),
                 // 面包屑
                 'breadcrumb' => $this->getBreadcrumb(),
-                // 副标题
-                'sub_title'  => $this->navAndMenu['menu'][
-                    strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])
-                ]
+
             ];
+
+            if ('upload' == $this->requestParam['action']) {
+                // 上传方法
+                $auth_data['sub_title'] = lang('upload file');
+            } else {
+                $auth_data['sub_title'] = $this->navAndMenu['menu'][strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])];
+            }
         }
         return $auth_data;
     }
@@ -110,10 +112,19 @@ class Common
         $breadcrumb .= url($this->requestParam['controller'] . '/' . $this->bn[$this->requestParam['controller']]);
         $breadcrumb .= '">' . $this->navAndMenu['nav'][strtolower($this->requestParam['controller'])] . '</a></li>';
 
-        $breadcrumb .= '<li><a href="';
-        $breadcrumb .= url($this->requestParam['controller'] . '/' . $this->requestParam['action']) . '">';
-        $breadcrumb .= $this->navAndMenu['menu'][strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])];
-        $breadcrumb .= '</a></li>';
+
+        if ('upload' == $this->requestParam['action']) {
+            // 上传方法
+            $breadcrumb .= '<li><a>';
+            $breadcrumb .= lang('upload file');
+            $breadcrumb .= '</a></li>';
+        } else {
+            $breadcrumb .= '<li><a href="';
+            $breadcrumb .= url($this->requestParam['controller'] . '/' . $this->requestParam['action']) . '">';
+            $breadcrumb .= $this->navAndMenu['menu'][strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])];
+            $breadcrumb .= '</a></li>';
+        }
+
 
         if (request()->param('cid')) {
             $bread = $this->getBreadcrumbParent(request()->param('cid'));
@@ -176,11 +187,11 @@ class Common
     protected function getWebSiteTitle()
     {
         if (in_array($this->requestParam['action'], $this->_action)) {
-            if ('upload' == $this->requestParam['action']) {
-                $title = lang('upload file') . ' - NIPHPCMS';
-            } else {
-                $title =  lang('admin login') . ' - NIPHPCMS';
-            }
+            // 登录注销方法
+            $title =  lang('admin login') . ' - NIPHPCMS';
+        } elseif ('upload' == $this->requestParam['action']) {
+            // 上传方法
+           $title = lang('upload file') . ' - NIPHPCMS';
         } else {
             $title = $this->navAndMenu['menu'][strtolower($this->requestParam['controller'] . '_' . $this->requestParam['action'])];
             $title .= ' - ' . $this->navAndMenu['nav'][strtolower($this->requestParam['controller'])] . ' - NIPHPCMS';
@@ -207,6 +218,12 @@ class Common
 
                 foreach ($value as $k => $val) {
                     $action = strtolower($k);
+
+                    // 上传方法跳出不生成导航菜单
+                    if ($action == 'upload') {
+                        continue;
+                    }
+
                     $auth_menu[$controller]['icon'] = config('app.icon.' . $controller);
                     $auth_menu[$controller]['name'] = $this->navAndMenu['nav'][$controller];
                     $auth_menu[$controller]['menu'][] = [

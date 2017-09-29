@@ -179,6 +179,8 @@ class Rbac
                     $_a[$a['name']] = $a['id'];
                 }
                 $access[strtoupper($m['name'])][strtoupper($c['name'])] = array_change_key_case($_a, CASE_UPPER);
+                // 添加上传权限
+                $access[strtoupper($m['name'])][strtoupper($c['name'])]['UPLOAD'] = true;
             }
         }
 

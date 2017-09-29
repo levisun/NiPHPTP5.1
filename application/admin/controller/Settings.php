@@ -27,7 +27,7 @@ class Settings extends Base
     public function info()
     {
         $result = action('Info/info', [], 'controller\settings');
-        $this->assign('json_data', json_encode($result));
+        $this->assign('json_data_info', json_encode($result));
         return $this->fetch();
     }
 
@@ -58,12 +58,19 @@ class Settings extends Base
         }
 
         $result = action('Basic/getBasicConfig', [], 'controller\settings');
-        $this->assign('basic_data', json_encode($result));
+        $this->assign('json_data_basic', json_encode($result));
         return $this->fetch();
+    }
+
+    public function lang()
+    {
+        # code...
     }
 
     public function image()
     {
+        $result = action('Image/getImageConfig', [], 'controller\settings');
+        $this->assign('json_data_image', json_encode($result));
         return $this->fetch();
     }
 }
