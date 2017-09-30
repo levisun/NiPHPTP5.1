@@ -8,6 +8,13 @@ return [
     'upload file'           => '上传文件',
     'button upload'         => '上传',
 
+    'illegal operation'     => '无效操作！',
+    'no permission'         => '无效操作！',
+    'save success'          => '操作成功！',
+    'save error'            => '操作失败！',
+    'editor success'        => '编辑成功！',
+    'editor error'          => '编辑失败！',
+
     // 导航
     '_nav' => [
         'settings'          => '设置',

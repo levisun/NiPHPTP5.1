@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 应用公共文件
+ * 应用公共函数文件
  *
  * @package   NiPHPCMS
  * @category  application

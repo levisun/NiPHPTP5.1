@@ -1,0 +1,236 @@
+<?php
+/**
+ *
+ * 上传文件 - 公众 - 业务层
+ *
+ * @package   NiPHPCMS
+ * @category  admin\logic\common
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @version   CVS: $Id: Upload.php v1.0.1 $
+ * @link      www.NiPHP.com
+ * @since     2017/09/13
+ */
+namespace app\admin\logic\common;
+
+use think\Image;
+use think\facade\Env;
+
+class Upload
+{
+    // 上传需要参数
+    private $uploadParams;
+    // 保存路径
+    private $savePath;
+    // 验证信息
+    private $validate;
+
+    private $uploadFileExt;
+    private $uploadFileName;
+
+    /**
+     * 上传初始化
+     * @access private
+     * @param  array   $params
+     * @return void
+     */
+    private function init($params)
+    {
+        $this->uploadParams = $this->params($params['type'], $params['model']);
+        $this->savePath     = Env::get('root_path') . 'public';
+        $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
+        $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
+        // $this->savePath    .= DIRECTORY_SEPARATOR;
+        $this->validate     = $this->validate();
+    }
+
+    /**
+     * 单文件上传
+     * @access public
+     * @param  array  $params
+     * @return array
+     */
+    public function fileOne($params)
+    {
+        // 初始化
+        $this->init($params);
+
+        $upload = $params['upload'];
+
+        $result =
+        $upload->validate($this->validate)
+        ->move($this->savePath);
+
+        if (!$result) {
+            return $upload->getError();
+        }
+
+        // 上传文件后缀
+        $this->uploadFileExt  = $result->getExtension();
+
+        // 上传文件保存名
+        $this->uploadFileName = $result->getSaveName();
+
+        // 生成水印
+        $this->createWater($this->uploadFileName);
+
+        // 生成缩略图文件名
+        $upload_thumb_filename = $this->createThumb($this->uploadFileName);
+
+        return [
+            'domain'     => request()->domain() . substr(request()->baseFile(), 0, -16),
+            'save_dir'   => '/public/upload/' . $this->uploadParams['dir'],
+            'file_name'  => $this->uploadFileName,
+            'thumb_name' => $upload_thumb_filename,
+        ];
+    }
+
+    /**
+     * 生成缩略图
+     * @access private
+     * @param
+     * @return string
+     */
+    private function createThumb($file_name)
+    {
+        $save_name = '';
+        if ($this->uploadParams['create_thumb']) {
+            // 组合缩略图文件名
+            $save_name = str_replace('.' . $this->uploadFileExt, '_thumb.' . $this->uploadFileExt, $file_name);
+            // 生成缩略图
+            $image = Image::open($this->savePath . $file_name);
+            $image->thumb($this->uploadParams['thumb_width'], $this->uploadParams['thumb_height'], Image::THUMB_CENTER)
+            ->save($this->savePath . $save_name);
+
+            // 生成水印
+            $this->createWater($save_name);
+        }
+        return $save_name;
+    }
+
+    private function createWater($file_name)
+    {
+        if ($this->uploadParams['create_water']) {
+            $map = [
+                ['name', 'in', 'add_water,water_type,water_location,water_text,water_image'],
+                ['lang', '=', lang(':detect')],
+            ];
+
+            $config = model('Config');
+
+            // 获得水印设置
+            $result =
+            $config->field(true)
+            ->where($map)
+            ->select();
+
+            $config_data = [];
+            foreach ($result as $key => $value) {
+                $value = $value->toArray();
+                $config_data[$value['name']] = $value['value'];
+            }
+
+            // 不添加水印
+            if (!$config_data['add_water']) {
+                return false;
+            }
+
+            $config_data['water_image'] = Env::get('root_path') . $config_data['water_image'];
+
+            if ($config_data['water_type']) {
+                // 图片水印
+                $image = Image::open($this->savePath . $file_name);
+                $image->water($config_data['water_image'], $config_data['water_location'], 50);
+                $image->save($this->savePath . $file_name);
+            } else {
+                // 文字水印
+                $font_path = Env::get('root_path');
+                $font_path .= 'public' . DIRECTORY_SEPARATOR;
+                $font_path .= 'static' . DIRECTORY_SEPARATOR;
+                $font_path .= 'layout' . DIRECTORY_SEPARATOR;
+                $font_path .=  'font' . DIRECTORY_SEPARATOR . 'HYQingKongTiJ.ttf';
+
+                $image = Image::open($this->savePath . $file_name);
+                $image->text($config_data['water_text'], $font_path, 20, '#ffffff', $config_data['water_location']);
+                $image->save($this->savePath . $file_name);
+            }
+        }
+    }
+
+    /**
+     * 上传需要参数
+     * @access private
+     * @param  string  $type  上传类型
+     * @param  string  $model 模型
+     * @return array
+     */
+    private function params($type, $model)
+    {
+        // 安上传类型生成上传目录
+        if (in_array($type, ['image', 'ckeditor'])) {
+            $dir = 'images/';
+        } else {
+            $dir = $type . '/';
+        }
+
+        $thumb_width = $thumb_height = 0;
+        if ($type == 'image') {
+            $map = [
+                ['name', 'in', $model . '_module_width,' . $model . '_module_height'],
+                ['lang', '=', lang(':detect')],
+            ];
+
+            $config = model('Config');
+
+            $result =
+            $config->where($map)
+            ->column('name, value');
+
+            $thumb_width = $result[$model . '_module_width'];
+            $thumb_height = $result[$model . '_module_height'];
+        } elseif (!in_array($type, ['water', 'ckeditor'])) {
+            $thumb_width = $thumb_height = 500;
+        }
+
+        return [
+            'dir'          => $dir,
+            'create_water' => $type == 'image' ? true : false,
+            'create_thumb' => $thumb_width ? true : false,
+            'thumb_width'  => $thumb_width,
+            'thumb_height' => $thumb_height,
+        ];
+    }
+
+    /**
+     * 上传文件验证信息
+     * @access private
+     * @param
+     * @return array
+     */
+    private function validate()
+    {
+        $map = [
+            ['name', 'in', 'upload_file_type,upload_file_max'],
+            ['lang', '=', 'niphp'],
+        ];
+
+        $config = model('Config');
+
+        $result =
+        $config->field(true)
+        ->where($map)
+        ->select();
+
+        $validate = [];
+        foreach ($result as $value) {
+            $array = $value->toArray();
+            if ($array['name'] == 'upload_file_max') {
+                $validate['size'] = $array['value'] * 1024 * 1024;
+            } else {
+                $validate['ext'] = str_replace('|', ',', $array['value']);
+            }
+        }
+
+        return $validate;
+    }
+}

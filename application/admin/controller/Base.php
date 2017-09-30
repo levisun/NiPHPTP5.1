@@ -43,11 +43,37 @@ class Base extends Controller
         $this->theme();
     }
 
+    /**
+     * 上传文件
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function upload()
     {
         if ($this->request->isPost()) {
-            # code...
+            $form_data = [
+                'upload'    => $this->request->file('upload'),
+                'type'      => $this->request->post('type'),
+                'model'     => $this->request->post('model'),
+                'input_id'  => $this->request->post('input_id'),
+                '__token__' => $this->request->post('__token__'),
+            ];
+            $result = validate($form_data, 'Upload', 'validate\common');
+            if (true !== $result) {
+                $this->error($result);
+            }
+
+            $upload = logic('Upload', 'logic\common');
+            $result = $upload->fileOne($form_data);
+
+            if (is_string($result)) {
+                $this->error($result);
+            } else {
+                return upload_to_javasecipt($result);
+            }
         }
+
         return $this->fetch('./upload');
     }
 
@@ -152,7 +178,7 @@ class Base extends Controller
         ];
 
         // 注入常用模板变量
-        $common = logic('Common', 'logic\account');
+        $common = logic('Common', 'logic\common');
         $auth_data = $common->createSysData();
 
         $replace['__TITLE__'] = $auth_data['title'];

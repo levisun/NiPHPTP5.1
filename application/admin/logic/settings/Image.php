@@ -16,6 +16,12 @@ namespace app\admin\logic\settings;
 class Image
 {
 
+    /**
+     * 查询图片设置数据
+     * @access public
+     * @param
+     * @return array
+     */
     public function getBasicConfig()
     {
         $map = [
@@ -38,5 +44,31 @@ class Image
         }
 
         return $data;
+    }
+
+    /**
+     * 保存修改图片设置
+     * @access public
+     * @param  array  $form_data
+     * @return mixed
+     */
+    public function saveImageConfig($form_data)
+    {
+        // 实例化设置表模型
+        $config = model('Config');
+
+        $map = $data = [];
+        foreach ($form_data as $key => $value) {
+            $map  = [
+                ['name', '=', $key],
+            ];
+            $data = ['value' => $value];
+
+            $config->allowField(true)
+            ->isUpdate(true)
+            ->save($data, $map);
+        }
+
+        return true;
     }
 }

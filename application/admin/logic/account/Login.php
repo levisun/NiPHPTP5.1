@@ -28,7 +28,7 @@ class Login
         $admin = model('Admin');
 
         $map = [
-            ['a.username', '=', $username]
+            ['a.username', '=', $username],
         ];
         $result =
         $admin->view('admin a', 'id,username,password,email,salt')
@@ -82,7 +82,7 @@ class Login
         ];
 
         $map = [
-            ['id', '=', $user_id]
+            ['id', '=', $user_id],
         ];
 
         // 实例化Admin表模型类
@@ -207,7 +207,7 @@ class Login
 
         // 删除过期的日志(保留一个月)
         $map = [
-            ['create_time', '<=', strtotime('-30 days')]
+            ['create_time', '<=', strtotime('-30 days')],
         ];
         $request_log->where($map)
         ->delete();

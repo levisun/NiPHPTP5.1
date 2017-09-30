@@ -59,7 +59,9 @@ class Basic
 
         $map = $data = [];
         foreach ($form_data as $key => $value) {
-            $map  = ['name'  => $key];
+            $map  = [
+                ['name', '=', $key],
+            ];
             $data = ['value' => $value];
 
             $config->allowField(true)

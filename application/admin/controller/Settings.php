@@ -54,7 +54,7 @@ class Settings extends Base
 
             $result = action('Basic/saveBasicConfig', $params, 'controller\settings');
 
-            $this->showMessage($result);
+            $this->showMessage($result, lang('save success'));
         }
 
         $result = action('Basic/getBasicConfig', [], 'controller\settings');
@@ -67,8 +67,47 @@ class Settings extends Base
         # code...
     }
 
+    /**
+     * 图片设置
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function image()
     {
+        if ($this->request->isPost()) {
+            $params = [
+                'form_data' => [
+                    'auto_image'             => $this->request->post('auto_image/f'),
+                    'article_module_width'   => $this->request->post('article_module_width/f'),
+                    'article_module_height'  => $this->request->post('article_module_height/f'),
+                    'picture_module_width'   => $this->request->post('picture_module_width/f'),
+                    'picture_module_height'  => $this->request->post('picture_module_height/f'),
+                    'download_module_width'  => $this->request->post('download_module_width/f'),
+                    'download_module_height' => $this->request->post('download_module_height/f'),
+                    'page_module_width'      => $this->request->post('page_module_width/f'),
+                    'page_module_height'     => $this->request->post('page_module_height/f'),
+                    'product_module_width'   => $this->request->post('product_module_width/f'),
+                    'product_module_height'  => $this->request->post('product_module_height/f'),
+                    'job_module_width'       => $this->request->post('job_module_width/f'),
+                    'job_module_height'      => $this->request->post('job_module_height/f'),
+                    'link_module_width'      => $this->request->post('link_module_width/f'),
+                    'link_module_height'     => $this->request->post('link_module_height/f'),
+                    'ask_module_width'       => $this->request->post('ask_module_width/f'),
+                    'ask_module_height'      => $this->request->post('ask_module_height/f'),
+                    'add_water'              => $this->request->post('add_water/f'),
+                    'water_type'             => $this->request->post('water_type/f'),
+                    'water_location'         => $this->request->post('water_location/f'),
+                    'water_text'             => $this->request->post('water_text'),
+                    'water_image'            => $this->request->post('water_image'),
+                    '__token__'              => $this->request->post('__token__'),
+                ],
+            ];
+            $result = action('Image/saveImageConfig', $params, 'controller\settings');
+
+            $this->showMessage($result, lang('save success'));
+        }
+
         $result = action('Image/getImageConfig', [], 'controller\settings');
         $this->assign('json_data_image', json_encode($result));
         return $this->fetch();

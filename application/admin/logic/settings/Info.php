@@ -80,7 +80,9 @@ class Info
 
         $error = 0;
         foreach ($tables as $key => $value) {
-            $map = ['TABLE_NAME' => $value];
+            $map = [
+                ['TABLE_NAME', '=', $value],
+            ];
 
             $result =
             $model->table('information_schema.TABLES')

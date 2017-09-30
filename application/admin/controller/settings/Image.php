@@ -16,9 +16,33 @@ namespace app\admin\controller\settings;
 class Image
 {
 
+    /**
+     * 获得图片设置数据
+     * @access public
+     * @param
+     * @return array
+     */
     public function getImageConfig()
     {
         $basic = logic('Image', 'logic\settings');
         return $basic->getBasicConfig();
+    }
+
+    /**
+     * 保存图片基础设置
+     * @access public
+     * @param  array  $form_data
+     * @return mixed
+     */
+    public function saveImageConfig($form_data)
+    {
+        // 验证请求数据
+        $result = validate($form_data, 'Image', 'validate\settings');
+        if (true !== $result) {
+            return $result;
+        }
+
+        $basic = logic('Image', 'logic\settings');
+        return $basic->saveImageConfig($form_data);
     }
 }
