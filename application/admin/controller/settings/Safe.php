@@ -1,19 +1,19 @@
 <?php
 /**
  *
- * 基础设置 - 设置 - 控制器
+ * 安全与效率设置 - 设置 - 控制器
  *
  * @package   NiPHPCMS
  * @category  admin\controller\settings
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Basic.php v1.0.1 $
+ * @version   CVS: $Id: Safe.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/09/13
  */
 namespace app\admin\controller\settings;
 
-class Basic
+class Safe
 {
 
     /**
@@ -22,10 +22,10 @@ class Basic
      * @param
      * @return array
      */
-    public function getBasicConfig()
+    public function getSafeConfig()
     {
-        $basic = logic('Basic', 'logic\settings');
-        return $basic->getBasicConfig();
+        $basic = logic('Safe', 'logic\settings');
+        return $basic->getSafeConfig();
     }
 
     /**
@@ -34,17 +34,17 @@ class Basic
      * @param  array  $form_data
      * @return mixed
      */
-    public function saveBasicConfig($form_data)
+    public function saveSafeConfig($form_data)
     {
         // 验证请求数据
-        $result = validate($form_data, 'Basic', 'validate\settings');
+        $result = validate($form_data, 'Safe', 'validate\settings');
         if (true !== $result) {
             return $result;
         }
 
         unset($form_data['__token__']);
 
-        $basic = logic('Basic', 'logic\settings');
-        return $basic->saveBasicConfig($form_data);
+        $basic = logic('Safe', 'logic\settings');
+        return $basic->saveSafeConfig($form_data);
     }
 }

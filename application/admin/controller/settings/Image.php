@@ -42,6 +42,8 @@ class Image
             return $result;
         }
 
+        unset($form_data['__token__']);
+
         $basic = logic('Image', 'logic\settings');
         return $basic->saveImageConfig($form_data);
     }

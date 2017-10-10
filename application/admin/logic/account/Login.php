@@ -89,9 +89,8 @@ class Login
         $admin = model('Admin');
 
         $result =
-        $admin->allowField(true)
-        ->isUpdate(true)
-        ->save($update_data, $map);
+        $admin->where($map)
+        ->update($update_data);
 
         return $result ? true : false;
     }
@@ -142,9 +141,8 @@ class Login
                 // 存在增加1
                 $data = ['count' => ['exp', 'count+1']];
             }
-            $request_log->allowField(true)
-            ->isUpdate(true)
-            ->save($data, $map);
+            $request_log->where($map)
+            ->update($data);
         } else {
             // 新建请求错误记录
             $data = [
@@ -152,10 +150,7 @@ class Login
                 'module' => $module,
                 'count'  => 1,
             ];
-            $request_log->allowField(true)
-            ->isUpdate(false)
-            ->data($data)
-            ->save();
+            $request_log->create($data);
         }
     }
 

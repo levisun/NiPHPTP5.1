@@ -54,9 +54,11 @@ class Image
      */
     public function saveImageConfig($form_data)
     {
+        // halt($form_data);
         // 实例化设置表模型
         $config = model('Config');
 
+        $sql = [];
         $map = $data = [];
         foreach ($form_data as $key => $value) {
             $map  = [
@@ -64,9 +66,8 @@ class Image
             ];
             $data = ['value' => $value];
 
-            $config->allowField(true)
-            ->isUpdate(true)
-            ->save($data, $map);
+            $config->where($map)
+            ->update($data);
         }
 
         return true;

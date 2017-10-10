@@ -24,6 +24,7 @@ class RequestLog extends Model
     protected $field = [
         'id',
         'ip',
+        'module',
         'count',
         'update_time',
         'create_time'

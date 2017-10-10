@@ -43,6 +43,7 @@ return [
     'lang_switch_on'         => true,
     // 默认语言
     'default_lang'           => 'zh-cn',
+    'lang_list'              => ['zh-cn', 'en-us'],
     // 应用类库后缀
     'class_suffix'           => false,
     // 控制器类后缀

@@ -125,6 +125,9 @@ class Base extends Controller
      */
     private function lang()
     {
+        // 允许的语言
+        Lang::setAllowLangList(config('lang_list'));
+
         $lang_path  = Env::get('app_path') . $this->request->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
         $lang_path .= Lang::detect() . DIRECTORY_SEPARATOR;
@@ -152,6 +155,7 @@ class Base extends Controller
 
         $template = config('template.');
         $template['view_path'] = $view_path;
+        config('template.view_path', $view_path);
         $this->view->engine($template);
 
         // 默认跳转页面对应的模板文件
@@ -191,6 +195,7 @@ class Base extends Controller
             $this->assign('auth_menu', json_encode($auth_data['auth_menu']));
         }
 
+        config('app.view_replace_str', $replace);
         $this->view->replace($replace);
 
         $this->assign('request_param', json_encode($this->requestParam));

@@ -1,19 +1,19 @@
 <?php
 /**
  *
- * 基础设置 - 设置 - 业务层
+ * 邮箱设置 - 设置 - 业务层
  *
  * @package   NiPHPCMS
  * @category  admin\logic\settings
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Basic.php v1.0.1 $
+ * @version   CVS: $Id: Email.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/09/13
  */
 namespace app\admin\logic\settings;
 
-class Basic
+class Email
 {
 
     /**
@@ -22,11 +22,11 @@ class Basic
      * @param
      * @return array
      */
-    public function getBasicConfig()
+    public function getEmailConfig()
     {
         $map = [
-            ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script'],
-            ['lang', '=', lang(':detect')],
+            ['name', 'in', 'smtp_host,smtp_port,smtp_username,smtp_password,smtp_from_email,smtp_from_name'],
+            ['lang', '=', 'niphp'],
         ];
 
         // 实例化设置表模型
@@ -52,7 +52,7 @@ class Basic
      * @param  array  $form_data
      * @return mixed
      */
-    public function saveBasicConfig($form_data)
+    public function saveEmailConfig($form_data)
     {
         // 实例化设置表模型
         $config = model('Config');

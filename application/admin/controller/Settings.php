@@ -64,7 +64,7 @@ class Settings extends Base
 
     public function lang()
     {
-        # code...
+
     }
 
     /**
@@ -103,6 +103,7 @@ class Settings extends Base
                     '__token__'              => $this->request->post('__token__'),
                 ],
             ];
+
             $result = action('Image/saveImageConfig', $params, 'controller\settings');
 
             $this->showMessage($result, lang('save success'));
@@ -110,6 +111,50 @@ class Settings extends Base
 
         $result = action('Image/getImageConfig', [], 'controller\settings');
         $this->assign('json_data_image', json_encode($result));
+        return $this->fetch();
+    }
+
+    /**
+     * 安全与效率设置
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function safe()
+    {
+        if ($this->request->isPost()) {
+            $params = [
+                'form_data' => [
+                    'content_check'          => $this->request->post('content_check/f'),
+                    'member_login_captcha'   => $this->request->post('member_login_captcha/f'),
+                    'website_submit_captcha' => $this->request->post('website_submit_captcha/f'),
+                    'website_static'         => $this->request->post('website_static/f'),
+                    'upload_file_max'        => $this->request->post('upload_file_max/f'),
+                    'upload_file_type'       => $this->request->post('upload_file_type'),
+                    '__token__'              => $this->request->post('__token__/f'),
+                ],
+            ];
+
+            $result = action('Safe/saveSafeConfig', $params, 'controller\settings');
+
+            $this->showMessage($result, lang('save success'));
+        }
+
+        $result = action('Safe/getSafeConfig', [], 'controller\settings');
+        $this->assign('json_data_safe', json_encode($result));
+        return $this->fetch();
+    }
+
+    /**
+     * 邮箱设置
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function email()
+    {
+        $result = action('Email/getEmailConfig', [], 'controller\settings');
+        $this->assign('json_data_safe', json_encode($result));
         return $this->fetch();
     }
 }
