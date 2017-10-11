@@ -3,11 +3,11 @@
  * 微信支付
  *
  * @package   NiPHPCMS
- * @category  net\pay\
+ * @category  extend\pay\
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: PayWechat.php v1.0.1 $
- * @link      http://www.NiPHP.com
+ * @link      www.NiPHP.com
  * @since     2017/01/03
  */
 /*

@@ -62,9 +62,32 @@ class Settings extends Base
         return $this->fetch();
     }
 
+    /**
+     * 语言设置
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function lang()
     {
+        if ($this->request->isPost()) {
+            $params = [
+                'form_data' => [
+                    'system'         => $this->request->post('system'),
+                    'website'        => $this->request->post('website'),
+                    'lang_switch_on' => $this->request->post('lang_switch_on/f'),
+                    '__token__'      => $this->request->post('__token__'),
+                ],
+            ];
 
+            $result = action('Lang/saveLangConfig', $params, 'controller\settings');
+
+            $this->showMessage($result, lang('save success'));
+        }
+
+        $result = action('Lang/getLangConfig', [], 'controller\settings');
+        $this->assign('json_data_lang', json_encode($result));
+        return $this->fetch();
     }
 
     /**
@@ -131,7 +154,7 @@ class Settings extends Base
                     'website_static'         => $this->request->post('website_static/f'),
                     'upload_file_max'        => $this->request->post('upload_file_max/f'),
                     'upload_file_type'       => $this->request->post('upload_file_type'),
-                    '__token__'              => $this->request->post('__token__/f'),
+                    '__token__'              => $this->request->post('__token__'),
                 ],
             ];
 
@@ -153,8 +176,26 @@ class Settings extends Base
      */
     public function email()
     {
+        if ($this->request->isPost()) {
+            $params = [
+                'form_data' => [
+                    'smtp_host'       => $this->request->post('smtp_host'),
+                    'smtp_port'       => $this->request->post('smtp_port/f'),
+                    'smtp_username'   => $this->request->post('smtp_username'),
+                    'smtp_password'   => $this->request->post('smtp_password'),
+                    'smtp_from_email' => $this->request->post('smtp_from_email'),
+                    'smtp_from_name'  => $this->request->post('smtp_from_name'),
+                    '__token__'       => $this->request->post('__token__'),
+                ],
+            ];
+
+            $result = action('Email/saveEmailConfig', $params, 'controller\settings');
+
+            $this->showMessage($result, lang('save success'));
+        }
+
         $result = action('Email/getEmailConfig', [], 'controller\settings');
-        $this->assign('json_data_safe', json_encode($result));
+        $this->assign('json_data_email', json_encode($result));
         return $this->fetch();
     }
 }

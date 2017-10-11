@@ -1,0 +1,86 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        __SUB_TITLE__
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="system" class="col-lg-2 control-label">{:lang('basic website name')}</label>
+                    <div class="col-lg-10">
+                        <select name="system" id="system" class="form-control sys_default_lang">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="website" class="col-lg-2 control-label">{:lang('website default lang')}</label>
+                    <div class="col-lg-10">
+                        <select name="website" id="website" class="form-control web_default_lang">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lang_switch_on" class="col-lg-2 control-label">{:lang('domain auto')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs lang_switch_on1">
+                                <input type="radio" id="lang_switch_on1" name="lang_switch_on" value="1">
+                                <label for="lang_switch_on1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button open')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs lang_switch_on0">
+                                <input type="radio" id="lang_switch_on0" name="lang_switch_on" value="0">
+                                <label for="lang_switch_on0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button close')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var json_data = {$json_data_lang|raw};
+jQuery(function(){
+    jQuery(".lang_switch_on"+json_data["lang_switch_on"]).addClass("checked");
+    jQuery("#lang_switch_on"+json_data["lang_switch_on"]).attr("checked", "checked");
+
+    var option = '';
+    for (key in json_data["lang_list"]) {
+        if (json_data["lang_list"][key] == json_data["sys_default_lang"]) {
+            checked = "selected='selected'";
+        } else {
+            checked = "";
+        }
+        option = option + "<option value='"+json_data["lang_list"][key]+"' "+checked+">"+json_data["lang_list"][key]+"</option>";
+    }
+    jQuery(".sys_default_lang").html(option);
+
+    var option = '';
+    for (key in json_data["lang_list"]) {
+        if (json_data["lang_list"][key] == json_data["web_default_lang"]) {
+            checked = "selected='selected'";
+        } else {
+            checked = "";
+        }
+        option = option + "<option value='"+json_data["lang_list"][key]+"' "+checked+">"+json_data["lang_list"][key]+"</option>";
+    }
+    jQuery(".web_default_lang").html(option);
+});
+</script>
