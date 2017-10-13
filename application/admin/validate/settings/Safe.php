@@ -18,7 +18,7 @@ use think\Validate;
 class Safe extends Validate
 {
     protected $rule = [
-        'content_check'          => ['require'],
+        'content_check'          => ['require', 'token'],
         'member_login_captcha'   => ['require', 'number'],
         'website_submit_captcha' => ['require', 'number'],
         'website_static'         => ['require'],

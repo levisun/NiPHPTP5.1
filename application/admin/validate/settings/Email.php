@@ -18,7 +18,7 @@ use think\Validate;
 class Email extends Validate
 {
     protected $rule = [
-        'smtp_host'       => ['require'],
+        'smtp_host'       => ['require', 'token'],
         'smtp_port'       => ['require', 'number'],
         'smtp_username'   => ['require'],
         'smtp_password'   => ['require'],

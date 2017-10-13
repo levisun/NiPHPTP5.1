@@ -31,11 +31,21 @@ class Safe
     /**
      * 保存修改基础设置
      * @access public
-     * @param  array  $form_data
+     * @param
      * @return mixed
      */
-    public function saveSafeConfig($form_data)
+    public function saveSafeConfig()
     {
+        $form_data = [
+            'content_check'          => request()->post('content_check/f'),
+            'member_login_captcha'   => request()->post('member_login_captcha/f'),
+            'website_submit_captcha' => request()->post('website_submit_captcha/f'),
+            'website_static'         => request()->post('website_static/f'),
+            'upload_file_max'        => request()->post('upload_file_max/f'),
+            'upload_file_type'       => request()->post('upload_file_type'),
+            '__token__'              => request()->post('__token__'),
+        ];
+
         // 验证请求数据
         $result = validate($form_data, 'Safe', 'validate\settings');
         if (true !== $result) {

@@ -31,11 +31,21 @@ class Email
     /**
      * 保存修改基础设置
      * @access public
-     * @param  array  $form_data
+     * @param
      * @return mixed
      */
-    public function saveEmailConfig($form_data)
+    public function saveEmailConfig()
     {
+        $params = [
+            'smtp_host'       => request()->post('smtp_host'),
+            'smtp_port'       => request()->post('smtp_port/f'),
+            'smtp_username'   => request()->post('smtp_username'),
+            'smtp_password'   => request()->post('smtp_password'),
+            'smtp_from_email' => request()->post('smtp_from_email'),
+            'smtp_from_name'  => request()->post('smtp_from_name'),
+            '__token__'       => request()->post('__token__'),
+        ];
+
         // 验证请求数据
         $result = validate($form_data, 'Email', 'validate\settings');
         if (true !== $result) {

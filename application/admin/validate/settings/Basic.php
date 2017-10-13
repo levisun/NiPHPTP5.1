@@ -18,7 +18,7 @@ use think\Validate;
 class Basic extends Validate
 {
     protected $rule = [
-        'website_name' => ['require', 'max:500'],
+        'website_name' => ['require', 'max:500', 'token'],
     ];
 
     protected $message = [

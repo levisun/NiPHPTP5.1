@@ -18,7 +18,7 @@ use think\Validate;
 class Lang extends Validate
 {
     protected $rule = [
-        'system'         => ['require'],
+        'system'         => ['require', 'token'],
         'website'        => ['require'],
         'lang_switch_on' => ['require'],
     ];

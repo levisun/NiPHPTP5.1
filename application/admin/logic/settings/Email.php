@@ -39,7 +39,6 @@ class Email
 
         $data = [];
         foreach ($result as $value) {
-            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

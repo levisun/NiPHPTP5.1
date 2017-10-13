@@ -31,11 +31,37 @@ class Image
     /**
      * 保存图片基础设置
      * @access public
-     * @param  array  $form_data
+     * @param
      * @return mixed
      */
-    public function saveImageConfig($form_data)
+    public function saveImageConfig()
     {
+        $form_data = [
+            'auto_image'             => request()->post('auto_image/f'),
+            'article_module_width'   => request()->post('article_module_width/f'),
+            'article_module_height'  => request()->post('article_module_height/f'),
+            'picture_module_width'   => request()->post('picture_module_width/f'),
+            'picture_module_height'  => request()->post('picture_module_height/f'),
+            'download_module_width'  => request()->post('download_module_width/f'),
+            'download_module_height' => request()->post('download_module_height/f'),
+            'page_module_width'      => request()->post('page_module_width/f'),
+            'page_module_height'     => request()->post('page_module_height/f'),
+            'product_module_width'   => request()->post('product_module_width/f'),
+            'product_module_height'  => request()->post('product_module_height/f'),
+            'job_module_width'       => request()->post('job_module_width/f'),
+            'job_module_height'      => request()->post('job_module_height/f'),
+            'link_module_width'      => request()->post('link_module_width/f'),
+            'link_module_height'     => request()->post('link_module_height/f'),
+            'ask_module_width'       => request()->post('ask_module_width/f'),
+            'ask_module_height'      => request()->post('ask_module_height/f'),
+            'add_water'              => request()->post('add_water/f'),
+            'water_type'             => request()->post('water_type/f'),
+            'water_location'         => request()->post('water_location/f'),
+            'water_text'             => request()->post('water_text'),
+            'water_image'            => request()->post('water_image'),
+            '__token__'              => request()->post('__token__'),
+        ];
+
         // 验证请求数据
         $result = validate($form_data, 'Image', 'validate\settings');
         if (true !== $result) {

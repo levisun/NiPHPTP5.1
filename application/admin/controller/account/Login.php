@@ -19,13 +19,17 @@ class Login
 	/**
      * 登录
      * @access public
-     * @param  array  $form_data POST提交数据
-     * @param  string $login_ip  登录IP
-     * @param  string $module    模块
+     * @param
      * @return boolean
      */
-    public function login($form_data, $login_ip, $module)
+    public function login()
     {
+        $form_data = request()->only(
+            ['username', 'password', 'captcha', '__token__'], 'post'
+        );
+        $login_ip = request()->ip(0, true);
+        $module   = request()->module();
+
         // 验证请求数据
         $result = validate($form_data, 'Login', 'validate\account');
         if (true !== $result) {

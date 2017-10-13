@@ -31,11 +31,21 @@ class Basic
     /**
      * 保存修改基础设置
      * @access public
-     * @param  array  $form_data
+     * @param
      * @return mixed
      */
-    public function saveBasicConfig($form_data)
+    public function saveBasicConfig()
     {
+        $form_data = [
+            'website_name'        => request()->post('website_name'),
+            'website_keywords'    => request()->post('website_keywords'),
+            'website_description' => request()->post('website_description'),
+            'bottom_message'      => request()->post('bottom_message', '', 'trim,htmlspecialchars'),
+            'copyright'           => request()->post('copyright'),
+            'script'              => request()->post('script', '', 'trim,htmlspecialchars'),
+            '__token__'           => request()->post('__token__'),
+        ];
+
         // 验证请求数据
         $result = validate($form_data, 'Basic', 'validate\settings');
         if (true !== $result) {

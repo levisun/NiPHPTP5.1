@@ -27,20 +27,7 @@ class Account extends Base
     public function login()
     {
         if ($this->request->isPost()) {
-            $params = [
-                'form_data' => $this->request->only(
-                    [
-                        'username',
-                        'password',
-                        'captcha',
-                        '__token__',
-                    ],
-                    'post'
-                ),
-                'login_ip'  => $this->request->ip(0, true),
-                'module'    => $this->request->module(),
-            ];
-            $result = action('Login/login', $params, 'controller\account');
+            $result = action('Login/login', [], 'controller\account');
             if (true === $result) {
                 $this->success(lang('success login'), 'settings/info');
             } else {

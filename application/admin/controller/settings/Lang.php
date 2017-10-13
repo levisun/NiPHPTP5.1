@@ -31,11 +31,18 @@ class Lang
     /**
      * 保存图片基础设置
      * @access public
-     * @param  array  $form_data
+     * @param
      * @return mixed
      */
-    public function saveLangConfig($form_data)
+    public function saveLangConfig()
     {
+        $form_data = [
+            'system'         => request()->post('system'),
+            'website'        => request()->post('website'),
+            'lang_switch_on' => request()->post('lang_switch_on/f'),
+            '__token__'      => request()->post('__token__'),
+        ];
+
         // 验证请求数据
         $result = validate($form_data, 'Lang', 'validate\settings');
         if (true !== $result) {

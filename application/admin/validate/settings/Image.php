@@ -18,7 +18,7 @@ use think\Validate;
 class Image extends Validate
 {
     protected $rule = [
-        'auto_image'             => ['require', 'number'],
+        'auto_image'             => ['require', 'number', 'token'],
         'article_module_width'   => ['require', 'number'],
         'article_module_height'  => ['require', 'number'],
         'picture_module_width'   => ['require', 'number'],

@@ -200,7 +200,7 @@ class Base extends Controller
 
         $this->assign('request_param', json_encode($this->requestParam));
 
-        $this->assign('button_search', 0);
-        $this->assign('button_added', 0);
+        $this->assign('button_search', false);
+        $this->assign('button_added', false);
     }
 }
