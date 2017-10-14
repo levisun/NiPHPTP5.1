@@ -16,6 +16,12 @@ namespace app\admin\controller\category;
 class Category
 {
 
+    /**
+     * 获得列表数据
+     * @access public
+     * @param
+     * @return array
+     */
     public function getListData()
     {
         $basic = logic('Category', 'logic\category');

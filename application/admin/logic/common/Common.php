@@ -128,8 +128,7 @@ class Common
 
         if (request()->param('cid')) {
             $bread = $this->getBreadcrumbParent(request()->param('cid'));
-        }
-        if (request()->param('pid')) {
+        } elseif (request()->param('pid')) {
             $bread = $this->getBreadcrumbParent(request()->param('pid'));
         }
 
@@ -164,11 +163,11 @@ class Common
         $category = model('Category');
 
         $result =
-        $category->field($field)
+        $category->field(['id','pid','name'])
         ->where($map)
-        ->column('id','pid','name');
+        ->find();
 
-        $cate_data = !empty($result) ? $result->toArray() : null;
+        $cate_data = !empty($result) ? $result : null;
 
         if (!empty($cate_data['pid'])) {
             $breadcrumb = $this->getBreadcrumbParent($cate_data['pid']);

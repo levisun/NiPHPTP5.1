@@ -23,9 +23,8 @@ class Category extends Base
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
-
         $result = action('Category/getListData', [], 'controller\category');
-        dump($result);
+        $this->assign('json_data_category', json_encode($result));
         return $this->fetch();
     }
 }

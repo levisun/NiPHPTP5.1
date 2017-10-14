@@ -41,4 +41,59 @@ class Category extends Model
         'update_time',
         'lang'
     ];
+
+    /**
+     * 获取器
+     * 栏目类型
+     * @access public
+     * @param  int    $value
+     * @return string
+     */
+    public function getTypeIdAttr($value)
+    {
+        $type = [
+            1 => lang('type top'),
+            2 => lang('type main'),
+            3 => lang('type foot'),
+            4 => lang('type other')
+        ];
+
+        return $type[$value];
+    }
+
+    /**
+     * 获取器
+     * 栏目模型名
+     * @access public
+     * @param  string $value
+     * @return string
+     */
+    public function getModelNameAttr($value)
+    {
+        return lang('model ' . $value);
+    }
+
+    /**
+     * 获取器
+     * 栏目是否显示
+     * @access public
+     * @param  int    $value
+     * @return string
+     */
+    public function getIsShowAttr($value)
+    {
+        return $value ? lang('show') : lang('hide');
+    }
+
+    /**
+     * 获取器
+     * 栏目是否为频道栏目
+     * @access public
+     * @param  int    $value
+     * @return string
+     */
+    public function getIsChannelAttr($value)
+    {
+        return $value ? lang('yes') : lang('no');
+    }
 }

@@ -15,6 +15,17 @@ return [
     'editor success'        => '编辑成功！',
     'editor error'          => '编辑失败！',
 
+    'sort'                  => '排序',
+    'id'                    => '序号',
+    'name'                  => '名称',
+    'type'                  => '类型',
+    'operation'             => '操作',
+    'button editor'         => '编辑',
+    'button delete'         => '删除',
+    'button remove'         => '删除',
+    'button sort'           => '排序',
+    'button add'            => '新增',
+
     // 导航
     '_nav' => [
         'settings'          => '设置',

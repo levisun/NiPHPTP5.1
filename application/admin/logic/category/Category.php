@@ -19,10 +19,11 @@ class Category
     public function getListData()
     {
         $map = [
-            ['c.pid', '=', 0],
+            ['c.pid', '=', request()->param('pid/f', 0)],
             ['c.lang', '=', lang(':detect')],
         ];
 
+        // 搜索
         if ($key = request()->param('q')) {
             $map[] = ['c.name', 'like', $key . '%'];
         }
@@ -36,6 +37,27 @@ class Category
         ->group('c.id')
         ->order('c.type_id ASC, c.sort ASC, c.id DESC')
         ->select();
+
+        foreach ($result as $key => $value) {
+            $url = [];
+            if ($value['pid']) {
+                $url['back'] = url('');
+            } else {
+                $url['back'] = false;
+            }
+
+            if ($value['child']) {
+                $url['child'] = url('', ['pid' => $value['id']]);
+            } else {
+                $url['child'] = false;
+            }
+
+            $url['add_child'] = url('', ['method' => 'added','pid' => $value['id']]);
+            $url['editor'] = url('', array('method' => 'editor', 'id' => $value['id']));
+            $url['remove'] = url('', array('method' => 'remove', 'id' => $value['id']));
+
+            $result[$key]['url'] = $url;
+        }
 
         return $result;
     }
