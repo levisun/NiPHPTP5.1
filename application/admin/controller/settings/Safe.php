@@ -17,24 +17,30 @@ class Safe
 {
 
     /**
-     * 获得基础设置数据
+     * 编辑安全与效率设置
      * @access public
      * @param
      * @return array
      */
-    public function getSafeConfig()
+    public function editorSafeConfig()
     {
-        $basic = logic('Safe', 'logic\settings');
-        return $basic->getSafeConfig();
+        if (request()->isPost()) {
+            $result = $this->saveSafeConfig();
+        } else {
+            $basic = logic('Safe', 'logic\settings');
+            $result = $basic->getSafeConfig();
+        }
+
+        return $result;
     }
 
     /**
-     * 保存修改基础设置
-     * @access public
+     * 保存修改安全与效率设置
+     * @access private
      * @param
      * @return mixed
      */
-    public function saveSafeConfig()
+    private function saveSafeConfig()
     {
         $form_data = [
             'content_check'          => request()->post('content_check/f'),

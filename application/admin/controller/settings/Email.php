@@ -17,24 +17,30 @@ class Email
 {
 
     /**
-     * 获得基础设置数据
+     * 编辑邮箱设置
      * @access public
      * @param
      * @return array
      */
-    public function getEmailConfig()
+    public function editorEmailConfig()
     {
-        $basic = logic('Email', 'logic\settings');
-        return $basic->getEmailConfig();
+        if (request()->isPost()) {
+            $result = $this->saveEmailConfig();
+        } else {
+            $basic = logic('Email', 'logic\settings');
+            $result $basic->getEmailConfig();
+        }
+
+        return $result;
     }
 
     /**
-     * 保存修改基础设置
-     * @access public
+     * 保存修改邮箱设置
+     * @access private
      * @param
      * @return mixed
      */
-    public function saveEmailConfig()
+    private function saveEmailConfig()
     {
         $params = [
             'smtp_host'       => request()->post('smtp_host'),

@@ -17,24 +17,30 @@ class Basic
 {
 
     /**
-     * 获得基础设置数据
+     * 编辑基础设置
      * @access public
      * @param
      * @return array
      */
-    public function getBasicConfig()
+    public function editorBasicConfig()
     {
-        $basic = logic('Basic', 'logic\settings');
-        return $basic->getBasicConfig();
+        if (request()->isPost()) {
+            $result = $this->saveBasicConfig();
+        } else {
+            $basic = logic('Basic', 'logic\settings');
+            $result = $basic->getBasicConfig();
+        }
+
+        return $result;
     }
 
     /**
      * 保存修改基础设置
-     * @access public
+     * @access private
      * @param
      * @return mixed
      */
-    public function saveBasicConfig()
+    private function saveBasicConfig()
     {
         $form_data = [
             'website_name'        => request()->post('website_name'),

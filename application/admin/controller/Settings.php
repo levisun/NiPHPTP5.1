@@ -39,14 +39,13 @@ class Settings extends Base
      */
     public function basic()
     {
-        if ($this->request->isPost()) {
-            $result = action('Basic/saveBasicConfig', [], 'controller\settings');
+        $result = action('Basic/editorBasicConfig', [], 'controller\settings');
+        if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
+        } else {
+            $this->assign('json_data_basic', json_encode($result));
+            return $this->fetch();
         }
-
-        $result = action('Basic/getBasicConfig', [], 'controller\settings');
-        $this->assign('json_data_basic', json_encode($result));
-        return $this->fetch();
     }
 
     /**
@@ -57,14 +56,13 @@ class Settings extends Base
      */
     public function lang()
     {
-        if ($this->request->isPost()) {
-            $result = action('Lang/saveLangConfig', [], 'controller\settings');
+        $result = action('Lang/editorLangConfig', [], 'controller\settings');
+        if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
+        } else {
+            $this->assign('json_data_lang', json_encode($result));
+            return $this->fetch();
         }
-
-        $result = action('Lang/getLangConfig', [], 'controller\settings');
-        $this->assign('json_data_lang', json_encode($result));
-        return $this->fetch();
     }
 
     /**
@@ -75,14 +73,13 @@ class Settings extends Base
      */
     public function image()
     {
-        if ($this->request->isPost()) {
-            $result = action('Image/saveImageConfig', $params, 'controller\settings');
+        $result = action('Image/editorImageConfig', [], 'controller\settings');
+        if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
+        } else {
+            $this->assign('json_data_image', json_encode($result));
+            return $this->fetch();
         }
-
-        $result = action('Image/getImageConfig', [], 'controller\settings');
-        $this->assign('json_data_image', json_encode($result));
-        return $this->fetch();
     }
 
     /**
@@ -93,14 +90,13 @@ class Settings extends Base
      */
     public function safe()
     {
-        if ($this->request->isPost()) {
-            $result = action('Safe/saveSafeConfig', [], 'controller\settings');
+        $result = action('Safe/editorSafeConfig', [], 'controller\settings');
+        if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
+        } else {
+            $this->assign('json_data_safe', json_encode($result));
+            return $this->fetch();
         }
-
-        $result = action('Safe/getSafeConfig', [], 'controller\settings');
-        $this->assign('json_data_safe', json_encode($result));
-        return $this->fetch();
     }
 
     /**
@@ -111,13 +107,12 @@ class Settings extends Base
      */
     public function email()
     {
-        if ($this->request->isPost()) {
-            $result = action('Email/saveEmailConfig', [], 'controller\settings');
+        $result = action('Email/editorEmailConfig', [], 'controller\settings');
+        if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
+        } else {
+            $this->assign('json_data_email', json_encode($result));
+            return $this->fetch();
         }
-
-        $result = action('Email/getEmailConfig', [], 'controller\settings');
-        $this->assign('json_data_email', json_encode($result));
-        return $this->fetch();
     }
 }

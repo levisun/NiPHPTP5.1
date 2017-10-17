@@ -17,24 +17,30 @@ class Lang
 {
 
     /**
-     * 获得图片设置数据
+     * 编辑语言设置
      * @access public
      * @param
      * @return array
      */
-    public function getLangConfig()
+    public function editorLangConfig()
     {
-        $basic = logic('Lang', 'logic\settings');
-        return $basic->getLangConfig();
+        if (request()->isPost()) {
+            $result = $this->saveLangConfig();
+        } else {
+            $lang = logic('Lang', 'logic\settings');
+            $result = $lang->getLangConfig();
+        }
+
+        return $result;
     }
 
     /**
-     * 保存图片基础设置
-     * @access public
+     * 保存语言设置
+     * @access private
      * @param
      * @return mixed
      */
-    public function saveLangConfig()
+    private function saveLangConfig()
     {
         $form_data = [
             'system'         => request()->post('system'),

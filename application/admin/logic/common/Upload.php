@@ -108,6 +108,12 @@ class Upload
         return $save_name;
     }
 
+    /**
+     * 生成水印
+     * @access private
+     * @param  string  $file_name
+     * @return void
+     */
     private function createWater($file_name)
     {
         if ($this->uploadParams['create_water']) {
@@ -126,7 +132,6 @@ class Upload
 
             $config_data = [];
             foreach ($result as $key => $value) {
-                $value = $value->toArray();
                 $config_data[$value['name']] = $value['value'];
             }
 
@@ -223,11 +228,10 @@ class Upload
 
         $validate = [];
         foreach ($result as $value) {
-            $array = $value->toArray();
-            if ($array['name'] == 'upload_file_max') {
-                $validate['size'] = $array['value'] * 1024 * 1024;
+            if ($value['name'] == 'upload_file_max') {
+                $validate['size'] = $value['value'] * 1024 * 1024;
             } else {
-                $validate['ext'] = str_replace('|', ',', $array['value']);
+                $validate['ext'] = str_replace('|', ',', $value['value']);
             }
         }
 

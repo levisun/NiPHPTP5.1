@@ -17,24 +17,30 @@ class Image
 {
 
     /**
-     * 获得图片设置数据
+     * 编辑图片设置
      * @access public
      * @param
      * @return array
      */
-    public function getImageConfig()
+    public function editorImageConfig()
     {
-        $basic = logic('Image', 'logic\settings');
-        return $basic->getImageConfig();
+        if (request()->isPost()) {
+            $result = $this->saveImageConfig();
+        } else {
+            $basic = logic('Image', 'logic\settings');
+            $result = $basic->getImageConfig();
+        }
+
+        return $result;
     }
 
     /**
      * 保存图片基础设置
-     * @access public
+     * @access private
      * @param
      * @return mixed
      */
-    public function saveImageConfig()
+    private function saveImageConfig()
     {
         $form_data = [
             'auto_image'             => request()->post('auto_image/f'),

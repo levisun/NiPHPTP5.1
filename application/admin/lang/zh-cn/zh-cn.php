@@ -25,6 +25,11 @@ return [
     'button remove'         => '删除',
     'button sort'           => '排序',
     'button add'            => '新增',
+    'yes'                   => '是',
+    'no'                    => '否',
+    'show'                  => '显示',
+    'hide'                  => '隐藏',
+    'empty'                 => '空',
 
     // 导航
     '_nav' => [

@@ -18,10 +18,34 @@ use app\admin\controller\Base;
 class Category extends Base
 {
 
+    /**
+     * 管理栏目
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function category($method = '')
     {
         $this->assign('button_search', true);
         $this->assign('button_added', true);
+
+        if ($method == 'added') {
+            $result = action('Category/addedCategory', [], 'controller\category');
+            if (!is_array($result)) {
+                # code...
+            } else {
+                $this->assign('json_data_category', json_encode($result));
+                return $this->fetch('category_added');
+            }
+        } elseif ($method == 'editor') {
+            $result = action('Category/editorCategory', [], 'controller\category');
+            if (!is_array($result)) {
+                $this->showMessage($result, lang('editor success'));
+            } else {
+                $this->assign('json_data_category', json_encode($result));
+                return $this->fetch('category_editor');
+            }
+        }
 
         $result = action('Category/getListData', [], 'controller\category');
         $this->assign('json_data_category', json_encode($result));

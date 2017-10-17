@@ -20,14 +20,14 @@ class Upload extends Validate
     protected $rule = [
         'upload'   => ['require', 'token'],
         'type'     => ['require'],
-        'model'    => ['require'],
+        // 'model'    => ['require'],
         'input_id' => ['require'],
     ];
 
     protected $message = [
         'upload.require'   => '{%error upload file require}',
         'type.require'     => '{%error upload type require}',
-        'model.require'    => '{%error upload model require}',
+        // 'model.require'    => '{%error upload model require}',
         'input_id.require' => '{%error upload input_id require}',
     ];
 }

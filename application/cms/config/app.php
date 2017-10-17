@@ -6,4 +6,5 @@ return [
     'default_lang'            => 'zh-cn',
     // 是否开启多语言
     'lang_switch_on'          => true,
+
 ];

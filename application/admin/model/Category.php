@@ -49,7 +49,7 @@ class Category extends Model
      * @param  int    $value
      * @return string
      */
-    public function getTypeIdAttr($value)
+    public function getTypeNameAttr($value, $data)
     {
         $type = [
             1 => lang('type top'),
@@ -58,7 +58,7 @@ class Category extends Model
             4 => lang('type other')
         ];
 
-        return $type[$value];
+        return $type[$data['type_id']];
     }
 
     /**
@@ -80,9 +80,9 @@ class Category extends Model
      * @param  int    $value
      * @return string
      */
-    public function getIsShowAttr($value)
+    public function getShowAttr($value, $data)
     {
-        return $value ? lang('show') : lang('hide');
+        return $data['is_show'] ? lang('show') : lang('hide');
     }
 
     /**
@@ -92,8 +92,8 @@ class Category extends Model
      * @param  int    $value
      * @return string
      */
-    public function getIsChannelAttr($value)
+    public function getChannelAttr($value, $data)
     {
-        return $value ? lang('yes') : lang('no');
+        return $data['is_channel'] ? lang('yes') : lang('no');
     }
 }

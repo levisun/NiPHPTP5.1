@@ -89,6 +89,8 @@ class Base extends Controller
     {
         if (true === $return_data) {
             $this->success($msg, $url);
+        } elseif (false === $return_data) {
+            $this->error($msg, $url);
         } else {
             $this->error($return_data);
         }
