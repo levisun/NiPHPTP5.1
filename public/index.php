@@ -1,6 +1,9 @@
 <?php
 if (version_compare(PHP_VERSION, '5.6.0', '<')) die('require PHP >= 5.6.0 !');
 define('APP_DEBUG', true);
-define('NP_VERSION', '1.0.18 Alpha'); /*CB 内测版 beta公测版 RC正式候选版 Alpha内测版 Demo演示版 Beta公测版 Stable稳定版 Release正式版*/
+// CB|Alpha 内测版 RC|Beta 正式候选版 Demo 演示版 Stable 稳定版 Release 正式版
+define('NP_VERSION', '1.0.18 Alpha');
+set_time_limit(300);
+if (APP_DEBUG) @ini_set('memory_limit', '8M'); else @ini_set('memory_limit', '16M');
 define('APP_PATH', __DIR__ . '/../application/');
 require __DIR__ . '/../thinkphp/start.php';

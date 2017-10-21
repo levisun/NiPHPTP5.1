@@ -22,10 +22,10 @@ class Basic
      * @param
      * @return array
      */
-    public function editorBasicConfig()
+    public function editor()
     {
         if (request()->isPost()) {
-            $result = $this->saveBasicConfig();
+            $result = $this->update();
         } else {
             $basic = logic('Basic', 'logic\settings');
             $result = $basic->getBasicConfig();
@@ -40,16 +40,16 @@ class Basic
      * @param
      * @return mixed
      */
-    private function saveBasicConfig()
+    private function update()
     {
         $form_data = [
-            'website_name'        => request()->post('website_name'),
-            'website_keywords'    => request()->post('website_keywords'),
-            'website_description' => request()->post('website_description'),
-            'bottom_message'      => request()->post('bottom_message', '', 'trim,htmlspecialchars'),
-            'copyright'           => request()->post('copyright'),
-            'script'              => request()->post('script', '', 'trim,htmlspecialchars'),
-            '__token__'           => request()->post('__token__'),
+            'website_name'        => input('post.website_name'),
+            'website_keywords'    => input('post.website_keywords'),
+            'website_description' => input('post.website_description'),
+            'bottom_message'      => input('post.bottom_message', '', 'trim,htmlspecialchars'),
+            'copyright'           => input('post.copyright'),
+            'script'              => input('post.script', '', 'trim,htmlspecialchars'),
+            '__token__'           => input('post.__token__'),
         ];
 
         // 验证请求数据
@@ -61,6 +61,6 @@ class Basic
         unset($form_data['__token__']);
 
         $basic = logic('Basic', 'logic\settings');
-        return $basic->saveBasicConfig($form_data);
+        return $basic->update($form_data);
     }
 }

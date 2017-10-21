@@ -49,7 +49,7 @@ class Category extends Model
      * @param  int    $value
      * @return string
      */
-    public function getTypeNameAttr($value, $data)
+    public function getTypeNameAttr($_value, $_data)
     {
         $type = [
             1 => lang('type top'),
@@ -58,42 +58,42 @@ class Category extends Model
             4 => lang('type other')
         ];
 
-        return $type[$data['type_id']];
+        return $type[$_data['type_id']];
     }
 
     /**
      * 获取器
      * 栏目模型名
      * @access public
-     * @param  string $value
+     * @param  string $_value
      * @return string
      */
-    public function getModelNameAttr($value)
+    public function getModelNameAttr($_value)
     {
-        return lang('model ' . $value);
+        return lang('model ' . $_value);
     }
 
     /**
      * 获取器
      * 栏目是否显示
      * @access public
-     * @param  int    $value
+     * @param  int    $_value
      * @return string
      */
-    public function getShowAttr($value, $data)
+    public function getShowAttr($_value, $_data)
     {
-        return $data['is_show'] ? lang('show') : lang('hide');
+        return $_data['is_show'] ? lang('show') : lang('hide');
     }
 
     /**
      * 获取器
      * 栏目是否为频道栏目
      * @access public
-     * @param  int    $value
+     * @param  int    $_value
      * @return string
      */
-    public function getChannelAttr($value, $data)
+    public function getChannelAttr($_value, $_data)
     {
-        return $data['is_channel'] ? lang('yes') : lang('no');
+        return $_data['is_channel'] ? lang('yes') : lang('no');
     }
 }

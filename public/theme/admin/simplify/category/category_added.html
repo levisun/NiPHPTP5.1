@@ -48,12 +48,12 @@
                     <label for="is_show" class="col-lg-2 control-label">{:lang('isshow')}</label>
                     <div class="col-lg-10">
                         <div class="radio inline-block">
-                            <div class="custom-radio m-right-xs is_show1">
-                                <input type="radio" id="is_show1" name="is_show" value="1">
+                            <div class="custom-radio m-right-xs is_show1 checked">
+                                <input type="radio" id="is_show1" name="is_show" value="1" checked>
                                 <label for="is_show1"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button open')}
+                                {:lang('show')}
                             </div>
                         </div>
                         <div class="radio inline-block">
@@ -62,7 +62,7 @@
                                 <label for="is_show0"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button close')}
+                                {:lang('hide')}
                             </div>
                         </div>
                     </div>
@@ -76,16 +76,16 @@
                                 <label for="is_channel1"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button open')}
+                                {:lang('yes')}
                             </div>
                         </div>
                         <div class="radio inline-block">
-                            <div class="custom-radio m-right-xs is_channel0">
-                                <input type="radio" id="is_channel0" name="is_channel" value="0" >
+                            <div class="custom-radio m-right-xs is_channel0 checked">
+                                <input type="radio" id="is_channel0" name="is_channel" value="0" checked>
                                 <label for="is_channel0"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button close')}
+                                {:lang('no')}
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,6 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="hidden" name="id" id="category_id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -139,10 +138,11 @@
 <script type="text/javascript">
 var json_data = {$json_data_category|raw};
 jQuery(function(){
-    jQuery("#pid").val(json_data["parent"]["id"]);
     if (json_data["parent"]) {
+        jQuery("#pid").val(json_data["parent"]["id"]);
         jQuery("#parent").val(json_data["parent"]["name"]);
     } else {
+        jQuery("#pid").val("0");
         jQuery("#parent").val("{:lang('empty')}");
     }
 
@@ -156,7 +156,7 @@ jQuery(function(){
     var models_option = "";
     for (key in json_data["models"]) {
         models_option += "<option value='"+json_data["models"][key]["id"]+"'";
-        models_option += ">"+json_data["models"][key]["name"]+"</option>";
+        models_option += ">"+json_data["models"][key]["model_name"]+"</option>";
     }
     jQuery("#model_id").html(models_option);
 

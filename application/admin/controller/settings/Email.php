@@ -22,10 +22,10 @@ class Email
      * @param
      * @return array
      */
-    public function editorEmailConfig()
+    public function editor()
     {
         if (request()->isPost()) {
-            $result = $this->saveEmailConfig();
+            $result = $this->update();
         } else {
             $basic = logic('Email', 'logic\settings');
             $result $basic->getEmailConfig();
@@ -40,16 +40,16 @@ class Email
      * @param
      * @return mixed
      */
-    private function saveEmailConfig()
+    private function update()
     {
         $params = [
-            'smtp_host'       => request()->post('smtp_host'),
-            'smtp_port'       => request()->post('smtp_port/f'),
-            'smtp_username'   => request()->post('smtp_username'),
-            'smtp_password'   => request()->post('smtp_password'),
-            'smtp_from_email' => request()->post('smtp_from_email'),
-            'smtp_from_name'  => request()->post('smtp_from_name'),
-            '__token__'       => request()->post('__token__'),
+            'smtp_host'       => input('post.smtp_host'),
+            'smtp_port'       => input('post.smtp_port/f'),
+            'smtp_username'   => input('post.smtp_username'),
+            'smtp_password'   => input('post.smtp_password'),
+            'smtp_from_email' => input('post.smtp_from_email'),
+            'smtp_from_name'  => input('post.smtp_from_name'),
+            '__token__'       => input('post.__token__'),
         ];
 
         // 验证请求数据
@@ -61,6 +61,6 @@ class Email
         unset($form_data['__token__']);
 
         $basic = logic('Email', 'logic\settings');
-        return $basic->saveEmailConfig($form_data);
+        return $basic->update($form_data);
     }
 }

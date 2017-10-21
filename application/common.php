@@ -16,104 +16,106 @@ use think\facade\Lang;
 
 /**
  * 实例化验证器
- * @param  array  $data     验证数据
- * @param  string $validate 验证器名
- * @param  string $layer    业务层名
- * @param  srring $module   模块名
+ * @param  array  $_data     验证数据
+ * @param  string $_validate 验证器名
+ * @param  string $_layer    业务层名
+ * @param  srring $_module   模块名
  * @return mixed
  */
-function validate($data, $validate, $layer = 'validate', $module = '')
+function validate($_data, $_validate, $_layer = 'validate', $_module = '')
 {
-    if (is_array($validate)) {
+    if (is_array($_validate)) {
         $v = app()->validate();
-        $v->rule($validate);
+        $v->rule($_validate);
     } else {
-        if (strpos($validate, '.')) {
+        if (strpos($_validate, '.')) {
             // 支持场景
-            list($validate, $scene) = explode('.', $validate);
+            list($_validate, $scene) = explode('.', $_validate);
         }
 
-        $module = $module ? $module : request()->module();
+        $_module = $_module ? $_module : request()->module();
 
-        $v = app()->validate($validate, $layer, false, $module);
+        $v = app()->validate($_validate, $_layer, false, $_module);
         if (!empty($scene)) {
             $v->scene($scene);
         }
     }
-
-    if (!$v->check($data)) {
-        return $v->getError();
+    if (!$v->check($_data)) {
+        $return = $v->getError();
     } else {
-        return true;
+        $return = true;
     }
+    return $return;
 }
 
 /**
  * 获取语言变量值
- * @param  string $name 语言变量名
- * @param  array  $vars 动态变量值
- * @param  string $lang 语言
+ * @param  string $_name 语言变量名
+ * @param  array  $_vars 动态变量值
+ * @param  string $_lang 语言
  * @return mixed
  */
-function lang($name, $vars = [], $lang = '')
+function lang($_name, $_vars = [], $_lang = '')
 {
-    if ($name == ':detect') {
-        return Lang::detect();
+    if ($_name == ':detect') {
+        $return = Lang::detect();
     } else {
-        return Lang::get($name, $vars, $lang);
+        $return = Lang::get($_name, $_vars, $_lang);
     }
-
+    return $return;
 }
 
 /**
  * 实例化Controller
- * @param  string $name  Controller名称
- * @param  string $layer 业务层名称
+ * @param  string $_name  Controller名称
+ * @param  array  $_vars  请求变量
+ * @param  string $_layer 业务层名称
  * @return mixed
  */
-function action($url, $vars = [], $layer = '')
+function action($_name, $_vars = [], $_layer = '')
 {
-    return app()->action($url, $vars, $layer);
+    return app()->action($_name, $_vars, $_layer);
 }
 
 /**
  * 实例化Logic
- * @param  string $name   Logic名称
- * @param  string $layer  业务层名称
- * @param  string $module 模块名
+ * @param  string $_name   Logic名称
+ * @param  string $_layer  业务层名称
+ * @param  string $_module 模块名
  * @return \think\Model
  */
-function logic($name = '', $layer = '', $module = '')
+function logic($_name = '', $_layer = '', $_module = '')
 {
-    $module = $module ? $module : request()->module();
+    $_module = $_module ? $_module : request()->module();
 
-    return app()->model($name, $layer, false, $module);
+    return app()->model($_name, $_layer, false, $_module);
 }
 
 /**
  * 实例化Model
- * @param string $name   Model名称
- * @param string $layer  业务层名称
- * @param string $module 模块名
+ * @param string $_name   Model名称
+ * @param string $_layer  业务层名称
+ * @param string $_module 模块名
  * @return \think\Model
  */
-function model($name = '', $layer = 'model', $module = '')
+function model($_name = '', $_layer = 'model', $_module = '')
 {
-    $module = $module ? $module : request()->module();
+    $_module = $_module ? $_module : request()->module();
 
-    return app()->model($name, $layer, false, $module);
+    return app()->model($_name, $_layer, false, $_module);
 }
 
 /**
  * 过滤XSS
- * @param  string $data
+ * @param  string $_data
  * @return string
  */
-function escape_xss($data)
+function escape_xss($_data)
 {
-    if (is_array($data)) {
-        foreach ($data as $key => $value) {
-            $data[$key] = escape_xss($value);
+    if (is_array($_data)) {
+        $return = [];
+        foreach ($_data as $key => $value) {
+            $return[] = escape_xss($value);
         }
     } else {
         $pattern = [
@@ -197,7 +199,7 @@ function escape_xss($data)
             '/<(\/?body.*?)>/si',
         ];
 
-        $data = preg_replace($pattern, '', $data);
+        $result = preg_replace($pattern, '', $_data);
 
         $pattern = [
             '/[  ]+/si' => ' ',    // 多余空格
@@ -245,7 +247,7 @@ function escape_xss($data)
             '/ß/si'         => 'ss',
 
         ];
-        $data = preg_replace(array_keys($pattern), array_values($pattern), $data);
+        $result = preg_replace(array_keys($pattern), array_values($pattern), $result);
 
         // 全角转半角
         $strtr = [
@@ -270,12 +272,12 @@ function escape_xss($data)
             '…' => '...', '‖' => '|', '｜' => '|', '　' => '',
             ];
 
-        $data = strtr($data, $strtr);
+        $result = strtr($result, $strtr);
 
         // 个性字符过虑
         $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\"\'\<\>\,\.\，\。\《\》\\\\]+/u';
-        $data = preg_replace($rule, '', $data);
+        $return = preg_replace($rule, '', $result);
     }
 
-    return $data;
+    return $return;
 }

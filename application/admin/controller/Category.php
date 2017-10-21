@@ -30,25 +30,35 @@ class Category extends Base
         $this->assign('button_added', true);
 
         if ($method == 'added') {
-            $result = action('Category/addedCategory', [], 'controller\category');
+            $result = action('Category/added', [], 'controller\category');
             if (!is_array($result)) {
-                # code...
+                $this->showMessage($result, lang('added success'), 'category/category');
             } else {
                 $this->assign('json_data_category', json_encode($result));
-                return $this->fetch('category_added');
+                $result = $this->fetch('category_added');
             }
         } elseif ($method == 'editor') {
-            $result = action('Category/editorCategory', [], 'controller\category');
+            $result = action('Category/editor', [], 'controller\category');
             if (!is_array($result)) {
                 $this->showMessage($result, lang('editor success'));
             } else {
                 $this->assign('json_data_category', json_encode($result));
-                return $this->fetch('category_editor');
+                $result = $this->fetch('category_editor');
             }
+        } elseif ($method == 'remove') {
+            $result = action('Category/remove', [], 'controller\category');
+            $this->showMessage($result, lang('remove success'));
+        } else {
+            $result = action('Category/getListData', [], 'controller\category');
+            $this->assign('json_data_category', json_encode($result));
+            $result = $this->fetch();
         }
 
-        $result = action('Category/getListData', [], 'controller\category');
-        $this->assign('json_data_category', json_encode($result));
-        return $this->fetch();
+        return $result;
+    }
+
+    public function model($method = '')
+    {
+        # code...
     }
 }

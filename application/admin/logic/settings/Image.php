@@ -48,17 +48,17 @@ class Image
     /**
      * 保存修改图片设置
      * @access public
-     * @param  array  $form_data
+     * @param  array  $_form_data
      * @return mixed
      */
-    public function saveImageConfig($form_data)
+    public function update($_form_data)
     {
         // 实例化设置表模型
         $config = model('Config');
 
         $sql = [];
         $map = $data = [];
-        foreach ($form_data as $key => $value) {
+        foreach ($_form_data as $key => $value) {
             $map  = [
                 ['name', '=', $key],
             ];

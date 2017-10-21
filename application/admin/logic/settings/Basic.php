@@ -48,16 +48,16 @@ class Basic
     /**
      * 保存修改基础设置
      * @access public
-     * @param  array  $form_data
+     * @param  array  $_form_data
      * @return mixed
      */
-    public function saveBasicConfig($form_data)
+    public function update($_form_data)
     {
         // 实例化设置表模型
         $config = model('Config');
 
         $map = $data = [];
-        foreach ($form_data as $key => $value) {
+        foreach ($_form_data as $key => $value) {
             $map  = [
                 ['name', '=', $key],
             ];

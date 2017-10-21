@@ -39,7 +39,7 @@ class Settings extends Base
      */
     public function basic()
     {
-        $result = action('Basic/editorBasicConfig', [], 'controller\settings');
+        $result = action('Basic/editor', [], 'controller\settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -56,7 +56,7 @@ class Settings extends Base
      */
     public function lang()
     {
-        $result = action('Lang/editorLangConfig', [], 'controller\settings');
+        $result = action('Lang/editor', [], 'controller\settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -73,7 +73,7 @@ class Settings extends Base
      */
     public function image()
     {
-        $result = action('Image/editorImageConfig', [], 'controller\settings');
+        $result = action('Image/editor', [], 'controller\settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -90,7 +90,7 @@ class Settings extends Base
      */
     public function safe()
     {
-        $result = action('Safe/editorSafeConfig', [], 'controller\settings');
+        $result = action('Safe/editor', [], 'controller\settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -107,7 +107,7 @@ class Settings extends Base
      */
     public function email()
     {
-        $result = action('Email/editorEmailConfig', [], 'controller\settings');
+        $result = action('Email/editor', [], 'controller\settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {

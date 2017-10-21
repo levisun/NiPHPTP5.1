@@ -22,10 +22,10 @@ class Safe
      * @param
      * @return array
      */
-    public function editorSafeConfig()
+    public function editor()
     {
         if (request()->isPost()) {
-            $result = $this->saveSafeConfig();
+            $result = $this->update();
         } else {
             $basic = logic('Safe', 'logic\settings');
             $result = $basic->getSafeConfig();
@@ -40,16 +40,16 @@ class Safe
      * @param
      * @return mixed
      */
-    private function saveSafeConfig()
+    private function update()
     {
         $form_data = [
-            'content_check'          => request()->post('content_check/f'),
-            'member_login_captcha'   => request()->post('member_login_captcha/f'),
-            'website_submit_captcha' => request()->post('website_submit_captcha/f'),
-            'website_static'         => request()->post('website_static/f'),
-            'upload_file_max'        => request()->post('upload_file_max/f'),
-            'upload_file_type'       => request()->post('upload_file_type'),
-            '__token__'              => request()->post('__token__'),
+            'content_check'          => input('post.content_check/f'),
+            'member_login_captcha'   => input('post.member_login_captcha/f'),
+            'website_submit_captcha' => input('post.website_submit_captcha/f'),
+            'website_static'         => input('post.website_static/f'),
+            'upload_file_max'        => input('post.upload_file_max/f'),
+            'upload_file_type'       => input('post.upload_file_type'),
+            '__token__'              => input('post.__token__'),
         ];
 
         // 验证请求数据
@@ -61,6 +61,6 @@ class Safe
         unset($form_data['__token__']);
 
         $basic = logic('Safe', 'logic\settings');
-        return $basic->saveSafeConfig($form_data);
+        return $basic->update($form_data);
     }
 }

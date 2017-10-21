@@ -16,7 +16,7 @@ namespace app\admin\logic\common;
 class Common
 {
     // 不获得系统设置数据与权限菜单的方法
-    protected $_action = [
+    protected $action = [
         'login',
         'logout',
     ];
@@ -72,7 +72,7 @@ class Common
     public function createSysData()
     {
         $auth_data = [];
-        if (in_array($this->requestParam['action'], $this->_action)) {
+        if (in_array($this->requestParam['action'], $this->action)) {
             $auth_data = ['title' => $this->getWebSiteTitle()];
         } else {
             $auth_data = [
@@ -149,13 +149,13 @@ class Common
     /**
      * 获得面包屑父级栏目
      * @access protected
-     * @param  intval $parent_id 父ID
+     * @param  intval $_parent_id 父ID
      * @return intval
      */
-    protected function getBreadcrumbParent($parent_id)
+    protected function getBreadcrumbParent($_parent_id)
     {
         $map = [
-            ['id', '=', $parent_id],
+            ['id', '=', $_parent_id],
             ['lang', '=', lang(':detect')],
         ];
 
@@ -185,7 +185,7 @@ class Common
      */
     protected function getWebSiteTitle()
     {
-        if (in_array($this->requestParam['action'], $this->_action)) {
+        if (in_array($this->requestParam['action'], $this->action)) {
             // 登录注销方法
             $title =  lang('admin login') . ' - NIPHPCMS';
         } elseif ('upload' == $this->requestParam['action']) {

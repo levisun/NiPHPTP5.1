@@ -48,7 +48,7 @@ class Category extends Validate
     ];
 
     protected $scene = [
-        'added' => [
+        'create' => [
             'name',
             'aliases',
             'type_id',
@@ -57,7 +57,7 @@ class Category extends Validate
             'access_id',
             'url',
         ],
-        'editor' => [
+        'update' => [
             'id',
             'name',
             'aliases',

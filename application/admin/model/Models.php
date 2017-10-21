@@ -29,4 +29,28 @@ class Models extends Model
         'status',
         'sort',
     ];
+
+    /**
+     * 获取器
+     * 栏目类型
+     * @access public
+     * @param  int    $_value
+     * @return string
+     */
+    public function getModelNameAttr($_value, $_data)
+    {
+        $name = [
+            'article'  => lang('model article'),
+            'picture'  => lang('model picture'),
+            'download' => lang('model download'),
+            'page'     => lang('model page'),
+            'feedback' => lang('model feedback'),
+            'message'  => lang('model message'),
+            'product'  => lang('model product'),
+            'link'     => lang('model link'),
+            'external' => lang('model external'),
+        ];
+
+        return $name[$_data['name']];
+    }
 }

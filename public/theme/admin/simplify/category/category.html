@@ -60,7 +60,7 @@ jQuery(function(){
             list = list + "<a href='"+json_data[key]["url"]["back"]+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
         }
         if (json_data[key]["url"]["child"]) {
-            list = list + "<a href='"+json_data[key]["url"]["back"]+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
+            list = list + "<a href='"+json_data[key]["url"]["child"]+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
         }
         if (json_data[key]["url"]["add_child"]) {
             list = list + "<a href='"+json_data[key]["url"]["add_child"]+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";

@@ -12,7 +12,7 @@
  * @since     2017/09/13
  */
 
-function upload_to_javasecipt($update_file)
+function upload_to_javasecipt($_update_file)
 {
     if (request()->param('type') == 'ckeditor') {
         # code...
@@ -20,10 +20,10 @@ function upload_to_javasecipt($update_file)
         // 相册
         $id = request()->param('id');
         $javascript = '<script type="text/javascript">';
-        $javascript .= 'opener.document.getElementById("album-image-' . $id . '").value="' . $base_file . $update_file['file_name'] . '";';
-        $javascript .= 'opener.document.getElementById("album-thumb-' . $id . '").value="' . $base_file . $update_file['thumb_name'] . '";';
+        $javascript .= 'opener.document.getElementById("album-image-' . $id . '").value="' . $base_file . $_update_file['file_name'] . '";';
+        $javascript .= 'opener.document.getElementById("album-thumb-' . $id . '").value="' . $base_file . $_update_file['thumb_name'] . '";';
         $javascript .= 'opener.document.getElementById("img-album-' . $id . '").style.display="";';
-        $javascript .= 'opener.document.getElementById("img-album-' . $id . '").src="' . $base_file . $update_file['thumb_name'] . '";';
+        $javascript .= 'opener.document.getElementById("img-album-' . $id . '").src="' . $base_file . $_update_file['thumb_name'] . '";';
         $javascript .= 'window.close();';
         $javascript .= '</script>';
     } else {
@@ -31,12 +31,12 @@ function upload_to_javasecipt($update_file)
         $id = request()->param('id');
         $javascript = '<script type="text/javascript">';
         $javascript .= 'opener.document.getElementById("img-' . $id . '").style.display="";';
-        if ($update_file['thumb_name']) {
-            $javascript .= 'opener.document.getElementById("' . $id . '").value="' . $update_file['save_dir'] . $update_file['thumb_name'] . '";';
-            $javascript .= 'opener.document.getElementById("img-' . $id . '").src="' . $update_file['domain'] . $update_file['save_dir'] . $update_file['thumb_name'] . '";';
+        if ($_update_file['thumb_name']) {
+            $javascript .= 'opener.document.getElementById("' . $id . '").value="' . $_update_file['save_dir'] . $_update_file['thumb_name'] . '";';
+            $javascript .= 'opener.document.getElementById("img-' . $id . '").src="' . $_update_file['domain'] . $_update_file['save_dir'] . $_update_file['thumb_name'] . '";';
         } else {
-            $javascript .= 'opener.document.getElementById("' . $id . '").value="' . $update_file['save_dir'] . $update_file['file_name'] . '";';
-            $javascript .= 'opener.document.getElementById("img-' . $id . '").src="' . $update_file['domain'] . $update_file['save_dir'] . $update_file['file_name'] . '";';
+            $javascript .= 'opener.document.getElementById("' . $id . '").value="' . $_update_file['save_dir'] . $_update_file['file_name'] . '";';
+            $javascript .= 'opener.document.getElementById("img-' . $id . '").src="' . $_update_file['domain'] . $_update_file['save_dir'] . $_update_file['file_name'] . '";';
         }
 
         $javascript .= 'window.close();';

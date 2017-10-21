@@ -18,7 +18,7 @@ use think\Validate;
 class Upload extends Validate
 {
     protected $rule = [
-        'upload'   => ['require', 'token'],
+        'upload'   => ['require'],
         'type'     => ['require'],
         // 'model'    => ['require'],
         'input_id' => ['require'],

@@ -20,16 +20,31 @@ return [
     'name'                  => '名称',
     'type'                  => '类型',
     'operation'             => '操作',
-    'button editor'         => '编辑',
-    'button delete'         => '删除',
-    'button remove'         => '删除',
-    'button sort'           => '排序',
-    'button add'            => '新增',
     'yes'                   => '是',
     'no'                    => '否',
     'show'                  => '显示',
     'hide'                  => '隐藏',
     'empty'                 => '空',
+
+    // 按钮
+    'button editor'         => '编辑',
+    'button delete'         => '删除',
+    'button remove'         => '删除',
+    'button sort'           => '排序',
+    'button add'            => '新增',
+    'button open'           => '开启',
+    'button close'          => '关闭',
+
+    // 模型
+    'model article'         => '文章模型',
+    'model picture'         => '图片模型',
+    'model download'        => '下载模型',
+    'model page'            => '单页模型',
+    'model feedback'        => '反馈模型',
+    'model message'         => '留言模型',
+    'model product'         => '产品模型',
+    'model link'            => '友链模型',
+    'model external'        => '外部模型',
 
     // 导航
     '_nav' => [

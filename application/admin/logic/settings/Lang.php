@@ -41,21 +41,21 @@ class Lang
     /**
      * 保存修改图片设置
      * @access public
-     * @param  array  $form_data
+     * @param  array  $_form_data
      * @return mixed
      */
-    public function saveLangConfig($form_data)
+    public function update($_form_data)
     {
         $config_file = Env::get('app_path') . 'admin' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
         $config = include($config_file);
-        $config['default_lang'] = $form_data['system'];
-        $config['lang_switch_on'] = $form_data['lang_switch_on'] ? true : false;
+        $config['default_lang'] = $_form_data['system'];
+        $config['lang_switch_on'] = $_form_data['lang_switch_on'] ? true : false;
         file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
 
         $config_file = Env::get('app_path') . 'cms' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
         $config = include($config_file);
-        $config['default_lang'] = $form_data['website'];
-        $config['lang_switch_on'] = $form_data['lang_switch_on'] ? true : false;
+        $config['default_lang'] = $_form_data['website'];
+        $config['lang_switch_on'] = $_form_data['lang_switch_on'] ? true : false;
         file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
 
         return true;

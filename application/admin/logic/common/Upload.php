@@ -31,12 +31,12 @@ class Upload
     /**
      * 上传初始化
      * @access private
-     * @param  array   $params
+     * @param  array   $_params
      * @return void
      */
-    private function init($params)
+    private function init($_params)
     {
-        $this->uploadParams = $this->params($params['type'], $params['model']);
+        $this->uploadParams = $this->params($_params['type'], $_params['model']);
         $this->savePath     = Env::get('root_path') . 'public';
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
@@ -47,15 +47,15 @@ class Upload
     /**
      * 单文件上传
      * @access public
-     * @param  array  $params
+     * @param  array  $_params
      * @return array
      */
-    public function fileOne($params)
+    public function fileOne($_params)
     {
         // 初始化
-        $this->init($params);
+        $this->init($_params);
 
-        $upload = $params['upload'];
+        $upload = $_params['upload'];
 
         $result =
         $upload->validate($this->validate)
@@ -88,17 +88,17 @@ class Upload
     /**
      * 生成缩略图
      * @access private
-     * @param
+     * @param  string  $_file_name
      * @return string
      */
-    private function createThumb($file_name)
+    private function createThumb($_file_name)
     {
         $save_name = '';
         if ($this->uploadParams['create_thumb']) {
             // 组合缩略图文件名
-            $save_name = str_replace('.' . $this->uploadFileExt, '_thumb.' . $this->uploadFileExt, $file_name);
+            $save_name = str_replace('.' . $this->uploadFileExt, '_thumb.' . $this->uploadFileExt, $_file_name);
             // 生成缩略图
-            $image = Image::open($this->savePath . $file_name);
+            $image = Image::open($this->savePath . $_file_name);
             $image->thumb($this->uploadParams['thumb_width'], $this->uploadParams['thumb_height'], Image::THUMB_CENTER)
             ->save($this->savePath . $save_name);
 
@@ -111,10 +111,10 @@ class Upload
     /**
      * 生成水印
      * @access private
-     * @param  string  $file_name
+     * @param  string  $_file_name
      * @return void
      */
-    private function createWater($file_name)
+    private function createWater($_file_name)
     {
         if ($this->uploadParams['create_water']) {
             $map = [
@@ -144,9 +144,9 @@ class Upload
 
             if ($config_data['water_type']) {
                 // 图片水印
-                $image = Image::open($this->savePath . $file_name);
+                $image = Image::open($this->savePath . $_file_name);
                 $image->water($config_data['water_image'], $config_data['water_location'], 50);
-                $image->save($this->savePath . $file_name);
+                $image->save($this->savePath . $_file_name);
             } else {
                 // 文字水印
                 $font_path = Env::get('root_path');
@@ -155,9 +155,9 @@ class Upload
                 $font_path .= 'layout' . DIRECTORY_SEPARATOR;
                 $font_path .=  'font' . DIRECTORY_SEPARATOR . 'HYQingKongTiJ.ttf';
 
-                $image = Image::open($this->savePath . $file_name);
+                $image = Image::open($this->savePath . $_file_name);
                 $image->text($config_data['water_text'], $font_path, 20, '#ffffff', $config_data['water_location']);
-                $image->save($this->savePath . $file_name);
+                $image->save($this->savePath . $_file_name);
             }
         }
     }
@@ -165,23 +165,23 @@ class Upload
     /**
      * 上传需要参数
      * @access private
-     * @param  string  $type  上传类型
-     * @param  string  $model 模型
+     * @param  string  $_type  上传类型
+     * @param  string  $_model 模型
      * @return array
      */
-    private function params($type, $model)
+    private function params($_type, $_model)
     {
         // 安上传类型生成上传目录
-        if (in_array($type, ['image', 'ckeditor'])) {
+        if (in_array($_type, ['image', 'ckeditor'])) {
             $dir = 'images/';
         } else {
-            $dir = $type . '/';
+            $dir = $_type . '/';
         }
 
         $thumb_width = $thumb_height = 0;
-        if ($type == 'image') {
+        if ($_type == 'image') {
             $map = [
-                ['name', 'in', $model . '_module_width,' . $model . '_module_height'],
+                ['name', 'in', $_model . '_module_width,' . $_model . '_module_height'],
                 ['lang', '=', lang(':detect')],
             ];
 
@@ -191,15 +191,15 @@ class Upload
             $config->where($map)
             ->column('name, value');
 
-            $thumb_width = $result[$model . '_module_width'];
-            $thumb_height = $result[$model . '_module_height'];
-        } elseif (!in_array($type, ['water', 'ckeditor'])) {
+            $thumb_width = $result[$_model . '_module_width'];
+            $thumb_height = $result[$_model . '_module_height'];
+        } elseif (!in_array($_type, ['water', 'ckeditor'])) {
             $thumb_width = $thumb_height = 500;
         }
 
         return [
             'dir'          => $dir,
-            'create_water' => $type == 'image' ? true : false,
+            'create_water' => $_type == 'image' ? true : false,
             'create_thumb' => $thumb_width ? true : false,
             'thumb_width'  => $thumb_width,
             'thumb_height' => $thumb_height,

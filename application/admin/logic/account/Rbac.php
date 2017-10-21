@@ -125,19 +125,19 @@ class Rbac
     /**
      * 获得当前认证号对应权限
      * @access private
-     * @param  int     $auth_id
-     * @param  int     $level
-     * @param  int     $pid
+     * @param  int     $_auth_id
+     * @param  int     $_level
+     * @param  int     $_pid
      * @return array
      */
-    private function getAuth($auth_id, $level = 1, $pid = 0)
+    private function getAuth($_auth_id, $_level = 1, $_pid = 0)
     {
         $map = [
             ['role.status', '=', 1],
             ['node.status', '=', 1],
-            ['node.level', '=', $level],
-            ['node.pid', '=', $pid],
-            ['role_admin.user_id', '=', $auth_id],
+            ['node.level', '=', $_level],
+            ['node.pid', '=', $_pid],
+            ['role_admin.user_id', '=', $_auth_id],
         ];
 
         $result =
@@ -148,32 +148,27 @@ class Rbac
         ->where($map)
         ->select();
 
-        $auth = [];
-        foreach ($result as $key => $value) {
-            $auth[] = $value->toArray();
-        }
-
-        return $auth;
+        return $result;
     }
 
     /**
      * 取得当前认证号的所有权限列表
      * @access private
-     * @param  int     $auth_id
+     * @param  int     $_auth_id
      * @return array
      */
-    private function getAccessList($auth_id)
+    private function getAccessList($_auth_id)
     {
         $access = [];
 
-        $module = $this->getAuth($auth_id);
+        $module = $this->getAuth($_auth_id);
 
         $controller = $action = [];
         foreach ($module as $m) {
-            $controller = $this->getAuth($auth_id, 2, $m['id']);
+            $controller = $this->getAuth($_auth_id, 2, $m['id']);
 
             foreach ($controller as $c) {
-                $action = $this->getAuth($auth_id, 3, $c['id']);
+                $action = $this->getAuth($_auth_id, 3, $c['id']);
                 $_a = [];
                 foreach ($action as $a) {
                     $_a[$a['name']] = $a['id'];
@@ -190,24 +185,24 @@ class Rbac
     /**
      * 权限认证的过滤器方法
      * @access private
-     * @param  int     $auth_id
+     * @param  int     $_auth_id
      * @return array
      */
-    private function accessDecision($auth_id)
+    private function accessDecision($_auth_id)
     {
         if ($this->user_auth_type == 2) {
-            $_access_list = $this->getAccessList($auth_id);
-            session('_access_list', $_access_list);
+            $access_list = $this->getAccessList($_auth_id);
+            session('_access_list', $access_list);
         } else {
             if (session('?_access_list')) {
-                $_access_list = session('_access_list');
+                $access_list = session('_access_list');
             } else {
-                session('_access_list', $this->getAccessList($auth_id));
-                $_access_list = session('_access_list');
+                session('_access_list', $this->getAccessList($_auth_id));
+                $access_list = session('_access_list');
             }
         }
 
-        if (isset($_access_list[$this->module][$this->controller][$this->action])) {
+        if (isset($access_list[$this->module][$this->controller][$this->action])) {
             return true;
         } else {
             return false;
@@ -217,14 +212,14 @@ class Rbac
     /**
      * 审核用户操作权限
      * @access public
-     * @param  int     $auth_id
+     * @param  int     $_auth_id
      * @return boolean
      */
-    public function checkAuth($auth_id)
+    public function checkAuth($_auth_id)
     {
         // 检查当前操作是否需要认证
         if ($this->checkAccess()) {
-            return $this->accessDecision($auth_id);
+            return $this->accessDecision($_auth_id);
         } else {
             return true;
         }

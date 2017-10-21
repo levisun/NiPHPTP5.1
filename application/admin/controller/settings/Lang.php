@@ -22,10 +22,10 @@ class Lang
      * @param
      * @return array
      */
-    public function editorLangConfig()
+    public function editor()
     {
         if (request()->isPost()) {
-            $result = $this->saveLangConfig();
+            $result = $this->update();
         } else {
             $lang = logic('Lang', 'logic\settings');
             $result = $lang->getLangConfig();
@@ -40,13 +40,13 @@ class Lang
      * @param
      * @return mixed
      */
-    private function saveLangConfig()
+    private function update()
     {
         $form_data = [
-            'system'         => request()->post('system'),
-            'website'        => request()->post('website'),
-            'lang_switch_on' => request()->post('lang_switch_on/f'),
-            '__token__'      => request()->post('__token__'),
+            'system'         => input('post.system'),
+            'website'        => input('post.website'),
+            'lang_switch_on' => input('post.lang_switch_on/f'),
+            '__token__'      => input('post.__token__'),
         ];
 
         // 验证请求数据
@@ -58,6 +58,6 @@ class Lang
         unset($form_data['__token__']);
 
         $basic = logic('Lang', 'logic\settings');
-        return $basic->saveLangConfig($form_data);
+        return $basic->update($form_data);
     }
 }

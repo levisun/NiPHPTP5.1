@@ -53,11 +53,10 @@ class Base extends Controller
     {
         if ($this->request->isPost()) {
             $form_data = [
-                'upload'    => $this->request->file('upload'),
-                'type'      => $this->request->post('type'),
-                'model'     => $this->request->post('model'),
-                'input_id'  => $this->request->post('input_id'),
-                '__token__' => $this->request->post('__token__'),
+                'upload'   => input('file.upload'),
+                'type'     => input('post.type'),
+                'model'    => input('post.model'),
+                'input_id' => input('post.input_id'),
             ];
             $result = validate($form_data, 'Upload', 'validate\common');
             if (true !== $result) {
@@ -80,19 +79,19 @@ class Base extends Controller
     /**
      * 显示提示信息
      * @access protected
-     * @param  bool|srting $resutn_data 返回数据
-     * @param  string      $msg         提示信息
-     * @param  string      $url         跳转链接
+     * @param  bool|srting $_resutn_data 返回数据
+     * @param  string      $_msg         提示信息
+     * @param  string      $_url         跳转链接
      * @return void
      */
-    protected function showMessage($return_data, $msg = '', $url = null)
+    protected function showMessage($_return_data, $_msg = '', $_url = null)
     {
-        if (true === $return_data) {
-            $this->success($msg, $url);
-        } elseif (false === $return_data) {
-            $this->error($msg, $url);
+        if (true === $_return_data) {
+            $this->success($_msg, $_url);
+        } elseif (false === $_return_data) {
+            $this->error($_msg, $_url);
         } else {
-            $this->error($return_data);
+            $this->error($_return_data);
         }
     }
 
@@ -151,9 +150,10 @@ class Base extends Controller
      */
     private function theme()
     {
-        $view_path  = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
-        $view_path .= 'theme' . DIRECTORY_SEPARATOR . $this->request->module();
-        $view_path .= DIRECTORY_SEPARATOR . config('default_theme') . DIRECTORY_SEPARATOR;
+        $view_path  = Env::get('root_path') . basename($this->request->root());
+        $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
+        $view_path .= $this->request->module() . DIRECTORY_SEPARATOR;
+        $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
 
         $template = config('template.');
         $template['view_path'] = $view_path;
@@ -168,8 +168,9 @@ class Base extends Controller
         config($dispatch, 'app');
 
         // 获得域名地址
-        $domain  = $this->request->domain();
-        $domain .= substr($this->request->baseFile(), 0, -9);
+        // $domain  = $this->request->domain();
+        // $domain .= substr($this->request->baseFile(), 0, -9);
+        $domain = $this->request->domain() . $this->request->root() . '/';
         $default_theme  = $domain . 'theme/' . $this->request->module();
         $default_theme .= '/'. config('default_theme') . '/';
 

@@ -53,7 +53,7 @@
                                 <label for="is_show1"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button open')}
+                                {:lang('show')}
                             </div>
                         </div>
                         <div class="radio inline-block">
@@ -62,7 +62,7 @@
                                 <label for="is_show0"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button close')}
+                                {:lang('hide')}
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                                 <label for="is_channel1"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button open')}
+                                {:lang('yes')}
                             </div>
                         </div>
                         <div class="radio inline-block">
@@ -85,7 +85,7 @@
                                 <label for="is_channel0"></label>
                             </div>
                             <div class="inline-block vertical-top">
-                                {:lang('button close')}
+                                {:lang('no')}
                             </div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ jQuery(function(){
         if (json_data["category"]["models_id"] == json_data["models"][key]["id"]) {
             models_option += " selected ";
         }
-        models_option += ">"+json_data["models"][key]["name"]+"</option>";
+        models_option += ">"+json_data["models"][key]["model_name"]+"</option>";
     }
     jQuery("#model_id").html(models_option);
 
