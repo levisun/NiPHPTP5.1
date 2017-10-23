@@ -167,7 +167,7 @@ class Common
         ->where($map)
         ->find();
 
-        $cate_data = !empty($result) ? $result : null;
+        $cate_data = !empty($result) ? $result->toArray() : null;
 
         if (!empty($cate_data['pid'])) {
             $breadcrumb = $this->getBreadcrumbParent($cate_data['pid']);

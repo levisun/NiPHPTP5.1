@@ -13,8 +13,6 @@
  */
 namespace app\admin\controller\category;
 
-// use think\Controller;
-
 class Category
 {
 
@@ -27,8 +25,8 @@ class Category
     public function getListData()
     {
         $request_data = [
-            'pid'  => request()->param('pid/f', 0),
-            'key'  => request()->param('q'),
+        'pid'  => input('param.pid/f', 0),
+        'key'  => input('param.q'),
         ];
 
         $category = logic('Category', 'logic\category');
@@ -47,7 +45,7 @@ class Category
             $result = $this->create();
         } else {
             $request_data = [
-                'pid'  => request()->param('pid/f', 0),
+                'pid'  => input('param.pid/f', 0),
             ];
 
             $category = logic('Category', 'logic\category');
@@ -110,7 +108,7 @@ class Category
             $result = $this->update();
         } else {
             $request_data = [
-                'id'  => request()->param('id/f'),
+                'id'  => input('param.id/f'),
             ];
 
             $category = logic('Category', 'logic\category');
@@ -120,6 +118,10 @@ class Category
                 'models'   => $category->getCategoryModels(),
                 'level'    => $category->getMemberLevel(),
             ];
+
+            if (!$result['category']) {
+                $result = lang('illegal operation');
+            }
         }
 
         return $result;
@@ -171,10 +173,26 @@ class Category
     public function remove()
     {
         $request_data = [
-            'id'  => request()->param('id/f'),
+            'id'  => input('param.id/f'),
         ];
 
         $category = logic('Category', 'logic\category');
         return $category->remove($request_data);
+    }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {
+        $form_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        $category = logic('Category', 'logic\category');
+        return $category->sort($form_data);
     }
 }

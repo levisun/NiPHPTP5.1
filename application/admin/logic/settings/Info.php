@@ -36,6 +36,8 @@ class Info
 
         $date = $count = [];
         foreach ($result as $key => $value) {
+            $value = $value->toArray();
+
             $date[$value['date']] = date('Y-m-d', $value['date']);
             if (empty($count[$value['date']])) {
                 $count[$value['date']] = $value['count'];

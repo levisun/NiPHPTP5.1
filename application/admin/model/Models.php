@@ -32,7 +32,41 @@ class Models extends Model
 
     /**
      * 获取器
-     * 栏目类型
+     * 操作url
+     * @access public
+     * @param
+     * @return string
+     */
+    public function getOperationUrlAttr($_value, $_data)
+    {
+        $url = [
+            'editor' => url('', array('operate' => 'editor', 'id' => $_data['id'])),
+            'remove' => url('', array('operate' => 'remove', 'id' => $_data['id'])),
+        ];
+
+        return $url;
+    }
+
+    /**
+     * 获取器
+     * url
+     * @access public
+     * @param  int    $_value
+     * @return string
+     */
+    public function getModelUrlAttr($_value, $_data)
+    {
+        $url = [
+            'editor' => url('', array('method' => 'editor', 'id' => $_data['id'])),
+            'remove' => url('', array('method' => 'remove', 'id' => $_data['id'])),
+        ];
+
+        return $url;
+    }
+
+    /**
+     * 获取器
+     * 模型名称
      * @access public
      * @param  int    $_value
      * @return string
@@ -52,5 +86,22 @@ class Models extends Model
         ];
 
         return $name[$_data['name']];
+    }
+
+    /**
+     * 获取器
+     * 模型状态
+     * @access public
+     * @param  int    $_value
+     * @return string
+     */
+    public function getModelStatusAttr($_value, $_data)
+    {
+        $status = [
+            0 => lang('status no'),
+            1 => lang('status yes'),
+        ];
+
+        return $status[$_data['status']];
     }
 }

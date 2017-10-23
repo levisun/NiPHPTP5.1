@@ -40,6 +40,7 @@ class Safe
         $admin_data = session('admin_data');
         $data = [];
         foreach ($result as $value) {
+            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

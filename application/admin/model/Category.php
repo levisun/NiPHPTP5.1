@@ -44,6 +44,23 @@ class Category extends Model
 
     /**
      * 获取器
+     * 操作url
+     * @access public
+     * @param
+     * @return string
+     */
+    public function getOperationUrlAttr($_value, $_data)
+    {
+        $url = [
+            'editor' => url('', array('operate' => 'editor', 'id' => $_data['id'])),
+            'remove' => url('', array('operate' => 'remove', 'id' => $_data['id'])),
+        ];
+
+        return $url;
+    }
+
+    /**
+     * 获取器
      * 栏目类型
      * @access public
      * @param  int    $value

@@ -6,7 +6,12 @@ return [
     'update admin'          => '修改管理员信息',
     'logout'                => '注销',
     'upload file'           => '上传文件',
-    'button upload'         => '上传',
+    'run time'              => '运行时间：',
+    'run memory'            => '占用内存：',
+
+    'status no'             => '未启用',
+    'status yes'            => '启用',
+
 
     'illegal operation'     => '无效操作！',
     'no permission'         => '无效操作！',
@@ -14,12 +19,13 @@ return [
     'save error'            => '操作失败！',
     'editor success'        => '编辑成功！',
     'editor error'          => '编辑失败！',
+    'sort success'          => '排序成功！',
 
     'sort'                  => '排序',
     'id'                    => '序号',
     'name'                  => '名称',
     'type'                  => '类型',
-    'operation'             => '操作',
+    'operate'             => '操作',
     'yes'                   => '是',
     'no'                    => '否',
     'show'                  => '显示',
@@ -27,6 +33,7 @@ return [
     'empty'                 => '空',
 
     // 按钮
+    'button upload'         => '上传',
     'button editor'         => '编辑',
     'button delete'         => '删除',
     'button remove'         => '删除',

@@ -13,6 +13,26 @@
  */
 
 use think\facade\Lang;
+use think\facade\Debug;
+
+/**
+ * 运行时间与占用内存
+ * @param  boolean $start
+ * @return mixed
+ */
+use_time_memory(true);
+function use_time_memory($start = false)
+{
+    if ($start) {
+        Debug::remark('memory_start');
+    } else {
+        return
+        lang('run time') .
+        Debug::getRangeTime('memory_start', 'end', 3) . ' S ' .
+        lang('run memory') .
+        Debug::getRangeMem('memory_start', 'end');
+    }
+}
 
 /**
  * 实例化验证器

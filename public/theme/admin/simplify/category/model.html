@@ -15,25 +15,16 @@
                     <thead>
                         <tr>
                             <th>{:lang('sort')}</th>
-                            <th>{:lang('id')}</th>
-                            <th>{:lang('name')}</th>
-                            <th>{:lang('type')}</th>
-                            <th>{:lang('model')}</th>
-                            <th>{:lang('isshow')}</th>
-                            <th>{:lang('ischannel')}</th>
+                            <th>{:lang('modelname')}</th>
+                            <th>{:lang('tablename')}</th>
+                            <th>{:lang('status')}</th>
                             <th>{:lang('operate')}</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <tr>
-                            <td>
-                                <input type="hidden" name="method" value="sort">
-                                <input type="submit" value="{:lang('button sort')}" class="btn btn-primary">
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><input type="submit" value="{:lang('sort')}" class="btn btn-primary"></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -42,32 +33,23 @@
                     </tbody>
                 </table>
             </form>
+            <div>
+
+            </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-var json_data = {$json_data_category|raw};
+var json_data = {$json_data_model|raw};
 jQuery(function(){
     var list = "";
     for (key in json_data) {
         list = list + "<tr>";
         list = list + "<td><input type='text' name='sort["+json_data[key]["id"]+"]' class='form-control mini' value='"+json_data[key]["sort"]+"'></td>";
-        list = list + "<td>"+json_data[key]["id"]+"</td><td>"+json_data[key]["name"]+"</td>";
-        list = list + "<td>"+json_data[key]["type_name"]+"</td>";
         list = list + "<td>"+json_data[key]["model_name"]+"</td>";
-        list = list + "<td>"+json_data[key]["show"]+"</td>";
-        list = list + "<td>"+json_data[key]["channel"]+"</td>";
-
+        list = list + "<td>"+json_data[key]["table_name"]+"</td>";
+        list = list + "<td>"+json_data[key]["model_status"]+"</td>";
         list = list + "<td>";
-        if (json_data[key]["url"]["back"]) {
-            list = list + "<a href='"+json_data[key]["url"]["back"]+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
-        }
-        if (json_data[key]["url"]["child"]) {
-            list = list + "<a href='"+json_data[key]["url"]["child"]+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
-        }
-        if (json_data[key]["url"]["add_child"]) {
-            list = list + "<a href='"+json_data[key]["url"]["add_child"]+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
-        }
         if (json_data[key]["url"]["editor"]) {
             list = list + "<a href='"+json_data[key]["url"]["editor"]+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         }

@@ -24,41 +24,55 @@ class Category extends Base
      * @param
      * @return mixed
      */
-    public function category($method = '')
+    public function category($operate = '')
     {
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
-        if ($method == 'added') {
+        if ($operate == 'added') {
             $result = action('Category/added', [], 'controller\category');
             if (!is_array($result)) {
                 $this->showMessage($result, lang('added success'), 'category/category');
             } else {
-                $this->assign('json_data_category', json_encode($result));
-                $result = $this->fetch('category_added');
+                $this->assign('json_data_category', $result);
+                $tpl = $this->fetch('category_added');
             }
-        } elseif ($method == 'editor') {
+        } elseif ($operate == 'editor') {
             $result = action('Category/editor', [], 'controller\category');
             if (!is_array($result)) {
                 $this->showMessage($result, lang('editor success'));
             } else {
                 $this->assign('json_data_category', json_encode($result));
-                $result = $this->fetch('category_editor');
+                $tpl = $this->fetch('category_editor');
             }
-        } elseif ($method == 'remove') {
+        } elseif ($operate == 'remove') {
             $result = action('Category/remove', [], 'controller\category');
             $this->showMessage($result, lang('remove success'));
+        } elseif ($operate == 'sort') {
+            $result = action('Category/sort', [], 'controller\category');
+            $this->showMessage($result, lang('sort success'));
         } else {
             $result = action('Category/getListData', [], 'controller\category');
             $this->assign('json_data_category', json_encode($result));
-            $result = $this->fetch();
+            $tpl = $this->fetch();
         }
 
-        return $result;
+        return $tpl;
     }
 
-    public function model($method = '')
+    public function model($operate = '')
     {
-        # code...
+        $this->assign('button_added', true);
+
+        if ($operate) {
+            # code...
+        } else {
+            $result = action('Model/getListData', [], 'controller\category');
+            halt($result);
+            $this->assign('json_data_model', json_encode($result['data']));
+            $tpl = $this->fetch();
+        }
+
+        return $tpl;
     }
 }

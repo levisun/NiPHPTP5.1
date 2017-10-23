@@ -41,36 +41,34 @@ class Category
         ->view('category cc', ['id' => 'child'], 'c.id=cc.pid', 'LEFT')
         ->where($map)
         ->group('c.id')
-        ->order('c.type_id ASC, c.sort ASC, c.id DESC')
+        ->order('c.sort DESC, c.id DESC')
         ->select();
 
         foreach ($result as $key => $value) {
-            $result[$key]['type_name'] = $value->type_name;
-            $result[$key]['show']      = $value->show;
-            $result[$key]['channel']   = $value->channel;
+            $result[$key]->type_name = $value->type_name;
+            $result[$key]->show      = $value->show;
+            $result[$key]->channel   = $value->channel;
 
-            $url = [];
-            if ($value['pid']) {
+            $url = $value->operation_url;
+            if ($value->pid) {
                 $url['back'] = url('');
             } else {
                 $url['back'] = false;
             }
 
-            if ($value['child']) {
+            if ($value->child) {
                 $url['child'] = url('', ['pid' => $value['id']]);
             } else {
                 $url['child'] = false;
             }
 
-            $url['add_child'] = url('', ['method' => 'added','pid' => $value['id']]);
-            $url['editor'] = url('', array('method' => 'editor', 'id' => $value['id']));
-            $url['remove'] = url('', array('method' => 'remove', 'id' => $value['id']));
+            $url['add_child'] = url('', ['operate' => 'added','pid' => $value['id']]);
 
-            $result[$key]['url'] = $url;
+            $result[$key]->url = $url;
 
         }
 
-        return $result;
+        return $result->toArray();
     }
 
     /**
@@ -108,14 +106,14 @@ class Category
         ->where($map)
         ->find();
 
-        return $result;
+        return $result ? $result->toArray() : [];
     }
 
     /**
      * 保存修改栏目
      * @access public
      * @param  array  $_form_data
-     * @return mixed
+     * @return boolean
      */
     public function update($_form_data)
     {
@@ -137,7 +135,7 @@ class Category
      * 删除栏目
      * @access public
      * @param  array  $_request_data
-     * @return mixed
+     * @return boolean
      */
     public function remove($_request_data)
     {
@@ -171,6 +169,29 @@ class Category
     }
 
     /**
+     * 排序
+     * @access public
+     * @param  array $_form_data
+     * @return boolean
+     */
+    public function sort($_form_data)
+    {
+        foreach ($_form_data['id'] as $key => $value) {
+            $data[] = [
+                'id' => $key,
+                'sort' => $value,
+            ];
+        }
+
+        $category = model('Category');
+
+        $result =
+        $category->saveAll($data);
+
+        return !!$result;
+    }
+
+    /**
      * 获得父级数据
      * @access public
      * @param  array  $_request_data
@@ -189,7 +210,7 @@ class Category
         ->where($map)
         ->find();
 
-        return $result;
+        return $result ? $result->toArray() : [];
     }
 
     /**
@@ -227,11 +248,13 @@ class Category
         ->order('sort DESC')
         ->select();
 
+        $data = [];
         foreach ($result as $key => $value) {
-            $result[$key]['model_name'] = $value->model_name;
+            $data[$key] = $value->toArray();
+            $data[$key]['model_name'] = $value->model_name;
         }
 
-        return $result;
+        return $data;
     }
 
     /**
@@ -252,6 +275,6 @@ class Category
         ->where($map)
         ->select();
 
-        return $result;
+        return $result ? $result->toArray() : [];
     }
 }

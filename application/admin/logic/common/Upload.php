@@ -132,6 +132,7 @@ class Upload
 
             $config_data = [];
             foreach ($result as $key => $value) {
+                $value = $value->toArray();
                 $config_data[$value['name']] = $value['value'];
             }
 

@@ -39,7 +39,7 @@ class Login
         ->where($map)
         ->find();
 
-        return !empty($result) ? $result : false;
+        return !empty($result) ? $result->toArray() : false;
     }
 
     /**
@@ -67,15 +67,20 @@ class Login
      */
     public function updateLogin($_user_id, $_login_ip)
     {
+        $ip_attr = '';
         $request_url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $_login_ip;
-        $ip = json_decode(file_get_contents($request_url), true);
+        $result = file_get_contents($request_url);
+        if ($result) {
+            $ip = json_decode($result, true);
+            $ip_attr  = $ip['data']['region'] . $ip['data']['city'];
+            $ip_attr .= '[' . $ip['data']['isp'] . ']';
+        }
 
         $update_data = [
             // 登录IP
             'last_login_ip'      => $_login_ip,
             // 登录IP所在地区
-            'last_login_ip_attr' =>
-            $ip['data']['region'] . $ip['data']['city'] . '[' . $ip['data']['isp'] . ']',
+            'last_login_ip_attr' => $ip_attr,
         ];
 
         $map = [
@@ -126,21 +131,11 @@ class Login
             ['module', '=', $_module],
         ];
 
-        $result =
+        $count =
         $request_log->where($map)
         ->value('count');
 
-        if ($result) {
-            if ($result >= 3) {
-                // 复位
-                $data = ['count' => 1];
-            } else {
-                // 存在增加1
-                $data = ['count' => ['exp', 'count+1']];
-            }
-            $request_log->where($map)
-            ->update($data);
-        } else {
+        if (!$count) {
             // 新建请求错误记录
             $data = [
                 'ip'     => $_login_ip,
@@ -148,6 +143,10 @@ class Login
                 'count'  => 1,
             ];
             $request_log->create($data);
+        } elseif ($count && $count < 3) {
+            $data = ['count' => ['exp', 'count+1']];
+            $request_log->where($map)
+            ->update($data);
         }
     }
 

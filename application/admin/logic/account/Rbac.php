@@ -148,7 +148,7 @@ class Rbac
         ->where($map)
         ->select();
 
-        return $result;
+        return $result ? $result->toArray() : [];
     }
 
     /**
