@@ -27,7 +27,7 @@ class Settings extends Base
     public function info()
     {
         $result = action('Info/info', [], 'controller\settings');
-        $this->assign('json_data_info', json_encode($result));
+        $this->assign('json_data', json_encode($result));
         return $this->fetch();
     }
 
@@ -43,7 +43,7 @@ class Settings extends Base
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
-            $this->assign('json_data_basic', json_encode($result));
+            $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
     }
@@ -60,7 +60,7 @@ class Settings extends Base
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
-            $this->assign('json_data_lang', json_encode($result));
+            $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
     }
@@ -77,7 +77,7 @@ class Settings extends Base
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
-            $this->assign('json_data_image', json_encode($result));
+            $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
     }
@@ -94,7 +94,7 @@ class Settings extends Base
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
-            $this->assign('json_data_safe', json_encode($result));
+            $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
     }
@@ -111,7 +111,7 @@ class Settings extends Base
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
-            $this->assign('json_data_email', json_encode($result));
+            $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
     }

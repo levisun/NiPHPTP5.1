@@ -27,4 +27,23 @@ class Model
         $model = logic('Model', 'logic\category');
         return $model->getListData();
     }
+
+    /**
+     * 获得添加所需数据
+     * @access public
+     * @param
+     * @return array
+     */
+    public function added()
+    {
+        if (request()->isPost()) {
+            # code...
+        } else {
+            $model = logic('Model', 'logic\category');
+            $return = $model->getModels();
+            halt($return);
+        }
+
+        return $return;
+    }
 }

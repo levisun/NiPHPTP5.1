@@ -36,8 +36,27 @@ class Model
         }
 
         return [
-            ['data'] => $result->toArray(),
-            ['page'] => $result->render(),
+            'data' => $result->toArray(),
+            'page' => $result->render(),
         ];
+    }
+
+
+    public function getModels()
+    {
+        $map = [
+            ['id', '<>', '9'],
+        ];
+        $model = model('Models');
+        $result =
+        $model->field(['id, name, table_name'])
+        ->where($map)
+        ->select();
+
+        foreach ($result as $key => $value) {
+            $result[$key]->model_name = $value->model_name;
+        }
+
+        return $result ? $result->toArray() : [];
     }
 }

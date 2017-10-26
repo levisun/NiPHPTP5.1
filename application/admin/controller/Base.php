@@ -44,6 +44,91 @@ class Base extends Controller
     }
 
     /**
+     * 列表
+     * @access protected
+     * @param  string    $_name
+     * @param  string    $_layer
+     * @param  array     $_vars
+     * @return string
+     */
+    protected function listing($_name, $_layer = '', $_vars = [])
+    {
+        $result = action($_name, $_vars, $_layer);
+        $this->assign('json_data', json_encode($result));
+        return $this->fetch();
+    }
+
+    /**
+     * 新增
+     * @access protected
+     * @param  string    $_name
+     * @param  string    $_layer
+     * @param  array     $_vars
+     * @return mixed
+     */
+    protected function added($_name, $_layer = '', $_vars = [])
+    {
+        $result = action($_name, $_vars, $_layer);
+        if (!is_array($result)) {
+            $this->showMessage($result, lang('added success'));
+        } else {
+            if ($result) {
+                $this->assign('json_data', json_encode($result));
+            }
+            return $this->fetch($this->requestParam['action'] . '_' . input('param.operate'));
+        }
+    }
+
+    /**
+     * 删除
+     * @access protected
+     * @param  string    $_name
+     * @param  string    $_layer
+     * @param  array     $_vars
+     * @return void
+     */
+    protected function remove($_name, $_layer = '', $_vars = [])
+    {
+        $result = action($_name, $_vars, $_layer);
+        $this->showMessage($result, lang('remove success'));
+    }
+
+    /**
+     * 编辑
+     * @access protected
+     * @param  string    $_name
+     * @param  string    $_layer
+     * @param  array     $_vars
+     * @return mixed
+     */
+    protected function editor($_name, $_layer = '', $_vars = [])
+    {
+        $result = action($_name, $_vars, $_layer);
+        if (!is_array($result)) {
+            $this->showMessage($result, lang('editor success'));
+        } else {
+            if ($result) {
+                $this->assign('json_data', json_encode($result));
+            }
+            return $this->fetch($this->requestParam['action'] . '_' . input('param.operate'));
+        }
+    }
+
+    /**
+     * 排序
+     * @access protected
+     * @param  string    $_name
+     * @param  string    $_layer
+     * @param  array     $_vars
+     * @return void
+     */
+    protected function sort($_name, $_layer = '', $_vars = [])
+    {
+        $result = action($_name, $_vars, $_layer);
+        $this->showMessage($result, lang('sort success'));
+    }
+
+    /**
      * 上传文件
      * @access public
      * @param
@@ -69,11 +154,13 @@ class Base extends Controller
             if (is_string($result)) {
                 $this->error($result);
             } else {
-                return upload_to_javasecipt($result);
+                $return = upload_to_javasecipt($result);
             }
+        } else {
+            $return = $this->fetch('./upload');
         }
 
-        return $this->fetch('./upload');
+        return $return;
     }
 
     /**

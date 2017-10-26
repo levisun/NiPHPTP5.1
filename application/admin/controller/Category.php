@@ -30,31 +30,15 @@ class Category extends Base
         $this->assign('button_added', true);
 
         if ($operate == 'added') {
-            $result = action('Category/added', [], 'controller\category');
-            if (!is_array($result)) {
-                $this->showMessage($result, lang('added success'), 'category/category');
-            } else {
-                $this->assign('json_data_category', $result);
-                $tpl = $this->fetch('category_added');
-            }
+            $tpl = $this->added('Category/added', 'controller\category');
         } elseif ($operate == 'editor') {
-            $result = action('Category/editor', [], 'controller\category');
-            if (!is_array($result)) {
-                $this->showMessage($result, lang('editor success'));
-            } else {
-                $this->assign('json_data_category', json_encode($result));
-                $tpl = $this->fetch('category_editor');
-            }
+            $tpl = $this->editor('Category/editor', 'controller\category');
         } elseif ($operate == 'remove') {
-            $result = action('Category/remove', [], 'controller\category');
-            $this->showMessage($result, lang('remove success'));
+            $this->remove('Category/remove', 'controller\category');
         } elseif ($operate == 'sort') {
-            $result = action('Category/sort', [], 'controller\category');
-            $this->showMessage($result, lang('sort success'));
+            $this->sort('Category/sort', 'controller\category');
         } else {
-            $result = action('Category/getListData', [], 'controller\category');
-            $this->assign('json_data_category', json_encode($result));
-            $tpl = $this->fetch();
+            $tpl = $this->listing('Category/getListData', 'controller\category');
         }
 
         return $tpl;
@@ -64,13 +48,16 @@ class Category extends Base
     {
         $this->assign('button_added', true);
 
-        if ($operate) {
-            # code...
+        if ($operate == 'added') {
+            $tpl = $this->added('Model/added', 'controller\category');
+        } elseif ($operate == 'editor') {
+            $tpl = $this->editor('Model/editor', 'controller\category');
+        } elseif ($operate == 'remove') {
+            $this->remove('Model/remove', 'controller\category');
+        } elseif ($operate == 'sort') {
+            $this->sort('Model/sort', 'controller\category');
         } else {
-            $result = action('Model/getListData', [], 'controller\category');
-            halt($result);
-            $this->assign('json_data_model', json_encode($result['data']));
-            $tpl = $this->fetch();
+            $tpl = $this->listing('Model/getListData', 'controller\category');
         }
 
         return $tpl;

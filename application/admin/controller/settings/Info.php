@@ -27,16 +27,19 @@ class Info
 
         $member = $info->member();
 
+        $gd_info = gd_info();
+        $gd  = strtr($gd_info['GD Version'], ['bundled (' => '', ' compatible)' => '']) . '(';
+        $gd .= $gd_info['GIF Read Support'] ? ' GIF' : '';
+        $gd .= $gd_info['JPEG Support'] ? ' JPEG' : '';
+        $gd .= $gd_info['PNG Support'] ? ' PNG' : '';
+        $gd .= ')';
+
         return [
             'sys_info' => [
-                [
-                    'name'  => lang('sys name'),
-                    'value' => 'NIPHPCMS',
-                ],
                 // 系统与框架版本
                 [
                     'name'  => lang('sys version'),
-                    'value' => NP_VERSION . App()->version(),
+                    'value' => 'NC' . NP_VERSION . ' TP' . App()->version(),
                 ],
                 // 操作系统
                 [
@@ -52,6 +55,14 @@ class Info
                 [
                     'name'  => lang('sys db'),
                     'value' => config('database.type') . $info->dbVersion(),
+                ],
+                [
+                    'name'  => 'GD',
+                    'value' => $gd,
+                ],
+                [
+                    'name'  => lang('sys timezone'),
+                    'value' => config('default_timezone'),
                 ],
                 [
                     'name'  => lang('sys copy'),

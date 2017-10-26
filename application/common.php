@@ -135,7 +135,7 @@ function escape_xss($_data)
     if (is_array($_data)) {
         $return = [];
         foreach ($_data as $key => $value) {
-            $return[] = escape_xss($value);
+            $return[$key] = escape_xss($value);
         }
     } else {
         $pattern = [

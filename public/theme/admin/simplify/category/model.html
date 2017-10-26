@@ -33,34 +33,35 @@
                     </tbody>
                 </table>
             </form>
-            <div>
+            <div id="paging">
 
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-var json_data = {$json_data_model|raw};
+var json_data = {$json_data|raw};
 jQuery(function(){
+    var each = json_data["data"]["data"];
     var list = "";
-    for (key in json_data) {
+    for (key in each) {
         list = list + "<tr>";
-        list = list + "<td><input type='text' name='sort["+json_data[key]["id"]+"]' class='form-control mini' value='"+json_data[key]["sort"]+"'></td>";
-        list = list + "<td>"+json_data[key]["model_name"]+"</td>";
-        list = list + "<td>"+json_data[key]["table_name"]+"</td>";
-        list = list + "<td>"+json_data[key]["model_status"]+"</td>";
+        list = list + "<td><input type='text' name='sort["+each[key]["id"]+"]' class='form-control mini' value='"+each[key]["sort"]+"'></td>";
+        list = list + "<td>"+each[key]["model_name"]+"</td>";
+        list = list + "<td>"+each[key]["table_name"]+"</td>";
+        list = list + "<td>"+each[key]["model_status"]+"</td>";
         list = list + "<td>";
-        if (json_data[key]["url"]["editor"]) {
-            list = list + "<a href='"+json_data[key]["url"]["editor"]+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        if (each[key]["url"]["editor"]) {
+            list = list + "<a href='"+each[key]["url"]["editor"]+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         }
-        if (json_data[key]["url"]["remove"]) {
-            list = list + "<a href='"+json_data[key]["url"]["remove"]+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        if (each[key]["url"]["remove"]) {
+            list = list + "<a href='"+each[key]["url"]["remove"]+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
         }
         list = list + "</td>";
 
         list = list + "</tr>";
     }
     jQuery("#dataTable tbody").prepend(list);
-
+    jQuery("#paging").prepend(json_data["page"]);
 });
 </script>

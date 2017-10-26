@@ -17,6 +17,6 @@ class Index
 {
     public function index()
     {
-
+        halt(1002%10);
     }
 }

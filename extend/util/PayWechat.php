@@ -42,6 +42,18 @@ $param = array(
     );
 $obj->refund($param);
 
+$params = array(
+    'send_name'    => '商户名称',
+    're_openid'    => '接受红包的用户',
+    'total_amount' => '付款金额，单位分',
+    'total_num'    => '红包发放总人数',
+    'scene_id'     => '发放红包使用场景，红包金额大于200时必传',
+    'wishing'      => '红包祝福语',
+    'act_name'     => '活动名称',
+    'remark'       => '备注',
+    );
+$obj->sendBonus($params);
+
 */
 namespace util;
 
@@ -61,31 +73,24 @@ class PayWechat
     public function __construct($config)
     {
         $this->config = [
-            'appid'        => !empty($config['appid']) ? $config['appid'] : '',
-            'appsecret'    => !empty($config['appsecret']) ? $config['appsecret'] : '',
-            'mch_id'       => !empty($config['mch_id']) ? $config['mch_id'] : '',
-            'key'          => !empty($config['key']) ? $config['key'] : '',
+            'appid'        => $config['appid'],
+            'appsecret'    => $config['appsecret'],
+            'mch_id'       => $config['mch_id'],
+            'key'          => $config['key'],
             'sign_type'    => !empty($config['sign_type']) ? $config['sign_type'] : 'md5',
-            'sslcert_path' => !empty($config['sslcert_path']) ? $config['sslcert_path'] : '',
-            'sslkey_path'  => !empty($config['sslkey_path']) ? $config['sslkey_path'] : '',
+            'sslcert_path' => $config['sslcert_path'],
+            'sslkey_path'  => $config['sslkey_path'],
         ];
     }
 
     /**
-     *
+     * 发送红包
+     * @access public
+     * @param  array  $params 支付参数
+     * @return string JS
      */
     public function sendBonus($params)
     {
-        /*
-        $params[
-            'send_name' => '商户名称',
-            're_openid' => '接受红包的用户',
-            'total_amount' => '付款金额，单位分'
-            'wishing' => '红包祝福语',
-            'act_name' => '活动名称',
-            'remark' => '备注',
-        ]
-        */
         $this->params = $params;
 
         $this->params['nonce_str']  = $this->getNonceStr(32);
@@ -99,7 +104,13 @@ class PayWechat
         $response = $this->postXmlCurl($this->toXml(), $url, true);
         $result = $this->formXml($response);
 
-        return $result;
+        if ($result['result_code'] == 'SUCCESS' && $result['err_code'] == 'SUCCESS') {
+            $return = true;
+        } else {
+            $return = $result;
+        }
+
+        return $return;
     }
 
     /**
@@ -168,8 +179,8 @@ class PayWechat
      */
     public function respond()
     {
-        if (request()->has('out_trade_no', 'param')) {
-            $out_trade_no = $this->request->param('out_trade_no');
+        if (input('?param.out_trade_no')) {
+            $out_trade_no = input('param.out_trade_no');
             $result = $this->queryOrder(['out_trade_no' => $out_trade_no]);
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS' && $result['trade_state'] == 'SUCCESS') {
                 $return = [

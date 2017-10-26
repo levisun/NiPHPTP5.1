@@ -100,7 +100,7 @@ class Info
             $error += $result['DATA_FREE'];
         }
 
-        return $error;
+        return $error ? $error / 1024 : $error;
     }
 
     /**

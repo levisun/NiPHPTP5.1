@@ -34,7 +34,7 @@ class Category
     }
 
     /**
-     * 获得添加所需数据
+     * 新增栏目
      * @access public
      * @param
      * @return array
@@ -42,14 +42,37 @@ class Category
     public function added()
     {
         if (request()->isPost()) {
-            $result = $this->create();
+            $form_data = [
+                'name'            => input('post.name'),
+                'aliases'         => input('post.aliases'),
+                'pid'             => input('post.pid/f', 0),
+                'type_id'         => input('post.type_id/f', 1),
+                'model_id'        => input('post.model_id/f', 1),
+                'is_show'         => input('post.is_show/f', 1),
+                'is_channel'      => input('post.is_channel/f', 0),
+                'image'           => input('post.image'),
+                'seo_title'       => input('post.seo_title'),
+                'seo_keywords'    => input('post.seo_keywords'),
+                'seo_description' => input('post.seo_description'),
+                'access_id'       => input('post.access_id', 0),
+                '__token__'       => input('post.__token__'),
+            ];
+
+            // 验证请求数据
+            $return = validate($form_data, 'Category.create', 'validate\category');
+            if (true === $return) {
+                unset($form_data['__token__']);
+
+                $category = logic('Category', 'logic\category');
+                $return = $category->create($form_data);
+            }
         } else {
             $request_data = [
                 'pid'  => input('param.pid/f', 0),
             ];
 
             $category = logic('Category', 'logic\category');
-            $result = [
+            $return = [
                 'parent' => $category->getParentData($request_data),
                 'type'   => $category->getCategoryType(),
                 'models' => $category->getCategoryModels(),
@@ -57,43 +80,7 @@ class Category
             ];
         }
 
-        return $result;
-    }
-
-    /**
-     * 新增栏目
-     * @access private
-     * @param
-     * @return mixed
-     */
-    private function create()
-    {
-        $form_data = [
-            'name'            => input('post.name'),
-            'aliases'         => input('post.aliases'),
-            'pid'             => input('post.pid/f', 0),
-            'type_id'         => input('post.type_id/f', 1),
-            'model_id'        => input('post.model_id/f', 1),
-            'is_show'         => input('post.is_show/f', 1),
-            'is_channel'      => input('post.is_channel/f', 0),
-            'image'           => input('post.image'),
-            'seo_title'       => input('post.seo_title'),
-            'seo_keywords'    => input('post.seo_keywords'),
-            'seo_description' => input('post.seo_description'),
-            'access_id'       => input('post.access_id', 0),
-            '__token__'       => input('post.__token__'),
-        ];
-
-        // 验证请求数据
-        $result = validate($form_data, 'Category.create', 'validate\category');
-        if (true !== $result) {
-            return $result;
-        }
-
-        unset($form_data['__token__']);
-
-        $category = logic('Category', 'logic\category');
-        return $category->create($form_data);
+        return $return;
     }
 
     /**
@@ -105,63 +92,50 @@ class Category
     public function editor()
     {
         if (request()->isPost()) {
-            $result = $this->update();
+            $form_data = [
+                'id'              => input('post.id/f'),
+                'name'            => input('post.name'),
+                'aliases'         => input('post.aliases'),
+                'pid'             => input('post.pid/f', 0),
+                'type_id'         => input('post.type_id/f', 1),
+                'model_id'        => input('post.model_id/f', 1),
+                'is_show'         => input('post.is_show/f', 1),
+                'is_channel'      => input('post.is_channel/f', 0),
+                'image'           => input('post.image'),
+                'seo_title'       => input('post.seo_title'),
+                'seo_keywords'    => input('post.seo_keywords'),
+                'seo_description' => input('post.seo_description'),
+                'access_id'       => input('post.access_id', 0),
+                '__token__'       => input('post.__token__'),
+            ];
+
+            // 验证请求数据
+            $return = validate($form_data, 'Category.update', 'validate\category');
+            if (true === $return) {
+                unset($form_data['__token__']);
+
+                $category = logic('Category', 'logic\category');
+                $return = $category->update($form_data);
+            }
         } else {
             $request_data = [
                 'id'  => input('param.id/f'),
             ];
 
             $category = logic('Category', 'logic\category');
-            $result = [
+            $return = [
                 'category' => $category->getEditorData($request_data),
                 'type'     => $category->getCategoryType(),
                 'models'   => $category->getCategoryModels(),
                 'level'    => $category->getMemberLevel(),
             ];
 
-            if (!$result['category']) {
-                $result = lang('illegal operation');
+            if (!$return['category']) {
+                $return = lang('illegal operation');
             }
         }
 
-        return $result;
-    }
-
-    /**
-     * 保存修改栏目
-     * @access private
-     * @param
-     * @return mixed
-     */
-    private function update()
-    {
-        $form_data = [
-            'id'              => input('post.id/f'),
-            'name'            => input('post.name'),
-            'aliases'         => input('post.aliases'),
-            'pid'             => input('post.pid/f', 0),
-            'type_id'         => input('post.type_id/f', 1),
-            'model_id'        => input('post.model_id/f', 1),
-            'is_show'         => input('post.is_show/f', 1),
-            'is_channel'      => input('post.is_channel/f', 0),
-            'image'           => input('post.image'),
-            'seo_title'       => input('post.seo_title'),
-            'seo_keywords'    => input('post.seo_keywords'),
-            'seo_description' => input('post.seo_description'),
-            'access_id'       => input('post.access_id', 0),
-            '__token__'       => input('post.__token__'),
-        ];
-
-        // 验证请求数据
-        $result = validate($form_data, 'Category.update', 'validate\category');
-        if (true !== $result) {
-            return $result;
-        }
-
-        unset($form_data['__token__']);
-
-        $category = logic('Category', 'logic\category');
-        return $category->update($form_data);
+        return $return;
     }
 
     /**

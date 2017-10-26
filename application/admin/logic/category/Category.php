@@ -81,7 +81,8 @@ class Category
     {
         $category = model('Category');
         $result =
-        $category->create($_form_data);
+        $category->allowField(true)
+        ->create($_form_data);
 
         return !!$result;
     }
@@ -125,7 +126,8 @@ class Category
 
         $category = model('Category');
         $result =
-        $category->where($map)
+        $category->allowField(true)
+        ->where($map)
         ->update($_form_data);
 
         return !!$result;

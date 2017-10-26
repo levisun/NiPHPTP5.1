@@ -64,7 +64,8 @@ class Email
             ];
             $data = ['value' => $value];
 
-            $config->where($map)
+            $config->allowField(true)
+            ->where($map)
             ->update($data);
         }
 
