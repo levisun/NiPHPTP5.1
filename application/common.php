@@ -28,7 +28,7 @@ function use_time_memory($start = false)
     } else {
         return
         lang('run time') .
-        Debug::getRangeTime('memory_start', 'end', 3) . ' S ' .
+        Debug::getRangeTime('memory_start', 'end', 3) . 's ' .
         lang('run memory') .
         Debug::getRangeMem('memory_start', 'end');
     }
@@ -44,6 +44,10 @@ function use_time_memory($start = false)
  */
 function validate($_data, $_validate, $_layer = 'validate', $_module = '')
 {
+    if ($_layer == 'validate') {
+        $_layer = 'validate\\' . strtolower(request()->controller());
+    }
+
     if (is_array($_validate)) {
         $v = app()->validate();
         $v->rule($_validate);
@@ -94,6 +98,10 @@ function lang($_name, $_vars = [], $_lang = '')
  */
 function action($_name, $_vars = [], $_layer = '')
 {
+    if (!$_layer) {
+        $_layer = 'controller\\' . strtolower(request()->controller());
+    }
+
     return app()->action($_name, $_vars, $_layer);
 }
 
@@ -106,7 +114,13 @@ function action($_name, $_vars = [], $_layer = '')
  */
 function logic($_name = '', $_layer = '', $_module = '')
 {
-    $_module = $_module ? $_module : request()->module();
+    if (!$_layer) {
+        $_layer = 'logic\\' . strtolower(request()->controller());
+    }
+
+    if (!$_module) {
+        $_module = request()->module();
+    }
 
     return app()->model($_name, $_layer, false, $_module);
 }
@@ -120,7 +134,10 @@ function logic($_name = '', $_layer = '', $_module = '')
  */
 function model($_name = '', $_layer = 'model', $_module = '')
 {
-    $_module = $_module ? $_module : request()->module();
+    // $_module = $_module ? $_module : request()->module();
+    if (!$_module) {
+        $_module = 'common';
+    }
 
     return app()->model($_name, $_layer, false, $_module);
 }

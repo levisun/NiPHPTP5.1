@@ -13,7 +13,9 @@
  */
 namespace app\admin\logic\settings;
 
-class Email
+use app\common\logic\Config;
+
+class Email extends Config
 {
 
     /**
@@ -44,31 +46,5 @@ class Email
         }
 
         return $data;
-    }
-
-    /**
-     * 保存修改基础设置
-     * @access public
-     * @param  array  $_form_data
-     * @return mixed
-     */
-    public function update($_form_data)
-    {
-        // 实例化设置表模型
-        $config = model('Config');
-
-        $map = $data = [];
-        foreach ($_form_data as $key => $value) {
-            $map  = [
-                ['name', '=', $key],
-            ];
-            $data = ['value' => $value];
-
-            $config->allowField(true)
-            ->where($map)
-            ->update($data);
-        }
-
-        return true;
     }
 }

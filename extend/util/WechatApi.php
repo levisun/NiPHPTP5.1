@@ -36,20 +36,29 @@ class WechatApi extends Wechat
         }
 
         $this->receive = [
-            'type'     => $this->getRev()->getRevType(),
-            'event'    => $this->getRevEvent(),
+            'type'      => $this->getRev()->getRevType(),
+            'event'     => $this->getRevEvent(),
             'form_user' => $this->getRevFrom(),
             'user_data' => $this->getUserInfo($this->getRevFrom()),
-            'key'      => [
-                'sceneId'       => escape_xss($this->getRevSceneId()),      // 扫公众号二维码返回值
-                'eventLocation' => escape_xss($this->getRevEventGeo()),     // 获得的地理信息
-                'text'          => escape_xss($this->getRevContent()),      // 文字信息
-                'image'         => escape_xss($this->getRevPic()),          // 图片信息
-                'location'      => escape_xss($this->getRevGeo()),          // 地理信息
-                'link'          => escape_xss($this->getRevLink()),         // 链接信息
-                'voice'         => escape_xss($this->getRevVoice()),        // 音频信息
-                'video'         => escape_xss($this->getRevVideo()),        // 视频信息
-                'result'        => escape_xss($this->getRevResult()),       // 群发或模板信息回复内容
+            'key'       => [
+                // 扫公众号二维码返回值
+                'sceneId'       => $this->getRevSceneId(),
+                // 获得的地理信息
+                'eventLocation' => $this->getRevEventGeo(),
+                // 文字信息
+                'text'          => $this->getRevContent(),
+                // 图片信息
+                'image'         => $this->getRevPic(),
+                // 地理信息
+                'location'      => $this->getRevGeo(),
+                // 链接信息
+                'link'          => $this->getRevLink(),
+                // 音频信息
+                'voice'         => $this->getRevVoice(),
+                // 视频信息
+                'video'         => $this->getRevVideo(),
+                // 群发或模板信息回复内容
+                'result'        => $this->getRevResult(),
             ],
         ];
 
@@ -215,21 +224,23 @@ class WechatApi extends Wechat
      */
     public function getOpenId()
     {
-        if (!cookie('?wechat_openid')) {
+        if (empty($_COOKIE['wechat_openid'])) {
             // 网页授权获得用户openid后再获得用户信息
-            if (input('?param.code')) {
-                $code  = input('param.code');
-                $state = input('param.state');
+            if (!empty($_GET['code'])) {
+                $code  = $_GET['code'];
+                $state = $_GET['state'];
                 if ($state == 'wechatOauth') {
                     // 通过code获得openid
                     $result = $this->getOauthAccessToken($code);
-                    cookie('wechat_openid', $result['openid']);
+                    setcookie('wechat_openid', $result['openid']);
+                    $_COOKIE['wechat_openid'] = $result['openid'];
                 }
             } else {
                 // 直接跳转不授权获取code
-                $url = request()->url(true);
+                $url = $this->url();
                 $url = $this->getOauthRedirect($url, 'wechatOauth', 'snsapi_base');
-                redirect($url);
+                header('Location:' . $url);
+                exit();
             }
         }
     }
@@ -240,55 +251,108 @@ class WechatApi extends Wechat
      * @param
      * @return mixed
      */
-    public function jsSign($debug = 'false')
+    public function jsSign($_debug = 'false')
     {
-        $result = parent::getJsSign(request()->url(true));
+        $result = parent::getJsSign($this->url());
 
         $code = [
             'wechat_js_sign' => $result,
-            'wecaht_js_code' => 'wx.config({debug: '. $debug . ',appId: "' . $result['appId'] . '",timestamp: ' . $result['timestamp'] . ',nonceStr: "' . $result['nonceStr'] . '",signature: "' . $result['signature'] . '",jsApiList: ["checkJsApi","onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone","hideMenuItems","showMenuItems","hideAllNonBaseMenuItem","showAllNonBaseMenuItem","translateVoice","startRecord","stopRecord","onVoiceRecordEnd","playVoice","onVoicePlayEnd","pauseVoice","stopVoice","uploadVoice","downloadVoice","chooseImage","previewImage","uploadImage","downloadImage","getNetworkType","openLocation","getLocation","hideOptionMenu","showOptionMenu","closeWindow","scanQRCode","chooseWXPay","openProductSpecificView","addCard","chooseCard","openCard"]});'
+            'wecaht_js_code' => 'wx.config({debug: '. $_debug . ',appId: "' . $result['appId'] . '",timestamp: ' . $result['timestamp'] . ',nonceStr: "' . $result['nonceStr'] . '",signature: "' . $result['signature'] . '",jsApiList: ["checkJsApi","onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone","hideMenuItems","showMenuItems","hideAllNonBaseMenuItem","showAllNonBaseMenuItem","translateVoice","startRecord","stopRecord","onVoiceRecordEnd","playVoice","onVoicePlayEnd","pauseVoice","stopVoice","uploadVoice","downloadVoice","chooseImage","previewImage","uploadImage","downloadImage","getNetworkType","openLocation","getLocation","hideOptionMenu","showOptionMenu","closeWindow","scanQRCode","chooseWXPay","openProductSpecificView","addCard","chooseCard","openCard"]});'
         ];
 
-        if ($debug === 'true') {
+        if ($_debug === 'true') {
             $code['wecaht_js_code'] .= 'wx.error(function (res) {alert(res.errMsg);});';
         }
 
         return $code;
     }
 
+    protected function url()
+    {
+        if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
+            $scheme = 'https';
+        } elseif (isset($_SERVER['REQUEST_SCHEME']) && 'https' == $_SERVER['REQUEST_SCHEME']) {
+            $scheme = 'https';
+        } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
+            $scheme = 'https';
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO']) {
+            $scheme = 'https';
+        } else {
+            $scheme = 'http';
+        }
+
+        if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
+            $url = $_SERVER['HTTP_X_REWRITE_URL'];
+        } elseif (isset($_SERVER['REQUEST_URI'])) {
+            $url = $_SERVER['REQUEST_URI'];
+        } elseif (isset($_SERVER['ORIG_PATH_INFO'])) {
+            $url = $_SERVER['ORIG_PATH_INFO'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
+        } else {
+            $url = '';
+        }
+
+        return $scheme . '://' . $_SERVER['HTTP_HOST'] . $url;
+    }
+
     /**
      * 设置缓存，按需重载
      * @access protected
-     * @param  string  $cachename
-     * @param  mixed   $value
-     * @param  int     $expired
+     * @param  string  $_cachename
+     * @param  mixed   $_value
+     * @param  int     $_expired
      * @return boolean
      */
-    protected function setCache($cachename, $value, $expired)
+    protected function setCache($_cachename, $_value, $_expired = 7100)
     {
-        $expired = $expired ? $expired : 7100;
-        cache('cachename', $value, $expired);
+        // cache('_cachename', $_value, $_expired);
+        $time = time() + $_expired;
+        $file = $_cachename . '.php';
+
+        $data = array(
+            'value' => $_value,
+            'time' => $time,
+            );
+
+        file_put_contents($file, '<?php $cache=' . var_export($data, true) . ';?>', true);
+
+        return true;
     }
 
     /**
      * 获取缓存，按需重载
      * @access protected
-     * @param  string $cachename
+     * @param  string $_cachename
      * @return mixed
      */
-    protected function getCache($cachename)
+    protected function getCache($_cachename)
     {
-        cache($cachename);
+        // cache($_cachename);
+        $file = $_cachename . '.php';
+        if (is_file($file)) {
+            include $file;
+            if (!empty($cache) && $cache['time'] >= time()) {
+                $return $cache['value'];
+            } else {
+                $return false;
+            }
+        } else {
+            $return false;
+        }
+
+        return $return;
     }
 
     /**
      * 清除缓存，按需重载
      * @access protected
-     * @param  string $cachename
+     * @param  string $_cachename
      * @return boolean
      */
-    protected function removeCache($cachename)
+    protected function removeCache($_cachename)
     {
-        cache($cachename, null);
+        // cache($_cachename, null);
+        $file = $_cachename . '.php';
+        unlink($file);
+        return false;
     }
 }

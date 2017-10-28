@@ -27,7 +27,7 @@ class Image
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Image', 'logic\settings');
+            $basic = logic('Image');
             $result = $basic->getImageConfig();
         }
 
@@ -69,14 +69,14 @@ class Image
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Image', 'validate\settings');
+        $result = validate($form_data, 'Image');
         if (true !== $result) {
             return $result;
         }
 
         unset($form_data['__token__']);
 
-        $basic = logic('Image', 'logic\settings');
+        $basic = logic('Image');
         return $basic->update($form_data);
     }
 }

@@ -139,36 +139,36 @@
 <script type="text/javascript">
 var json_data = {$json_data|raw};
 jQuery(function(){
-    jQuery("#category_id").val(json_data["category"]["id"]);
-    jQuery("#name").val(json_data["category"]["name"]);
-    jQuery("#aliases").val(json_data["category"]["aliases"]);
-    jQuery("#pid").val(json_data["category"]["pid"]);
-    if (json_data["category"]["parent"]) {
-        jQuery("#parent").val(json_data["category"]["parent"]);
+    jQuery("#category_id").val(json_data["data"]["id"]);
+    jQuery("#name").val(json_data["data"]["name"]);
+    jQuery("#aliases").val(json_data["data"]["aliases"]);
+    jQuery("#pid").val(json_data["data"]["pid"]);
+    if (json_data["data"]["parent_name"]) {
+        jQuery("#parent").val(json_data["data"]["parent_name"]);
     } else {
         jQuery("#parent").val("{:lang('empty')}");
     }
 
-    jQuery("#url").val(json_data["category"]["url"]);
-    jQuery("#image").val(json_data["category"]["image"]);
-    jQuery("#img-image").attr("src", json_data["category"]["image"]);
-    if (json_data["category"]["image"]) {
+    jQuery("#url").val(json_data["data"]["url"]);
+    jQuery("#image").val(json_data["data"]["image"]);
+    jQuery("#img-image").attr("src", json_data["data"]["image"]);
+    if (json_data["data"]["image"]) {
         jQuery("#img-image").show();
     }
-    jQuery("#seo_title").val(json_data["category"]["seo_title"]);
-    jQuery("#seo_keywords").val(json_data["category"]["seo_keywords"]);
-    jQuery("#seo_description").val(json_data["category"]["seo_description"]);
+    jQuery("#seo_title").val(json_data["data"]["seo_title"]);
+    jQuery("#seo_keywords").val(json_data["data"]["seo_keywords"]);
+    jQuery("#seo_description").val(json_data["data"]["seo_description"]);
 
-    jQuery("#is_show"+json_data["category"]["is_show"]).attr("checked", "checked");
-    jQuery(".is_show"+json_data["category"]["is_show"]).addClass("checked");
+    jQuery("#is_show"+json_data["data"]["is_show"]).attr("checked", "checked");
+    jQuery(".is_show"+json_data["data"]["is_show"]).addClass("checked");
 
-    jQuery("#is_channel"+json_data["category"]["is_channel"]).attr("checked", "checked");
-    jQuery(".is_channel"+json_data["category"]["is_channel"]).addClass("checked");
+    jQuery("#is_channel"+json_data["data"]["is_channel"]).attr("checked", "checked");
+    jQuery(".is_channel"+json_data["data"]["is_channel"]).addClass("checked");
 
     var type_option = "";
     for (key in json_data["type"]) {
         type_option += "<option value='"+json_data["type"][key]["id"]+"'";
-        if (json_data["category"]["type_id"] == json_data["type"][key]["id"]) {
+        if (json_data["data"]["type_id"] == json_data["type"][key]["id"]) {
             type_option += " selected ";
         }
         type_option += ">"+json_data["type"][key]["name"]+"</option>";
@@ -178,7 +178,7 @@ jQuery(function(){
     var models_option = "";
     for (key in json_data["models"]) {
         models_option += "<option value='"+json_data["models"][key]["id"]+"'";
-        if (json_data["category"]["models_id"] == json_data["models"][key]["id"]) {
+        if (json_data["data"]["models_id"] == json_data["models"][key]["id"]) {
             models_option += " selected ";
         }
         models_option += ">"+json_data["models"][key]["model_name"]+"</option>";
@@ -188,7 +188,7 @@ jQuery(function(){
     var level_option = "";
     for (key in json_data["level"]) {
         level_option += "<option value='"+json_data["level"][key]["id"]+"'";
-        if (json_data["category"]["access_id"] == json_data["level"][key]["id"]) {
+        if (json_data["data"]["access_id"] == json_data["level"][key]["id"]) {
             level_option += " selected ";
         }
         level_option += ">"+json_data["level"][key]["name"]+"</option>";

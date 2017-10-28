@@ -27,7 +27,7 @@ class Basic
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Basic', 'logic\settings');
+            $basic = logic('Basic');
             $result = $basic->getBasicConfig();
         }
 
@@ -60,7 +60,7 @@ class Basic
 
         unset($form_data['__token__']);
 
-        $basic = logic('Basic', 'logic\settings');
+        $basic = logic('Basic');
         return $basic->update($form_data);
     }
 }

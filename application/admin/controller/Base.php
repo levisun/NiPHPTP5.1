@@ -47,11 +47,11 @@ class Base extends Controller
      * 列表
      * @access protected
      * @param  string    $_name
-     * @param  string    $_layer
      * @param  array     $_vars
+     * @param  string    $_layer
      * @return string
      */
-    protected function listing($_name, $_layer = '', $_vars = [])
+    protected function listing($_name, $_vars = [], $_layer = '')
     {
         $result = action($_name, $_vars, $_layer);
         $this->assign('json_data', json_encode($result));
@@ -62,11 +62,11 @@ class Base extends Controller
      * 新增
      * @access protected
      * @param  string    $_name
-     * @param  string    $_layer
      * @param  array     $_vars
+     * @param  string    $_layer
      * @return mixed
      */
-    protected function added($_name, $_layer = '', $_vars = [])
+    protected function added($_name, $_vars = [], $_layer = '')
     {
         $result = action($_name, $_vars, $_layer);
         if (!is_array($result)) {
@@ -83,11 +83,11 @@ class Base extends Controller
      * 删除
      * @access protected
      * @param  string    $_name
-     * @param  string    $_layer
      * @param  array     $_vars
+     * @param  string    $_layer
      * @return void
      */
-    protected function remove($_name, $_layer = '', $_vars = [])
+    protected function remove($_name, $_vars = [], $_layer = '')
     {
         $result = action($_name, $_vars, $_layer);
         $this->showMessage($result, lang('remove success'));
@@ -97,11 +97,11 @@ class Base extends Controller
      * 编辑
      * @access protected
      * @param  string    $_name
-     * @param  string    $_layer
      * @param  array     $_vars
+     * @param  string    $_layer
      * @return mixed
      */
-    protected function editor($_name, $_layer = '', $_vars = [])
+    protected function editor($_name, $_vars = [], $_layer = '')
     {
         $result = action($_name, $_vars, $_layer);
         if (!is_array($result)) {
@@ -118,11 +118,11 @@ class Base extends Controller
      * 排序
      * @access protected
      * @param  string    $_name
-     * @param  string    $_layer
      * @param  array     $_vars
+     * @param  string    $_layer
      * @return void
      */
-    protected function sort($_name, $_layer = '', $_vars = [])
+    protected function sort($_name, $_vars = [], $_layer = '')
     {
         $result = action($_name, $_vars, $_layer);
         $this->showMessage($result, lang('sort success'));

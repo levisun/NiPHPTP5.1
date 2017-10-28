@@ -27,7 +27,7 @@ class Account extends Base
     public function login()
     {
         if ($this->request->isPost()) {
-            $result = action('Login/login', [], 'controller\account');
+            $result = action('Login/login');
             if (true === $result) {
                 $this->success(lang('success login'), 'settings/info');
             } else {
@@ -47,7 +47,7 @@ class Account extends Base
      */
     public function logout()
     {
-        action('Logout/logout', [], 'controller\account');
+        action('Logout/logout');
         $this->redirect(url('login'));
     }
 }

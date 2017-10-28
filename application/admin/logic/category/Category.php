@@ -13,7 +13,9 @@
  */
 namespace app\admin\logic\category;
 
-class Category
+use app\common\logic\Category as LogicCategory;
+
+class Category extends LogicCategory
 {
 
     /**
@@ -72,22 +74,6 @@ class Category
     }
 
     /**
-     * 新增栏目
-     * @access public
-     * @param  array  $_form_data
-     * @return mixed
-     */
-    public function create($_form_data)
-    {
-        $category = model('Category');
-        $result =
-        $category->allowField(true)
-        ->create($_form_data);
-
-        return !!$result;
-    }
-
-    /**
      * 获得编辑数据
      * @access public
      * @param  array  $_request_data
@@ -103,34 +89,11 @@ class Category
         $category = model('Category');
         $result =
         $category->view('category c', true)
-        ->view('category cc', ['name'=>'parentname'], 'c.pid=cc.id', 'LEFT')
+        ->view('category cc', ['name'=>'parent_name'], 'c.pid=cc.id', 'LEFT')
         ->where($map)
         ->find();
 
         return $result ? $result->toArray() : [];
-    }
-
-    /**
-     * 保存修改栏目
-     * @access public
-     * @param  array  $_form_data
-     * @return boolean
-     */
-    public function update($_form_data)
-    {
-        $map  = [
-            ['id', '=', $_form_data['id']],
-        ];
-
-        unset($_form_data['id']);
-
-        $category = model('Category');
-        $result =
-        $category->allowField(true)
-        ->where($map)
-        ->update($_form_data);
-
-        return !!$result;
     }
 
     /**
@@ -148,7 +111,7 @@ class Category
 
         $category = model('Category');
         $result =
-        $category->field('id, pid')
+        $category->field(true)
         ->where($map)
         ->find();
 
@@ -161,36 +124,7 @@ class Category
             $this->remove($params);
         }
 
-        $map  = [
-            ['id', '=', $_request_data['id']],
-        ];
-        $category->where($map)
-        ->delete();
-
-        return true;
-    }
-
-    /**
-     * 排序
-     * @access public
-     * @param  array $_form_data
-     * @return boolean
-     */
-    public function sort($_form_data)
-    {
-        foreach ($_form_data['id'] as $key => $value) {
-            $data[] = [
-                'id' => $key,
-                'sort' => $value,
-            ];
-        }
-
-        $category = model('Category');
-
-        $result =
-        $category->saveAll($data);
-
-        return !!$result;
+        return parent::remove($_request_data);
     }
 
     /**
@@ -208,7 +142,7 @@ class Category
 
         $category = model('Category');
         $result =
-        $category->field('id,name')
+        $category->field(true)
         ->where($map)
         ->find();
 
@@ -239,24 +173,8 @@ class Category
      */
     public function getCategoryModels()
     {
-        $map = [
-            ['status', '=', 1],
-        ];
-
-        $models = model('Models');
-        $result =
-        $models->field('id,name,table_name')
-        ->where($map)
-        ->order('sort DESC')
-        ->select();
-
-        $data = [];
-        foreach ($result as $key => $value) {
-            $data[$key] = $value->toArray();
-            $data[$key]['model_name'] = $value->model_name;
-        }
-
-        return $data;
+        $models = logic('Models', 'logic', 'common');
+        return $models->getOpen();
     }
 
     /**

@@ -70,34 +70,34 @@ class PayWechat
      * @param  array  $config
      * @return void
      */
-    public function __construct($config)
+    public function __construct($_config)
     {
         $this->config = [
-            'appid'        => $config['appid'],
-            'appsecret'    => $config['appsecret'],
-            'mch_id'       => $config['mch_id'],
-            'key'          => $config['key'],
-            'sign_type'    => !empty($config['sign_type']) ? $config['sign_type'] : 'md5',
-            'sslcert_path' => $config['sslcert_path'],
-            'sslkey_path'  => $config['sslkey_path'],
+            'appid'        => $_config['appid'],
+            'appsecret'    => $_config['appsecret'],
+            'mch_id'       => $_config['mch_id'],
+            'key'          => $_config['key'],
+            'sign_type'    => !empty($_config['sign_type']) ? $_config['sign_type'] : 'md5',
+            'sslcert_path' => $_config['sslcert_path'],
+            'sslkey_path'  => $_config['sslkey_path'],
         ];
     }
 
     /**
      * 发送红包
      * @access public
-     * @param  array  $params 支付参数
+     * @param  array  $_params 支付参数
      * @return string JS
      */
-    public function sendBonus($params)
+    public function sendBonus($_params)
     {
-        $this->params = $params;
+        $this->params = $_params;
 
         $this->params['nonce_str']  = $this->getNonceStr(32);
         $this->params['mch_billno'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
         $this->params['mch_id']     = $this->config['mch_id'];
         $this->params['wxappid']    = $this->config['appid'];
-        $this->params['client_ip']  = request()->ip(0, true);
+        $this->params['client_ip']  = $this->ip(0, true);
         $this->params['sign']       = $this->getSign($this->params);
 
         $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
@@ -116,16 +116,16 @@ class PayWechat
     /**
      * 统一下单
      * @access public
-     * @param  array  $params 支付参数
+     * @param  array  $_params 支付参数
      * @return string JS
      */
-    public function jsPay($params)
+    public function jsPay($_params)
     {
         // 同步通知回调地址
-        $respond_url = $params['respond_url'];
-        unset($params['respond_url']);
+        $respond_url = $_params['respond_url'];
+        unset($_params['respond_url']);
 
-        $this->params = $params;
+        $this->params = $_params;
         $this->params['trade_type']  = 'JSAPI';  // 交易类型
         $this->params['device_info'] = 'WEB';
 
@@ -156,13 +156,13 @@ class PayWechat
      * @param  array  $params 支付参数
      * @return string 二维码图片地址
      */
-    public function qrcodePay($params)
+    public function qrcodePay($_params)
     {
         // 同步通知回调地址
-        $respond_url = $params['respond_url'];
-        unset($params['respond_url']);
+        $respond_url = $_params['respond_url'];
+        unset($_params['respond_url']);
 
-        $this->params = $params;
+        $this->params = $_params;
         $this->params['trade_type']  = 'NATIVE';  // 交易类型
         $this->params['device_info'] = 'WEB';
 
@@ -179,8 +179,8 @@ class PayWechat
      */
     public function respond()
     {
-        if (input('?param.out_trade_no')) {
-            $out_trade_no = input('param.out_trade_no');
+        if (!empty($_GET['out_trade_no'])) {
+            $out_trade_no = $_GET['out_trade_no'];
             $result = $this->queryOrder(['out_trade_no' => $out_trade_no]);
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS' && $result['trade_state'] == 'SUCCESS') {
                 $return = [
@@ -235,9 +235,9 @@ class PayWechat
      * @param
      * @return mixed
      */
-    public function refund($params)
+    public function refund($_params)
     {
-        $this->params = $params;
+        $this->params = $_params;
 
         $this->params['appid']         = $this->config['appid'];
         $this->params['mch_id']        = $this->config['mch_id'];
@@ -284,18 +284,18 @@ class PayWechat
      * @param
      * @return mixed
      */
-    public function queryRefund($params)
+    public function queryRefund($_params)
     {
         $this->params['appid']     = $this->config['appid'];
         $this->params['mch_id']    = $this->config['mch_id'];
         $this->params['nonce_str'] = $this->getNonceStr(32);
 
-        if (!empty($params['transaction_id'])) {
-            $this->params['transaction_id'] = $params['transaction_id'];
+        if (!empty($_params['transaction_id'])) {
+            $this->params['transaction_id'] = $_params['transaction_id'];
         }
 
-        if (!empty($params['out_trade_no'])) {
-            $this->params['out_trade_no'] = $params['out_trade_no'];
+        if (!empty($_params['out_trade_no'])) {
+            $this->params['out_trade_no'] = $_params['out_trade_no'];
         }
 
         if (empty($this->params['transaction_id'])) {
@@ -320,18 +320,18 @@ class PayWechat
      * @param
      * @return mixed
      */
-    public function queryOrder($params)
+    public function queryOrder($_params)
     {
         $this->params['appid']     = $this->config['appid'];
         $this->params['mch_id']    = $this->config['mch_id'];
         $this->params['nonce_str'] = $this->getNonceStr(32);
 
-        if (!empty($params['transaction_id'])) {
-            $this->params['transaction_id'] = $params['transaction_id'];
+        if (!empty($_params['transaction_id'])) {
+            $this->params['transaction_id'] = $_params['transaction_id'];
         }
 
-        if (!empty($params['out_trade_no'])) {
-            $this->params['out_trade_no'] = $params['out_trade_no'];
+        if (!empty($_params['out_trade_no'])) {
+            $this->params['out_trade_no'] = $_params['out_trade_no'];
         }
 
         if (empty($this->params['transaction_id'])) {
@@ -361,7 +361,7 @@ class PayWechat
         $this->params['appid']            = $this->config['appid'];
         $this->params['mch_id']           = $this->config['mch_id'];
         $this->params['nonce_str']        = $this->getNonceStr(32);
-        $this->params['spbill_create_ip'] = request()->ip(0, true);
+        $this->params['spbill_create_ip'] = $this->ip(0, true);
         $this->params['time_start']       = date('YmdHis');
         $this->params['time_expire']      = date('YmdHis', time() + 600);
         $this->params['sign']             = $this->getSign($this->params);
@@ -394,34 +394,35 @@ class PayWechat
     /**
      * 将xml转为array
      * @access private
-     * @param  string $xml
+     * @param  string $_xml
      * @return array
      */
-    private function formXml($xml)
+    private function formXml($_xml)
     {
         libxml_disable_entity_loader(true);
-        $data = (array) simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $data = (array) simplexml_load_string($_xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         return $data;
     }
 
     /**
      * 以post方式提交xml到对应的接口url
      * @access private
-     * @param  string  $xml    需要post的xml数据
-     * @param  string  $url    url
-     * @param  intval  $second url执行超时时间，默认30s
+     * @param  string  $_xml      需要post的xml数据
+     * @param  string  $_url      请求地址url
+     * @param  boolean $_use_cert 是否使用证书
+     * @param  intval  $_second   url执行超时时间，默认30s
      * @return mixed
      */
-    private function postXmlCurl($xml, $url, $use_cert = false, $second = 30)
+    private function postXmlCurl($_xml, $_url, $_use_cert = false, $_second = 30)
     {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_TIMEOUT, $second);       // 设置超时
-        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $_second);       // 设置超时
+        curl_setopt($curl, CURLOPT_URL, $_url);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);      // 严格校验
         curl_setopt($curl, CURLOPT_HEADER, false);          // 设置header
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);   // 要求结果为字符串且输出到屏幕上
-        if($use_cert == true){
+        if($_use_cert == true){
             //设置证书 使用证书：cert 与 key 分别属于两个.pem文件
             curl_setopt($curl, CURLOPT_SSLCERTTYPE, 'PEM');
             curl_setopt($curl, CURLOPT_SSLCERT, $this->config['sslcert_path']);
@@ -429,7 +430,7 @@ class PayWechat
             curl_setopt($curl, CURLOPT_SSLKEY, $this->config['sslkey_path']);
         }
         curl_setopt($curl, CURLOPT_POST, true);             // post提交方式
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $xml);       // post传输数据
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $_xml);       // post传输数据
         $result = curl_exec($curl);                         // 运行curl
 
         if ($result) {
@@ -445,15 +446,15 @@ class PayWechat
     /**
      * 生成签名
      * @access private
-     * @param  array $params
+     * @param  array $_params
      * @return 加密签名
      */
-    private function getSign($params)
+    private function getSign($_params)
     {
-        ksort($params);
+        ksort($_params);
 
         $sign = '';
-        foreach ($params as $key => $value) {
+        foreach ($_params as $key => $value) {
             if (!in_array($key, ['sign', 'sslcert_path']) && !is_array($value) && $value != '') {
                 $sign .= $key . '=' . $value . '&';
             }
@@ -468,17 +469,57 @@ class PayWechat
     /**
      * 产生随机字符串，不长于32位
      * @access private
-     * @param  intval $length
+     * @param  intval $_length
      * @return 产生的随机字符串
      */
-    private function getNonceStr($length = 32)
+    private function getNonceStr($_length = 32)
     {
         $chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
         $count = strlen($chars) -1;
         $string = '';
-        for ($i=0; $i < $length; $i++) {
+        for ($i=0; $i < $_length; $i++) {
             $string .= substr($chars, mt_rand(0, $count), 1);
         }
         return $string;
+    }
+
+    /**
+     * 获取客户端IP地址
+     * @access private
+     * @param  integer   $_type 返回类型 0 返回IP地址 1 返回IPV4地址数字
+     * @param  boolean   $adv 是否进行高级模式获取（有可能被伪装）
+     * @return mixed
+     */
+    private function ip($_type = 0, $_adv = true)
+    {
+        $_type      = $_type ? 1 : 0;
+        static $ip = null;
+
+        if (null !== $ip) {
+            return $ip[$_type];
+        }
+
+        if ($_adv) {
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+                $pos = array_search('unknown', $arr);
+                if (false !== $pos) {
+                    unset($arr[$pos]);
+                }
+                $ip = trim(current($arr));
+            } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        // IP地址合法验证
+        $long = sprintf("%u", ip2long($ip));
+        $ip   = $long ? [$ip, $long] : ['0.0.0.0', 0];
+
+        return $ip[$_type];
     }
 }

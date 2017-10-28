@@ -27,7 +27,7 @@ class Email
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Email', 'logic\settings');
+            $basic = logic('Email');
             $result $basic->getEmailConfig();
         }
 
@@ -53,14 +53,14 @@ class Email
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Email', 'validate\settings');
+        $result = validate($form_data, 'Email');
         if (true !== $result) {
             return $result;
         }
 
         unset($form_data['__token__']);
 
-        $basic = logic('Email', 'logic\settings');
+        $basic = logic('Email');
         return $basic->update($form_data);
     }
 }

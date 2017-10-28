@@ -23,7 +23,7 @@ class Info
      */
     public function info()
     {
-        $info = logic('Info', 'logic\settings');
+        $info = logic('Info');
 
         $member = $info->member();
 

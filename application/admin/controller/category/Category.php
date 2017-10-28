@@ -25,11 +25,11 @@ class Category
     public function getListData()
     {
         $request_data = [
-        'pid'  => input('param.pid/f', 0),
-        'key'  => input('param.q'),
+            'pid'  => input('param.pid/f', 0),
+            'key'  => input('param.q'),
         ];
 
-        $category = logic('Category', 'logic\category');
+        $category = logic('Category');
         return $category->getListData($request_data);
     }
 
@@ -54,16 +54,16 @@ class Category
                 'seo_title'       => input('post.seo_title'),
                 'seo_keywords'    => input('post.seo_keywords'),
                 'seo_description' => input('post.seo_description'),
-                'access_id'       => input('post.access_id', 0),
+                'access_id'       => input('post.access_id/f', 0),
                 '__token__'       => input('post.__token__'),
             ];
 
             // 验证请求数据
-            $return = validate($form_data, 'Category.create', 'validate\category');
+            $return = validate($form_data, 'Category.create');
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $category = logic('Category', 'logic\category');
+                $category = logic('Category');
                 $return = $category->create($form_data);
             }
         } else {
@@ -71,7 +71,7 @@ class Category
                 'pid'  => input('param.pid/f', 0),
             ];
 
-            $category = logic('Category', 'logic\category');
+            $category = logic('Category');
             $return = [
                 'parent' => $category->getParentData($request_data),
                 'type'   => $category->getCategoryType(),
@@ -105,16 +105,16 @@ class Category
                 'seo_title'       => input('post.seo_title'),
                 'seo_keywords'    => input('post.seo_keywords'),
                 'seo_description' => input('post.seo_description'),
-                'access_id'       => input('post.access_id', 0),
+                'access_id'       => input('post.access_id/f', 0),
                 '__token__'       => input('post.__token__'),
             ];
 
             // 验证请求数据
-            $return = validate($form_data, 'Category.update', 'validate\category');
+            $return = validate($form_data, 'Category.update');
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $category = logic('Category', 'logic\category');
+                $category = logic('Category');
                 $return = $category->update($form_data);
             }
         } else {
@@ -122,15 +122,15 @@ class Category
                 'id'  => input('param.id/f'),
             ];
 
-            $category = logic('Category', 'logic\category');
+            $category = logic('Category');
             $return = [
-                'category' => $category->getEditorData($request_data),
-                'type'     => $category->getCategoryType(),
-                'models'   => $category->getCategoryModels(),
-                'level'    => $category->getMemberLevel(),
+                'data'   => $category->getEditorData($request_data),
+                'type'   => $category->getCategoryType(),
+                'models' => $category->getCategoryModels(),
+                'level'  => $category->getMemberLevel(),
             ];
 
-            if (!$return['category']) {
+            if (!$return['data']) {
                 $return = lang('illegal operation');
             }
         }
@@ -150,7 +150,7 @@ class Category
             'id'  => input('param.id/f'),
         ];
 
-        $category = logic('Category', 'logic\category');
+        $category = logic('Category');
         return $category->remove($request_data);
     }
 
@@ -166,7 +166,7 @@ class Category
             'id' => input('post.sort/a'),
         ];
 
-        $category = logic('Category', 'logic\category');
+        $category = logic('Category');
         return $category->sort($form_data);
     }
 }

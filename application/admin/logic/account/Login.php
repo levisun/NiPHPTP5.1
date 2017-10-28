@@ -13,6 +13,9 @@
  */
 namespace app\admin\logic\account;
 
+use app\common\logic\Admin as LoginAdmin;
+use app\common\logic\RequestLog as LogicRequestLog;
+
 class Login
 {
 
@@ -81,20 +84,12 @@ class Login
             'last_login_ip'      => $_login_ip,
             // 登录IP所在地区
             'last_login_ip_attr' => $ip_attr,
+            'id'                 => $_user_id,
         ];
 
-        $map = [
-            ['id', '=', $_user_id],
-        ];
-
-        // 实例化Admin表模型类
-        $admin = model('Admin');
-
-        $result =
-        $admin->where($map)
-        ->update($update_data);
-
-        return $result ? true : false;
+        // 实例化Admin业务类
+        $admin = new LoginAdmin;
+        return $admin->update($update_data);
     }
 
     /**
@@ -122,32 +117,8 @@ class Login
      */
     public function lockIp($_login_ip, $_module)
     {
-        // 实例化请求日志表模型
-        $request_log = model('RequestLog');
-
-        // 日志是否存在
-        $map = [
-            ['ip', '=', $_login_ip],
-            ['module', '=', $_module],
-        ];
-
-        $count =
-        $request_log->where($map)
-        ->value('count');
-
-        if (!$count) {
-            // 新建请求错误记录
-            $data = [
-                'ip'     => $_login_ip,
-                'module' => $_module,
-                'count'  => 1,
-            ];
-            $request_log->create($data);
-        } elseif ($count && $count < 3) {
-            $data = ['count' => ['exp', 'count+1']];
-            $request_log->where($map)
-            ->update($data);
-        }
+        $request_log = new LogicRequestLog;
+        $request_log->lockIp($_login_ip, $_module);
     }
 
     /**
@@ -159,22 +130,8 @@ class Login
      */
     public function isLockIp($_login_ip, $_module)
     {
-        // 三小时内错误请求超过三次
-        $map = [
-            ['ip', '=', $_login_ip],
-            ['module', '=', $_module],
-            ['count', '>=', 3],
-            ['update_time', '>=', strtotime('-3 hours')],
-        ];
-
-        // 实例化请求日志表模型
-        $request_log = model('RequestLog');
-
-        $result =
-        $request_log->where($map)
-        ->value('count');
-
-        return $result ? true : false;
+        $request_log = new LogicRequestLog;
+        return $request_log->isLockIp($_login_ip, $_module);
     }
 
     /**
@@ -186,21 +143,7 @@ class Login
      */
     public function removeLockIp($_login_ip, $_module)
     {
-        // 实例化请求日志表模型
-        $request_log = model('RequestLog');
-
-        $map = [
-            ['ip', '=', $_login_ip],
-            ['module', '=', $_module],
-        ];
-        $request_log->where($map)
-        ->delete();
-
-        // 删除过期的日志(保留一个月)
-        $map = [
-            ['create_time', '<=', strtotime('-30 days')],
-        ];
-        $request_log->where($map)
-        ->delete();
+        $request_log = new LogicRequestLog;
+        $request_log->removeLockIp($_login_ip, $_module);
     }
 }

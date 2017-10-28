@@ -27,7 +27,7 @@ class Lang
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $lang = logic('Lang', 'logic\settings');
+            $lang = logic('Lang');
             $result = $lang->getLangConfig();
         }
 
@@ -50,14 +50,14 @@ class Lang
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Lang', 'validate\settings');
+        $result = validate($form_data, 'Lang');
         if (true !== $result) {
             return $result;
         }
 
         unset($form_data['__token__']);
 
-        $basic = logic('Lang', 'logic\settings');
+        $basic = logic('Lang');
         return $basic->update($form_data);
     }
 }

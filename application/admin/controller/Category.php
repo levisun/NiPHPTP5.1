@@ -30,34 +30,66 @@ class Category extends Base
         $this->assign('button_added', true);
 
         if ($operate == 'added') {
-            $tpl = $this->added('Category/added', 'controller\category');
+            $tpl = $this->added('Category/added');
         } elseif ($operate == 'editor') {
-            $tpl = $this->editor('Category/editor', 'controller\category');
+            $tpl = $this->editor('Category/editor');
         } elseif ($operate == 'remove') {
-            $this->remove('Category/remove', 'controller\category');
+            $this->remove('Category/remove');
         } elseif ($operate == 'sort') {
-            $this->sort('Category/sort', 'controller\category');
+            $this->sort('Category/sort');
         } else {
-            $tpl = $this->listing('Category/getListData', 'controller\category');
+            $tpl = $this->listing('Category/getListData');
         }
 
         return $tpl;
     }
 
+    /**
+     * 管理模型
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function model($operate = '')
     {
         $this->assign('button_added', true);
 
         if ($operate == 'added') {
-            $tpl = $this->added('Model/added', 'controller\category');
+            $tpl = $this->added('Model/added');
         } elseif ($operate == 'editor') {
-            $tpl = $this->editor('Model/editor', 'controller\category');
+            $tpl = $this->editor('Model/editor');
         } elseif ($operate == 'remove') {
-            $this->remove('Model/remove', 'controller\category');
+            $this->remove('Model/remove');
         } elseif ($operate == 'sort') {
-            $this->sort('Model/sort', 'controller\category');
+            $this->sort('Model/sort');
         } else {
-            $tpl = $this->listing('Model/getListData', 'controller\category');
+            $tpl = $this->listing('Model/getListData');
+        }
+
+        return $tpl;
+    }
+
+    /**
+     * 自定义字段
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function fields($operate = '')
+    {
+        $this->assign('button_search', true);
+        $this->assign('button_added', true);
+
+        if ($operate == 'added') {
+            $tpl = $this->added('Fields/added');
+        } elseif ($operate == 'editor') {
+            $tpl = $this->editor('Fields/editor');
+        } elseif ($operate == 'remove') {
+            $this->remove('Fields/remove');
+        } elseif ($operate == 'sort') {
+            $this->sort('Fields/sort');
+        } else {
+            $tpl = $this->listing('Fields/getListData');
         }
 
         return $tpl;

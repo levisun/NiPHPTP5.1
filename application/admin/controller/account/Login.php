@@ -31,13 +31,13 @@ class Login
         $module   = request()->module();
 
         // 验证请求数据
-        $result = validate($form_data, 'Login', 'validate\account');
+        $result = validate($form_data, 'Login');
         if (true !== $result) {
             return $result;
         }
 
         // 实例化登录业务逻辑类
-        $login = logic('Login', 'logic\account');
+        $login = logic('Login');
 
         // IP锁定 直接返回false
         if ($login->isLockIp($login_ip, $module)) {

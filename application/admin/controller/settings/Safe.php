@@ -27,7 +27,7 @@ class Safe
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Safe', 'logic\settings');
+            $basic = logic('Safe');
             $result = $basic->getSafeConfig();
         }
 
@@ -53,14 +53,14 @@ class Safe
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Safe', 'validate\settings');
+        $result = validate($form_data, 'Safe');
         if (true !== $result) {
             return $result;
         }
 
         unset($form_data['__token__']);
 
-        $basic = logic('Safe', 'logic\settings');
+        $basic = logic('Safe');
         return $basic->update($form_data);
     }
 }
