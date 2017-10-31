@@ -100,6 +100,32 @@ class Models
     }
 
     /**
+     * 获得系统模型
+     * @access public
+     * @param
+     * @return array
+     */
+    public function getSysModel()
+    {
+        $map = [
+            ['id', '<', '9']
+        ];
+
+        $models = new ModelModels;
+        $result =
+        $models->field(true)
+        ->where($map)
+        ->order('sort DESC')
+        ->select();
+
+        foreach ($result as $key => $value) {
+            $result[$key]->model_name = $value->model_name;
+        }
+
+        return $result->toArray();
+    }
+
+    /**
      * 获得开启的模型
      * @access public
      * @param

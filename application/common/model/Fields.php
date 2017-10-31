@@ -49,6 +49,23 @@ class Fields extends Model
 
     /**
      * 获取器
+     * 是否可为空
+     * @access public
+     * @param  string $_value
+     * @return string
+     */
+    public function getRequireAttr($_value, $_data)
+    {
+        $require = [
+            lang('not require'),
+            lang('require'),
+        ];
+
+        return $require[$_data['is_require']];
+    }
+
+    /**
+     * 获取器
      * 栏目模型名
      * @access public
      * @param  string $_value

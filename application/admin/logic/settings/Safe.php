@@ -32,7 +32,7 @@ class Safe extends Config
         ];
 
         // 实例化设置表模型
-        $config = model('Config');
+        $config = model('Config', '', 'common');
 
         $result =
         $config->field(true)

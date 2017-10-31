@@ -13,9 +13,6 @@
  */
 namespace app\admin\logic\account;
 
-use app\common\logic\Admin as LoginAdmin;
-use app\common\logic\RequestLog as LogicRequestLog;
-
 class Login
 {
 
@@ -28,7 +25,7 @@ class Login
     public function getUserData($_username)
     {
         // 实例化Admin表模型类
-        $admin = model('Admin');
+        $admin = model('Admin', '', 'common');
 
         $map = [
             ['a.username', '=', $_username],
@@ -88,7 +85,7 @@ class Login
         ];
 
         // 实例化Admin业务类
-        $admin = new LoginAdmin;
+        $admin = logic('Admin', 'logic', 'common');
         return $admin->update($update_data);
     }
 
@@ -106,44 +103,5 @@ class Login
         session('admin_data', $_user_data);
         // 生成认证ID
         session(config('user_auth_key'), $_user_data['id']);
-    }
-
-    /**
-     * 请求错误锁定IP
-     * @access public
-     * @param  string $_login_ip 登录IP
-     * @param  string $_module   模块
-     * @return boolean
-     */
-    public function lockIp($_login_ip, $_module)
-    {
-        $request_log = new LogicRequestLog;
-        $request_log->lockIp($_login_ip, $_module);
-    }
-
-    /**
-     * 审核IP地址错误请求超过三次
-     * @access public
-     * @param  string $_login_ip 登录IP
-     * @param  string $_module   模块
-     * @return boolean
-     */
-    public function isLockIp($_login_ip, $_module)
-    {
-        $request_log = new LogicRequestLog;
-        return $request_log->isLockIp($_login_ip, $_module);
-    }
-
-    /**
-     * 登录成功清除请求错误日志
-     * @access public
-     * @param  string $_login_ip 登录IP
-     * @param  string $_module   模块
-     * @return void
-     */
-    public function removeLockIp($_login_ip, $_module)
-    {
-        $request_log = new LogicRequestLog;
-        $request_log->removeLockIp($_login_ip, $_module);
     }
 }

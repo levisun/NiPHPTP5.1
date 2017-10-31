@@ -160,7 +160,7 @@ class Common
         ];
 
         // 实例化栏目表模型
-        $category = model('Category');
+        $category = model('Category', '', 'common');
 
         $result =
         $category->field(['id','pid','name'])

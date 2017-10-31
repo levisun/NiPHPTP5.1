@@ -24,7 +24,7 @@ class Model
      */
     public function getListData()
     {
-        $model = logic('Model');
+        $model = logic('Model', 'category', 'admin');
         return $model->getListData();
     }
 
@@ -50,12 +50,12 @@ class Model
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $model = logic('Model');
+                $model = logic('Model', 'category', 'admin');
                 $return = $model->create($form_data);
             }
         } else {
-            $model = logic('Model');
-            $return = $model->getModels();
+            $model = logic('Model', 'category', 'admin');
+            $return = $model->getSysModel();
         }
 
         return $return;
@@ -82,7 +82,7 @@ class Model
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $model = logic('Model');
+                $model = logic('Model', 'category', 'admin');
                 $return = $model->update($form_data);
             }
         } else {
@@ -90,12 +90,12 @@ class Model
                 'id'  => input('param.id/f'),
             ];
 
-            $model = logic('Model');
+            $model = logic('Model', 'category', 'admin');
             $return = $model->getEditorData($request_data);
 
             $return = [
                 'data'  => $model->getEditorData($request_data),
-                'models' => $model->getModels(),
+                'models' => $model->getSysModel(),
             ];
         }
 
@@ -114,7 +114,7 @@ class Model
             'id'  => input('param.id/f'),
         ];
 
-        $model = logic('Model');
+        $model = logic('Model', 'category', 'admin');
         return $model->remove($request_data);
     }
 
@@ -130,7 +130,7 @@ class Model
             'id' => input('post.sort/a'),
         ];
 
-        $model = logic('Model');
+        $model = logic('Model', 'category', 'admin');
         return $model->sort($form_data);
     }
 }

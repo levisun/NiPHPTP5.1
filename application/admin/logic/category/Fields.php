@@ -13,7 +13,9 @@
  */
 namespace app\admin\logic\category;
 
-class Fields
+use app\common\logic\Fields as LogicFields;
+
+class Fields extends LogicFields
 {
 
     /**
@@ -38,17 +40,18 @@ class Fields
             $map[] = ['m.id', '=', $_request_data['mid']];
         }
 
-        $fields = model('Fields');
+        $fields = model('Fields', '', 'common');
         $result =
         $fields->view('fields f', 'id,category_id,name,description,is_require')
         ->view('category c', ['name'=>'cat_name'], 'c.id=f.category_id')
         ->view('fields_type t', ['name'=>'type_name'], 't.id=f.type_id')
-        ->view('model m', ['name'=>'model_name'], 'm.id=c.model_id')
+        // ->view('model m', ['name'=>'model_name'], 'm.id=c.model_id')
         ->where($map)
         ->order('f.id DESC')
         ->paginate();
 
         foreach ($result as $key => $value) {
+            $result[$key]->require = $value->require;
             $result[$key]->url = $value->operation_url;
         }
 

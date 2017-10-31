@@ -27,7 +27,7 @@ class Safe
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Safe');
+            $basic = logic('Safe', 'settings', 'admin');
             $result = $basic->getSafeConfig();
         }
 
@@ -60,7 +60,7 @@ class Safe
 
         unset($form_data['__token__']);
 
-        $basic = logic('Safe');
+        $basic = logic('Safe', 'settings', 'admin');
         return $basic->update($form_data);
     }
 }

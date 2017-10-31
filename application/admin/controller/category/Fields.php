@@ -16,6 +16,12 @@ namespace app\admin\controller\category;
 class Fields
 {
 
+    /**
+     * 获得列表数据
+     * @access public
+     * @param
+     * @return array
+     */
     public function getListData()
     {
         $request_data = [
@@ -24,7 +30,16 @@ class Fields
             'mid'  => input('param.mid/f'),
         ];
 
-        $model = logic('Fields');
-        return $model->getListData($request_data);
+        $fields = logic('Fields', 'category', 'admin');
+        return $fields->getListData($request_data);
+    }
+
+    public function added()
+    {
+        if (request()->isPost()) {
+
+        } else {
+            $fields = logic('Fields', 'category', 'admin');
+        }
     }
 }

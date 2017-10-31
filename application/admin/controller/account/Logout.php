@@ -25,7 +25,7 @@ class Logout
     public function logout()
     {
         // 实例化注销业务逻辑类
-        $logout = logic('Logout');
+        $logout = logic('Logout', 'logic\\account', 'admin');
         // 注销用户登录
         $logout->removeAuth();
     }

@@ -27,7 +27,7 @@ class Email
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Email');
+            $basic = logic('Email', 'settings', 'admin');
             $result $basic->getEmailConfig();
         }
 
@@ -60,7 +60,7 @@ class Email
 
         unset($form_data['__token__']);
 
-        $basic = logic('Email');
+        $basic = logic('Email', 'settings', 'admin');
         return $basic->update($form_data);
     }
 }

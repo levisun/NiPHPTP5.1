@@ -27,4 +27,16 @@ class FieldsType extends Model
         'description',
         'regex'
     ];
+
+    /**
+     * 获取器
+     * 栏目模型名
+     * @access public
+     * @param  string $_value
+     * @return string
+     */
+    public function getFieldNameAttr($_value)
+    {
+        return lang('fields type ' . $_value);
+    }
 }

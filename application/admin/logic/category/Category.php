@@ -36,7 +36,7 @@ class Category extends LogicCategory
             $map[] = ['c.name', 'like', $_request_data['key'] . '%'];
         }
 
-        $category = model('Category');
+        $category = model('Category', '', 'common');
         $result =
         $category->view('category c', true)
         ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
@@ -86,7 +86,7 @@ class Category extends LogicCategory
             ['c.lang', '=', lang(':detect')],
         ];
 
-        $category = model('Category');
+        $category = model('Category', '', 'common');
         $result =
         $category->view('category c', true)
         ->view('category cc', ['name'=>'parent_name'], 'c.pid=cc.id', 'LEFT')
@@ -109,7 +109,7 @@ class Category extends LogicCategory
             ['pid', '=', $_request_data['id']],
         ];
 
-        $category = model('Category');
+        $category = model('Category', '', 'common');
         $result =
         $category->field(true)
         ->where($map)
@@ -140,7 +140,7 @@ class Category extends LogicCategory
             ['lang', '=', lang(':detect')],
         ];
 
-        $category = model('Category');
+        $category = model('Category', '', 'common');
         $result =
         $category->field(true)
         ->where($map)
@@ -163,38 +163,5 @@ class Category extends LogicCategory
             ['id' => 3, 'name' => lang('type foot')],
             ['id' => 4, 'name' => lang('type other')]
         ];
-    }
-
-    /**
-     * 获得模型
-     * @access public
-     * @param
-     * @return array
-     */
-    public function getCategoryModels()
-    {
-        $models = logic('Models', 'logic', 'common');
-        return $models->getOpen();
-    }
-
-    /**
-     * 获得会员等级
-     * @access public
-     * @param
-     * @return array
-     */
-    public function getMemberLevel()
-    {
-        $map = [
-            ['status', '=', 1],
-        ];
-
-        $level = model('Level');
-        $result =
-        $level->field('id,name')
-        ->where($map)
-        ->select();
-
-        return $result ? $result->toArray() : [];
     }
 }

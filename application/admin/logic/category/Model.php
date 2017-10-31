@@ -26,7 +26,7 @@ class Model extends LogicModels
      */
     public function getListData()
     {
-        $models = model('Models');
+        $models = model('Models', '', 'common');
         $result =
         $models->field(true)
         ->paginate();
@@ -72,7 +72,7 @@ class Model extends LogicModels
     {
         $prefix = config('database.prefix');
 
-        $models = model('Models');
+        $models = model('Models', '', 'common');
 
         // 获得表结构
         $result = $models->query('SHOW CREATE TABLE `' . $prefix . $_model_table . '`');
@@ -110,7 +110,7 @@ class Model extends LogicModels
             ['id', '=', $_request_data['id']],
         ];
 
-        $models = model('Models');
+        $models = model('Models', '', 'common');
         $result =
         $models->where($map)
         ->find();
@@ -132,7 +132,7 @@ class Model extends LogicModels
             $map = [
                 ['id', '=', $_request_data['id']],
             ];
-            $models = model('Models');
+            $models = model('Models', '', 'common');
 
             $table_name =
             $models->where($map)
@@ -155,29 +155,5 @@ class Model extends LogicModels
         }
 
         return $return;
-    }
-
-    /**
-     * 获得基本模型数据
-     * @access public
-     * @param
-     * @return array
-     */
-    public function getModels()
-    {
-        $map = [
-            ['id', '<>', '9'],
-        ];
-        $model = model('Models');
-        $result =
-        $model->field(['id, name, table_name'])
-        ->where($map)
-        ->select();
-
-        foreach ($result as $key => $value) {
-            $result[$key]->model_name = $value->model_name;
-        }
-
-        return $result ? $result->toArray() : [];
     }
 }

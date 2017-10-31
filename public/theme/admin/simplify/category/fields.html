@@ -34,4 +34,27 @@
 </div>
 <script type="text/javascript">
 var json_data = {$json_data|raw};
+jQuery(function(){
+    var each = json_data["data"]["data"];
+    var list = "";
+    for (key in each) {
+        list = list + "<tr>";
+        list = list + "<td>"+each[key]["name"]+"</td>";
+        list = list + "<td>"+each[key]["cat_name"]+"</td>";
+        list = list + "<td>"+each[key]["type_name"]+"</td>";
+        list = list + "<td>"+each[key]["require"]+"</td>";
+        list = list + "<td>";
+        if (each[key]["url"]["editor"]) {
+            list = list + "<a href='"+each[key]["url"]["editor"]+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        }
+        if (each[key]["url"]["remove"]) {
+            list = list + "<a href='"+each[key]["url"]["remove"]+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        }
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    jQuery("#dataTable tbody").prepend(list);
+    jQuery("#paging").prepend(json_data["page"]);
+});
 </script>

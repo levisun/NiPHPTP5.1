@@ -29,7 +29,7 @@ class Category
             'key'  => input('param.q'),
         ];
 
-        $category = logic('Category');
+        $category = logic('Category', 'category', 'admin');
         return $category->getListData($request_data);
     }
 
@@ -57,26 +57,22 @@ class Category
                 'access_id'       => input('post.access_id/f', 0),
                 '__token__'       => input('post.__token__'),
             ];
-
-            // 验证请求数据
-            $return = validate($form_data, 'Category.create');
-            if (true === $return) {
-                unset($form_data['__token__']);
-
-                $category = logic('Category');
-                $return = $category->create($form_data);
+            $category = logic('Category', 'category', 'admin');
+            $result = $category->create($form_data);
+            if (is_string($result)) {
+                $return = $result;
             }
         } else {
             $request_data = [
                 'pid'  => input('param.pid/f', 0),
             ];
 
-            $category = logic('Category');
+            $category = logic('Category', 'category', 'admin');
             $return = [
                 'parent' => $category->getParentData($request_data),
                 'type'   => $category->getCategoryType(),
-                'models' => $category->getCategoryModels(),
-                'level'  => $category->getMemberLevel(),
+                'models' => logic('Models', '', 'common')->getOpen(),
+                'level'  => logic('Level', '', 'common')->getOpen(),
             ];
         }
 
@@ -108,26 +104,19 @@ class Category
                 'access_id'       => input('post.access_id/f', 0),
                 '__token__'       => input('post.__token__'),
             ];
-
-            // 验证请求数据
-            $return = validate($form_data, 'Category.update');
-            if (true === $return) {
-                unset($form_data['__token__']);
-
-                $category = logic('Category');
-                $return = $category->update($form_data);
-            }
+            $category = logic('Category', 'category', 'admin');
+            $return = $category->update($form_data);
         } else {
             $request_data = [
                 'id'  => input('param.id/f'),
             ];
 
-            $category = logic('Category');
+            $category = logic('Category', 'category', 'admin');
             $return = [
                 'data'   => $category->getEditorData($request_data),
                 'type'   => $category->getCategoryType(),
-                'models' => $category->getCategoryModels(),
-                'level'  => $category->getMemberLevel(),
+                'models' => logic('Models', '', 'common')->getOpen(),
+                'level'  => logic('Level', '', 'common')->getOpen(),
             ];
 
             if (!$return['data']) {
@@ -150,7 +139,7 @@ class Category
             'id'  => input('param.id/f'),
         ];
 
-        $category = logic('Category');
+        $category = logic('Category', 'category', 'admin');
         return $category->remove($request_data);
     }
 
@@ -166,7 +155,7 @@ class Category
             'id' => input('post.sort/a'),
         ];
 
-        $category = logic('Category');
+        $category = logic('Category', 'category', 'admin');
         return $category->sort($form_data);
     }
 }

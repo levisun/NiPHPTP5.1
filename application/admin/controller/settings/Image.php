@@ -27,7 +27,7 @@ class Image
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Image');
+            $basic = logic('Image', 'settings', 'admin');
             $result = $basic->getImageConfig();
         }
 
@@ -76,7 +76,7 @@ class Image
 
         unset($form_data['__token__']);
 
-        $basic = logic('Image');
+        $basic = logic('Image', 'settings', 'admin');
         return $basic->update($form_data);
     }
 }

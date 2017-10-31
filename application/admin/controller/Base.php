@@ -69,7 +69,7 @@ class Base extends Controller
     protected function added($_name, $_vars = [], $_layer = '')
     {
         $result = action($_name, $_vars, $_layer);
-        if (!is_array($result)) {
+        if ($result && !is_array($result)) {
             $this->showMessage($result, lang('added success'));
         } else {
             if ($result) {
@@ -191,7 +191,7 @@ class Base extends Controller
     private function auth()
     {
         if (session('?' . config('user_auth_key'))) {
-            $rbac = logic('Rbac', 'logic\account');
+            $rbac = logic('Rbac', 'account', 'admin');
             // 审核用户权限
             if (!$rbac->checkAuth(session(config('user_auth_key')))) {
                 $this->error('no permission', 'settings/info');
@@ -272,7 +272,7 @@ class Base extends Controller
         ];
 
         // 注入常用模板变量
-        $common = logic('Common', 'logic\common');
+        $common = logic('Common', 'common', 'admin');
         $auth_data = $common->createSysData();
 
         $replace['__TITLE__'] = $auth_data['title'];

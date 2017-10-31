@@ -37,10 +37,11 @@ class Login
         }
 
         // 实例化登录业务逻辑类
-        $login = logic('Login');
+        $login = logic('Login', 'account', 'admin');
+        $request_log = logic('RequestLog', '', 'common');
 
         // IP锁定 直接返回false
-        if ($login->isLockIp($login_ip, $module)) {
+        if ($request_log->isLockIp($login_ip, $module)) {
             return lang('error username or password');
         }
 
@@ -48,14 +49,14 @@ class Login
         $user_data = $login->getUserData($form_data['username']);
         if (false === $user_data) {
             // 用户不存在 锁定IP
-            $login->lockIp($login_ip, $module);
+            $request_log->lockIp($login_ip, $module);
             return lang('error username or password');
         }
 
         // 登录密码错误
         if (!$login->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
-            $login->lockIp($login_ip, $module);
+            $request_log->lockIp($login_ip, $module);
             return lang('error username or password');
         }
 

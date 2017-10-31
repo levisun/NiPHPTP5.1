@@ -36,7 +36,7 @@ class Rbac
 
     public function __construct()
     {
-        $this->model = model('Node');
+        $this->model = model('Node', '', 'common');
 
         $this->module     = strtoupper(request()->module());
         $this->controller = strtoupper(request()->controller());

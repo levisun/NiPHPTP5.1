@@ -24,7 +24,7 @@ class Info
      */
     public function visit()
     {
-        $visit = model('Visit');
+        $visit = model('Visit', '', 'common');
 
         $map = [
             ['date', '>=', strtotime('-7 days')]
@@ -71,7 +71,7 @@ class Info
      */
     public function dbTableErr()
     {
-        $model = model('Config');
+        $model = model('Config', '', 'common');
 
         $result = $model->query('SHOW TABLES FROM ' . config('database.database'));
         $tables = array();
@@ -111,7 +111,7 @@ class Info
      */
     public function member()
     {
-        $member = model('Member');
+        $member = model('Member', '', 'common');
 
         $result['count'] =
         $member->count();
@@ -134,7 +134,7 @@ class Info
      */
     public function feedback()
     {
-        $feedback = model('Feedback');
+        $feedback = model('Feedback', '', 'common');
 
         $result =
         $feedback->count();
@@ -150,7 +150,7 @@ class Info
      */
     public function message()
     {
-        $message = model('Message');
+        $message = model('Message', '', 'common');
 
         $result =
         $message->count();
@@ -166,7 +166,7 @@ class Info
      */
     public function link()
     {
-        $link = model('Link');
+        $link = model('Link', '', 'common');
 
         $result =
         $link->count();
@@ -182,7 +182,7 @@ class Info
      */
     public function ads()
     {
-        $ads = model('Ads');
+        $ads = model('Ads', '', 'common');
 
         $map = [
             ['end_time', '>=', time()]
@@ -203,7 +203,7 @@ class Info
      */
     public function dbVersion()
     {
-        $model = model('Config');
+        $model = model('Config', '', 'common');
 
         $result =
         $model->query('SELECT version()');

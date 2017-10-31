@@ -37,29 +37,29 @@ function use_time_memory($start = false)
 /**
  * 实例化验证器
  * @param  array  $_data     验证数据
- * @param  string $_validate 验证器名
+ * @param  string $_name     验证器名
  * @param  string $_layer    业务层名
  * @param  srring $_module   模块名
  * @return mixed
  */
-function validate($_data, $_validate, $_layer = 'validate', $_module = '')
+function validate($_data, $_name, $_layer = 'validate', $_module = '')
 {
-    if ($_layer == 'validate') {
-        $_layer = 'validate\\' . strtolower(request()->controller());
+    if ($_layer) {
+        $_layer = 'validate\\' . $_layer;
+    } else {
+        $_layer = 'validate';
     }
 
-    if (is_array($_validate)) {
+    if (is_array($_name)) {
         $v = app()->validate();
-        $v->rule($_validate);
+        $v->rule($_name);
     } else {
-        if (strpos($_validate, '.')) {
+        if (strpos($_name, '.')) {
             // 支持场景
-            list($_validate, $scene) = explode('.', $_validate);
+            list($_name, $scene) = explode('.', $_name);
         }
 
-        $_module = $_module ? $_module : request()->module();
-
-        $v = app()->validate($_validate, $_layer, false, $_module);
+        $v = app()->validate($_name, $_layer, false, $_module);
         if (!empty($scene)) {
             $v->scene($scene);
         }
@@ -112,16 +112,13 @@ function action($_name, $_vars = [], $_layer = '')
  * @param  string $_module 模块名
  * @return \think\Model
  */
-function logic($_name = '', $_layer = '', $_module = '')
+function logic($_name = '', $_layer = 'logic', $_module = '')
 {
-    if (!$_layer) {
-        $_layer = 'logic\\' . strtolower(request()->controller());
+    if ($_layer) {
+        $_layer = 'logic\\' . $_layer;
+    } else {
+        $_layer = 'logic';
     }
-
-    if (!$_module) {
-        $_module = request()->module();
-    }
-
     return app()->model($_name, $_layer, false, $_module);
 }
 
@@ -134,11 +131,11 @@ function logic($_name = '', $_layer = '', $_module = '')
  */
 function model($_name = '', $_layer = 'model', $_module = '')
 {
-    // $_module = $_module ? $_module : request()->module();
-    if (!$_module) {
-        $_module = 'common';
+    if ($_layer) {
+        $_layer = 'model\\' . $_layer;
+    } else {
+        $_layer = 'model';
     }
-
     return app()->model($_name, $_layer, false, $_module);
 }
 

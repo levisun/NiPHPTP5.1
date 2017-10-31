@@ -122,7 +122,7 @@ class Upload
                 ['lang', '=', lang(':detect')],
             ];
 
-            $config = model('Config');
+            $config = model('Config', '', 'common');
 
             // 获得水印设置
             $result =
@@ -186,7 +186,7 @@ class Upload
                 ['lang', '=', lang(':detect')],
             ];
 
-            $config = model('Config');
+            $config = model('Config', '', 'common');
 
             $result =
             $config->where($map)
@@ -220,7 +220,7 @@ class Upload
             ['lang', '=', 'niphp'],
         ];
 
-        $config = model('Config');
+        $config = model('Config', '', 'common');
 
         $result =
         $config->field(true)

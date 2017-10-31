@@ -27,7 +27,7 @@ class Lang
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $lang = logic('Lang');
+            $lang = logic('Lang', 'settings', 'admin');
             $result = $lang->getLangConfig();
         }
 
@@ -57,7 +57,7 @@ class Lang
 
         unset($form_data['__token__']);
 
-        $basic = logic('Lang');
+        $basic = logic('Lang', 'settings', 'admin');
         return $basic->update($form_data);
     }
 }
