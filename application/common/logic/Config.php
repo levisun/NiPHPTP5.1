@@ -26,7 +26,8 @@ class Config
      */
     public function update($_form_data)
     {
-        // 实例化设置表模型
+        unset($_form_data['id'], $_form_data['__token__']);
+
         $config = new ModelConfig;
 
         $map = $data = [];

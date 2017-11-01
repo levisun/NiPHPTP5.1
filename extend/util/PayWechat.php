@@ -83,6 +83,31 @@ class PayWechat
         ];
     }
 
+    public function transfer($_params)
+    {
+        $_params = array(
+            'openid'       => '用户openid',
+            // NO_CHECK：不校验真实姓名 FORCE_CHECK：强校验真实姓名
+            'check_name'   => '校验用户姓名',
+            // check_name为FORCE_CHECK时必填
+            're_user_name' => '收款用户姓名',
+            'amount'       => '金额',
+            'desc'         => '企业付款描述信息',
+        );
+        $this->params = $_params;
+
+        $this->params['mch_appid']        = $this->config['appid'];
+        $this->params['mchid']            = $this->config['mch_id'];
+        $this->params['nonce_str']        = $this->getNonceStr(32);
+        $this->params['partner_trade_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        $this->params['spbill_create_ip'] = $this->ip(0, true);
+        $this->params['sign']       = $this->getSign($this->params);
+
+        $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
+        $response = $this->postXmlCurl($this->toXml(), $url, true);
+        $result = $this->formXml($response);
+    }
+
     /**
      * 发送红包
      * @access public

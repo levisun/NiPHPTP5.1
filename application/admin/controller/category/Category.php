@@ -57,10 +57,13 @@ class Category
                 'access_id'       => input('post.access_id/f', 0),
                 '__token__'       => input('post.__token__'),
             ];
-            $category = logic('Category', 'category', 'admin');
-            $result = $category->create($form_data);
-            if (is_string($result)) {
-                $return = $result;
+
+            $return = validate($form_data, 'Category.create', 'category', 'admin');
+            if (true === $return) {
+                unset($form_data['__token__']);
+
+                $model = logic('Category', 'category', 'admin');
+                $return = $model->create($form_data);
             }
         } else {
             $request_data = [
@@ -104,8 +107,12 @@ class Category
                 'access_id'       => input('post.access_id/f', 0),
                 '__token__'       => input('post.__token__'),
             ];
-            $category = logic('Category', 'category', 'admin');
-            $return = $category->update($form_data);
+            $return = validate($form_data, 'Category.editor', 'category', 'admin');
+            if (true === $return) {
+                unset($form_data['__token__']);
+                $model = logic('Category', 'category', 'admin');
+                $return = $model->update($form_data);
+            }
         } else {
             $request_data = [
                 'id'  => input('param.id/f'),

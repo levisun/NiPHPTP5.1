@@ -26,6 +26,8 @@ class Models
      */
     public function create($_form_data)
     {
+        unset($_form_data['id'], $_form_data['__token__']);
+
         $models = new ModelModels;
         $result =
         $models->allowField(true)
@@ -66,7 +68,7 @@ class Models
             ['id', '=', $_form_data['id']],
         ];
 
-        unset($_form_data['id']);
+        unset($_form_data['id'], $_form_data['__token__']);
 
         $models = new ModelModels;
         $result =

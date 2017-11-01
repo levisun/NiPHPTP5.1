@@ -29,16 +29,29 @@ class Category extends Base
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
-        if ($operate == 'added') {
-            $tpl = $this->added('Category/added');
-        } elseif ($operate == 'editor') {
-            $tpl = $this->editor('Category/editor');
-        } elseif ($operate == 'remove') {
-            $this->remove('Category/remove');
-        } elseif ($operate == 'sort') {
-            $this->sort('Category/sort');
-        } else {
-            $tpl = $this->listing('Category/getListData');
+        switch ($operate) {
+            case 'added':
+            case 'editor':
+                $result = action('Category/' . $operate, [], 'category');
+                if (is_string($result)) {
+                    $this->showMessage($result, lang($operate . ' success'));
+                } else {
+                    $this->assign('json_data', json_encode($result));
+                    $tpl = $this->fetch('category_added');
+                }
+                break;
+
+            case 'remove':
+            case 'sort':
+                $result = action('Category/' . $operate, [], 'category');
+                $this->showMessage($result, lang($operate .' success'));
+                break;
+
+            default:
+                $result = action('Category/getListData', [], 'category');
+                $this->assign('json_data', json_encode($result));
+                $tpl = $this->fetch();
+                break;
         }
 
         return $tpl;

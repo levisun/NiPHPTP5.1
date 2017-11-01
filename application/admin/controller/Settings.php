@@ -26,7 +26,7 @@ class Settings extends Base
      */
     public function info()
     {
-        $result = action('Info/info');
+        $result = action('Info/info', [], 'settings');
         $this->assign('json_data', json_encode($result));
         return $this->fetch();
     }
@@ -39,7 +39,7 @@ class Settings extends Base
      */
     public function basic()
     {
-        $result = action('Basic/editor');
+        $result = action('Basic/editor', [], 'settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -56,7 +56,7 @@ class Settings extends Base
      */
     public function lang()
     {
-        $result = action('Lang/editor');
+        $result = action('Lang/editor', [], 'settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -73,7 +73,7 @@ class Settings extends Base
      */
     public function image()
     {
-        $result = action('Image/editor');
+        $result = action('Image/editor', [], 'settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -90,7 +90,7 @@ class Settings extends Base
      */
     public function safe()
     {
-        $result = action('Safe/editor');
+        $result = action('Safe/editor', [], 'settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -107,7 +107,7 @@ class Settings extends Base
      */
     public function email()
     {
-        $result = action('Email/editor');
+        $result = action('Email/editor', [], 'settings');
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {

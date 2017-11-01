@@ -53,7 +53,7 @@ class Basic
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Basic', 'validate\settings');
+        $result = validate($form_data, 'Basic', 'settings', 'admin');
         if (true !== $result) {
             return $result;
         }

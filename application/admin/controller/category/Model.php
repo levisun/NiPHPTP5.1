@@ -46,7 +46,7 @@ class Model
                 '__token__'   => input('post.__token__'),
             ];
             // 验证请求数据
-            $return = validate($form_data, 'Model.create');
+            $return = validate($form_data, 'Model.create', 'category', 'admin');
             if (true === $return) {
                 unset($form_data['__token__']);
 
@@ -78,7 +78,7 @@ class Model
                 'remark'      => input('post.remark'),
                 '__token__'   => input('post.__token__'),
             ];
-            $return = validate($form_data, 'Model.editor');
+            $return = validate($form_data, 'Model.editor', 'category', 'admin');
             if (true === $return) {
                 unset($form_data['__token__']);
 

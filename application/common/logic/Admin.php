@@ -24,7 +24,7 @@ class Admin
      * @param  array  $_form_data
      * @return boolean
      */
-    public function loginUpdate($_form_data)
+    public function update($_form_data)
     {
         $map  = [
             ['id', '=', $_form_data['id']],

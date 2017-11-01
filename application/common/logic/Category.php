@@ -14,7 +14,6 @@
 namespace app\common\logic;
 
 use app\common\model\Category as ModelCategory;
-use app\common\validate\Category as ValiCategory;
 
 class Category
 {
@@ -22,44 +21,19 @@ class Category
     /**
      * 新增栏目
      * @access public
-     * @param
+     * @param  array  $_form_data
      * @return mixed
      */
-    public function create()
+    public function create($_form_data)
     {
-        $form_data = [
-            'name'            => input('post.name'),
-            'aliases'         => input('post.aliases'),
-            'pid'             => input('post.pid/f', 0),
-            'type_id'         => input('post.type_id/f', 1),
-            'model_id'        => input('post.model_id/f', 1),
-            'is_show'         => input('post.is_show/f', 1),
-            'is_channel'      => input('post.is_channel/f', 0),
-            'image'           => input('post.image'),
-            'seo_title'       => input('post.seo_title'),
-            'seo_keywords'    => input('post.seo_keywords'),
-            'seo_description' => input('post.seo_description'),
-            'access_id'       => input('post.access_id/f', 0),
-            '__token__'       => input('post.__token__'),
-        ];
+        unset($_form_data['id'], $_form_data['__token__']);
 
-        $validate = new ValiCategory;
-        $result = $validate->scene('create')->check($form_data);
+        $category = new ModelCategory;
+        $result =
+        $category->allowField(true)
+        ->create($_form_data);
 
-        if ($result) {
-            unset($form_data['__token__']);
-
-            $category = new ModelCategory;
-            $result =
-            $category->allowField(true)
-            ->create($form_data);
-
-            $return = $result->id;
-        } else {
-            $return = $validate->getError();
-        }
-
-        return $return;
+        return $result->id;
     }
 
     /**
@@ -85,50 +59,24 @@ class Category
     /**
      * 保存修改栏目
      * @access public
-     * @param
+     * @param  array  $_form_data
      * @return boolean
      */
-    public function update()
+    public function update($_form_data)
     {
-        $form_data = [
-            'id'              => input('post.id/f'),
-            'name'            => input('post.name'),
-            'aliases'         => input('post.aliases'),
-            'pid'             => input('post.pid/f', 0),
-            'type_id'         => input('post.type_id/f', 1),
-            'model_id'        => input('post.model_id/f', 1),
-            'is_show'         => input('post.is_show/f', 1),
-            'is_channel'      => input('post.is_channel/f', 0),
-            'image'           => input('post.image'),
-            'seo_title'       => input('post.seo_title'),
-            'seo_keywords'    => input('post.seo_keywords'),
-            'seo_description' => input('post.seo_description'),
-            'access_id'       => input('post.access_id/f', 0),
-            '__token__'       => input('post.__token__'),
+        $map  = [
+            ['id', '=', $_form_data['id']],
         ];
 
-        $validate = new ValiCategory;
-        $result = $validate->scene('update')->check($form_data);
+        unset($_form_data['id'], $_form_data['__token__']);
 
-        if ($result) {
-            $map  = [
-                ['id', '=', $form_data['id']],
-            ];
+        $category = new ModelCategory;
+        $result =
+        $category->allowField(true)
+        ->where($map)
+        ->update($_form_data);
 
-            unset($form_data['id']);
-
-            $category = new ModelCategory;
-            $result =
-            $category->allowField(true)
-            ->where($map)
-            ->update($form_data);
-
-            $return = !!$result;
-        } else {
-            $return = $validate->getError();
-        }
-
-        return $return;
+        return !!$result;
     }
 
     /**

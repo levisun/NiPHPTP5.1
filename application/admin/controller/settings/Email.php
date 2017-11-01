@@ -53,7 +53,7 @@ class Email
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Email');
+        $result = validate($form_data, 'Email', 'settings', 'admin');
         if (true !== $result) {
             return $result;
         }

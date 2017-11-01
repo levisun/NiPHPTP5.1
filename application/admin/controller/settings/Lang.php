@@ -50,7 +50,7 @@ class Lang
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Lang');
+        $result = validate($form_data, 'Lang', 'settings', 'admin');
         if (true !== $result) {
             return $result;
         }

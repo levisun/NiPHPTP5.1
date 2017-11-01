@@ -53,7 +53,7 @@ class Safe
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Safe');
+        $result = validate($form_data, 'Safe', 'settings', 'admin');
         if (true !== $result) {
             return $result;
         }

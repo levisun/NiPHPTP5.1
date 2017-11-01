@@ -31,7 +31,7 @@ class Login
         $module   = request()->module();
 
         // 验证请求数据
-        $result = validate($form_data, 'Login');
+        $result = validate($form_data, 'Login', 'account', 'admin');
         if (true !== $result) {
             return $result;
         }
@@ -67,7 +67,7 @@ class Login
         $login->createAuth($user_data);
 
         // 登录成功 清除锁定IP
-        $login->removeLockIp($login_ip, $module);
+        $request_log->removeLockIp($login_ip, $module);
 
         return true;
     }

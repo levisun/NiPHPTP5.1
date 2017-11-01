@@ -69,7 +69,7 @@ class Image
         ];
 
         // 验证请求数据
-        $result = validate($form_data, 'Image');
+        $result = validate($form_data, 'Image', 'settings', 'admin');
         if (true !== $result) {
             return $result;
         }

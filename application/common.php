@@ -98,8 +98,8 @@ function lang($_name, $_vars = [], $_lang = '')
  */
 function action($_name, $_vars = [], $_layer = '')
 {
-    if (!$_layer) {
-        $_layer = 'controller\\' . strtolower(request()->controller());
+    if ($_layer) {
+        $_layer = 'controller\\' . $_layer;
     }
 
     return app()->action($_name, $_vars, $_layer);

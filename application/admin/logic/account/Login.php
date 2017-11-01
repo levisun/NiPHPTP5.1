@@ -85,7 +85,7 @@ class Login
         ];
 
         // 实例化Admin业务类
-        $admin = logic('Admin', 'logic', 'common');
+        $admin = logic('Admin', '', 'common');
         return $admin->update($update_data);
     }
 
