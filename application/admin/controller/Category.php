@@ -37,7 +37,7 @@ class Category extends Base
                     $this->showMessage($result, lang($operate . ' success'));
                 } else {
                     $this->assign('json_data', json_encode($result));
-                    $tpl = $this->fetch('category_added');
+                    $tpl = $this->fetch('category_' . $operate);
                 }
                 break;
 
@@ -67,16 +67,29 @@ class Category extends Base
     {
         $this->assign('button_added', true);
 
-        if ($operate == 'added') {
-            $tpl = $this->added('Model/added');
-        } elseif ($operate == 'editor') {
-            $tpl = $this->editor('Model/editor');
-        } elseif ($operate == 'remove') {
-            $this->remove('Model/remove');
-        } elseif ($operate == 'sort') {
-            $this->sort('Model/sort');
-        } else {
-            $tpl = $this->listing('Model/getListData');
+        switch ($operate) {
+            case 'added':
+            case 'editor':
+                $result = action('Model/' . $operate, [], 'category');
+                if (is_string($result)) {
+                    $this->showMessage($result, lang($operate . ' success'));
+                } else {
+                    $this->assign('json_data', json_encode($result));
+                    $tpl = $this->fetch('model_' . $operate);
+                }
+                break;
+
+            case 'remove':
+            case 'sort':
+                $result = action('Model/' . $operate, [], 'category');
+                $this->showMessage($result, lang($operate .' success'));
+                break;
+
+            default:
+                $result = action('Model/getListData', [], 'category');
+                $this->assign('json_data', json_encode($result));
+                $tpl = $this->fetch();
+                break;
         }
 
         return $tpl;
@@ -93,16 +106,30 @@ class Category extends Base
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
-        if ($operate == 'added') {
-            $tpl = $this->added('Fields/added');
-        } elseif ($operate == 'editor') {
-            $tpl = $this->editor('Fields/editor');
-        } elseif ($operate == 'remove') {
-            $this->remove('Fields/remove');
-        } elseif ($operate == 'sort') {
-            $this->sort('Fields/sort');
-        } else {
-            $tpl = $this->listing('Fields/getListData');
+        switch ($operate) {
+            case 'added':
+            case 'editor':
+                $result = action('Fields/' . $operate, [], 'category');
+                if (is_string($result)) {
+                    $this->showMessage($result, lang($operate . ' success'));
+                } else {
+                    halt($result);
+                    $this->assign('json_data', json_encode($result));
+                    $tpl = $this->fetch('fields_' . $operate);
+                }
+                break;
+
+            case 'remove':
+            case 'sort':
+                $result = action('Fields/' . $operate, [], 'category');
+                $this->showMessage($result, lang($operate .' success'));
+                break;
+
+            default:
+                $result = action('Fields/getListData', [], 'category');
+                $this->assign('json_data', json_encode($result));
+                $tpl = $this->fetch();
+                break;
         }
 
         return $tpl;

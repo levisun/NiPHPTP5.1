@@ -39,7 +39,11 @@ class Fields
         if (request()->isPost()) {
 
         } else {
-            $fields = logic('Fields', 'category', 'admin');
+            $return = [
+                'fields_type' => logic('FieldsType', '', 'common')->getOpen(),
+            ];
         }
+
+        return $return;
     }
 }

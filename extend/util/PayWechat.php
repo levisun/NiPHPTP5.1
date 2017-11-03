@@ -237,13 +237,18 @@ class PayWechat
             $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
             $result = (array) simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
-                $return = [
-                    'out_trade_no'   => $result['out_trade_no'],    // 商户订单号
-                    'openid'         => $result['openid'],          // 支付人OPENID
-                    'total_fee'      => $result['total_fee'],       // 支付金额
-                    'trade_type'     => $result['trade_type'],      // 支付类型
-                    'transaction_id' => $result['transaction_id'],  // 微信订单号
-                ];
+                $result = $this->queryOrder(['out_trade_no' => $result['out_trade_no']);
+                if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS' && $result['trade_state'] == 'SUCCESS') {
+                    $return = [
+                        'out_trade_no'   => $result['out_trade_no'],    // 商户订单号
+                        'openid'         => $result['openid'],          // 支付人OPENID
+                        'total_fee'      => $result['total_fee'],       // 支付金额
+                        'trade_type'     => $result['trade_type'],      // 支付类型
+                        'transaction_id' => $result['transaction_id'],  // 微信订单号
+                    ];
+                } else {
+                    $return = false;
+                }
             } else {
                 $return = false;
             }

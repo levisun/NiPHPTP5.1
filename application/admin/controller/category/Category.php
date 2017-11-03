@@ -62,8 +62,8 @@ class Category
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $model = logic('Category', 'category', 'admin');
-                $return = $model->create($form_data);
+                $category = logic('Category', 'category', 'admin');
+                $return = $category->create($form_data);
             }
         } else {
             $request_data = [

@@ -55,7 +55,9 @@ class Model
             }
         } else {
             $model = logic('Model', 'category', 'admin');
-            $return = $model->getSysModel();
+            $return = [
+                'models' => $model->getSysModel(),
+            ];
         }
 
         return $return;

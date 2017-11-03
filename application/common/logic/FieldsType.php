@@ -18,12 +18,17 @@ use app\common\model\FieldsType as ModelFieldsType;
 class FieldsType
 {
 
-    public function getList()
+    /**
+     * 获得开启的自定义字段类型
+     * @access public
+     * @param
+     * @return array
+     */
+    public function getOpen()
     {
         $fields_type = new ModelFieldsType;
         $result =
         $fields_type->field(true)
-        ->where($map)
         ->order('id DESC')
         ->select();
 

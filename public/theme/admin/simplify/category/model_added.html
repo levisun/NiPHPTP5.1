@@ -69,9 +69,9 @@
 var json_data = {$json_data|raw};
 jQuery(function(){
     var model_table = "";
-    for (key in json_data) {
-        model_table += "<option value='"+json_data[key]["table_name"]+"'";
-        model_table += ">"+json_data[key]["model_name"]+"</option>";
+    for (key in json_data["models"]) {
+        model_table += "<option value='"+json_data["models"][key]["table_name"]+"'";
+        model_table += ">"+json_data["models"][key]["model_name"]+"</option>";
     }
     jQuery("#model_table").append(model_table);
 });
