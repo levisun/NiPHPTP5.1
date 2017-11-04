@@ -13,6 +13,14 @@
  */
 namespace app\admin\logic\settings;
 
+use app\common\model\Visit as ModelVisit;
+use app\common\model\Config as ModelConfig;
+use app\common\model\Member as ModelMember;
+use app\common\model\Feedback as ModelFeedback;
+use app\common\model\Message as ModelMessage;
+use app\common\model\Link as ModelLink;
+use app\common\model\Ads as ModelAds;
+
 class Info
 {
 
@@ -24,13 +32,13 @@ class Info
      */
     public function visit()
     {
-        $visit = model('Visit', '', 'common');
+        $model_visit = new ModelVisit;
 
         $map = [
             ['date', '>=', strtotime('-7 days')]
         ];
         $result =
-        $visit->field(true)
+        $model_visit->field(true)
         ->where($map)
         ->select();
 
@@ -71,9 +79,9 @@ class Info
      */
     public function dbTableErr()
     {
-        $model = model('Config', '', 'common');
+        $model_config = new ModelConfig;
 
-        $result = $model->query('SHOW TABLES FROM ' . config('database.database'));
+        $result = $model_config->query('SHOW TABLES FROM ' . config('database.database'));
         $tables = array();
         foreach ($result as $key => $value) {
             $tables[] = current($value);
@@ -86,7 +94,7 @@ class Info
             ];
 
             $result =
-            $model->table('information_schema.TABLES')
+            $model_config->table('information_schema.TABLES')
             ->field('DATA_FREE, ENGINE')
             ->where($map)
             ->find();
@@ -111,16 +119,16 @@ class Info
      */
     public function member()
     {
-        $member = model('Member', '', 'common');
+        $model_member = new ModelMember;
 
         $result['count'] =
-        $member->count();
+        $model_member->count();
 
         $map = [
             ['status', '=', 0]
         ];
         $result['reg'] =
-        $member->where($map)
+        $model_member->where($map)
         ->count();
 
         return $result;
@@ -134,10 +142,10 @@ class Info
      */
     public function feedback()
     {
-        $feedback = model('Feedback', '', 'common');
+        $model_feedback = new ModelFeedback;
 
         $result =
-        $feedback->count();
+        $model_feedback->count();
 
         return $result;
     }
@@ -150,10 +158,10 @@ class Info
      */
     public function message()
     {
-        $message = model('Message', '', 'common');
+        $model_message = new ModelMessage;
 
         $result =
-        $message->count();
+        $model_message->count();
 
         return $result;
     }
@@ -166,10 +174,10 @@ class Info
      */
     public function link()
     {
-        $link = model('Link', '', 'common');
+        $model_link = new ModelLink;
 
         $result =
-        $link->count();
+        $model_link->count();
 
         return $result;
     }
@@ -182,14 +190,14 @@ class Info
      */
     public function ads()
     {
-        $ads = model('Ads', '', 'common');
+        $model_ads = new ModelAds;
 
         $map = [
             ['end_time', '>=', time()]
         ];
 
         $result =
-        $ads->where($map)
+        $model_ads->where($map)
         ->count();
 
         return $result;
@@ -203,10 +211,10 @@ class Info
      */
     public function dbVersion()
     {
-        $model = model('Config', '', 'common');
+        $model_config = new ModelConfig;
 
         $result =
-        $model->query('SELECT version()');
+        $model_config->query('SELECT version()');
 
         return $result[0]['version()'];
     }

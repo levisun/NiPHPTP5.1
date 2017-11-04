@@ -13,9 +13,10 @@
  */
 namespace app\admin\logic\settings;
 
-use app\common\logic\Config;
+use app\common\logic\Config as LogicConfig;
+use app\common\model\Config as ModelConfig;
 
-class Image extends Config
+class Image extends LogicConfig
 {
 
     /**
@@ -32,10 +33,10 @@ class Image extends Config
         ];
 
         // 实例化设置表模型
-        $config = model('Config', '', 'common');
+        $model_config = new ModelConfig;
 
         $result =
-        $config->field(true)
+        $model_config->field(true)
         ->where($map)
         ->select();
 

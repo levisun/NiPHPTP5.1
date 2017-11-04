@@ -1,0 +1,98 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        __SUB_TITLE__
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('fieldsname')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="type_id" class="col-lg-2 control-label">{:lang('fieldstype')}</label>
+                    <div class="col-lg-10">
+                        <select name="type_id" id="type_id" class="form-control">
+                            <option value="">{:lang('select type')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="category_id" class="col-lg-2 control-label">{:lang('fieldscategory')}</label>
+                    <div class="col-lg-10">
+                        <select name="category_id" id="category_id" class="form-control fieldsCategory">
+                            <option value="">{:lang('select category')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="is_require" class="col-lg-2 control-label">{:lang('isrequire')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs checked">
+                                <input type="radio" id="is_require1" name="is_require" value="1" checked>
+                                <label for="is_require1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button open')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="is_require2" name="is_require" value="0">
+                                <label for="is_require2"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button close')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-lg-2 control-label">{:lang('remark')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="description" id="description" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var json_data = {$json_data|raw};
+jQuery(function(){
+    var fields_type_option = "";
+    for (key in json_data["fields_type"]) {
+        fields_type_option += "<option value='"+json_data["fields_type"][key]["id"]+"'";
+        fields_type_option += ">"+json_data["fields_type"][key]["field_name"]+"</option>";
+    }
+    jQuery("#type_id").html(fields_type_option);
+
+    var fields_category_option = "";
+    var category_list = json_data["category_list"];
+    for (key in category_list) {
+        fields_category_option += "<option value='"+category_list[key]["id"]+"'";
+        fields_category_option += ">"+category_list[key]["name"]+"</option>";
+    }
+    var fields_category_option = toOption(json_data["category_list"], "");
+    jQuery("#category_id").html(fields_category_option);
+});
+
+function toOption(data, rep) {
+    var option = "";
+    for (key in data) {
+        option += "<option value='"+data[key]["id"]+"'>"+rep+data[key]['name']+"</option>";
+        option += toOption(data[key]['child'], "--");
+    }
+    return option;
+}
+</script>

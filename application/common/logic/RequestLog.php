@@ -28,7 +28,7 @@ class RequestLog
     public function lockIp($_login_ip, $_module)
     {
         // 实例化请求日志表模型
-        $request_log = new ModelRequestLog;
+        $model_request_log = new ModelRequestLog;
 
         // 日志是否存在
         $map = [
@@ -37,7 +37,7 @@ class RequestLog
         ];
 
         $count =
-        $request_log->where($map)
+        $model_request_log->where($map)
         ->value('count');
 
         if (!$count) {
@@ -47,10 +47,10 @@ class RequestLog
                 'module' => $_module,
                 'count'  => 1,
             ];
-            $request_log->create($data);
+            $model_request_log->create($data);
         } elseif ($count && $count < 3) {
             $data = ['count' => ['exp', 'count+1']];
-            $request_log->where($map)
+            $model_request_log->where($map)
             ->update($data);
         }
     }
@@ -73,10 +73,10 @@ class RequestLog
         ];
 
         // 实例化请求日志表模型
-        $request_log = new ModelRequestLog;
+        $model_request_log = new ModelRequestLog;
 
         $result =
-        $request_log->where($map)
+        $model_request_log->where($map)
         ->value('count');
 
         return $result ? true : false;
@@ -92,20 +92,20 @@ class RequestLog
     public function removeLockIp($_login_ip, $_module)
     {
         // 实例化请求日志表模型
-        $request_log = new ModelRequestLog;
+        $model_request_log = new ModelRequestLog;
 
         $map = [
             ['ip', '=', $_login_ip],
             ['module', '=', $_module],
         ];
-        $request_log->where($map)
+        $model_request_log->where($map)
         ->delete();
 
         // 删除过期的日志(保留一个月)
         $map = [
             ['create_time', '<=', strtotime('-30 days')],
         ];
-        $request_log->where($map)
+        $model_request_log->where($map)
         ->delete();
     }
 }

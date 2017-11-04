@@ -28,7 +28,7 @@ function use_time_memory($start = false)
     } else {
         return
         lang('run time') .
-        Debug::getRangeTime('memory_start', 'end', 3) . 's ' .
+        Debug::getRangeTime('memory_start', 'end', 2) . ' S ' .
         lang('run memory') .
         Debug::getRangeMem('memory_start', 'end');
     }
@@ -87,56 +87,6 @@ function lang($_name, $_vars = [], $_lang = '')
         $return = Lang::get($_name, $_vars, $_lang);
     }
     return $return;
-}
-
-/**
- * 实例化Controller
- * @param  string $_name  Controller名称
- * @param  array  $_vars  请求变量
- * @param  string $_layer 业务层名称
- * @return mixed
- */
-function action($_name, $_vars = [], $_layer = '')
-{
-    if ($_layer) {
-        $_layer = 'controller\\' . $_layer;
-    }
-
-    return app()->action($_name, $_vars, $_layer);
-}
-
-/**
- * 实例化Logic
- * @param  string $_name   Logic名称
- * @param  string $_layer  业务层名称
- * @param  string $_module 模块名
- * @return \think\Model
- */
-function logic($_name = '', $_layer = 'logic', $_module = '')
-{
-    if ($_layer) {
-        $_layer = 'logic\\' . $_layer;
-    } else {
-        $_layer = 'logic';
-    }
-    return app()->model($_name, $_layer, false, $_module);
-}
-
-/**
- * 实例化Model
- * @param string $_name   Model名称
- * @param string $_layer  业务层名称
- * @param string $_module 模块名
- * @return \think\Model
- */
-function model($_name = '', $_layer = 'model', $_module = '')
-{
-    if ($_layer) {
-        $_layer = 'model\\' . $_layer;
-    } else {
-        $_layer = 'model';
-    }
-    return app()->model($_name, $_layer, false, $_module);
 }
 
 /**

@@ -14,6 +14,8 @@
  */
 namespace app\admin\logic\account;
 
+use app\common\model\Node as ModelNode;
+
 class Rbac
 {
     private $model;
@@ -36,7 +38,7 @@ class Rbac
 
     public function __construct()
     {
-        $this->model = model('Node', '', 'common');
+        $this->model = new ModelNode;
 
         $this->module     = strtoupper(request()->module());
         $this->controller = strtoupper(request()->controller());

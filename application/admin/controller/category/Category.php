@@ -13,6 +13,11 @@
  */
 namespace app\admin\controller\category;
 
+use app\admin\logic\category\Category as LogicCategory;
+
+use app\common\logic\Models as LogicModels;
+use app\common\logic\Level as LogicLevel;
+
 class Category
 {
 
@@ -29,8 +34,8 @@ class Category
             'key'  => input('param.q'),
         ];
 
-        $category = logic('Category', 'category', 'admin');
-        return $category->getListData($request_data);
+        $logic_category = new LogicCategory;
+        return $logic_category->getListData($request_data);
     }
 
     /**
@@ -62,20 +67,22 @@ class Category
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $category = logic('Category', 'category', 'admin');
-                $return = $category->create($form_data);
+                $logic_category = new LogicCategory;
+                $return = $logic_category->create($form_data);
             }
         } else {
             $request_data = [
                 'pid'  => input('param.pid/f', 0),
             ];
 
-            $category = logic('Category', 'category', 'admin');
+            $logic_category = new LogicCategory;
+            $logic_models = new LogicModels;
+            $logic_level = new LogicLevel;
             $return = [
-                'parent' => $category->getParentData($request_data),
-                'type'   => $category->getCategoryType(),
-                'models' => logic('Models', '', 'common')->getOpen(),
-                'level'  => logic('Level', '', 'common')->getOpen(),
+                'parent' => $logic_category->getParentData($request_data),
+                'type'   => $logic_category->getCategoryType(),
+                'models' => $logic_models->getOpen(),
+                'level'  => $logic_level->getOpen(),
             ];
         }
 
@@ -110,20 +117,22 @@ class Category
             $return = validate($form_data, 'Category.editor', 'category', 'admin');
             if (true === $return) {
                 unset($form_data['__token__']);
-                $model = logic('Category', 'category', 'admin');
-                $return = $model->update($form_data);
+                $logic_category = new LogicCategory;
+                $return = $logic_category->update($form_data);
             }
         } else {
             $request_data = [
                 'id'  => input('param.id/f'),
             ];
 
-            $category = logic('Category', 'category', 'admin');
+            $logic_category = new LogicCategory;
+            $logic_models = new LogicModels;
+            $logic_level = new LogicLevel;
             $return = [
-                'data'   => $category->getEditorData($request_data),
-                'type'   => $category->getCategoryType(),
-                'models' => logic('Models', '', 'common')->getOpen(),
-                'level'  => logic('Level', '', 'common')->getOpen(),
+                'data'   => $logic_category->getEditorData($request_data),
+                'type'   => $logic_category->getCategoryType(),
+                'models' => $logic_models->getOpen(),
+                'level'  => $logic_level->getOpen(),
             ];
 
             if (!$return['data']) {
@@ -146,8 +155,8 @@ class Category
             'id'  => input('param.id/f'),
         ];
 
-        $category = logic('Category', 'category', 'admin');
-        return $category->remove($request_data);
+        $logic_category = new LogicCategory;
+        return $logic_category->remove($request_data);
     }
 
     /**
@@ -162,7 +171,7 @@ class Category
             'id' => input('post.sort/a'),
         ];
 
-        $category = logic('Category', 'category', 'admin');
-        return $category->sort($form_data);
+        $logic_category = new LogicCategory;
+        return $logic_category->sort($form_data);
     }
 }

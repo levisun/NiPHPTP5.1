@@ -28,7 +28,7 @@ class Config
     {
         unset($_form_data['id'], $_form_data['__token__']);
 
-        $config = new ModelConfig;
+        $model_config = new ModelConfig;
 
         $map = $data = [];
         foreach ($_form_data as $key => $value) {
@@ -37,7 +37,7 @@ class Config
             ];
             $data = ['value' => $value];
 
-            $config->allowField(true)
+            $model_config->allowField(true)
             ->where($map)
             ->update($data);
         }

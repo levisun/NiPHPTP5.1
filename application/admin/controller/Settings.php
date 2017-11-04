@@ -15,6 +15,13 @@ namespace app\admin\controller;
 
 use app\admin\controller\Base;
 
+use app\admin\controller\settings\Info as ControllerInfo;
+use app\admin\controller\settings\Basic as ControllerBasic;
+use app\admin\controller\settings\Lang as ControllerLang;
+use app\admin\controller\settings\Image as ControllerImage;
+use app\admin\controller\settings\Safe as ControllerSafe;
+use app\admin\controller\settings\Email as ControllerEmail;
+
 class Settings extends Base
 {
 
@@ -26,7 +33,8 @@ class Settings extends Base
      */
     public function info()
     {
-        $result = action('Info/info', [], 'settings');
+        $controller_info = new ControllerInfo;
+        $result = $controller_info->info();
         $this->assign('json_data', json_encode($result));
         return $this->fetch();
     }
@@ -39,7 +47,8 @@ class Settings extends Base
      */
     public function basic()
     {
-        $result = action('Basic/editor', [], 'settings');
+        $controller_basic = new ControllerBasic;
+        $result = $controller_basic->editor();
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -56,7 +65,8 @@ class Settings extends Base
      */
     public function lang()
     {
-        $result = action('Lang/editor', [], 'settings');
+        $controller_lang = new ControllerLang;
+        $result = $controller_lang->editor();
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -73,7 +83,8 @@ class Settings extends Base
      */
     public function image()
     {
-        $result = action('Image/editor', [], 'settings');
+        $controller_image = new ControllerImage;
+        $result = $controller_image->editor();
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -90,7 +101,8 @@ class Settings extends Base
      */
     public function safe()
     {
-        $result = action('Safe/editor', [], 'settings');
+        $controller_safe = new ControllerSafe;
+        $result = $controller_safe->editor();
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {
@@ -107,7 +119,8 @@ class Settings extends Base
      */
     public function email()
     {
-        $result = action('Email/editor', [], 'settings');
+        $controller_email = new ControllerEmail;
+        $result = $controller_email->editor();
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
         } else {

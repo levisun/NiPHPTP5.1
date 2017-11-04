@@ -28,9 +28,9 @@ class Models
     {
         unset($_form_data['id'], $_form_data['__token__']);
 
-        $models = new ModelModels;
+        $model_models = new ModelModels;
         $result =
-        $models->allowField(true)
+        $model_models->allowField(true)
         ->create($_form_data);
 
         return $result->id;
@@ -48,9 +48,9 @@ class Models
             ['id', '=', $_receive_data['id']],
         ];
 
-        $models = new ModelModels;
+        $model_models = new ModelModels;
         $result =
-        $models->where($map)
+        $model_models->where($map)
         ->delete();
 
         return !!$result;
@@ -70,9 +70,9 @@ class Models
 
         unset($_form_data['id'], $_form_data['__token__']);
 
-        $models = new ModelModels;
+        $model_models = new ModelModels;
         $result =
-        $models->allowField(true)
+        $model_models->allowField(true)
         ->where($map)
         ->update($_form_data);
 
@@ -94,9 +94,9 @@ class Models
             ];
         }
 
-        $models = new ModelModels;
+        $model_models = new ModelModels;
         $result =
-        $models->saveAll($data);
+        $model_models->saveAll($data);
 
         return !!$result;
     }
@@ -113,9 +113,9 @@ class Models
             ['id', '<', '9']
         ];
 
-        $models = new ModelModels;
+        $model_models = new ModelModels;
         $result =
-        $models->field(true)
+        $model_models->field(true)
         ->where($map)
         ->order('sort DESC')
         ->select();
@@ -139,9 +139,9 @@ class Models
             ['status', '=', 1],
         ];
 
-        $models = new ModelModels;
+        $model_models = new ModelModels;
         $result =
-        $models->field(true)
+        $model_models->field(true)
         ->where($map)
         ->order('sort DESC')
         ->select();

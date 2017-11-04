@@ -13,6 +13,8 @@
  */
 namespace app\admin\logic\common;
 
+use app\common\model\Category as ModelCategory;
+
 class Common
 {
     // 不获得系统设置数据与权限菜单的方法
@@ -160,10 +162,10 @@ class Common
         ];
 
         // 实例化栏目表模型
-        $category = model('Category', '', 'common');
+        $model_category = new ModelCategory;
 
         $result =
-        $category->field(['id','pid','name'])
+        $model_category->field(['id','pid','name'])
         ->where($map)
         ->find();
 

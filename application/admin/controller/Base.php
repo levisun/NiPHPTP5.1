@@ -17,6 +17,10 @@ use think\Controller;
 use think\facade\Env;
 use think\facade\Lang;
 
+use app\common\logic\Upload as LogicUpload;
+use app\admin\logic\common\Common as LogicCommon;
+use app\admin\logic\account\Rbac as LogicRbac;
+
 class Base extends Controller
 {
     // 请求参数
@@ -44,91 +48,6 @@ class Base extends Controller
     }
 
     /**
-     * 列表
-     * @access protected
-     * @param  string    $_name
-     * @param  array     $_vars
-     * @param  string    $_layer
-     * @return string
-     */
-    protected function listing($_name, $_vars = [], $_layer = '')
-    {
-        $result = action($_name, $_vars, $_layer);
-        $this->assign('json_data', json_encode($result));
-        return $this->fetch();
-    }
-
-    /**
-     * 新增
-     * @access protected
-     * @param  string    $_name
-     * @param  array     $_vars
-     * @param  string    $_layer
-     * @return mixed
-     */
-    protected function added($_name, $_vars = [], $_layer = '')
-    {
-        $result = action($_name, $_vars, $_layer);
-        if ($result && !is_array($result)) {
-            $this->showMessage($result, lang('added success'));
-        } else {
-            if ($result) {
-                $this->assign('json_data', json_encode($result));
-            }
-            return $this->fetch($this->requestParam['action'] . '_' . input('param.operate'));
-        }
-    }
-
-    /**
-     * 删除
-     * @access protected
-     * @param  string    $_name
-     * @param  array     $_vars
-     * @param  string    $_layer
-     * @return void
-     */
-    protected function remove($_name, $_vars = [], $_layer = '')
-    {
-        $result = action($_name, $_vars, $_layer);
-        $this->showMessage($result, lang('remove success'));
-    }
-
-    /**
-     * 编辑
-     * @access protected
-     * @param  string    $_name
-     * @param  array     $_vars
-     * @param  string    $_layer
-     * @return mixed
-     */
-    protected function editor($_name, $_vars = [], $_layer = '')
-    {
-        $result = action($_name, $_vars, $_layer);
-        if (!is_array($result)) {
-            $this->showMessage($result, lang('editor success'));
-        } else {
-            if ($result) {
-                $this->assign('json_data', json_encode($result));
-            }
-            return $this->fetch($this->requestParam['action'] . '_' . input('param.operate'));
-        }
-    }
-
-    /**
-     * 排序
-     * @access protected
-     * @param  string    $_name
-     * @param  array     $_vars
-     * @param  string    $_layer
-     * @return void
-     */
-    protected function sort($_name, $_vars = [], $_layer = '')
-    {
-        $result = action($_name, $_vars, $_layer);
-        $this->showMessage($result, lang('sort success'));
-    }
-
-    /**
      * 上传文件
      * @access public
      * @param
@@ -148,8 +67,8 @@ class Base extends Controller
                 $this->error($result);
             }
 
-            $upload = logic('Upload', 'logic\common');
-            $result = $upload->fileOne($form_data);
+            $logic_upload = new LogicUpload;
+            $result = $logic_upload->fileOne($form_data);
 
             if (is_string($result)) {
                 $this->error($result);
@@ -191,9 +110,9 @@ class Base extends Controller
     private function auth()
     {
         if (session('?' . config('user_auth_key'))) {
-            $rbac = logic('Rbac', 'account', 'admin');
+            $logic_rbac = new LogicRbac;
             // 审核用户权限
-            if (!$rbac->checkAuth(session(config('user_auth_key')))) {
+            if (!$logic_rbac->checkAuth(session(config('user_auth_key')))) {
                 $this->error('no permission', 'settings/info');
             }
             // 登录页重定向
@@ -272,8 +191,8 @@ class Base extends Controller
         ];
 
         // 注入常用模板变量
-        $common = logic('Common', 'common', 'admin');
-        $auth_data = $common->createSysData();
+        $logic_common = new LogicCommon;
+        $auth_data = $logic_common->createSysData();
 
         $replace['__TITLE__'] = $auth_data['title'];
         if (!empty($auth_data['auth_menu'])) {

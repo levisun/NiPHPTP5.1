@@ -48,10 +48,10 @@ class Dangdang extends Base
         preg_match('/(<article>)(.*?)(<\/article>)/si', $result, $matches);
         $detail['title'] = $matches[2];
 
-        preg_match('/(<span id="main_price">)(.*?)(<\/span>)/si', $result, $matches);
+        preg_match('/( <b>&yen;<span id="main_price">)(.*?)(<\/span><\/b>)/si', $result, $matches);
         $detail['price'] = $matches[2];
 
-        preg_match('/(<ul class="top-slider" style="width:500%;">)(.*?)(<\/ul>)/si', $result, $matches);
+        preg_match('/(<ul class="top-slider" style="width:[0-9]+%;">)(.*?)(<\/ul>)/si', $result, $matches);
         $images = $matches[2];
         preg_match('/(<img src=")(.*?)(")/si', $images, $m);
         $detail['images'][] = $m[2];

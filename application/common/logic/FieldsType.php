@@ -26,9 +26,9 @@ class FieldsType
      */
     public function getOpen()
     {
-        $fields_type = new ModelFieldsType;
+        $model_fields_type = new ModelFieldsType;
         $result =
-        $fields_type->field(true)
+        $model_fields_type->field(true)
         ->order('id DESC')
         ->select();
 

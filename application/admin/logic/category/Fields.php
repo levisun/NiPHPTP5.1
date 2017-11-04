@@ -14,6 +14,8 @@
 namespace app\admin\logic\category;
 
 use app\common\logic\Fields as LogicFields;
+use app\common\model\Fields as ModelFields;
+use app\common\model\Category as ModelCategory;
 
 class Fields extends LogicFields
 {
@@ -40,12 +42,11 @@ class Fields extends LogicFields
             $map[] = ['m.id', '=', $_request_data['mid']];
         }
 
-        $fields = model('Fields', '', 'common');
+        $model_fields = new ModelFields;
         $result =
-        $fields->view('fields f', 'id,category_id,name,description,is_require')
+        $model_fields->view('fields f', 'id,category_id,name,description,is_require')
         ->view('category c', ['name'=>'cat_name'], 'c.id=f.category_id')
         ->view('fields_type t', ['name'=>'type_name'], 't.id=f.type_id')
-        // ->view('model m', ['name'=>'model_name'], 'm.id=c.model_id')
         ->where($map)
         ->order('f.id DESC')
         ->paginate();
@@ -59,5 +60,34 @@ class Fields extends LogicFields
             'data' => $result->toArray(),
             'page' => $result->render(),
         ];
+    }
+
+    /**
+     * 获得导航
+     * @access public
+     * @param  int    $_pid
+     * @return array
+     */
+    public function getCategory($_pid = 0)
+    {
+        $map = [
+            ['pid', '=', $_pid],
+            ['model_id', 'not in', '8,9'],
+            ['lang', '=', lang(':detect')],
+        ];
+
+        $model_category = new ModelCategory;
+        $result =
+        $model_category->field(true)
+        ->where($map)
+        ->select();
+
+        $return = $result->toArray();
+        foreach ($return as $key => $value) {
+            $result = $this->getCategory($value['id']);
+            $return[$key]['child'] = $result;
+        }
+
+        return $return;
     }
 }

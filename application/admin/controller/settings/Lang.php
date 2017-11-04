@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\settings;
 
+use app\admin\logic\settings\Lang as LogicLang;
+
 class Lang
 {
 
@@ -27,8 +29,8 @@ class Lang
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $lang = logic('Lang', 'settings', 'admin');
-            $result = $lang->getLangConfig();
+            $logic_lang = new LogicLang;
+            $result = $logic_lang->getLangConfig();
         }
 
         return $result;
@@ -57,7 +59,7 @@ class Lang
 
         unset($form_data['__token__']);
 
-        $basic = logic('Lang', 'settings', 'admin');
-        return $basic->update($form_data);
+        $logic_lang = new LogicLang;
+        return $logic_lang->update($form_data);
     }
 }

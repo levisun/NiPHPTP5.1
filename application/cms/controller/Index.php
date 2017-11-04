@@ -17,6 +17,11 @@ class Index
 {
     public function index()
     {
-        halt(1002%10);
+        // halt(1002%10);
+        $str = 'SELECT';
+        halt(escape_xss($str));
+
+        // $t = \util\File::all(__DIR__);
+        // halt($t);
     }
 }

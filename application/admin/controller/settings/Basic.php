@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\settings;
 
+use app\admin\logic\settings\Basic as LogicBasic;
+
 class Basic
 {
 
@@ -27,8 +29,8 @@ class Basic
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Basic', 'settings', 'admin');
-            $result = $basic->getBasicConfig();
+            $logic_basic = new LogicBasic;
+            $result = $logic_basic->getBasicConfig();
         }
 
         return $result;
@@ -60,7 +62,7 @@ class Basic
 
         unset($form_data['__token__']);
 
-        $basic = logic('Basic', 'settings', 'admin');
-        return $basic->update($form_data);
+        $logic_basic = new LogicBasic;
+        return $logic_basic->update($form_data);
     }
 }

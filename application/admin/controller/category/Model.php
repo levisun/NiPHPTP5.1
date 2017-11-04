@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\category;
 
+use app\admin\logic\category\Model as LogicModel;
+
 class Model
 {
 
@@ -24,8 +26,8 @@ class Model
      */
     public function getListData()
     {
-        $model = logic('Model', 'category', 'admin');
-        return $model->getListData();
+        $logic_model = new LogicModel;
+        return $logic_model->getListData();
     }
 
     /**
@@ -50,13 +52,13 @@ class Model
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $model = logic('Model', 'category', 'admin');
-                $return = $model->create($form_data);
+                $logic_model = new LogicModel;
+                $return = $logic_model->create($form_data);
             }
         } else {
-            $model = logic('Model', 'category', 'admin');
+            $logic_model = new LogicModel;
             $return = [
-                'models' => $model->getSysModel(),
+                'models' => $logic_model->getSysModel(),
             ];
         }
 
@@ -84,20 +86,20 @@ class Model
             if (true === $return) {
                 unset($form_data['__token__']);
 
-                $model = logic('Model', 'category', 'admin');
-                $return = $model->update($form_data);
+                $logic_model = new LogicModel;
+                $return = $logic_model->update($form_data);
             }
         } else {
             $request_data = [
                 'id'  => input('param.id/f'),
             ];
 
-            $model = logic('Model', 'category', 'admin');
-            $return = $model->getEditorData($request_data);
+            $logic_model = new LogicModel;
+            $return = $logic_model->getEditorData($request_data);
 
             $return = [
-                'data'  => $model->getEditorData($request_data),
-                'models' => $model->getSysModel(),
+                'data'  => $logic_model->getEditorData($request_data),
+                'models' => $logic_model->getSysModel(),
             ];
         }
 
@@ -116,8 +118,8 @@ class Model
             'id'  => input('param.id/f'),
         ];
 
-        $model = logic('Model', 'category', 'admin');
-        return $model->remove($request_data);
+        $logic_model = new LogicModel;
+        return $logic_model->remove($request_data);
     }
 
     /**
@@ -132,7 +134,7 @@ class Model
             'id' => input('post.sort/a'),
         ];
 
-        $model = logic('Model', 'category', 'admin');
-        return $model->sort($form_data);
+        $logic_model = new LogicModel;
+        return $logic_model->sort($form_data);
     }
 }

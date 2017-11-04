@@ -1,20 +1,22 @@
 <?php
 /**
  *
- * 上传文件 - 公众 - 业务层
+ * 上传文件 - 业务层
  *
  * @package   NiPHPCMS
- * @category  admin\logic\common
+ * @category  common\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Upload.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/09/13
  */
-namespace app\admin\logic\common;
+namespace app\common\logic;
 
 use think\Image;
 use think\facade\Env;
+
+use app\common\model\Config as ModelConfig;
 
 class Upload
 {
@@ -122,11 +124,11 @@ class Upload
                 ['lang', '=', lang(':detect')],
             ];
 
-            $config = model('Config', '', 'common');
+            $model_config = new ModelConfig;
 
             // 获得水印设置
             $result =
-            $config->field(true)
+            $model_config->field(true)
             ->where($map)
             ->select();
 
@@ -186,10 +188,10 @@ class Upload
                 ['lang', '=', lang(':detect')],
             ];
 
-            $config = model('Config', '', 'common');
+            $model_config = new ModelConfig;
 
             $result =
-            $config->where($map)
+            $model_config->where($map)
             ->column('name, value');
 
             $thumb_width = $result[$_model . '_module_width'];
@@ -220,10 +222,10 @@ class Upload
             ['lang', '=', 'niphp'],
         ];
 
-        $config = model('Config', '', 'common');
+        $model_config = new ModelConfig;
 
         $result =
-        $config->field(true)
+        $model_config->field(true)
         ->where($map)
         ->select();
 

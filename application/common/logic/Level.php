@@ -26,9 +26,9 @@ class Level
      */
     public function create($_form_data)
     {
-        $level = new ModelLevel;
+        $model_level = new ModelLevel;
         $result =
-        $level->allowField(true)
+        $model_level->allowField(true)
         ->create($_form_data);
 
         return $result->id;
@@ -46,9 +46,9 @@ class Level
             ['id', '=', $_receive_data['id']],
         ];
 
-        $level = new ModelLevel;
+        $model_level = new ModelLevel;
         $result =
-        $level->where($map)
+        $model_level->where($map)
         ->delete();
 
         return !!$result;
@@ -68,9 +68,9 @@ class Level
 
         unset($_form_data['id']);
 
-        $level = new ModelLevel;
+        $model_level = new ModelLevel;
         $result =
-        $level->allowField(true)
+        $model_level->allowField(true)
         ->where($map)
         ->update($_form_data);
 
@@ -89,9 +89,9 @@ class Level
             ['status', '=', 1],
         ];
 
-        $level = new ModelLevel;
+        $model_level = new ModelLevel;
         $result =
-        $level->field(true)
+        $model_level->field(true)
         ->where($map)
         ->select();
 

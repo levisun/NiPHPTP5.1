@@ -28,9 +28,9 @@ class Category
     {
         unset($_form_data['id'], $_form_data['__token__']);
 
-        $category = new ModelCategory;
+        $model_category = new ModelCategory;
         $result =
-        $category->allowField(true)
+        $model_category->allowField(true)
         ->create($_form_data);
 
         return $result->id;
@@ -48,9 +48,9 @@ class Category
             ['id', '=', $_receive_data['id']],
         ];
 
-        $category = new ModelCategory;
+        $model_category = new ModelCategory;
         $result =
-        $category->where($map)
+        $model_category->where($map)
         ->delete();
 
         return !!$result;
@@ -70,9 +70,9 @@ class Category
 
         unset($_form_data['id'], $_form_data['__token__']);
 
-        $category = new ModelCategory;
+        $model_category = new ModelCategory;
         $result =
-        $category->allowField(true)
+        $model_category->allowField(true)
         ->where($map)
         ->update($_form_data);
 
@@ -98,9 +98,9 @@ class Category
             ];
         }
 
-        $category = new ModelCategory;
+        $model_category = new ModelCategory;
         $result =
-        $category->saveAll($data);
+        $model_category->saveAll($data);
 
         return !!$result;
     }

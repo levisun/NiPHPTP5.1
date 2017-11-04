@@ -13,6 +13,10 @@
  */
 namespace app\admin\controller\category;
 
+use app\admin\logic\category\Fields as LogicFields;
+
+use app\common\logic\FieldsType as LogicFieldsType;
+
 class Fields
 {
 
@@ -30,8 +34,8 @@ class Fields
             'mid'  => input('param.mid/f'),
         ];
 
-        $fields = logic('Fields', 'category', 'admin');
-        return $fields->getListData($request_data);
+        $logic_fields = new LogicFields;
+        return $logic_fields->getListData($request_data);
     }
 
     public function added()
@@ -39,8 +43,12 @@ class Fields
         if (request()->isPost()) {
 
         } else {
+            $logic_fields = new LogicFields;
+            $logic_fields_type = new LogicFieldsType;
             $return = [
-                'fields_type' => logic('FieldsType', '', 'common')->getOpen(),
+                'category_list' => $logic_fields->getCategory(),
+                'fields_type' => $logic_fields_type->getOpen(),
+
             ];
         }
 

@@ -13,6 +13,9 @@
  */
 namespace app\admin\controller\account;
 
+use app\common\logic\RequestLog as LogicRequestLog;
+use app\admin\logic\account\Login as LogicLogin;
+
 class Login
 {
 
@@ -37,37 +40,37 @@ class Login
         }
 
         // 实例化登录业务逻辑类
-        $login = logic('Login', 'account', 'admin');
-        $request_log = logic('RequestLog', '', 'common');
+        $logic_login = new LogicLogin;
+        $logic_request_log = new LogicRequestLog;
 
         // IP锁定 直接返回false
-        if ($request_log->isLockIp($login_ip, $module)) {
+        if ($logic_request_log->isLockIp($login_ip, $module)) {
             return lang('error username or password');
         }
 
         // 获得用户信息
-        $user_data = $login->getUserData($form_data['username']);
+        $user_data = $logic_login->getUserData($form_data['username']);
         if (false === $user_data) {
             // 用户不存在 锁定IP
-            $request_log->lockIp($login_ip, $module);
+            $logic_request_log->lockIp($login_ip, $module);
             return lang('error username or password');
         }
 
         // 登录密码错误
-        if (!$login->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
+        if (!$logic_login->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
-            $request_log->lockIp($login_ip, $module);
+            $logic_request_log->lockIp($login_ip, $module);
             return lang('error username or password');
         }
 
         // 更新登录信息
-        $login->updateLogin($user_data['id'], $login_ip);
+        $logic_login->updateLogin($user_data['id'], $login_ip);
 
         // 生成登录用户认证信息
-        $login->createAuth($user_data);
+        $logic_login->createAuth($user_data);
 
         // 登录成功 清除锁定IP
-        $request_log->removeLockIp($login_ip, $module);
+        $logic_request_log->removeLockIp($login_ip, $module);
 
         return true;
     }

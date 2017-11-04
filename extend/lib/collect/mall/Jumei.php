@@ -42,9 +42,10 @@ class Jumei extends Base
     public function detail($url)
     {
         $url = 'http:' . urldecode($url);
+        $arr = explode('?', $url);
+        $id = $arr[1];
 
-        $q_url = 'http://h5.jumei.com/product/ajaxStaticDetail?type=jumei_mall&item_id=';
-        $q_url .= substr($url, 59);
+        $q_url = 'http://h5.jumei.com/product/ajaxStaticDetail?' . $id;
         $result = $this->snoopy($q_url);
         $json = json_decode($result, true);
 
@@ -69,8 +70,7 @@ class Jumei extends Base
             '规格参数' => $prop
         );
 
-        $q_url = 'http://h5.jumei.com/product/ajaxDynamicDetail?type=jumei_mall&item_id=';
-        $q_url .= substr($url, 59);
+        $q_url = 'http://h5.jumei.com/product/ajaxDynamicDetail?' . $id;
         $result = $this->snoopy($q_url);
         $json = json_decode($result, true);
         $detail['price'] = $json['data']['result']['size'][0]['jumei_price'];

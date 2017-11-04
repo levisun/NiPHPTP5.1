@@ -13,6 +13,9 @@
  */
 namespace app\admin\logic\account;
 
+use app\common\logic\Admin as LogicAdmin;
+use app\common\model\Admin as ModelAdmin;
+
 class Login
 {
 
@@ -25,13 +28,13 @@ class Login
     public function getUserData($_username)
     {
         // 实例化Admin表模型类
-        $admin = model('Admin', '', 'common');
+        $model_admin = new ModelAdmin;
 
         $map = [
             ['a.username', '=', $_username],
         ];
         $result =
-        $admin->view('admin a', 'id,username,password,email,salt')
+        $model_admin->view('admin a', 'id,username,password,email,salt')
         // 管理员组关系表
         ->view('role_admin ra', 'user_id', 'a.id=ra.user_id')
         // 组表
@@ -85,8 +88,8 @@ class Login
         ];
 
         // 实例化Admin业务类
-        $admin = logic('Admin', '', 'common');
-        return $admin->update($update_data);
+        $logic_admin = new LogicAdmin;
+        return $logic_admin->update($update_data);
     }
 
     /**

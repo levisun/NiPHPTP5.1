@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\settings;
 
+use app\admin\logic\settings\Safe as LogicSafe;
+
 class Safe
 {
 
@@ -27,8 +29,8 @@ class Safe
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Safe', 'settings', 'admin');
-            $result = $basic->getSafeConfig();
+            $logic_safe = new LogicSafe;
+            $result = $logic_safe->getSafeConfig();
         }
 
         return $result;
@@ -60,7 +62,7 @@ class Safe
 
         unset($form_data['__token__']);
 
-        $basic = logic('Safe', 'settings', 'admin');
-        return $basic->update($form_data);
+        $logic_safe = new LogicSafe;
+        return $logic_safe->update($form_data);
     }
 }

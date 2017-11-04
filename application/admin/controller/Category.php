@@ -15,6 +15,10 @@ namespace app\admin\controller;
 
 use app\admin\controller\Base;
 
+use app\admin\controller\category\Category as ControllerCategory;
+use app\admin\controller\category\Model as ControllerModel;
+use app\admin\controller\category\Fields as ControllerFields;
+
 class Category extends Base
 {
 
@@ -29,10 +33,12 @@ class Category extends Base
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
+        $controller_category = new ControllerCategory;
+
         switch ($operate) {
             case 'added':
             case 'editor':
-                $result = action('Category/' . $operate, [], 'category');
+                $result = $controller_category->$operate();
                 if (is_string($result)) {
                     $this->showMessage($result, lang($operate . ' success'));
                 } else {
@@ -43,12 +49,12 @@ class Category extends Base
 
             case 'remove':
             case 'sort':
-                $result = action('Category/' . $operate, [], 'category');
+                $result = $controller_category->$operate();
                 $this->showMessage($result, lang($operate .' success'));
                 break;
 
             default:
-                $result = action('Category/getListData', [], 'category');
+                $result = $controller_category->getListData();
                 $this->assign('json_data', json_encode($result));
                 $tpl = $this->fetch();
                 break;
@@ -67,10 +73,12 @@ class Category extends Base
     {
         $this->assign('button_added', true);
 
+        $controller_model = new ControllerModel;
+
         switch ($operate) {
             case 'added':
             case 'editor':
-                $result = action('Model/' . $operate, [], 'category');
+                $result = $controller_model->$operate();
                 if (is_string($result)) {
                     $this->showMessage($result, lang($operate . ' success'));
                 } else {
@@ -81,12 +89,12 @@ class Category extends Base
 
             case 'remove':
             case 'sort':
-                $result = action('Model/' . $operate, [], 'category');
+                $result = $controller_model->$operate();
                 $this->showMessage($result, lang($operate .' success'));
                 break;
 
             default:
-                $result = action('Model/getListData', [], 'category');
+                $result = $controller_model->getListData();
                 $this->assign('json_data', json_encode($result));
                 $tpl = $this->fetch();
                 break;
@@ -106,14 +114,15 @@ class Category extends Base
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
+        $controller_fields = new ControllerFields;
+
         switch ($operate) {
             case 'added':
             case 'editor':
-                $result = action('Fields/' . $operate, [], 'category');
+                $result = $controller_fields->$operate();
                 if (is_string($result)) {
                     $this->showMessage($result, lang($operate . ' success'));
                 } else {
-                    halt($result);
                     $this->assign('json_data', json_encode($result));
                     $tpl = $this->fetch('fields_' . $operate);
                 }
@@ -121,12 +130,12 @@ class Category extends Base
 
             case 'remove':
             case 'sort':
-                $result = action('Fields/' . $operate, [], 'category');
+                $result = $controller_fields->$operate();
                 $this->showMessage($result, lang($operate .' success'));
                 break;
 
             default:
-                $result = action('Fields/getListData', [], 'category');
+                $result = $controller_fields->getListData();
                 $this->assign('json_data', json_encode($result));
                 $tpl = $this->fetch();
                 break;

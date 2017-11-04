@@ -14,6 +14,7 @@
 namespace app\admin\logic\category;
 
 use app\common\logic\Category as LogicCategory;
+use app\common\model\Category as ModelCategory;
 
 class Category extends LogicCategory
 {
@@ -36,9 +37,9 @@ class Category extends LogicCategory
             $map[] = ['c.name', 'like', $_request_data['key'] . '%'];
         }
 
-        $category = model('Category', '', 'common');
+        $model_category = new ModelCategory;
         $result =
-        $category->view('category c', true)
+        $model_category->view('category c', true)
         ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
         ->view('category cc', ['id' => 'child'], 'c.id=cc.pid', 'LEFT')
         ->where($map)
@@ -86,9 +87,9 @@ class Category extends LogicCategory
             ['c.lang', '=', lang(':detect')],
         ];
 
-        $category = model('Category', '', 'common');
+        $model_category = new ModelCategory;
         $result =
-        $category->view('category c', true)
+        $model_category->view('category c', true)
         ->view('category cc', ['name'=>'parent_name'], 'c.pid=cc.id', 'LEFT')
         ->where($map)
         ->find();
@@ -109,9 +110,9 @@ class Category extends LogicCategory
             ['pid', '=', $_request_data['id']],
         ];
 
-        $category = model('Category', '', 'common');
+        $model_category = new ModelCategory;
         $result =
-        $category->field(true)
+        $model_category->field(true)
         ->where($map)
         ->find();
 
@@ -140,9 +141,9 @@ class Category extends LogicCategory
             ['lang', '=', lang(':detect')],
         ];
 
-        $category = model('Category', '', 'common');
+        $model_category = new ModelCategory;
         $result =
-        $category->field(true)
+        $model_category->field(true)
         ->where($map)
         ->find();
 

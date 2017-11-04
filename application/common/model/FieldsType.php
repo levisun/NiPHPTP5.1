@@ -35,8 +35,8 @@ class FieldsType extends Model
      * @param  string $_value
      * @return string
      */
-    public function getFieldNameAttr($_value)
+    public function getFieldNameAttr($_value, $_data)
     {
-        return lang('fields type ' . $_value);
+        return lang('fields type ' . $_data['name']);
     }
 }

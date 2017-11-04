@@ -32,9 +32,9 @@ class Admin
 
         unset($_form_data['id']);
 
-        $admin = new ModelAdmin;
+        $model_admin = new ModelAdmin;
         $result =
-        $admin->allowField(true)
+        $model_admin->allowField(true)
         ->where($map)
         ->update($_form_data);
 

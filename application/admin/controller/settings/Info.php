@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\settings;
 
+use app\admin\logic\settings\Info as LogicInfo;
+
 class Info
 {
     /**
@@ -23,9 +25,9 @@ class Info
      */
     public function info()
     {
-        $info = logic('Info', 'settings', 'admin');
+        $logic_info = new LogicInfo;
 
-        $member = $info->member();
+        $member = $logic_info->member();
 
         $gd_info = gd_info();
         $gd  = strtr($gd_info['GD Version'], ['bundled (' => '', ' compatible)' => '']) . '(';
@@ -54,7 +56,7 @@ class Info
                 // 数据库类型与版本
                 [
                     'name'  => lang('sys db'),
-                    'value' => config('database.type') . $info->dbVersion(),
+                    'value' => config('database.type') . $logic_info->dbVersion(),
                 ],
                 [
                     'name'  => 'GD',
@@ -71,7 +73,7 @@ class Info
                 // 表错误统计
                 [
                     'name'  => lang('sys table error'),
-                    'value' => '<a href="' . url('expand/databack', array('method' => 'optimize')) . '">' . $info->dbTableErr() . '</a>',
+                    'value' => '<a href="' . url('expand/databack', array('method' => 'optimize')) . '">' . $logic_info->dbTableErr() . '</a>',
                 ],
                 [
                     'name'  => lang('sys upgrade'),
@@ -99,11 +101,11 @@ class Info
                     'value' => [
                         [
                             'name'  => lang('feedback'),
-                            'value' => $info->feedback(),
+                            'value' => $logic_info->feedback(),
                         ],
                         [
                             'name'  => lang('message'),
-                            'value' => $info->message(),
+                            'value' => $logic_info->message(),
                         ],
                     ],
                 ],
@@ -113,11 +115,11 @@ class Info
                     'value' => [
                         [
                             'name'  => lang('ads'),
-                            'value' => $info->ads(),
+                            'value' => $logic_info->ads(),
                         ],
                         [
                             'name'  => lang('link'),
-                            'value' => $info->link(),
+                            'value' => $logic_info->link(),
                         ],
                     ],
                 ],
@@ -127,7 +129,7 @@ class Info
             'visit_info' => [
                 [
                     'name'  => 'visit',
-                    'value' => $info->visit(),
+                    'value' => $logic_info->visit(),
                 ],
             ],
         ];

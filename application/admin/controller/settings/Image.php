@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\settings;
 
+use app\admin\logic\settings\Image as LogicImage;
+
 class Image
 {
 
@@ -27,8 +29,8 @@ class Image
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Image', 'settings', 'admin');
-            $result = $basic->getImageConfig();
+            $logic_image = new LogicImage;
+            $result = $logic_image->getImageConfig();
         }
 
         return $result;
@@ -76,7 +78,7 @@ class Image
 
         unset($form_data['__token__']);
 
-        $basic = logic('Image', 'settings', 'admin');
-        return $basic->update($form_data);
+        $logic_image = new LogicImage;
+        return $logic_image->update($form_data);
     }
 }

@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\settings;
 
+use app\admin\logic\settings\Email as LogicEmail;
+
 class Email
 {
 
@@ -27,8 +29,8 @@ class Email
         if (request()->isPost()) {
             $result = $this->update();
         } else {
-            $basic = logic('Email', 'settings', 'admin');
-            $result $basic->getEmailConfig();
+            $logic_email = new LogicEmail;
+            $result $logic_email->getEmailConfig();
         }
 
         return $result;
@@ -60,7 +62,7 @@ class Email
 
         unset($form_data['__token__']);
 
-        $basic = logic('Email', 'settings', 'admin');
-        return $basic->update($form_data);
+        $logic_email = new LogicEmail;
+        return $logic_email->update($form_data);
     }
 }

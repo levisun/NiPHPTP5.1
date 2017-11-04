@@ -13,6 +13,8 @@
  */
 namespace app\admin\controller\account;
 
+use app\admin\logic\account\Logout as LogicLogout;
+
 class Logout
 {
 
@@ -25,8 +27,8 @@ class Logout
     public function logout()
     {
         // 实例化注销业务逻辑类
-        $logout = logic('Logout', 'logic\\account', 'admin');
+        $logic_logout = new LogicLogout;
         // 注销用户登录
-        $logout->removeAuth();
+        $logic_logout->removeAuth();
     }
 }

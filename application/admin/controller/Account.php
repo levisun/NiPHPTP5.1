@@ -15,6 +15,9 @@ namespace app\admin\controller;
 
 use app\admin\controller\Base;
 
+use app\admin\controller\account\Login as ControllerLogin;
+use app\admin\controller\account\Logout as ControllerLogout;
+
 class Account extends Base
 {
 
@@ -27,7 +30,8 @@ class Account extends Base
     public function login()
     {
         if ($this->request->isPost()) {
-            $result = action('Login/login', [], 'account');
+            $controller_login = new ControllerLogin;
+            $result = $controller_login->login();
             if (true === $result) {
                 $this->success(lang('success login'), 'settings/info');
             } else {
@@ -47,7 +51,8 @@ class Account extends Base
      */
     public function logout()
     {
-        action('Logout/logout', [], 'account');
+        $controller_logout = new ControllerLogout;
+        $controller_logout->logout();
         $this->redirect(url('login'));
     }
 }
