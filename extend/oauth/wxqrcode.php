@@ -11,11 +11,10 @@
  * @link      http://www.NiPHP.com
  * @since     2017/01/03
  */
-namespace net\oauth;
+namespace oauth;
 
-use net\oauth\OAuth;
-use net\oauth\Http as OAuthHttp;
-use think\Cookie;
+use oauth\OAuth;
+use oauth\Http as OAuthHttp;
 
 class wxqrcode extends OAuth
 {
@@ -25,7 +24,8 @@ class wxqrcode extends OAuth
 
     public function getAuthorizeURL()
     {
-        Cookie::set('A_S', $this->timestamp);
+        setcookie('A_S', $this->timestamp);
+        $_COOKIE['A_S'] = $this->timestamp;
         $this->initConfig();
         //Oauth 标准参数
         $params = [

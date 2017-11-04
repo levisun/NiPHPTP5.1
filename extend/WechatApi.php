@@ -10,9 +10,8 @@
  * @link      www.NiPHP.com
  * @since     2017/10/20
  */
-namespace util;
 
-use util\Wechat;
+use \Wechat;
 
 class WechatApi extends Wechat
 {

@@ -11,11 +11,10 @@
  * @link      http://www.NiPHP.com
  * @since     2017/01/03
  */
-namespace net\oauth;
+namespace oauth;
 
-use net\oauth\Http as OAuthHttp;
+use oauth\Http as OAuthHttp;
 use think\exception\HttpException;
-use think\Cookie;
 
 abstract class OAuth
 {
@@ -135,7 +134,8 @@ abstract class OAuth
             $params      = $this->_params();
             $data        = OAuthHttp::post($this->AccessTokenURL, $params);
             $this->token = $this->parseToken($data);
-            Cookie::delete('A_S');
+            setcookie('A_S', null, -1);
+            unset($_COOKIE['A_S']);
             return $this->token;
         }
     }

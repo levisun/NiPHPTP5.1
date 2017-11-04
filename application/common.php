@@ -97,9 +97,8 @@ function lang($_name, $_vars = [], $_lang = '')
 function escape_xss($_data)
 {
     if (is_array($_data)) {
-        $return = [];
         foreach ($_data as $key => $value) {
-            $return[$key] = escape_xss($value);
+            $_data[$key] = escape_xss($value);
         }
     } else {
         $pattern = [
@@ -183,7 +182,7 @@ function escape_xss($_data)
             '/<(\/?body.*?)>/si',
         ];
 
-        $result = preg_replace($pattern, '', $_data);
+        $_data = preg_replace($pattern, '', $_data);
 
         $pattern = [
             '/[  ]+/si' => ' ',    // 多余空格
@@ -231,7 +230,7 @@ function escape_xss($_data)
             '/ß/si'         => 'ss',
 
         ];
-        $result = preg_replace(array_keys($pattern), array_values($pattern), $result);
+        $_data = preg_replace(array_keys($pattern), array_values($pattern), $_data);
 
         // 全角转半角
         $strtr = [
@@ -256,12 +255,12 @@ function escape_xss($_data)
             '…' => '...', '‖' => '|', '｜' => '|', '　' => '',
             ];
 
-        $result = strtr($result, $strtr);
+        $_data = strtr($_data, $strtr);
 
         // 个性字符过虑
         $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\"\'\<\>\,\.\，\。\《\》\\\\]+/u';
-        $return = preg_replace($rule, '', $result);
+        $_data = preg_replace($rule, '', $_data);
     }
 
-    return $return;
+    return $_data;
 }

@@ -10,7 +10,6 @@
  * @link      www.NiPHP.com
  * @since     2017/01/03
  */
-namespace util;
 
 class File
 {

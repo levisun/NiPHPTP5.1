@@ -27,7 +27,6 @@
  * http://snoopy.sourceforge.net/
  *************************************************/
 
-namespace util;
 
 class Snoopy
 {

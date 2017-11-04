@@ -9,7 +9,7 @@
  * @link      http://www.NiPHP.com
  * @since     2017/01/03
  */
-namespace net\oauth;
+namespace oauth;
 
 class Http
 {

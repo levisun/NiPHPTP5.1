@@ -15,7 +15,7 @@ $param = array(
     'return_url'   => '同步通知回调地址,不能携带参数',
 );
 */
-namespace util;
+namespace payment;
 
 class PayAli
 {
