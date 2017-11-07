@@ -128,7 +128,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="hidden" name="id" id="category_id" value="">
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -139,7 +139,7 @@
 <script type="text/javascript">
 var json_data = {$json_data|raw};
 jQuery(function(){
-    jQuery("#category_id").val(json_data["data"]["id"]);
+    jQuery("#id").val(json_data["data"]["id"]);
     jQuery("#name").val(json_data["data"]["name"]);
     jQuery("#aliases").val(json_data["data"]["aliases"]);
     jQuery("#pid").val(json_data["data"]["pid"]);
@@ -165,35 +165,14 @@ jQuery(function(){
     jQuery("#is_channel"+json_data["data"]["is_channel"]).attr("checked", "checked");
     jQuery(".is_channel"+json_data["data"]["is_channel"]).addClass("checked");
 
-    var type_option = "";
-    for (key in json_data["type"]) {
-        type_option += "<option value='"+json_data["type"][key]["id"]+"'";
-        if (json_data["data"]["type_id"] == json_data["type"][key]["id"]) {
-            type_option += " selected ";
-        }
-        type_option += ">"+json_data["type"][key]["name"]+"</option>";
-    }
-    jQuery("#type_id").html(type_option);
+    var option = Layout.eachToOption(json_data["type"], "id", "name", json_data["data"]["type_id"]);
+    jQuery("#type_id").html(option);
 
-    var models_option = "";
-    for (key in json_data["models"]) {
-        models_option += "<option value='"+json_data["models"][key]["id"]+"'";
-        if (json_data["data"]["models_id"] == json_data["models"][key]["id"]) {
-            models_option += " selected ";
-        }
-        models_option += ">"+json_data["models"][key]["model_name"]+"</option>";
-    }
-    jQuery("#model_id").html(models_option);
+    option = Layout.eachToOption(json_data["models"], "id", "model_name", json_data["data"]["model_id"]);
+    jQuery("#model_id").html(option);
 
-    var level_option = "";
-    for (key in json_data["level"]) {
-        level_option += "<option value='"+json_data["level"][key]["id"]+"'";
-        if (json_data["data"]["access_id"] == json_data["level"][key]["id"]) {
-            level_option += " selected ";
-        }
-        level_option += ">"+json_data["level"][key]["name"]+"</option>";
-    }
-    jQuery("#access_id").append(level_option);
+    option = Layout.eachToOption(json_data["level"], "id", "name", json_data["data"]["access_id"]);
+    jQuery("#access_id").html(option);
 });
 
 </script>

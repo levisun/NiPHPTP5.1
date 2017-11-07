@@ -13,11 +13,66 @@
  */
 namespace app\admin\logic\account;
 
-use app\common\logic\Admin as LogicAdmin;
 use app\common\model\Admin as ModelAdmin;
+use app\common\logic\RequestLog as LogicRequestLog;
 
 class Login
 {
+
+    /**
+     * 登录
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function login()
+    {
+        $form_data = request()->only(
+            ['username', 'password', 'captcha', '__token__'], 'post'
+        );
+        $login_ip = request()->ip(0, true);
+        $module   = request()->module();
+
+        // 验证请求数据
+        $result = validate($form_data, 'Login', 'account', 'admin');
+        if (true !== $result) {
+            return $result;
+        }
+
+        // 实例化登录业务逻辑类
+        $logic_request_log = new LogicRequestLog;
+
+        // IP锁定 直接返回false
+        if ($logic_request_log->isLockIp($login_ip, $module)) {
+            return lang('error username or password');
+        }
+
+        // 获得用户信息
+        $user_data = $this->getUserData($form_data['username']);
+        if (false === $user_data) {
+            // 用户不存在 锁定IP
+            $logic_request_log->lockIp($login_ip, $module);
+            return lang('error username or password');
+        }
+
+        // 登录密码错误
+        if (!$this->checkPassword($form_data['password'], $user_data['password'], $user_data['salt'])) {
+            // 密码错误 锁定IP
+            $logic_request_log->lockIp($login_ip, $module);
+            return lang('error username or password');
+        }
+
+        // 更新登录信息
+        $this->updateLogin($user_data['id'], $login_ip);
+
+        // 生成登录用户认证信息
+        $this->createAuth($user_data);
+
+        // 登录成功 清除锁定IP
+        $logic_request_log->removeLockIp($login_ip, $module);
+
+        return true;
+    }
 
     /**
      * 获得用户信息
@@ -88,7 +143,7 @@ class Login
         ];
 
         // 实例化Admin业务类
-        $logic_admin = new LogicAdmin;
+        $logic_admin = new ModelAdmin;
         return $logic_admin->update($update_data);
     }
 

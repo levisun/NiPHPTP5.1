@@ -28,4 +28,62 @@ class Level extends Model
         'status',
         'remark'
     ];
+
+    /**
+     * 新增
+     * @access public
+     * @param  array  $_form_data
+     * @return mixed
+     */
+    public function added($_form_data)
+    {
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->create($_form_data);
+
+        return $result->id;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  array  $_receive_data
+     * @return boolean
+     */
+    public function remove($_receive_data)
+    {
+        $map  = [
+            ['id', '=', $_receive_data['id']],
+        ];
+
+        $result =
+        $this->where($map)
+        ->delete();
+
+        return !!$result;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param  array  $_form_data
+     * @return boolean
+     */
+    public function editor($_form_data)
+    {
+        $map  = [
+            ['id', '=', $_form_data['id']],
+        ];
+
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->where($map)
+        ->update($_form_data);
+
+        return !!$result;
+    }
 }

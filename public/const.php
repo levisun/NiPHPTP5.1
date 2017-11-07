@@ -13,5 +13,5 @@ set_time_limit(300);
 if (APP_DEBUG) {
     @ini_set('memory_limit', '8M');
 } else {
-    @ini_set('memory_limit', '64M');
+    @ini_set('memory_limit', '16M');
 }

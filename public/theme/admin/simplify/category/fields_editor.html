@@ -60,6 +60,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -70,29 +71,13 @@
 <script type="text/javascript">
 var json_data = {$json_data|raw};
 jQuery(function(){
-    var fields_type_option = "";
-    for (key in json_data["fields_type"]) {
-        fields_type_option += "<option value='"+json_data["fields_type"][key]["id"]+"'";
-        fields_type_option += ">"+json_data["fields_type"][key]["field_name"]+"</option>";
-    }
-    jQuery("#type_id").html(fields_type_option);
+    Layout.jsonToHtml(json_data["data"]);
 
-    var fields_category_option = "";
-    var category_list = json_data["category_list"];
-    for (key in category_list) {
-        fields_category_option += "<option value='"+category_list[key]["id"]+"'";
-        fields_category_option += ">"+category_list[key]["name"]+"</option>";
-    }
-    var fields_category_option = toOption(json_data["category_list"], "");
-    jQuery("#category_id").html(fields_category_option);
+    var option = Layout.eachToOption(json_data["fields_type"], "id", "field_name", json_data["data"]["type_id"]);
+    jQuery("#type_id").html(option);
+
+    option = Layout.eachToOption(json_data["category_list"], "id", "name", json_data["data"]["category_id"]);
+    jQuery("#category_id").html(option);
 });
 
-function toOption(data, rep) {
-    var option = "";
-    for (key in data) {
-        option += "<option value='"+data[key]["id"]+"'>"+rep+data[key]['name']+"</option>";
-        option += toOption(data[key]['child'], "--");
-    }
-    return option;
-}
 </script>

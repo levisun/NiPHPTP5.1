@@ -31,10 +31,10 @@ class Model
     }
 
     /**
-     * 获得添加所需数据
+     * 新增
      * @access public
      * @param
-     * @return array
+     * @return mixed
      */
     public function added()
     {
@@ -53,7 +53,7 @@ class Model
                 unset($form_data['__token__']);
 
                 $logic_model = new LogicModel;
-                $return = $logic_model->create($form_data);
+                $return = $logic_model->added($form_data);
             }
         } else {
             $logic_model = new LogicModel;
@@ -66,10 +66,10 @@ class Model
     }
 
     /**
-     * 编辑栏目
+     * 编辑
      * @access public
      * @param
-     * @return array
+     * @return mixed
      */
     public function editor()
     {
@@ -87,7 +87,7 @@ class Model
                 unset($form_data['__token__']);
 
                 $logic_model = new LogicModel;
-                $return = $logic_model->update($form_data);
+                $return = $logic_model->editor($form_data);
             }
         } else {
             $request_data = [
@@ -107,7 +107,7 @@ class Model
     }
 
     /**
-     * 删除模型
+     * 删除
      * @access public
      * @param
      * @return mixed

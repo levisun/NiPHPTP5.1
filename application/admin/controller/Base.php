@@ -18,7 +18,7 @@ use think\facade\Env;
 use think\facade\Lang;
 
 use app\common\logic\Upload as LogicUpload;
-use app\admin\logic\common\Common as LogicCommon;
+use app\admin\logic\account\Common as LogicCommon;
 use app\admin\logic\account\Rbac as LogicRbac;
 
 class Base extends Controller

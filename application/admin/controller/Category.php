@@ -13,11 +13,7 @@
  */
 namespace app\admin\controller;
 
-use app\admin\controller\Base;
-
-use app\admin\controller\category\Category as ControllerCategory;
-use app\admin\controller\category\Model as ControllerModel;
-use app\admin\controller\category\Fields as ControllerFields;
+use app\admin\logic\category\Category as LogicCategory;
 
 class Category extends Base
 {
@@ -33,109 +29,49 @@ class Category extends Base
         $this->assign('button_search', true);
         $this->assign('button_added', true);
 
-        $controller_category = new ControllerCategory;
+        $logic_category = new LogicCategory;
 
         switch ($operate) {
             case 'added':
-            case 'editor':
-                $result = $controller_category->$operate();
-                if (is_string($result)) {
-                    $this->showMessage($result, lang($operate . ' success'));
+                if ($this->request->isPost()) {
+                    $result = $logic_category->added();
+                    $this->showMessage($result, lang('added success'));
                 } else {
+                    $result = [
+                        'parent' => $logic_category->getParentData(),
+                        'type'   => $logic_category->getCategoryType(),
+                        'models' => $logic_category->getModelsOpen(),
+                        'level'  => $logic_category->getLevelOpen(),
+                    ];
                     $this->assign('json_data', json_encode($result));
-                    $tpl = $this->fetch('category_' . $operate);
+                    $tpl = $this->fetch('category_added');
                 }
                 break;
 
             case 'remove':
-            case 'sort':
-                $result = $controller_category->$operate();
-                $this->showMessage($result, lang($operate .' success'));
+                $id = input('param.id/f');
+                $result = $logic_category->remove($id);
+                $this->showMessage($result, lang('remove success'));
                 break;
 
-            default:
-                $result = $controller_category->getListData();
-                $this->assign('json_data', json_encode($result));
-                $tpl = $this->fetch();
-                break;
-        }
-
-        return $tpl;
-    }
-
-    /**
-     * 管理模型
-     * @access public
-     * @param
-     * @return mixed
-     */
-    public function model($operate = '')
-    {
-        $this->assign('button_added', true);
-
-        $controller_model = new ControllerModel;
-
-        switch ($operate) {
-            case 'added':
             case 'editor':
-                $result = $controller_model->$operate();
-                if (is_string($result)) {
-                    $this->showMessage($result, lang($operate . ' success'));
+                if ($this->request->isPost()) {
+                    $result = $logic_category->update();
+                    $this->showMessage($result, lang('update success'));
                 } else {
+                    $result = [
+                        'data'   => $logic_category->getEditorData(),
+                        'type'   => $logic_category->getCategoryType(),
+                        'models' => $logic_category->getModelsOpen(),
+                        'level'  => $logic_category->getLevelOpen(),
+                    ];
                     $this->assign('json_data', json_encode($result));
-                    $tpl = $this->fetch('model_' . $operate);
+                    $tpl = $this->fetch('category_editor');
                 }
                 break;
 
-            case 'remove':
-            case 'sort':
-                $result = $controller_model->$operate();
-                $this->showMessage($result, lang($operate .' success'));
-                break;
-
             default:
-                $result = $controller_model->getListData();
-                $this->assign('json_data', json_encode($result));
-                $tpl = $this->fetch();
-                break;
-        }
-
-        return $tpl;
-    }
-
-    /**
-     * 自定义字段
-     * @access public
-     * @param
-     * @return mixed
-     */
-    public function fields($operate = '')
-    {
-        $this->assign('button_search', true);
-        $this->assign('button_added', true);
-
-        $controller_fields = new ControllerFields;
-
-        switch ($operate) {
-            case 'added':
-            case 'editor':
-                $result = $controller_fields->$operate();
-                if (is_string($result)) {
-                    $this->showMessage($result, lang($operate . ' success'));
-                } else {
-                    $this->assign('json_data', json_encode($result));
-                    $tpl = $this->fetch('fields_' . $operate);
-                }
-                break;
-
-            case 'remove':
-            case 'sort':
-                $result = $controller_fields->$operate();
-                $this->showMessage($result, lang($operate .' success'));
-                break;
-
-            default:
-                $result = $controller_fields->getListData();
+                $result = $logic_category->select();
                 $this->assign('json_data', json_encode($result));
                 $tpl = $this->fetch();
                 break;

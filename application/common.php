@@ -90,6 +90,67 @@ function lang($_name, $_vars = [], $_lang = '')
 }
 
 /**
+ * 清理运行垃圾文件
+ * @param
+ * @return void
+ */
+if (!rand(0, 10)) {
+    remove_rundata();
+}
+function remove_rundata()
+{
+    $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    $dir .= 'runtime' . DIRECTORY_SEPARATOR;
+
+    $cache = $dir . 'cache' . DIRECTORY_SEPARATOR . '*';
+    $log   = $dir . 'log' . DIRECTORY_SEPARATOR . '*';
+    $temp  = $dir . 'temp' . DIRECTORY_SEPARATOR . '*';
+
+    $all_files = (array) glob($temp);
+    $files = [
+        'cache' => (array) glob($cache),
+        'log'   => (array) glob($log),
+    ];
+
+    $child = [];
+    foreach ($files['log'] as $path) {
+        $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+        if ($arr) {
+            $child = array_merge($child, $arr);
+        } else {
+            $child[] = $path;
+        }
+
+    }
+    $all_files = array_merge($all_files, $child);
+
+    $child = [];
+    foreach ($files['cache'] as $path) {
+        if (is_dir($path)) {
+            $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+            $child = array_merge($child, $arr);
+        } else {
+            $child[] = $path;
+        }
+
+    }
+    $all_files = array_merge($all_files, $child);
+
+    shuffle($all_files);
+    $all_files = array_slice($all_files, 0, 20);
+
+    foreach ($all_files as $path) {
+        if (filectime($path) <= strtotime('-30 days')) {
+            if (is_dir($path)) {
+                @rmdir($path);
+            } else {
+                @unlink($path);
+            }
+        }
+    }
+}
+
+/**
  * 过滤XSS
  * @param  string $_data
  * @return string

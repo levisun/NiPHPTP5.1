@@ -51,6 +51,25 @@ Layout.htmlDecode = function(string) {
 }
 
 /**
+ * 循环option
+ */
+Layout.eachToOption = function (data, value, name, selected, rep) {
+    rep = Layout.isVar(rep, "");
+    var option = "";
+    for (key in data) {
+        option += "<option value='"+data[key][value]+"'";
+        if (selected == data[key][value]) {
+            option += " selected ";
+        }
+        option += ">"+rep+data[key][name]+"</option>";
+        if (Layout.isVar(data[key]["child"])) {
+            option += Layout.eachToOption(data[key]["child"], value, name, selected, rep+"--");
+        }
+    }
+    return option;
+}
+
+/**
  * 判断微信端
  */
 Layout.isWechat = function () {

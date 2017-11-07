@@ -26,4 +26,6 @@ class Config extends Model
         'value',
         'lang'
     ];
+
+
 }

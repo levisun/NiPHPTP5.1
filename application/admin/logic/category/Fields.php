@@ -13,11 +13,10 @@
  */
 namespace app\admin\logic\category;
 
-use app\common\logic\Fields as LogicFields;
 use app\common\model\Fields as ModelFields;
 use app\common\model\Category as ModelCategory;
 
-class Fields extends LogicFields
+class Fields extends ModelFields
 {
 
     /**
@@ -42,9 +41,9 @@ class Fields extends LogicFields
             $map[] = ['m.id', '=', $_request_data['mid']];
         }
 
-        $model_fields = new ModelFields;
+        // $model_fields = new ModelFields;
         $result =
-        $model_fields->view('fields f', 'id,category_id,name,description,is_require')
+        $this->view('fields f', 'id,category_id,name,description,is_require')
         ->view('category c', ['name'=>'cat_name'], 'c.id=f.category_id')
         ->view('fields_type t', ['name'=>'type_name'], 't.id=f.type_id')
         ->where($map)
@@ -89,5 +88,55 @@ class Fields extends LogicFields
         }
 
         return $return;
+    }
+
+    /**
+     * 获得编辑数据
+     * @access public
+     * @param  array  $_request_data
+     * @return array
+     */
+    public function getEditorData($_request_data)
+    {
+        $map = [
+            ['id', '=', $_request_data['id']],
+        ];
+
+        $model_fields = new ModelFields;
+        $result =
+        $this->field(true)
+        ->where($map)
+        ->find();
+
+        return $result ? $result->toArray() : [];
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  array  $_request_data
+     * @return boolean
+     */
+    public function remove($_request_data)
+    {
+        $map = [
+            ['f.id', '=', $_request_data['id']],
+        ];
+
+        // $model_fields = new ModelFields;
+        $result =
+        $this->view('fields f', [])
+        ->view('category c', [], 'c.id=f.category_id')
+        ->view('model m', ['table_name'], 'm.id=c.model_id')
+        ->where($map)
+        ->find();
+
+        $result = $result ? $result->toArray() : [];
+        $table_name = ucfirst($result['table_name'] . 'Data');
+
+        $table_model = model($table_name, 'logic');
+        $table_model->remove($_request_data);
+
+        $return = parent::remove($_request_data);
     }
 }

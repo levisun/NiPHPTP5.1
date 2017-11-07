@@ -1,3 +1,11 @@
+Layout.jsonToHtml = function (data) {
+    for (key in data) {
+        jQuery("input#"+key).val(data[key]);
+    }
+}
+
+
+
 /**
  * 删除相册文件
  */

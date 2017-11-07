@@ -13,10 +13,9 @@
  */
 namespace app\admin\logic\settings;
 
-use app\common\logic\Config as LogicConfig;
 use app\common\model\Config as ModelConfig;
 
-class Safe extends LogicConfig
+class Safe
 {
 
     /**
@@ -50,5 +49,50 @@ class Safe extends LogicConfig
         $data['founder'] = $admin_data['role_id'] == 1 ? 1 : 0;
 
         return $data;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function update()
+    {
+        $form_data = [
+            'content_check'          => input('post.content_check/f'),
+            'member_login_captcha'   => input('post.member_login_captcha/f'),
+            'website_submit_captcha' => input('post.website_submit_captcha/f'),
+            'website_static'         => input('post.website_static/f'),
+            'upload_file_max'        => input('post.upload_file_max/f'),
+            'upload_file_type'       => input('post.upload_file_type'),
+            '__token__'              => input('post.__token__'),
+        ];
+
+        // 验证请求数据
+        $result = validate($form_data, 'Safe', 'settings', 'admin');
+        if (true === $result) {
+            unset($form_data['__token__']);
+
+            $model_config = new ModelConfig;
+
+            $map = $data = [];
+            foreach ($form_data as $key => $value) {
+                $map  = [
+                    ['name', '=', $key],
+                ];
+                $data = ['value' => $value];
+
+                $model_config->allowField(true)
+                ->where($map)
+                ->update($data);
+            }
+
+            $return = true;
+        } else {
+            $return = $result;
+        }
+
+        return $return;
     }
 }

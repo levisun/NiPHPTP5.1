@@ -15,12 +15,12 @@ namespace app\admin\controller;
 
 use app\admin\controller\Base;
 
-use app\admin\controller\settings\Info as ControllerInfo;
-use app\admin\controller\settings\Basic as ControllerBasic;
-use app\admin\controller\settings\Lang as ControllerLang;
-use app\admin\controller\settings\Image as ControllerImage;
-use app\admin\controller\settings\Safe as ControllerSafe;
-use app\admin\controller\settings\Email as ControllerEmail;
+use app\admin\logic\settings\Info as LogicInfo;
+use app\admin\logic\settings\Basic as LogicBasic;
+use app\admin\logic\settings\Lang as LogicLang;
+use app\admin\logic\settings\Image as LogicImage;
+use app\admin\logic\settings\Safe as LogicSafe;
+use app\admin\logic\settings\Email as LogicEmail;
 
 class Settings extends Base
 {
@@ -33,7 +33,7 @@ class Settings extends Base
      */
     public function info()
     {
-        $controller_info = new ControllerInfo;
+        $controller_info = new LogicInfo;
         $result = $controller_info->info();
         $this->assign('json_data', json_encode($result));
         return $this->fetch();
@@ -47,11 +47,12 @@ class Settings extends Base
      */
     public function basic()
     {
-        $controller_basic = new ControllerBasic;
-        $result = $controller_basic->editor();
-        if (!is_array($result)) {
+        $logic_basic = new LogicBasic;
+        if ($this->request->isPost()) {
+            $result = $logic_basic->update();
             $this->showMessage($result, lang('save success'));
         } else {
+            $result = $logic_basic->getBasicConfig();
             $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
@@ -65,11 +66,12 @@ class Settings extends Base
      */
     public function lang()
     {
-        $controller_lang = new ControllerLang;
-        $result = $controller_lang->editor();
-        if (!is_array($result)) {
+        $logic_lang = new LogicLang;
+        if ($this->request->isPost()) {
+            $result = $logic_lang->update();
             $this->showMessage($result, lang('save success'));
         } else {
+            $result = $logic_lang->getLangConfig();
             $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
@@ -83,11 +85,12 @@ class Settings extends Base
      */
     public function image()
     {
-        $controller_image = new ControllerImage;
-        $result = $controller_image->editor();
-        if (!is_array($result)) {
+        $logic_image = new LogicImage;
+        if ($this->request->isPost()) {
+            $result = $logic_image->update();
             $this->showMessage($result, lang('save success'));
         } else {
+            $result = $logic_image->getImageConfig();
             $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }
@@ -101,7 +104,17 @@ class Settings extends Base
      */
     public function safe()
     {
-        $controller_safe = new ControllerSafe;
+        $logic_safe = new LogicSafe;
+        if ($this->request->isPost()) {
+            $result = $logic_safe->update();
+            $this->showMessage($result, lang('save success'));
+        } else {
+            $result = $logic_safe->getSafeConfig();
+            $this->assign('json_data', json_encode($result));
+            return $this->fetch();
+        }
+
+        $controller_safe = new LogicSafe;
         $result = $controller_safe->editor();
         if (!is_array($result)) {
             $this->showMessage($result, lang('save success'));
@@ -119,11 +132,12 @@ class Settings extends Base
      */
     public function email()
     {
-        $controller_email = new ControllerEmail;
-        $result = $controller_email->editor();
-        if (!is_array($result)) {
+        $logice_mail = new LogicEmail;
+        if ($this->request->isPost()) {
+            $result = $logice_mail->update();
             $this->showMessage($result, lang('save success'));
         } else {
+            $result = $logice_mail->getEmailConfig();
             $this->assign('json_data', json_encode($result));
             return $this->fetch();
         }

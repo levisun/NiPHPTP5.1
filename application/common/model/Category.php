@@ -43,13 +43,96 @@ class Category extends Model
     ];
 
     /**
+     * 新增
+     * @access public
+     * @param  array  $_form_data
+     * @return mixed
+     */
+    public function added($_form_data)
+    {
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->create($_form_data);
+
+        return $result->id;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  array  $_receive_data
+     * @return boolean
+     */
+    public function remove($_receive_data)
+    {
+        $map  = [
+            ['id', '=', $_receive_data['id']],
+        ];
+
+        $result =
+        $this->where($map)
+        ->delete();
+
+        return !!$result;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param  array  $_form_data
+     * @return boolean
+     */
+    public function editor($_form_data)
+    {
+        $map  = [
+            ['id', '=', $_form_data['id']],
+        ];
+
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->where($map)
+        ->update($_form_data);
+
+        return !!$result;
+    }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {
+        $form_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        foreach ($form_data['id'] as $key => $value) {
+            $data[] = [
+                'id'   => $key,
+                'sort' => $value,
+            ];
+        }
+
+        $result =
+        $this->saveAll($data);
+
+        return !!$result;
+    }
+
+    /**
      * 获取器
      * 操作url
-     * @access public
+     * @access protected
      * @param
      * @return string
      */
-    public function getOperationUrlAttr($_value, $_data)
+    protected function getOperationUrlAttr($_value, $_data)
     {
         $url = [
             'editor' => url('', array('operate' => 'editor', 'id' => $_data['id'])),
@@ -62,11 +145,11 @@ class Category extends Model
     /**
      * 获取器
      * 栏目类型
-     * @access public
+     * @access protected
      * @param  int    $value
      * @return string
      */
-    public function getTypeNameAttr($_value, $_data)
+    protected function getTypeNameAttr($_value, $_data)
     {
         $type = [
             1 => lang('type top'),
@@ -81,11 +164,11 @@ class Category extends Model
     /**
      * 获取器
      * 栏目模型名
-     * @access public
+     * @access protected
      * @param  string $_value
      * @return string
      */
-    public function getModelNameAttr($_value)
+    protected function getModelNameAttr($_value)
     {
         return lang('model ' . $_value);
     }
@@ -93,11 +176,11 @@ class Category extends Model
     /**
      * 获取器
      * 栏目是否显示
-     * @access public
+     * @access protected
      * @param  int    $_value
      * @return string
      */
-    public function getShowAttr($_value, $_data)
+    protected function getShowAttr($_value, $_data)
     {
         return $_data['is_show'] ? lang('show') : lang('hide');
     }
@@ -105,11 +188,11 @@ class Category extends Model
     /**
      * 获取器
      * 栏目是否为频道栏目
-     * @access public
+     * @access protected
      * @param  int    $_value
      * @return string
      */
-    public function getChannelAttr($_value, $_data)
+    protected function getChannelAttr($_value, $_data)
     {
         return $_data['is_channel'] ? lang('yes') : lang('no');
     }

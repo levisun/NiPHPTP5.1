@@ -16,7 +16,7 @@ namespace app\admin\logic\category;
 use app\common\logic\Models as LogicModels;
 use app\common\model\Models as ModelModels;
 
-class Model extends LogicModels
+class Model extends ModelModels
 {
 
     /**
@@ -27,9 +27,9 @@ class Model extends LogicModels
      */
     public function getListData()
     {
-        $model_models = new ModelModels;
+        // $model_models = new ModelModels;
         $result =
-        $model_models->field(true)
+        $this->field(true)
         ->paginate();
 
         foreach ($result as $key => $value) {
@@ -50,9 +50,9 @@ class Model extends LogicModels
      * @param  array  $_form_data
      * @return mixed
      */
-    public function create($_form_data)
+    public function added($_form_data)
     {
-        $result = parent::create($_form_data);
+        $result = parent::added($_form_data);
 
         if (!!$result) {
             $this->createModel($_form_data['model_table'], $_form_data['table_name'], $_form_data['remark']);
@@ -73,13 +73,13 @@ class Model extends LogicModels
     {
         $prefix = config('database.prefix');
 
-        $model_models = new ModelModels;
+        // $model_models = new ModelModels;
 
         // 获得表结构
-        $result = $model_models->query('SHOW CREATE TABLE `' . $prefix . $_model_table . '`');
+        $result = $this->query('SHOW CREATE TABLE `' . $prefix . $_model_table . '`');
         $create_table = $result[0]['Create Table'] . ';';
 
-        $result = $model_models->query('SHOW CREATE TABLE `' . $prefix . $_model_table . '_data`');
+        $result = $this->query('SHOW CREATE TABLE `' . $prefix . $_model_table . '_data`');
         $create_table .= $result[0]['Create Table'];
 
         // 替换表名
@@ -95,7 +95,7 @@ class Model extends LogicModels
         $sql = explode(';', $create_table);
 
         foreach ($sql as $key => $value) {
-            $model_models->execute($value);
+            $this->execute($value);
         }
     }
 
@@ -111,9 +111,9 @@ class Model extends LogicModels
             ['id', '=', $_request_data['id']],
         ];
 
-        $model_models = new ModelModels;
+        // $model_models = new ModelModels;
         $result =
-        $model_models->where($map)
+        $this->where($map)
         ->find();
 
         return $result ? $result->toArray() : [];
@@ -133,10 +133,10 @@ class Model extends LogicModels
             $map = [
                 ['id', '=', $_request_data['id']],
             ];
-            $model_models = new ModelModels;
+            // $model_models = new ModelModels;
 
             $table_name =
-            $model_models->where($map)
+            $this->where($map)
             ->value('table_name');
 
             $result = parent::remove($_request_data);
@@ -145,9 +145,9 @@ class Model extends LogicModels
                 $prefix = config('database.prefix');
 
                 $drop_table = 'DROP TABLE IF EXISTS `' . $prefix . $table_name . '`;';
-                $model_models->execute($drop_table);
+                $this->execute($drop_table);
                 $drop_table = 'DROP TABLE IF EXISTS `' . $prefix . $table_name . '_data`;';
-                $model_models->execute($drop_table);
+                $this->execute($drop_table);
 
                 $return = true;
             } else {

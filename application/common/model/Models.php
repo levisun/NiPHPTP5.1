@@ -31,13 +31,96 @@ class Models extends Model
     ];
 
     /**
+     * 新增
+     * @access public
+     * @param  array  $_form_data
+     * @return mixed
+     */
+    public function added($_form_data)
+    {
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->create($_form_data);
+
+        return $result->id;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  array  $_receive_data
+     * @return boolean
+     */
+    public function remove($_receive_data)
+    {
+        $map  = [
+            ['id', '=', $_receive_data['id']],
+        ];
+
+        $result =
+        $this->where($map)
+        ->delete();
+
+        return !!$result;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param  array  $_form_data
+     * @return boolean
+     */
+    public function editor($_form_data)
+    {
+        $map  = [
+            ['id', '=', $_form_data['id']],
+        ];
+
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->where($map)
+        ->update($_form_data);
+
+        return !!$result;
+    }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {
+        $form_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        foreach ($form_data['id'] as $key => $value) {
+            $data[] = [
+                'id'   => $key,
+                'sort' => $value,
+            ];
+        }
+
+        $result =
+        $this->saveAll($data);
+
+        return !!$result;
+    }
+
+    /**
      * 获取器
      * 操作url
-     * @access public
+     * @access protected
      * @param
      * @return string
      */
-    public function getOperationUrlAttr($_value, $_data)
+    protected function getOperationUrlAttr($_value, $_data)
     {
         $url = [
             'editor' => url('', array('operate' => 'editor', 'id' => $_data['id'])),
@@ -50,11 +133,11 @@ class Models extends Model
     /**
      * 获取器
      * 模型名称
-     * @access public
+     * @access protected
      * @param  int    $_value
      * @return string
      */
-    public function getModelNameAttr($_value, $_data)
+    protected function getModelNameAttr($_value, $_data)
     {
         $name = [
             'article'  => lang('model article'),
@@ -74,11 +157,11 @@ class Models extends Model
     /**
      * 获取器
      * 模型状态
-     * @access public
+     * @access protected
      * @param  int    $_value
      * @return string
      */
-    public function getModelStatusAttr($_value, $_data)
+    protected function getModelStatusAttr($_value, $_data)
     {
         $status = [
             0 => lang('status no'),

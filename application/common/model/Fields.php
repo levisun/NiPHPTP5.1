@@ -31,13 +31,71 @@ class Fields extends Model
     ];
 
     /**
+     * 新增
+     * @access public
+     * @param  array  $_form_data
+     * @return mixed
+     */
+    public function added($_form_data)
+    {
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->create($_form_data);
+
+        return $result->id;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  array  $_receive_data
+     * @return boolean
+     */
+    public function remove($_receive_data)
+    {
+        $map  = [
+            ['id', '=', $_receive_data['id']],
+        ];
+
+        $result =
+        $this->where($map)
+        ->delete();
+
+        return !!$result;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param  array  $_form_data
+     * @return boolean
+     */
+    public function editor($_form_data)
+    {
+        $map  = [
+            ['id', '=', $_form_data['id']],
+        ];
+
+        unset($_form_data['id'], $_form_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->where($map)
+        ->update($_form_data);
+
+        return !!$result;
+    }
+
+    /**
      * 获取器
      * 操作url
-     * @access public
+     * @access protected
      * @param
      * @return string
      */
-    public function getOperationUrlAttr($_value, $_data)
+    protected function getOperationUrlAttr($_value, $_data)
     {
         $url = [
             'editor' => url('', array('operate' => 'editor', 'id' => $_data['id'])),
@@ -50,11 +108,11 @@ class Fields extends Model
     /**
      * 获取器
      * 是否可为空
-     * @access public
+     * @access protected
      * @param  string $_value
      * @return string
      */
-    public function getRequireAttr($_value, $_data)
+    protected function getRequireAttr($_value, $_data)
     {
         $require = [
             lang('not require'),
@@ -67,11 +125,11 @@ class Fields extends Model
     /**
      * 获取器
      * 栏目模型名
-     * @access public
+     * @access protected
      * @param  string $_value
      * @return string
      */
-    public function getModelNameAttr($_value)
+    protected function getModelNameAttr($_value)
     {
         return lang('model ' . $_value);
     }

@@ -13,10 +13,9 @@
  */
 namespace app\admin\logic\settings;
 
-use app\common\logic\Config as LogicConfig;
 use app\common\model\Config as ModelConfig;
 
-class Basic extends LogicConfig
+class Basic
 {
 
     /**
@@ -47,5 +46,50 @@ class Basic extends LogicConfig
         }
 
         return $data;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function update()
+    {
+        $form_data = [
+            'website_name'        => input('post.website_name'),
+            'website_keywords'    => input('post.website_keywords'),
+            'website_description' => input('post.website_description'),
+            'bottom_message'      => input('post.bottom_message', '', 'trim,htmlspecialchars'),
+            'copyright'           => input('post.copyright'),
+            'script'              => input('post.script', '', 'trim,htmlspecialchars'),
+            '__token__'           => input('post.__token__'),
+        ];
+
+        // 验证请求数据
+        $result = validate($form_data, 'Basic', 'settings', 'admin');
+        if (true === $result) {
+            unset($form_data['__token__']);
+
+            $model_config = new ModelConfig;
+
+            $map = $data = [];
+            foreach ($form_data as $key => $value) {
+                $map  = [
+                    ['name', '=', $key],
+                ];
+                $data = ['value' => $value];
+
+                $model_config->allowField(true)
+                ->where($map)
+                ->update($data);
+            }
+
+            $return = true;
+        } else {
+            $return = $result;
+        }
+
+        return $return;
     }
 }

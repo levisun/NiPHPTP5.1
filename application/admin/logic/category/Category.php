@@ -13,31 +13,134 @@
  */
 namespace app\admin\logic\category;
 
-use app\common\logic\Category as LogicCategory;
 use app\common\model\Category as ModelCategory;
+use app\common\model\Models as ModelModels;
+use app\common\model\Level as ModelLevel;
 
-class Category extends LogicCategory
+class Category
 {
 
     /**
-     * 查询栏目数据
+     * 新增
      * @access public
-     * @param  array  $_request_data 请求参数
+     * @param
+     * @return mixed
+     */
+    public function added()
+    {
+        $form_data = [
+            'name'            => input('post.name'),
+            'aliases'         => input('post.aliases'),
+            'pid'             => input('post.pid/f', 0),
+            'type_id'         => input('post.type_id/f', 1),
+            'model_id'        => input('post.model_id/f', 1),
+            'is_show'         => input('post.is_show/f', 1),
+            'is_channel'      => input('post.is_channel/f', 0),
+            'image'           => input('post.image'),
+            'seo_title'       => input('post.seo_title'),
+            'seo_keywords'    => input('post.seo_keywords'),
+            'seo_description' => input('post.seo_description'),
+            'access_id'       => input('post.access_id/f', 0),
+            '__token__'       => input('post.__token__'),
+        ];
+
+        $return = validate($form_data, 'Category.added', 'category', 'admin');
+        if (true === $return) {
+            unset($form_data['__token__']);
+
+            $model_category = new ModelCategory;
+            $return = !!$model_category->added($form_data);
+        }
+
+        return $return;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  int     $_id
+     * @return boolean
+     */
+    public function remove($_id)
+    {
+        // 查询子栏目
+        $map  = [
+            ['pid', '=', $_id],
+        ];
+
+        $model_category = new ModelCategory;
+
+        $result =
+        $model_category->field(true)
+        ->where($map)
+        ->find();
+
+        // 子栏目存在 递归删除子栏目
+        if ($result) {
+            $params = [
+                'id'  => $result['id'],
+            ];
+
+            $this->remove($params);
+        }
+
+        return $model_category->remove(['id' => $_id]);
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function update()
+    {
+        $form_data = [
+            'id'              => input('post.id/f'),
+            'name'            => input('post.name'),
+            'aliases'         => input('post.aliases'),
+            'pid'             => input('post.pid/f', 0),
+            'type_id'         => input('post.type_id/f', 1),
+            'model_id'        => input('post.model_id/f', 1),
+            'is_show'         => input('post.is_show/f', 1),
+            'is_channel'      => input('post.is_channel/f', 0),
+            'image'           => input('post.image'),
+            'seo_title'       => input('post.seo_title'),
+            'seo_keywords'    => input('post.seo_keywords'),
+            'seo_description' => input('post.seo_description'),
+            'access_id'       => input('post.access_id/f', 0),
+            '__token__'       => input('post.__token__'),
+        ];
+        $return = validate($form_data, 'Category.update', 'category', 'admin');
+        if (true === $return) {
+            unset($form_data['__token__']);
+            $model_category = new ModelCategory;
+            $return = $model_category->update($form_data);
+        }
+
+        return $return;
+    }
+
+    /**
+     * 查询
+     * @access public
+     * @param
      * @return array
      */
-    public function getListData($_request_data)
+    public function select()
     {
         $map = [
-            ['c.pid', '=', $_request_data['pid']],
+            ['c.pid', '=', input('param.pid/f', 0)],
             ['c.lang', '=', lang(':detect')],
         ];
 
         // 搜索
-        if ($_request_data['key']) {
-            $map[] = ['c.name', 'like', $_request_data['key'] . '%'];
+        if ($key = input('param.q')) {
+            $map[] = ['c.name', 'like', $key . '%'];
         }
 
         $model_category = new ModelCategory;
+
         $result =
         $model_category->view('category c', true)
         ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
@@ -71,7 +174,7 @@ class Category extends LogicCategory
 
         }
 
-        return $result->toArray();
+        return $result;
     }
 
     /**
@@ -80,10 +183,10 @@ class Category extends LogicCategory
      * @param  array  $_request_data
      * @return array
      */
-    public function getEditorData($_request_data)
+    public function getEditorData()
     {
         $map = [
-            ['c.id', '=', $_request_data['id']],
+            ['c.id', '=', input('param.id/f')],
             ['c.lang', '=', lang(':detect')],
         ];
 
@@ -94,50 +197,19 @@ class Category extends LogicCategory
         ->where($map)
         ->find();
 
-        return $result ? $result->toArray() : [];
-    }
-
-    /**
-     * 删除栏目
-     * @access public
-     * @param  array  $_request_data
-     * @return boolean
-     */
-    public function remove($_request_data)
-    {
-        // 查询子栏目
-        $map  = [
-            ['pid', '=', $_request_data['id']],
-        ];
-
-        $model_category = new ModelCategory;
-        $result =
-        $model_category->field(true)
-        ->where($map)
-        ->find();
-
-        // 子栏目存在 递归删除子栏目
-        if ($result) {
-            $params = [
-                'id'  => $result['id'],
-            ];
-
-            $this->remove($params);
-        }
-
-        return parent::remove($_request_data);
+        return $result;
     }
 
     /**
      * 获得父级数据
      * @access public
-     * @param  array  $_request_data
+     * @param
      * @return array
      */
-    public function getParentData($_request_data)
+    public function getParentData()
     {
         $map = [
-            ['id', '=', $_request_data['pid']],
+            ['id', '=', input('param.pid/f', 0)],
             ['lang', '=', lang(':detect')],
         ];
 
@@ -147,7 +219,7 @@ class Category extends LogicCategory
         ->where($map)
         ->find();
 
-        return $result ? $result->toArray() : [];
+        return $result;
     }
 
     /**
@@ -164,5 +236,51 @@ class Category extends LogicCategory
             ['id' => 3, 'name' => lang('type foot')],
             ['id' => 4, 'name' => lang('type other')]
         ];
+    }
+
+    /**
+     * 获得开启的模型
+     * @access public
+     * @param
+     * @return array
+     */
+    public function getModelsOpen()
+    {
+        $map = [
+            ['status', '=', 1],
+        ];
+
+        $model_models = new ModelModels;
+        $result =
+        $model_models->field(true)
+        ->where($map)
+        ->select();
+
+        foreach ($result as $key => $value) {
+            $result[$key]['model_name'] = $value->model_name;
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获得开启的会员等级
+     * @access public
+     * @param
+     * @return array
+     */
+    public function getLevelOpen()
+    {
+        $map = [
+            ['status', '=', 1],
+        ];
+
+        $model_level = new ModelLevel;
+        $result =
+        $model_level->field(true)
+        ->where($map)
+        ->select();
+
+        return $result;
     }
 }
