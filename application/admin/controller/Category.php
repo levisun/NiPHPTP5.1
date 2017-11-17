@@ -70,6 +70,15 @@ class Category extends Base
                 }
                 break;
 
+            case 'sort':
+                $result = $logic_category->sort();
+                if ($result) {
+                    $this->showMessage($result, lang('sort success'));
+                } else {
+                    $this->showMessage($result, lang('sort filt'));
+                }
+                break;
+
             default:
                 $result = $logic_category->select();
                 $this->assign('json_data', json_encode($result));

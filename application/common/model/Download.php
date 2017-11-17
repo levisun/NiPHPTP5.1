@@ -111,4 +111,26 @@ class Download extends Model
 
         return !!$result;
     }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort($_form_data)
+    {
+        $data = [];
+        foreach ($_form_data['id'] as $key => $value) {
+            $data[] = [
+                'id'   => $key,
+                'sort' => $value,
+            ];
+        }
+
+        $result =
+        $this->saveAll($data);
+
+        return !!$result;
+    }
 }

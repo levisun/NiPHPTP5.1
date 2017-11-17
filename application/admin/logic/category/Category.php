@@ -122,6 +122,22 @@ class Category
     }
 
     /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {
+        $form_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        $model_category = new ModelCategory;
+        return $model_category->sort($form_data);
+    }
+
+    /**
      * 查询
      * @access public
      * @param

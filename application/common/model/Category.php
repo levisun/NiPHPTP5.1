@@ -106,13 +106,10 @@ class Category extends Model
      * @param
      * @return boolean
      */
-    public function sort()
+    public function sort($_form_data)
     {
-        $form_data = [
-            'id' => input('post.sort/a'),
-        ];
-
-        foreach ($form_data['id'] as $key => $value) {
+        $data = [];
+        foreach ($_form_data['id'] as $key => $value) {
             $data[] = [
                 'id'   => $key,
                 'sort' => $value,

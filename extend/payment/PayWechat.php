@@ -193,7 +193,7 @@ class PayWechat
             $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
             $result = (array) simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
-                $result = $this->queryOrder(['out_trade_no' => $result['out_trade_no']);
+                $result = $this->queryOrder(['out_trade_no' => $result['out_trade_no']]);
                 if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS' && $result['trade_state'] == 'SUCCESS') {
                     $return = [
                         'out_trade_no'   => $result['out_trade_no'],    // 商户订单号
@@ -249,19 +249,6 @@ class PayWechat
         }
 
         return $result;
-
-        /*if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
-            // 退款成功
-            // 订单处理业务
-            return true;
-        }
-        if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'FAIL') {
-            if ($result['err_code'] == 'TRADE_STATE_ERROR') {
-                return '此订单已退达款，请勿重复操作';
-            }
-            return '退款失败';
-        }
-        return $result;*/
     }
 
     /**

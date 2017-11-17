@@ -100,18 +100,18 @@ Layout.isMobile = function () {
 /**
  * AJAX加载更多
  * var params = {"type": "get",  "data": {"p": 1}}
- * Layout.scrollBot(params, "function_name": "alert");
+ * Layout.loadingMore(params, "function_name": "alert");
  */
-Layout.scrollBot = function (params, function_name) {
-    jQuery("body").attr("Layout-scroll-page", 1);
-    jQuery("body").attr("Layout-scroll-bool", "true");
+Layout.loadingMore = function (params, function_name) {
+    jQuery("body").attr("Layout-loading-page", 1);
+    jQuery("body").attr("Layout-loading-bool", "true");
     jQuery(window).scroll(function () {
-        var is = jQuery("body").attr("Layout-scroll-bool");
+        var is = jQuery("body").attr("Layout-loading-bool");
         if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) / 1.05) {
-            var page_num = jQuery("body").attr("Layout-scroll-page");
+            var page_num = jQuery("body").attr("Layout-loading-page");
                 page_num++;
-            jQuery("body").attr("Layout-scroll-page", page_num);
-            jQuery("body").attr("Layout-scroll-bool", "false");
+            jQuery("body").attr("Layout-loading-page", page_num);
+            jQuery("body").attr("Layout-loading-bool", "false");
 
             params["data"]["p"] = page_num;
             var result = Layout.ajax(params);
@@ -119,7 +119,7 @@ Layout.scrollBot = function (params, function_name) {
             window[function_name](result);
 
             setTimeout(function () {
-                jQuery("body").attr("Layout-scroll-bool", "true");
+                jQuery("body").attr("Layout-loading-bool", "true");
             }, 1500);
         }
     });
