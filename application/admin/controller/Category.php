@@ -75,7 +75,7 @@ class Category extends Base
                 if ($result) {
                     $this->showMessage($result, lang('sort success'));
                 } else {
-                    $this->showMessage($result, lang('sort filt'));
+                    $this->showMessage($result, lang('sort fail'));
                 }
                 break;
 

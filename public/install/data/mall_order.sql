@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS `np_mall_order_address` (
 
 
 
-DROP TABLE IF EXISTS `np_mall_bonus`;
-CREATE TABLE IF NOT EXISTS `np_mall_bonus` (
+DROP TABLE IF EXISTS `np_mall_order_bonus`;
+CREATE TABLE IF NOT EXISTS `np_mall_order_bonus` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '订单ID',
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',

@@ -51,15 +51,16 @@ DROP TABLE IF EXISTS `np_member_wechat`;
 CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
+  `appid` varchar(32) NOT NULL DEFAULT '' COMMENT 'APPID',
   `subscribe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '关注状态',
   `openid` varchar(32) NOT NULL DEFAULT '' COMMENT '用户标识',
   `nickname` varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
-  `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 1男 2女 0未知',
+  `gender` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 1男 2女 0未知',
   `city` varchar(10) NOT NULL DEFAULT '' COMMENT '城市',
   `country` varchar(10) NOT NULL DEFAULT '' COMMENT '国家',
   `province` varchar(10) NOT NULL DEFAULT '' COMMENT '省份',
   `language` varchar(10) NOT NULL DEFAULT '' COMMENT '语言',
-  `headimgurl` varchar(500) NOT NULL DEFAULT '' COMMENT '头像',
+  `avatar_url` varchar(500) NOT NULL DEFAULT '' COMMENT '头像',
   `subscribe_time` int(11) NOT NULL COMMENT '关注时间',
   `unionid` varchar(32) NOT NULL DEFAULT '' COMMENT '',
   `remark` varchar(50) NOT NULL DEFAULT '' COMMENT '备注',
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   `tagid_list` varchar(500) NOT NULL DEFAULT '' COMMENT '标签ID',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
+  KEY `appid` (`appid`),
   UNIQUE KEY `openid` (`openid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT '微信用户信息表';
 
