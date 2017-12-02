@@ -207,6 +207,7 @@ class Category
         ];
 
         $model_category = new ModelCategory;
+
         $result =
         $model_category->view('category c', true)
         ->view('category cc', ['name'=>'parent_name'], 'c.pid=cc.id', 'LEFT')
@@ -230,6 +231,7 @@ class Category
         ];
 
         $model_category = new ModelCategory;
+
         $result =
         $model_category->field(true)
         ->where($map)
@@ -267,6 +269,7 @@ class Category
         ];
 
         $model_models = new ModelModels;
+
         $result =
         $model_models->field(true)
         ->where($map)
@@ -292,6 +295,7 @@ class Category
         ];
 
         $model_level = new ModelLevel;
+
         $result =
         $model_level->field(true)
         ->where($map)

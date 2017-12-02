@@ -250,14 +250,6 @@ function escape_xss($_data)
             '/[\s]+</si' => '<',   // 多余回车
             '/>[\s]+/si' => '>',
 
-            // SQL
-            '/(select)/si' => '<span>s</span>elect',
-            '/(drop)/si'   => '<span>d</span>rop',
-            '/(delete)/si' => '<span>d</span>elete',
-            '/(create)/si' => '<span>c</span>reate',
-            '/(update)/si' => '<span>u</span>pdate',
-            '/(insert)/si' => '<span>i</span>nsert',
-
             // 特殊字符
             '/(〃|”|“)/si'  => '&quot;',
             '/(￥)/si'      => '&yen;',

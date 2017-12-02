@@ -13,10 +13,9 @@
  */
 namespace app\admin\logic\category;
 
-use app\common\logic\Models as LogicModels;
 use app\common\model\Models as ModelModels;
 
-class Model extends ModelModels
+class Model
 {
 
     /**
@@ -27,9 +26,10 @@ class Model extends ModelModels
      */
     public function getListData()
     {
-        // $model_models = new ModelModels;
+        $model_models = new ModelModels;
+
         $result =
-        $this->field(true)
+        $model_models->field(true)
         ->paginate();
 
         foreach ($result as $key => $value) {
@@ -55,7 +55,7 @@ class Model extends ModelModels
         $result = parent::added($_form_data);
 
         if (!!$result) {
-            $this->createModel($_form_data['model_table'], $_form_data['table_name'], $_form_data['remark']);
+            $this->createModelTable($_form_data['model_table'], $_form_data['table_name'], $_form_data['remark']);
         }
 
         return !!$result;
@@ -69,7 +69,7 @@ class Model extends ModelModels
      * @param  string  $_remark      备注
      * @return array
      */
-    private function createModel($_model_table, $_table_name, $_remark)
+    private function createModelTable($_model_table, $_table_name, $_remark)
     {
         $prefix = config('database.prefix');
 
@@ -111,7 +111,6 @@ class Model extends ModelModels
             ['id', '=', $_request_data['id']],
         ];
 
-        // $model_models = new ModelModels;
         $result =
         $this->where($map)
         ->find();

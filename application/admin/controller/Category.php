@@ -14,6 +14,7 @@
 namespace app\admin\controller;
 
 use app\admin\logic\category\Category as LogicCategory;
+use app\admin\logic\category\Model as LogicModel;
 
 class Category extends Base
 {
@@ -85,6 +86,26 @@ class Category extends Base
                 $tpl = $this->fetch();
                 break;
         }
+
+        return $tpl;
+    }
+
+    public function model($operate = '')
+    {
+        $this->assign('button_search', true);
+        $this->assign('button_added', true);
+
+        $logic_model = new LogicModel;
+
+        switch ($operate) {
+
+            default:
+                $result = $logic_model->getListData();
+                $this->assign('json_data', json_encode($result));
+                $tpl = $this->fetch();
+                break;
+        }
+
 
         return $tpl;
     }

@@ -250,13 +250,13 @@ class WechatApi extends Wechat
      * @param
      * @return mixed
      */
-    public function jsSign($_debug = 'false')
+    public function jsSign($_debug = 'false', $_version = '1.2.0')
     {
         $result = parent::getJsSign($this->url());
 
         $code = [
             'wechat_js_sign' => $result,
-            'wecaht_js_code' => 'wx.config({debug: '. $_debug . ',appId: "' . $result['appId'] . '",timestamp: ' . $result['timestamp'] . ',nonceStr: "' . $result['nonceStr'] . '",signature: "' . $result['signature'] . '",jsApiList: ["checkJsApi","onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone","hideMenuItems","showMenuItems","hideAllNonBaseMenuItem","showAllNonBaseMenuItem","translateVoice","startRecord","stopRecord","onVoiceRecordEnd","playVoice","onVoicePlayEnd","pauseVoice","stopVoice","uploadVoice","downloadVoice","chooseImage","previewImage","uploadImage","downloadImage","getNetworkType","openLocation","getLocation","hideOptionMenu","showOptionMenu","closeWindow","scanQRCode","chooseWXPay","openProductSpecificView","addCard","chooseCard","openCard"]});'
+            'wecaht_js_code' => '<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-' . $_version . '.js"></script><script type="text/javascript">wx.config({debug: '. $_debug . ',appId: "' . $result['appId'] . '",timestamp: ' . $result['timestamp'] . ',nonceStr: "' . $result['nonceStr'] . '",signature: "' . $result['signature'] . '",jsApiList: ["checkJsApi","onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone","hideMenuItems","showMenuItems","hideAllNonBaseMenuItem","showAllNonBaseMenuItem","translateVoice","startRecord","stopRecord","onVoiceRecordEnd","playVoice","onVoicePlayEnd","pauseVoice","stopVoice","uploadVoice","downloadVoice","chooseImage","previewImage","uploadImage","downloadImage","getNetworkType","openLocation","getLocation","hideOptionMenu","showOptionMenu","closeWindow","scanQRCode","chooseWXPay","openProductSpecificView","addCard","chooseCard","openCard","openAddress"]});</script>'
         ];
 
         if ($_debug === 'true') {
@@ -266,8 +266,15 @@ class WechatApi extends Wechat
         return $code;
     }
 
+    /**
+     * 当前URL地址
+     * @access public
+     * @param
+     * @return string
+     */
     protected function url()
     {
+        // 判断协议
         if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
             $scheme = 'https';
         } elseif (isset($_SERVER['REQUEST_SCHEME']) && 'https' == $_SERVER['REQUEST_SCHEME']) {

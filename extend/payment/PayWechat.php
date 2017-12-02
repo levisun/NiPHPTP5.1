@@ -248,7 +248,7 @@ class PayWechat
             $return = false;
         }
 
-        return $result;
+        return $return;
     }
 
     /**
