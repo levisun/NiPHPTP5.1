@@ -9,53 +9,17 @@
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Account.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 namespace app\admin\controller;
 
 use app\admin\controller\Base;
 
-// use app\admin\controller\account\Login as ControllerLogin;
-// use app\admin\controller\account\Logout as ControllerLogout;
-
-use app\admin\logic\account\Login as LogicLogin;
-use app\admin\logic\account\Logout as LogicLogout;
-
 class Account extends Base
 {
 
-    /**
-     * 登录
-     * @access public
-     * @param
-     * @return mixed
-     */
     public function login()
     {
-        if ($this->request->isPost()) {
-            $logic_login = new LogicLogin;
-            $result = $logic_login->login();
-            if (true === $result) {
-                $this->success(lang('success login'), 'settings/info');
-            } else {
-                $msg = $result === false ? lang('error') : $result;
-                $this->error($msg);
-            }
-        }
-
         return $this->fetch();
-    }
-
-    /**
-     * 注销
-     * @access public
-     * @param
-     * @return void
-     */
-    public function logout()
-    {
-        $logic_logout = new LogicLogout;
-        $logic_logout->removeAuth();
-        $this->redirect(url('login'));
     }
 }

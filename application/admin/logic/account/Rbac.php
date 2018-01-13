@@ -10,11 +10,9 @@
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Rbac.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
-namespace app\admin\logic\account;
-
-use app\common\model\Node as ModelNode;
+namespace app\admin\logic;
 
 class Rbac
 {
@@ -38,7 +36,7 @@ class Rbac
 
     public function __construct()
     {
-        $this->model = new ModelNode;
+        $this->model = model('Node');
 
         $this->module     = strtoupper(request()->module());
         $this->controller = strtoupper(request()->controller());

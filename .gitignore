@@ -55,3 +55,5 @@ public/upload/*/*/*.png
 runtime/
 thinkphp/
 vendor/
+
+application/admin_old

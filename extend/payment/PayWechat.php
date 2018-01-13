@@ -191,7 +191,8 @@ class PayWechat
     {
         if (!empty($GLOBALS['HTTP_RAW_POST_DATA'])) {
             $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
-            $result = (array) simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+            // $result = (array) simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $result = $this->formXml($xml);
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
                 $result = $this->queryOrder(['out_trade_no' => $result['out_trade_no']]);
                 if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS' && $result['trade_state'] == 'SUCCESS') {
@@ -233,16 +234,11 @@ class PayWechat
         $this->params['sign']          = $this->getSign($this->params);
 
         $url = 'https://api.mch.weixin.qq.com/pay/orderquery';
+        $url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
         $response = $this->postXmlCurl($this->toXml(), $url, true);
         $return = $this->formXml($response);
 
-        if ($result['return_code'] == 'FAIL') {
-            $return = false;
-        }
-
         if ($result['result_code'] == 'SUCCESS') {
-            $return = true;
-        } elseif ($result['err_code'] == 'TRADE_STATE_ERROR') {
             $return = true;
         } else {
             $return = false;

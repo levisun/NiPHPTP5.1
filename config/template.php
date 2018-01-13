@@ -14,13 +14,21 @@
 
 return [
     // 模板后缀
-    'view_suffix'  => 'html',
+    'view_suffix'   => 'html',
     // 模板文件名分隔符
-    'view_depr'    => DIRECTORY_SEPARATOR,
+    'view_depr'     => DIRECTORY_SEPARATOR,
     // 布局
-    'layout_on'    => true,
+    'layout_on'     => true,
     // 布局入口文件名
-    'layout_name'  => 'layout',
+    'layout_name'   => 'layout',
     // 布局输出替换变量
-    'layout_item'  => '{__CONTENT__}',
+    'layout_item'   => '{__CONTENT__}',
+    // 去除模板文件里面的html空格与换行
+    'strip_space'   => !APP_DEBUG,
+    // 模板编译缓存
+    'tpl_cache'     => !APP_DEBUG,
+    // 模板渲染缓存
+    'display_cache' => !APP_DEBUG,
+
+    // 'tpl_deny_func_list' => 'echo,exit,die,var_dump,print,pirnt_r',
 ];

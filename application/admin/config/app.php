@@ -1,7 +1,7 @@
 <?php
 return [
     // 模板
-    'default_theme'           => 'simplify',
+    'default_theme'           => 'simplify_new',
     // 默认语言
     'default_lang'            => 'zh-cn',
     // 是否开启多语言
@@ -20,7 +20,7 @@ return [
         'expand'   => 'wrench',
     ],
 
-	// 默认控制器名
+    // 默认控制器名
     'default_controller'      => 'Account',
     // 默认操作名
     'default_action'          => 'login',

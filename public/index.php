@@ -13,6 +13,7 @@
 namespace think;
 
 require __DIR__ . '/const.php';
+
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 

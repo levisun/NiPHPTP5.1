@@ -7,9 +7,9 @@
  * @category  admin\validate\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: AccountLogin.php v1.0.1 $
+ * @version   CVS: $Id: Login.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 namespace app\admin\validate\account;
 

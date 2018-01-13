@@ -30,19 +30,90 @@ function use_time_memory($start = false)
         lang('run time') .
         Debug::getRangeTime('memory_start', 'end', 2) . ' S ' .
         lang('run memory') .
-        Debug::getRangeMem('memory_start', 'end');
+        Debug::getRangeMem('memory_start', 'end') .
+        lang('run file load') .
+        count(get_included_files());
     }
 }
 
 /**
+ * 实例化模型
+ * @param  string $_name   [模块名/]控制器名
+ * @param  string $_layer  业务层名
+ * @return object
+ */
+function logic($_name, $_layer = 'logic')
+{
+    if (strpos($_name, '/') === false) {
+        $_name = request()->module() . '/' . $_name;
+    }
+
+    if ($_layer !== 'logic') {
+        // 支持业务
+        $_layer = 'logic\\' . $_layer;
+    }
+
+    return app()->controller($_name, $_layer, false);
+}
+
+/**
+ * 实例化模型
+ * @param  string $_name [模块名/]模型名
+ * @return object
+ */
+function model($_name = '')
+{
+    if (strpos($_name, '/') !== false) {
+        // 支持模块
+        list($module, $_name) = explode('/', $_name);
+    } else {
+        $module = request()->module();
+    }
+
+    return app()->model($_name, 'model', false, $module);
+}
+
+/**
  * 实例化验证器
- * @param  array  $_data     验证数据
- * @param  string $_name     验证器名
- * @param  string $_layer    业务层名
- * @param  srring $_module   模块名
+ * @param  string $_name  [模块名/]验证器名[.场景]
+ * @param  array  $_data  验证数据
+ * @param  string $_layer 业务层名
  * @return mixed
  */
-function validate($_data, $_name, $_layer = 'validate', $_module = '')
+function validate($_name, $_data, $_layer = 'validate')
+{
+    if (strpos($_name, '/') !== false) {
+        // 支持模块
+        list($module, $_name) = explode('/', $_name);
+    } else {
+        $module = request()->module();
+    }
+
+    if ($_layer !== 'validate') {
+        // 支持业务
+        $_layer = 'validate\\' . $_layer;
+    }
+
+    if (strpos($_name, '.') !== false) {
+        // 支持场景
+        list($_name, $scene) = explode('.', $_name);
+    }
+
+    $v = app()->validate($_name, $_layer, false, $module);
+    if (!empty($scene)) {
+        $v->scene($scene);
+    }
+
+    if (!$v->check($_data)) {
+        $return = $v->getError();
+    } else {
+        $return = true;
+    }
+
+    return $return;
+}
+
+/*function validate($_data, $_name, $_layer = 'validate', $_module = 'common')
 {
     if ($_layer) {
         $_layer = 'validate\\' . $_layer;
@@ -70,7 +141,7 @@ function validate($_data, $_name, $_layer = 'validate', $_module = '')
         $return = true;
     }
     return $return;
-}
+}*/
 
 /**
  * 获取语言变量值
@@ -148,6 +219,37 @@ function remove_rundata()
             }
         }
     }
+}
+
+/**
+ * 字符串加密
+ * @param  string $_str     加密前的字符串
+ * @param  string $_authkey 密钥
+ * @return string           加密后的字符串
+ */
+function encrypt($_str, $_authkey='0af4769d381ece7b4fddd59dcf048da6') {
+    $coded = '';
+    $keylength = strlen($_authkey);
+    for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
+        $coded .= substr($_str, $i, $keylength) ^ $_authkey;
+    }
+    return str_replace('=', '', base64_encode($coded));
+}
+
+/**
+ * 字符串解密
+ * @param  string $_str     加密后的字符串
+ * @param  string $_authkey 密钥
+ * @return string           加密前的字符串
+ */
+function decrypt($_str, $_authkey='0af4769d381ece7b4fddd59dcf048da6') {
+    $coded = '';
+    $keylength = strlen($_authkey);
+    $_str = base64_decode($_str);
+    for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
+        $coded .= substr($_str, $i, $keylength) ^ $_authkey;
+    }
+    return $coded;
 }
 
 /**
