@@ -4,14 +4,14 @@
  * API - 控制器
  *
  * @package   NiPHPCMS
- * @category  api\controller
+ * @category  admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Receive.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-namespace app\api\controller;
+namespace app\admin\controller;
 
 use think\Controller;
 use think\facade\Env;
@@ -30,57 +30,20 @@ class Receive extends Controller
     private $object;    // 业务逻辑类实例化
 
     /**
-     * 参数请求
-     * @access public
+     * 初始化
+     * 根据method获取logic|action|layer
+     * @access protected
      * @param
-     * @return json
+     * @return void
      */
-    public function params()
+    protected function initialize()
     {
-        $this->getLAL();
+        $this->method = input('param.method');
 
-        $result = false;
-
-        if (!$this->hasIllegal()) {
-            $error = 'illegal';
-        } elseif (!$this->hasLogic()) {
-            $error = $this->logic . ' undefined';
-        } elseif (!$this->hasAction()) {
-            $error = $this->logic . '->' . $this->action . ' undefined';
-        } else {
-            $logic = $this->object;
-            $action = $this->action;
-            $result = $logic->$action();
-        }
-
-        return json([
-            'params' => [
-                'method' => $this->method,
-                'logic'  => $this->logic,
-                'action' => $this->action,
-                'layer'  => $this->layer,
-                'sign'   => $this->sign,
-                'post'   => input('post.'),
-            ],
-            'result'   => $result === false ? [] : $result,
-            'errorMsg' => $result === false ? $error : 'success'
-        ]);
-    }
-
-    /**
-     * 判断业务类中方法是否存在
-     * @access private
-     * @param
-     * @return boolean
-     */
-    private function hasAction()
-    {
-        $this->object = logic($this->module . '/' . $this->logic, $this->layer);
-        if (method_exists($this->object, $this->action)) {
-            return true;
-        } else {
-            return false;
-        }
+        $method = explode('.', $this->method);
+        $this->logic = $method[0];
+        $this->action = !empty($method[1]) ? $method[1] : 'index';
+        $this->layer = !empty($method[2]) ? $method[2] : 'logic';
     }
 
     /**
@@ -95,7 +58,7 @@ class Receive extends Controller
 
         if ($this->sign) {
             list($this->module, $sign_time) = explode('.', decrypt($this->sign), 2);
-            if ($sign_time + 12 >= time()) {
+            if ($sign_time + 60 >= time()) {
                 return true;
             } else {
                 return false;
@@ -131,18 +94,54 @@ class Receive extends Controller
     }
 
     /**
-     * 根据method获取logic|action|layer
+     * 判断业务类中方法是否存在
      * @access private
      * @param
-     * @return void
+     * @return boolean
      */
-    private function getLAL()
+    private function hasAction()
     {
-        $this->method = input('param.method');
+        $this->object = logic($this->module . '/' . $this->logic, $this->layer);
+        if (method_exists($this->object, $this->action)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        $method = explode('.', $this->method);
-        $this->logic = $method[0];
-        $this->action = !empty($method[1]) ? $method[1] : 'index';
-        $this->layer = !empty($method[2]) ? $method[2] : 'logic';
+    /**
+     * 参数请求
+     * @access public
+     * @param
+     * @return json
+     */
+    public function params()
+    {
+        $receive = false;
+
+        if (!$this->hasIllegal()) {
+            $error = 'ILLEGAL';
+        } elseif (!$this->hasLogic()) {
+            $error = $this->logic . ' undefined';
+        } elseif (!$this->hasAction()) {
+            $error = $this->logic . '->' . $this->action . ' undefined';
+        } else {
+            $logic = $this->object;
+            $action = $this->action;
+            $receive = $logic->$action();
+        }
+
+        $result = $receive === false ? ['return_code' => 'ERROR'] : $receive;
+        $result['params'] = [
+            'method' => $this->method,
+            'logic'  => $this->logic,
+            'action' => $this->action,
+            'layer'  => $this->layer,
+            'sign'   => $this->sign,
+            'post'   => input('post.'),
+        ];
+        $result['error_msg'] = $receive === false ? $error : 'SUCCESS';
+
+        return json($result);
     }
 }

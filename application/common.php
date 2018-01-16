@@ -37,6 +37,21 @@ function use_time_memory($start = false)
 }
 
 /**
+ * AJAX请求返回数据结构
+ * @param string $_msg  提示信息
+ * @param string $_code 请求返回状态
+ * @param mixed  $_data 请求返回数据
+ */
+function ajaxReturn($_msg, $_code, $_data = '')
+{
+    return [
+        'return_code'   => $_code,
+        'return_msg'    => $_msg,
+        'return_result' => $_data
+    ];
+}
+
+/**
  * 实例化模型
  * @param  string $_name   [模块名/]控制器名
  * @param  string $_layer  业务层名

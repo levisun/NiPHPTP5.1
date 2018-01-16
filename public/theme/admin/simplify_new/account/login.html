@@ -7,10 +7,10 @@
 
             <form action="" method="post" id="np-login">
                 <div class="form-group m-bottom-md">
-                    <input type="text" name="username" class="form-control" placeholder="{:lang('username')}">
+                    <input type="text" name="username" class="form-control" placeholder="{:lang('username')}" validate-type="*" validate-msg="fffffff">
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password" class="form-control" placeholder="{:lang('password')}">
+                    <input type="password" name="password" class="form-control" placeholder="{:lang('password')}" validate-type="m" validate-msg="ddddddd">
                 </div>
 
                 <div class="form-group">
@@ -29,32 +29,19 @@
 
 
 <script>
-
-$.uiPopup("init", {title: "<b>title</b>", content: "<div><p>content</p></div>", footer: "<input type='submit' />"});
-
-$.uiLoad("正在拼命加载中...");
-$.uiLoad("nodata");
-// $.uiLoad(false);
-
-$(".layoutUiclearDialog").click(function(){
-    $.uiPopup("hide");
-});
-
 $(".np-login-btn").click(function(){
-    $.uiPopup("show");
-
-
-
     let form_data = $("#np-login").serialize();
     $.loading({
-        url: "{:url('api/receive/params', ['method' => 'Login.login.account'])}",
+        url: "{:url('receive/params', ['method' => 'login.login.account'])}",
         data: form_data,
     }, function(result){
-        if (result.errorMsg === 'illegal') {
-            window.location.reload();
-        }
-        if (result.errorMsg === 'success') {
+        if (result.error_msg === 'ILLEGAL') {
+            $.uiToast('请求超时！');
+            $.reload();
+        } else if (result.error_msg === 'SUCCESS' && result.return_code === 'SUCCESS') {
 
+        } else {
+            $.uiToast(result.return_msg);
         }
     });
 });
