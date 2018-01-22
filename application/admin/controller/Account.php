@@ -22,4 +22,17 @@ class Account extends Base
     {
         return $this->fetch();
     }
+
+    /**
+     * 注销
+     * @access public
+     * @param
+     * @return void
+     */
+    public function logout()
+    {
+        session(null);
+        cookie(null);
+        $this->redirect(url('login'));
+    }
 }

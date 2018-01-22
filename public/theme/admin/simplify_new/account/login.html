@@ -30,18 +30,20 @@
 
 <script>
 $(".np-login-btn").click(function(){
-    let form_data = $("#np-login").serialize();
+    var data = "method=login.login.account";
+    data += "&"+$("form").serialize();
+
     $.loading({
-        url: "{:url('receive/params', ['method' => 'login.login.account'])}",
-        data: form_data,
+        url: request.api,
+        async: false,
+        data: data,
     }, function(result){
         if (result.error_msg === 'ILLEGAL') {
-            $.uiToast('请求超时！');
             $.reload();
         } else if (result.error_msg === 'SUCCESS' && result.return_code === 'SUCCESS') {
-
+            $.redirect(request.domain+"admin/settings/info.shtml");
         } else {
-            $.uiToast(result.return_msg);
+            $.uiToast(result.return_result.return_msg);
         }
     });
 });

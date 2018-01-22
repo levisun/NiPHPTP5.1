@@ -28,14 +28,20 @@ class Login
         );
         $result = validate('admin/Login', $receive_data, 'account');
         if (true !== $result) {
-            return ajaxReturn($result, 'ERROR');
+            return [
+                'return_code'   => 'ERROR',
+                'return_msg'    => $result
+            ];
         }
 
         // IP锁定 直接返回false
         $login_ip = request()->ip(0, true);
         $module   = request()->module();
         if (logic('common/RequestLog')->isLockIp($login_ip, $module)) {
-            return ajaxReturn(lang('error username or password'), 'ERROR');
+            return [
+                'return_code'   => 'ERROR',
+                'return_msg'    => lang('error username or password')
+            ];
         }
 
         // 获得用户信息
@@ -43,14 +49,20 @@ class Login
         if (false === $user_data) {
             // 用户不存在 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
-            return ajaxReturn(lang('error username or password'), 'ERROR');
+            return [
+                'return_code'   => 'ERROR',
+                'return_msg'    => lang('error username or password')
+            ];
         }
 
         // 登录密码错误
         if (!$this->checkPassword($receive_data['password'], $user_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
-            return ajaxReturn(lang('error username or password'), 'ERROR');
+            return [
+                'return_code'   => 'ERROR',
+                'return_msg'    => lang('error username or password')
+            ];
         }
 
         // 更新登录信息
@@ -60,11 +72,9 @@ class Login
         $this->createAuth($user_data);
 
         // 登录成功 清除锁定IP
-        $logic_request_log->removeLockIp($login_ip, $module);
+        logic('common/RequestLog')->removeLockIp($login_ip, $module);
 
-        return true;
-
-        return [];
+        return lang('login success');
     }
 
     /**
@@ -132,5 +142,21 @@ class Login
         ];
 
         return model('common/Admin')->update($update_data);
+    }
+
+    /**
+     * 生成登录用户认证信息
+     * @access private
+     * @param  array  $_user_data 管理员数据
+     * @return void
+     */
+    private function createAuth($_user_data)
+    {
+        // 删除危险信息
+        unset($_user_data['password'], $_user_data['salt'], $_user_data['user_id']);
+        // 生成管理员数据
+        session('admin_data', $_user_data);
+        // 生成认证ID
+        session(config('user_auth_key'), $_user_data['id']);
     }
 }

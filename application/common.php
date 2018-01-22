@@ -12,8 +12,9 @@
  * @since     2017/09/13
  */
 
-use think\facade\Lang;
 use think\facade\Debug;
+use think\facade\Env;
+use think\facade\Lang;
 
 /**
  * 运行时间与占用内存
@@ -28,27 +29,12 @@ function use_time_memory($start = false)
     } else {
         return
         lang('run time') .
-        Debug::getRangeTime('memory_start', 'end', 2) . ' S ' .
+        Debug::getRangeTime('memory_start', 'end', 2) . 's ' .
         lang('run memory') .
-        Debug::getRangeMem('memory_start', 'end') .
+        Debug::getRangeMem('memory_start', 'end') . ' ' .
         lang('run file load') .
         count(get_included_files());
     }
-}
-
-/**
- * AJAX请求返回数据结构
- * @param string $_msg  提示信息
- * @param string $_code 请求返回状态
- * @param mixed  $_data 请求返回数据
- */
-function ajaxReturn($_msg, $_code, $_data = '')
-{
-    return [
-        'return_code'   => $_code,
-        'return_msg'    => $_msg,
-        'return_result' => $_data
-    ];
 }
 
 /**
@@ -127,36 +113,6 @@ function validate($_name, $_data, $_layer = 'validate')
 
     return $return;
 }
-
-/*function validate($_data, $_name, $_layer = 'validate', $_module = 'common')
-{
-    if ($_layer) {
-        $_layer = 'validate\\' . $_layer;
-    } else {
-        $_layer = 'validate';
-    }
-
-    if (is_array($_name)) {
-        $v = app()->validate();
-        $v->rule($_name);
-    } else {
-        if (strpos($_name, '.')) {
-            // 支持场景
-            list($_name, $scene) = explode('.', $_name);
-        }
-
-        $v = app()->validate($_name, $_layer, false, $_module);
-        if (!empty($scene)) {
-            $v->scene($scene);
-        }
-    }
-    if (!$v->check($_data)) {
-        $return = $v->getError();
-    } else {
-        $return = true;
-    }
-    return $return;
-}*/
 
 /**
  * 获取语言变量值

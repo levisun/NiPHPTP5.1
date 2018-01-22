@@ -170,6 +170,37 @@
         }, _time * 1000);
     }
 
+    jQuery.domain = function () {
+        var path_name = location.pathname;
+        var project_name = path_name.substring(0, path_name.substr(1).indexOf("/") + 1);
+        var php_self = path_name.substring(
+            path_name.substr(1).indexOf("/") + 2,
+            path_name.substr(1).indexOf(".php") + 5
+            ) + "/";
+
+        if (window.location.host == "localhost") {
+            var domain = location.protocol + "//" + window.location.host + project_name + "/";
+        } else {
+            var domain = location.protocol + "//" + window.location.host + "/";
+        }
+
+        return domain;
+    }
+
+    /**
+     * HTML转义
+     */
+    jQuery.htmlDecode = function (_string) {
+        _string = _string.toString();
+        _string = _string.replace(/&amp;/g, '&');
+        _string = _string.replace(/&lt;/g, '<');
+        _string = _string.replace(/&gt;/g, '>');
+        _string = _string.replace(/&quot;/g, '"');
+        _string = _string.replace(/&#039;/g, '\'');
+
+        return _string;
+    }
+
     /**
      * 加载更多
      */
@@ -185,7 +216,7 @@
                 $("body").attr("Layout-loading-bool", "false");
 
                 _params["data"]["p"] = page_num;
-                this.loading(_params, function(result){
+                this.loading(_params, function (result) {
                     _callback(result);
 
                     setTimeout(function () {
@@ -202,7 +233,7 @@
     jQuery.loading = function (_params, _callback) {
         var ajax_type      = this.isset(_params.type, "post"),
             ajax_url       = this.isset(_params.url, "?ajax_url=undefined"),
-            ajax_data      = this.isset(_params.data, ""),
+            ajax_data      = this.isset(_params.data, {}),
             ajax_async     = this.isset(_params.async, true),
             ajax_cache     = this.isset(_params.cache, false),
             ajax_data_type = this.isset(_params.data_type, "");
@@ -337,6 +368,21 @@
      */
     jQuery.parseJSON = function (_result) {
         return eval("(" + _result + ")");
+    }
+
+    /**
+     * 错误
+     * @param string _msg  信息
+     * @param mixed  _data 输出数据
+     */
+    jQuery.printError = function (_msg, _data)
+    {
+        console.group('Error');
+        console.error(_msg);
+        for (var index in _data) {
+            console.log(index+': ', _data[index]);
+        }
+        console.groupEnd();
     }
 
 }));

@@ -38,12 +38,14 @@ class Receive extends Controller
      */
     protected function initialize()
     {
-        $this->method = input('param.method');
+        LoadLang();
+
+        $this->method = input('post.method');
 
         $method = explode('.', $this->method);
-        $this->logic = $method[0];
+        $this->logic  = $method[0];
         $this->action = !empty($method[1]) ? $method[1] : 'index';
-        $this->layer = !empty($method[2]) ? $method[2] : 'logic';
+        $this->layer  = !empty($method[2]) ? $method[2] : 'logic';
     }
 
     /**
@@ -117,6 +119,7 @@ class Receive extends Controller
      */
     public function params()
     {
+        $result = [];
         $receive = false;
 
         if (!$this->hasIllegal()) {
@@ -126,21 +129,20 @@ class Receive extends Controller
         } elseif (!$this->hasAction()) {
             $error = $this->logic . '->' . $this->action . ' undefined';
         } else {
-            $logic = $this->object;
-            $action = $this->action;
+            $logic   = $this->object;
+            $action  = $this->action;
             $receive = $logic->$action();
         }
 
-        $result = $receive === false ? ['return_code' => 'ERROR'] : $receive;
-        $result['params'] = [
-            'method' => $this->method,
-            'logic'  => $this->logic,
-            'action' => $this->action,
-            'layer'  => $this->layer,
-            'sign'   => $this->sign,
-            'post'   => input('post.'),
-        ];
+        $result['form data'] = input('param.');
         $result['error_msg'] = $receive === false ? $error : 'SUCCESS';
+
+        if ($receive !== false) {
+            $result['return_result'] = $receive;
+            $result['return_code']   = !empty($receive['return_code']) ? $receive['return_code'] : 'SUCCESS';
+        } else {
+            $result['return_code'] = 'ERROR';
+        }
 
         return json($result);
     }

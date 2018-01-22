@@ -40,6 +40,9 @@ class Base extends Controller
         // 域名
         $this->domain = $this->request->domain() . $this->request->root() . '/';
 
+        $this->setTemplate();
+        LoadLang();
+
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
             // 审核用户权限
@@ -50,11 +53,25 @@ class Base extends Controller
             if ($this->requestParam['action'] == 'login') {
                 $this->redirect(url('settings/info'));
             }
+            // 用户信息
+            $this->assign('ADMIN_DATA', session('admin_data'));
+
+            // 权限菜单
+            $auth_menu = logic('admin/auth', 'account')->getMenu();
+            $this->assign('AUTH_MENU', json_encode($auth_menu));
+
+            // 按钮状态
+            $this->assign('button_search', false);
+            $this->assign('button_added', false);
         } elseif ($this->requestParam['controller'] != 'account') {
             $this->redirect(url('account/login'));
         }
 
-        $this->setTemplate();
+        // 网站标题与面包屑
+        $tit_bre = logic('admin/auth', 'account')->getTitBre();
+        $this->assign('TITLE', $tit_bre['title']);
+        $this->assign('BREADCRUMB', $tit_bre['breadcrumb']);
+        $this->assign('SUB_TITLE', $tit_bre['sub_title']);
 
         cookie('__sign', encrypt($this->requestParam['module'] . '.' . time()));
     }

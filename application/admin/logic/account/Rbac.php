@@ -12,7 +12,7 @@
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-namespace app\admin\logic;
+namespace app\admin\logic\account;
 
 class Rbac
 {
@@ -36,7 +36,7 @@ class Rbac
 
     public function __construct()
     {
-        $this->model = model('Node');
+        $this->model = model('common/Node');
 
         $this->module     = strtoupper(request()->module());
         $this->controller = strtoupper(request()->controller());
