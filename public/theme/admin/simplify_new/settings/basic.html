@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="button" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                        <input type="button" value="{:lang('button save')}" class="btn btn-info marginTB-xs submit">
                     </div>
                 </div>
             </form>
@@ -54,21 +54,6 @@
     </div>
 </div>
 <script type="text/javascript">
-        var path_name = location.pathname;
-        var project_name = path_name.substring(0, path_name.substr(1).indexOf("/") + 1);
-        var php_self = path_name.substring(
-            path_name.substr(1).indexOf("/") + 2,
-            path_name.substr(1).indexOf(".php") + 5
-            ) + "/";
-
-        if (window.location.host == "localhost") {
-            var domain = location.protocol + "//" + window.location.host + project_name + "/";
-        } else {
-            var domain = location.protocol + "//" + window.location.host + "/";
-        }
-        for (var i in document) {
-            // alert(document[i]);
-        }
 $.loading({
     url: request.api,
     data: {
@@ -83,5 +68,17 @@ $.loading({
     for (var index in result.return_result) {
         $("#"+index).val($.htmlDecode(result.return_result[index]));
     }
+});
+$(".submit").click(function(){
+    var form_data = "method=basic.update.settings";
+    form_data += "&"+$("form").serialize();
+
+    $.loading({
+        url: request.api,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
 });
 </script>

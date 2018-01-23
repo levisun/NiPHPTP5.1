@@ -55,7 +55,7 @@ class Basic
             'website_name'        => input('post.website_name'),
             'website_keywords'    => input('post.website_keywords'),
             'website_description' => input('post.website_description'),
-            'bottom_message'      => input('post.bottom_message', '', 'trim,htmlspecialchars'),
+            'bottom_message'      => input('post.bottom_message', '', 'trim,escape_xss,htmlspecialchars'),
             'copyright'           => input('post.copyright'),
             'script'              => input('post.script', '', 'trim,htmlspecialchars'),
             '__token__'           => input('post.__token__'),
@@ -63,28 +63,26 @@ class Basic
 
         // 验证请求数据
         $result = validate('admin/basic', $receive_data, 'settings');
-        if (true === $result) {
-            unset($form_data['__token__']);
-
-            $model_config = model('common/config');
-
-            $map = $data = [];
-            foreach ($form_data as $key => $value) {
-                $map  = [
-                    ['name', '=', $key],
-                ];
-                $data = ['value' => $value];
-
-                $model_config->allowField(true)
-                ->where($map)
-                ->update($data);
-            }
-
-            $return = true;
-        } else {
-            $return = $result;
+        if (true !== $result) {
+            return backData($result, 'ERROR');
         }
 
-        return $return;
+        unset($receive_data['__token__']);
+
+        $model_config = model('common/config');
+
+        $map = $data = [];
+        foreach ($receive_data as $key => $value) {
+            $map  = [
+                ['name', '=', $key],
+            ];
+            $data = ['value' => $value];
+
+            $model_config->allowField(true)
+            ->where($map)
+            ->update($data);
+        }
+
+        return backData(lang('save success'), 'SUCCESS');
     }
 }

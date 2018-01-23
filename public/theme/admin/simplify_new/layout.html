@@ -19,6 +19,21 @@
         controller: "{:strtolower($Request.controller)}",
         action:     "{$Request.action}",
     };
+    function handle(_result, _url) {
+        if (_result.error_msg === 'ILLEGAL') {
+            $.reload();
+        } else if (_result.error_msg === 'SUCCESS' && _result.return_code === 'SUCCESS') {
+            if (typeof(_url) != "undefined") {
+                $.uiToast(_result.return_msg);
+                $.redirect(request.domain+_url);
+            } else {
+                $.uiToast(_result.return_msg);
+                $.reload();
+            }
+        } else {
+            $.uiToast(_result.return_msg);
+        }
+    }
     </script>
 </head>
 

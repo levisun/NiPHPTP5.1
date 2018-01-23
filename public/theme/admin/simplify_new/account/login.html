@@ -30,21 +30,15 @@
 
 <script>
 $(".np-login-btn").click(function(){
-    var data = "method=login.login.account";
-    data += "&"+$("form").serialize();
+    var form_data = "method=login.login.account";
+    form_data += "&"+$("form").serialize();
 
     $.loading({
         url: request.api,
         async: false,
-        data: data,
+        data: form_data,
     }, function(result){
-        if (result.error_msg === 'ILLEGAL') {
-            $.reload();
-        } else if (result.error_msg === 'SUCCESS' && result.return_code === 'SUCCESS') {
-            $.redirect(request.domain+"admin/settings/info.shtml");
-        } else {
-            $.uiToast(result.return_result.return_msg);
-        }
+        handle(result, "admin/settings/info.shtml");
     });
 });
 </script>

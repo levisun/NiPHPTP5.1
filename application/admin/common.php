@@ -47,6 +47,33 @@ function upload_to_javasecipt($_update_file)
 }
 
 /**
+ * 返回数据
+ * @param  string|array 数据
+ * @param  string       状态
+ * @return array
+ */
+function backData($_data, $_status = 'SUCCESS')
+{
+    if (request()->isAjax() || request()->isPjax()) {
+        if ($_status === 'SUCCESS') {
+            return [
+                'return_code'   => 'SUCCESS',
+                // 'return_result' => '',
+                'return_msg'    => $_data,
+            ];
+        } else {
+            return [
+                'return_code'   => 'ERROR',
+                // 'return_result' => '',
+                'return_msg'    => $_data,
+            ];
+        }
+    } else {
+        return $_data;
+    }
+}
+
+/**
  * 加载语言包
  * @param
  * @return void

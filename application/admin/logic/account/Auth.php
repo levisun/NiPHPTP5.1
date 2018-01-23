@@ -84,7 +84,9 @@ class Auth
             $result['sub_title'] = lang('upload file');
         } else {
             $menu = lang('_menu');
-            $result['sub_title'] = $menu[$controller . '_' . $action];
+            if (!empty($menu[$controller . '_' . $action])) {
+                $result['sub_title'] = $menu[$controller . '_' . $action];
+            }
         }
         return $result;
     }

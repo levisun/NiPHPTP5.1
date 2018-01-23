@@ -60,7 +60,7 @@ class Receive extends Controller
 
         if ($this->sign) {
             list($this->module, $sign_time) = explode('.', decrypt($this->sign), 2);
-            if ($sign_time + 60 >= time()) {
+            if ($sign_time + 1140 >= time()) {
                 return true;
             } else {
                 return false;
@@ -138,8 +138,17 @@ class Receive extends Controller
         $result['error_msg'] = $receive === false ? $error : 'SUCCESS';
 
         if ($receive !== false) {
-            $result['return_result'] = $receive;
-            $result['return_code']   = !empty($receive['return_code']) ? $receive['return_code'] : 'SUCCESS';
+            if (!empty($receive['return_code'])) {
+                // 操作返回信息
+                $result['return_code']   = $receive['return_code'];
+                $result['return_msg']    = $receive['return_msg'];
+                $result['return_result'] = '';
+            } else {
+                // 请求返回信息
+                $result['return_code']   = 'SUCCESS';
+                $result['return_msg']    = '';
+                $result['return_result'] = $receive;
+            }
         } else {
             $result['return_code'] = 'ERROR';
         }
