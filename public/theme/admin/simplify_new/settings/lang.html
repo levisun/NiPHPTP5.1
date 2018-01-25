@@ -57,7 +57,7 @@
 </div>
 <script type="text/javascript">
 $.loading({
-    url: request.api,
+    url: request.api.query,
     data: {
         method: "lang.getData.settings"
     }
@@ -98,7 +98,7 @@ $(".submit").click(function(){
     form_data += "&"+$("form").serialize();
 
     $.loading({
-        url: request.api,
+        url: request.api.settle,
         async: false,
         data: form_data,
     }, function(result){

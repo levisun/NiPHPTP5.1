@@ -116,7 +116,12 @@
      */
     jQuery.uiPopup = function (_status = "init", _params) {
         if (_status === "init") {
-            var html = "<div class='layoutUi-popup'><div class='layoutUi-popup-mask'></div><div class='layoutUi-popup-container'><div class='layoutUi-pull-right layoutUi-close layoutUiclearDialog' style='margin: 10px' bindtap=''></div>";
+            var style = this.isset(_params.style, "");
+            if (style) {
+                style = "layoutUi-popup-"+style;
+            }
+
+            var html = "<div class='layoutUi-popup "+style+"'><div class='layoutUi-popup-mask'></div><div class='layoutUi-popup-container'><div class='layoutUi-pull-right layoutUi-close' style='margin: 10px' bindtap=''></div>";
             if (this.isset(_params.title)) {
                 html += "<div class='layoutUi-popup-header'>"+_params.title+"</div>";
             }
@@ -228,20 +233,45 @@
     }
 
     /**
+     * 上传
+     */
+    jQuery.upload = function (_params, _callback) {
+        _params.type = this.isset(_params.type, "post");
+
+        var form_data = new FormData(_params.file);
+
+        jQuery.ajax({
+            url: _params.url,
+            type: _params.type,
+            cache: false,
+            data: form_data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                _callback(result);
+            },
+            error: function (result) {
+                _callback(result);
+            }
+        });
+    }
+
+    /**
      * 加载
      */
     jQuery.loading = function (_params, _callback) {
-        var ajax_type      = this.isset(_params.type, "post"),
-            ajax_url       = this.isset(_params.url, "?ajax_url=undefined"),
-            ajax_data      = this.isset(_params.data, {}),
-            ajax_async     = this.isset(_params.async, true),
-            ajax_cache     = this.isset(_params.cache, false),
-            ajax_data_type = this.isset(_params.data_type, "");
+        var ajax_type     = this.isset(_params.type, "post"),
+            ajax_url      = this.isset(_params.url, "?ajax_url=undefined"),
+            ajax_data     = this.isset(_params.data, {}),
+            ajax_async    = this.isset(_params.async, true),
+            ajax_cache    = this.isset(_params.cache, false),
+            ajax_dataType = this.isset(_params.dataType, ""),
+            ajax_processData = this.isset(_params.processData, true);
         jQuery.ajax({
             type: ajax_type,
             async: ajax_async,
             cache: ajax_cache,
-            dataType: ajax_data_type,
+            dataType: ajax_dataType,
             url: ajax_url,
             data: ajax_data,
             success: function (result) {

@@ -11,7 +11,11 @@
     <script type="text/javascript">
     var request = {
         domain:     "__DOMAIN__",
-        api:        "__DOMAIN__admin/receive/params.shtml",
+        api:        {
+            query:  "__DOMAIN__admin/api/query.shtml",
+            settle: "__DOMAIN__admin/api/settle.shtml",
+            upload: "__DOMAIN__admin/api/upload.shtml",
+        },
         static:     "__STATIC__",
         css:        "__CSS__",
         js:         "__JS__",
@@ -72,6 +76,6 @@
 
 {/neq}
 
-{js href="__JS__simplify/simplify.js,__JS__main.js" /}
+{js href="__JS__simplify/simplify.js" /}
 </body>
 </html>

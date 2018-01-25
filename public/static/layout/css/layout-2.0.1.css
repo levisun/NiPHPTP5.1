@@ -145,41 +145,76 @@ a:hover,a:active,a:focus {
 }
 
 /* 弹出层 */
-.layoutUi-popup-show .layoutUi-popup-container {
-    transform: translateY(0);
-}
-.layoutUi-popup-show .layoutUi-popup-mask {
-    display: block;
-}
 .layoutUi-popup-mask {
-    background-color: rgba(0, 0, 0, .6);
-    transition: .3s;
     display: none;
 }
 .layoutUi-popup-container {
     position: fixed;
-    width: 100%;
+    left: 50%;
+    top: 50%;
+    background: #fff;
+    transform: translate3d(-50%,-50%,0);
+    transform-origin: center;
+    transition: all .4s ease;
+    z-index: 100;
+    opacity: 0;
+}
+.layoutUi-popup-show .layoutUi-popup-container {
+    opacity: 1;
+}
+.layoutUi-popup-show .layoutUi-popup-mask {
+    display: block;
+}
+.layoutUi-popup-left .layoutUi-popup-container {
+    top: 0;
+    right: auto;
+    bottom: 0;
     left: 0;
+    transform: translate3d(-100%, 0, 0);
+}
+.layoutUi-popup-show.layoutUi-popup-left .layoutUi-popup-container {
+    transform: translate3d(0, 0, 0);
+}
+.layoutUi-popup-right .layoutUi-popup-container {
+    top: 0;
     right: 0;
     bottom: 0;
-    overflow: hidden;
-    background-color: #fff;
-    transform: translateY(150%);
-    transition: all .4s ease;
-    opacity: 1;
-    height: auto;
-    z-index: 100;
+    left: auto;
+    transform: translate3d(100%, 0, 0);
 }
-.layoutUi-popup-header {
+.layoutUi-popup-show.layoutUi-popup-right .layoutUi-popup-container {
+    transform: translate3d(0, 0, 0);
+}
+.layoutUi-popup-bottom .layoutUi-popup-container {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translate3d(0, 100%, 0);
+}
+.layoutUi-popup-show.layoutUi-popup-bottom .layoutUi-popup-container {
+    transform: translate3d(0, 0, 0);
+}
+.layoutUi-popup-top .layoutUi-popup-container {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    transform: translate3d(0,-100%,0);
+}
+.layoutUi-popup-show.layoutUi-popup-top .layoutUi-popup-container {
+    transform: translate3d(0, 0, 0);
+}
+.layoutUi-popup-container .layoutUi-popup-header {
     padding: 15px 0 0;
-    text-align: center
+    text-align: center;
 }
-.layoutUi-popup-content {
+.layoutUi-popup-container .layoutUi-popup-content {
     padding: 15px 20px;
     line-height: 1.5;
     min-height: 40px;
     border-bottom: 1px solid #e5e5e5;
 }
-.layoutUi-popup-footer {
+.layoutUi-popup-container .layoutUi-popup-footer {
     overflow: hidden;
 }

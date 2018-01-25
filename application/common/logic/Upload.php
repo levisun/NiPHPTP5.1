@@ -80,7 +80,8 @@ class Upload
         $upload_thumb_filename = $this->createThumb($this->uploadFileName);
 
         return [
-            'domain'     => request()->domain() . substr(request()->baseFile(), 0, -16),
+            // 'domain'     => request()->domain() . substr(request()->baseFile(), 0, -16),
+            'domain'     => request()->domain() . request()->root(),
             'save_dir'   => '/public/upload/' . $this->uploadParams['dir'],
             'file_name'  => $this->uploadFileName,
             'thumb_name' => $upload_thumb_filename,
@@ -124,11 +125,9 @@ class Upload
                 ['lang', '=', lang(':detect')],
             ];
 
-            $model_config = new ModelConfig;
-
             // 获得水印设置
             $result =
-            $model_config->field(true)
+            model('common/config')->field(true)
             ->where($map)
             ->select();
 
@@ -152,7 +151,7 @@ class Upload
                 $image->save($this->savePath . $_file_name);
             } else {
                 // 文字水印
-                $font_path = Env::get('root_path');
+                $font_path  = Env::get('root_path');
                 $font_path .= 'public' . DIRECTORY_SEPARATOR;
                 $font_path .= 'static' . DIRECTORY_SEPARATOR;
                 $font_path .= 'layout' . DIRECTORY_SEPARATOR;
@@ -188,10 +187,8 @@ class Upload
                 ['lang', '=', lang(':detect')],
             ];
 
-            $model_config = new ModelConfig;
-
             $result =
-            $model_config->where($map)
+            model('common/config')->where($map)
             ->column('name, value');
 
             $thumb_width = $result[$_model . '_module_width'];
@@ -222,10 +219,8 @@ class Upload
             ['lang', '=', 'niphp'],
         ];
 
-        $model_config = new ModelConfig;
-
         $result =
-        $model_config->field(true)
+        model('common/config')->field(true)
         ->where($map)
         ->select();
 

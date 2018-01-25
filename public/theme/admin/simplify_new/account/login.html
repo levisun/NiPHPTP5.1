@@ -20,7 +20,7 @@
 
                 <div class="m-top-md p-top-sm">
                     {:token()}
-                    <input type="button" class="btn btn-success btn-block np-login-btn" value="{:lang('button login')}">
+                    <input type="submit" class="btn btn-success btn-block np-login-btn" value="{:lang('button login')}">
                 </div>
             </form>
         </div>
@@ -29,12 +29,11 @@
 
 
 <script>
-$(".np-login-btn").click(function(){
+$("form").submit(function(){
     var form_data = "method=login.login.account";
-    form_data += "&"+$("form").serialize();
-
+    form_data += "&"+$(this).serialize();
     $.loading({
-        url: request.api,
+        url: request.api.settle,
         async: false,
         data: form_data,
     }, function(result){

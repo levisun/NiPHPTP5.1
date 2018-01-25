@@ -16,7 +16,7 @@ namespace app\admin\controller;
 use think\Controller;
 use think\facade\Env;
 
-class Receive extends Controller
+class Api extends Controller
 {
     private $module;    // 模块
     private $method;    // 接收method值
@@ -112,17 +112,34 @@ class Receive extends Controller
     }
 
     /**
-     * 参数请求
+     * 权限验证
+     * @access private
+     * @param  boolean $_strict 是否严格校验
+     * @return boolean
+     */
+    private function hasAuth($_strict = false)
+    {
+        if (session('?' . config('user_auth_key'))) {
+            return true;
+        } elseif (!$_strict && $this->logic == 'login' && $this->action == 'login') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 查询请求
      * @access public
      * @param
      * @return json
      */
-    public function params()
+    public function query()
     {
         $result = [];
         $receive = false;
 
-        if (!$this->hasIllegal()) {
+        if (!$this->hasIllegal() && !$this->hasAuth()) {
             $error = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
             $error = $this->logic . ' undefined';
@@ -134,25 +151,96 @@ class Receive extends Controller
             $receive = $logic->$action();
         }
 
-        $result['form data'] = input('param.');
-        $result['error_msg'] = $receive === false ? $error : 'SUCCESS';
+        $result['form data']   = input('param.');
+        $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
+        $result['return_code'] = 'ERROR';
 
         if ($receive !== false) {
-            if (!empty($receive['return_code'])) {
-                // 操作返回信息
-                $result['return_code']   = $receive['return_code'];
-                $result['return_msg']    = $receive['return_msg'];
-                $result['return_result'] = '';
-            } else {
-                // 请求返回信息
+            $result['return_code']   = 'SUCCESS';
+            $result['return_msg']    = '';
+            $result['return_result'] = $receive;
+        }
+
+        return json($result);
+    }
+
+    /**
+     * 执行请求
+     * @access public
+     * @param
+     * @return json
+     */
+    public function settle()
+    {
+        $result = [];
+        $receive = false;
+
+        if (!$this->hasIllegal() && !$this->hasAuth()) {
+            $error = 'ILLEGAL';
+        } elseif (!$this->hasLogic()) {
+            $error = $this->logic . ' undefined';
+        } elseif (!$this->hasAction()) {
+            $error = $this->logic . '->' . $this->action . ' undefined';
+        } else {
+            $logic   = $this->object;
+            $action  = $this->action;
+            $receive = $logic->$action();
+        }
+
+        $result['form data']   = input('param.');
+        $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
+        $result['return_code'] = 'ERROR';
+
+        if ($receive !== false) {
+            // 操作返回信息
+            $result['return_code']   = $receive['return_code'];
+            $result['return_msg']    = $receive['return_msg'];
+            $result['return_result'] = '';
+        }
+
+        return json($result);
+    }
+
+    public function upload()
+    {
+        $result = [];
+        $receive = false;
+
+        if (!$this->hasIllegal() && !$this->hasAuth(ture)) {
+            $error = 'ILLEGAL';
+        }
+
+        if (request()->isPost()) {
+            $receive_data = [
+                'upload'   => input('file.upload'),
+                'type'     => input('param.type'),
+                'model'    => input('param.model'),
+            ];
+
+            // 验证请求数据
+            $receive = validate('admin/upload', $receive_data);
+            if (true !== $receive) {
+                $receive = backData($receive, 'ERROR');
+            }
+
+            $result['form data']   = input('param.');
+            $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
+            $result['return_code'] = 'ERROR';
+
+            if ($receive !== false) {
                 $result['return_code']   = 'SUCCESS';
                 $result['return_msg']    = '';
                 $result['return_result'] = $receive;
             }
-        } else {
-            $result['return_code'] = 'ERROR';
+
+            return json($result);
+
+            print_r($receive_data);
+        halt(1);
         }
 
         return json($result);
+
+
     }
 }

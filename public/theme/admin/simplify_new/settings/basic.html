@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="button" value="{:lang('button save')}" class="btn btn-info marginTB-xs submit">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
             </form>
@@ -55,7 +55,7 @@
 </div>
 <script type="text/javascript">
 $.loading({
-    url: request.api,
+    url: request.api.query,
     data: {
         method: "basic.getData.settings"
     }
@@ -69,12 +69,11 @@ $.loading({
         $("#"+index).val($.htmlDecode(result.return_result[index]));
     }
 });
-$(".submit").click(function(){
+$("form").submit(function(){
     var form_data = "method=basic.update.settings";
-    form_data += "&"+$("form").serialize();
-
+    form_data += "&"+$(this).serialize();
     $.loading({
-        url: request.api,
+        url: request.api.settle,
         async: false,
         data: form_data,
     }, function(result){
