@@ -1,19 +1,19 @@
 <?php
 /**
  *
- * 基础设置 - 设置 - 业务层
+ * 安全与效率设置 - 设置 - 业务层
  *
  * @package   NiPHPCMS
  * @category  admin\logic\settings
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Basic.php v1.0.1 $
+ * @version   CVS: $Id: Safe.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/12
  */
 namespace app\admin\logic\settings;
 
-class Basic
+class Safe
 {
 
     /**
@@ -25,8 +25,8 @@ class Basic
     public function getData()
     {
         $map = [
-            ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script'],
-            ['lang', '=', lang(':detect')],
+            ['name', 'in', 'system_portal,content_check,member_login_captcha,website_submit_captcha,upload_file_max,upload_file_type,website_static'],
+            ['lang', '=', 'niphp'],
         ];
 
         $result =
@@ -34,11 +34,14 @@ class Basic
         ->where($map)
         ->select();
 
+        $admin_data = session('admin_data');
         $data = [];
         foreach ($result as $value) {
             $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
+
+        $data['founder'] = $admin_data['role_id'] == 1 ? 1 : 0;
 
         return $data;
     }
@@ -52,17 +55,17 @@ class Basic
     public function update()
     {
         $receive_data = [
-            'website_name'        => input('post.website_name'),
-            'website_keywords'    => input('post.website_keywords'),
-            'website_description' => input('post.website_description'),
-            'bottom_message'      => input('post.bottom_message', '', 'trim,escape_xss,htmlspecialchars'),
-            'copyright'           => input('post.copyright'),
-            'script'              => input('post.script', '', 'trim,htmlspecialchars'),
-            '__token__'           => input('post.__token__'),
+            'content_check'          => input('post.content_check/f'),
+            'member_login_captcha'   => input('post.member_login_captcha/f'),
+            'website_submit_captcha' => input('post.website_submit_captcha/f'),
+            'website_static'         => input('post.website_static/f'),
+            'upload_file_max'        => input('post.upload_file_max/f'),
+            'upload_file_type'       => input('post.upload_file_type'),
+            '__token__'              => input('post.__token__'),
         ];
 
         // 验证请求数据
-        $result = validate('admin/basic', $receive_data, 'settings');
+        $result = validate('admin/safe', $receive_data, 'settings');
         if (true !== $result) {
             return $result;
         }

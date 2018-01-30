@@ -29,6 +29,7 @@ return [
     'tpl_cache'     => !APP_DEBUG,
     // 模板渲染缓存
     'display_cache' => !APP_DEBUG,
-
+    // php标签
+    'tpl_deny_php'  => true,
     // 'tpl_deny_func_list' => 'echo,exit,die,var_dump,print,pirnt_r',
 ];

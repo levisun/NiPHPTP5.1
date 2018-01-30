@@ -82,7 +82,7 @@ class Upload
         return [
             // 'domain'     => request()->domain() . substr(request()->baseFile(), 0, -16),
             'domain'     => request()->domain() . request()->root(),
-            'save_dir'   => '/public/upload/' . $this->uploadParams['dir'],
+            'save_dir'   => '/upload/' . $this->uploadParams['dir'],
             'file_name'  => $this->uploadFileName,
             'thumb_name' => $upload_thumb_filename,
         ];
@@ -142,17 +142,17 @@ class Upload
                 return false;
             }
 
-            $config_data['water_image'] = Env::get('root_path') . $config_data['water_image'];
-
             if ($config_data['water_type']) {
                 // 图片水印
+                $water_image  = Env::get('root_path') . basename(request()->root());
+                $water_image .= $config_data['water_image'];
                 $image = Image::open($this->savePath . $_file_name);
-                $image->water($config_data['water_image'], $config_data['water_location'], 50);
+                $image->water($water_image, $config_data['water_location'], 50);
                 $image->save($this->savePath . $_file_name);
             } else {
                 // 文字水印
                 $font_path  = Env::get('root_path');
-                $font_path .= 'public' . DIRECTORY_SEPARATOR;
+                $font_path .= basename(request()->root()) . DIRECTORY_SEPARATOR;
                 $font_path .= 'static' . DIRECTORY_SEPARATOR;
                 $font_path .= 'layout' . DIRECTORY_SEPARATOR;
                 $font_path .=  'font' . DIRECTORY_SEPARATOR . 'HYQingKongTiJ.ttf';

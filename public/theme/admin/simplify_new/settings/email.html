@@ -6,40 +6,39 @@
         <div class="smart-widget-body">
             <form action="" method="post" class="form-horizontal">
                 <div class="form-group">
-                    <label for="website_name" class="col-lg-2 control-label">{:lang('website name')}</label>
+                    <label for="smtp_host" class="col-lg-2 control-label">{:lang('emailsms smtp host')}</label>
                     <div class="col-lg-10">
-                        <input type="text" name="website_name" id="website_name" class="form-control" value="">
+                        <input type="text" name="smtp_host" id="smtp_host" class="form-control" value="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="website_keywords" class="col-lg-2 control-label">{:lang('website keywords')}</label>
+                    <label for="smtp_port" class="col-lg-2 control-label">{:lang('emailsms smtp port')}</label>
                     <div class="col-lg-10">
-                        <input type="text" name="website_keywords" id="website_keywords" class="form-control" value="">
+                        <input type="text" name="smtp_port" id="smtp_port" class="form-control" value="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="website_description" class="col-lg-2 control-label">{:lang('website description')}</label>
+                    <label for="smtp_username" class="col-lg-2 control-label">{:lang('emailsms smtp username')}</label>
                     <div class="col-lg-10">
-                        <textarea name="website_description" id="website_description" class="form-control"></textarea>
+                        <input type="text" name="smtp_username" id="smtp_username" class="form-control" value="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="bottom_message" class="col-lg-2 control-label">{:lang('bottom message')}</label>
+                    <label for="smtp_password" class="col-lg-2 control-label">{:lang('emailsms smtp password')}</label>
                     <div class="col-lg-10">
-                        <textarea name="bottom_message" id="bottom_message" class="form-control"></textarea>
-                        <font class="grey align-t">{:lang('support html')}</font>
+                        <input type="password" name="smtp_password" id="smtp_password" class="form-control" value="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="copyright" class="col-lg-2 control-label">{:lang('copyright')}</label>
+                    <label for="smtp_from_email" class="col-lg-2 control-label">{:lang('emailsms smtp from email')}</label>
                     <div class="col-lg-10">
-                        <textarea name="copyright" id="copyright" class="form-control"></textarea>
+                        <input type="text" name="smtp_from_email" id="smtp_from_email" class="form-control" value="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="script" class="col-lg-2 control-label">{:lang('script')}</label>
+                    <label for="smtp_from_name" class="col-lg-2 control-label">{:lang('emailsms smtp from name')}</label>
                     <div class="col-lg-10">
-                        <textarea name="script" id="script" class="form-control"></textarea>
+                        <input type="text" name="smtp_from_name" id="smtp_from_name" class="form-control" value="">
                     </div>
                 </div>
 
@@ -57,7 +56,7 @@
 $.loading({
     url: request.api.query,
     data: {
-        method: "basic.getData.settings"
+        method: "email.getData.settings"
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
@@ -66,8 +65,9 @@ $.loading({
         }
     }
 });
+
 $("form").submit(function(){
-    var form_data = "method=basic.update.settings";
+    var form_data = "method=email.update.settings";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

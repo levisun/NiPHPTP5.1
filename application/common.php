@@ -16,24 +16,38 @@ use think\facade\Debug;
 use think\facade\Env;
 use think\facade\Lang;
 
+
 /**
- * 运行时间与占用内存
- * @param  boolean $start
+ * 获取输入数据 支持默认值和过滤
+ * @param string    $key 获取的变量名
+ * @param mixed     $default 默认值
+ * @param string    $filter 过滤方法
  * @return mixed
  */
-use_time_memory(true);
-function use_time_memory($start = false)
+function input($key = '', $default = null, $filter = '')
 {
-    if ($start) {
-        Debug::remark('memory_start');
+    if (0 === strpos($key, '?')) {
+        $key = substr($key, 1);
+        $has = true;
+    }
+
+    if ($pos = strpos($key, '.')) {
+        // 指定参数来源
+        $method = substr($key, 0, $pos);
+        if (in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'route', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
+            $key = substr($key, $pos + 1);
+        } else {
+            $method = 'param';
+        }
     } else {
-        return
-        lang('run time') .
-        Debug::getRangeTime('memory_start', 'end', 2) . 's ' .
-        lang('run memory') .
-        Debug::getRangeMem('memory_start', 'end') . ' ' .
-        lang('run file load') .
-        count(get_included_files());
+        // 默认为自动判断
+        $method = 'param';
+    }
+
+    if (isset($has)) {
+        return request()->has($key, $method, $default);
+    } else {
+        return request()->$method($key, $default, $filter);
     }
 }
 
@@ -132,6 +146,27 @@ function lang($_name, $_vars = [], $_lang = '')
 }
 
 /**
+ * 运行时间与占用内存
+ * @param  boolean $start
+ * @return mixed
+ */
+use_time_memory(true);
+function use_time_memory($_start = false)
+{
+    if ($_start) {
+        Debug::remark('memory_start');
+    } else {
+        return
+        lang('run time') .
+        Debug::getRangeTime('memory_start', 'end', 2) . 's ' .
+        lang('run memory') .
+        Debug::getRangeMem('memory_start', 'end') . ' ' .
+        lang('run file load') .
+        count(get_included_files());
+    }
+}
+
+/**
  * 清理运行垃圾文件
  * @param
  * @return void
@@ -141,14 +176,15 @@ if (!rand(0, 10)) {
 }
 function remove_rundata()
 {
-    $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
     $dir .= 'runtime' . DIRECTORY_SEPARATOR;
 
     $cache = $dir . 'cache' . DIRECTORY_SEPARATOR . '*';
     $log   = $dir . 'log' . DIRECTORY_SEPARATOR . '*';
     $temp  = $dir . 'temp' . DIRECTORY_SEPARATOR . '*';
 
-    $all_files = (array) glob($temp);
+    // $all_files = (array) glob($temp);
+    $all_files = [];
     $files = [
         'cache' => (array) glob($cache),
         'log'   => (array) glob($log),
@@ -179,10 +215,10 @@ function remove_rundata()
     $all_files = array_merge($all_files, $child);
 
     shuffle($all_files);
-    $all_files = array_slice($all_files, 0, 20);
+    $all_files = array_slice($all_files, 0, 100);
 
     foreach ($all_files as $path) {
-        if (filectime($path) <= strtotime('-30 days')) {
+        if (filectime($path) <= strtotime('-7 days')) {
             if (is_dir($path)) {
                 @rmdir($path);
             } else {
@@ -324,7 +360,7 @@ function escape_xss($_data)
             '/>[\s]+/si' => '>',
 
             // 特殊字符
-            '/(〃|”|“)/si'  => '&quot;',
+            '/(〃|”|“|")/si'  => '&quot;',
             '/(￥)/si'      => '&yen;',
             '/(—|－|～)/si' => '-',
             '/(\*)/si'      => '&lowast;',
@@ -332,9 +368,10 @@ function escape_xss($_data)
             '/(™)/si'       => '&trade;',
             '/(®)/si'       => '&reg;',
             '/(©)/si'       => '&copy;',
-            '/(’|‘)/si'     => '&acute;',
+            '/(’|‘|\')/si'  => '&acute;',
             '/(×)/si'       => '&times;',
             '/(÷)/si'       => '&divide;',
+            '/(,)/si'       => '&sbquo;',
             '/à|á|å|â|ä/si' => 'a',
             '/è|é|ê|ẽ|ë/si' => 'e',
             '/ì|í|î/si'     => 'i',
@@ -384,7 +421,7 @@ function escape_xss($_data)
         $_data = strtr($_data, $strtr);
 
         // 个性字符过虑
-        $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\"\'\<\>\,\.\，\。\《\》\\\\]+/u';
+        $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
         $_data = preg_replace($rule, '', $_data);
     }
 

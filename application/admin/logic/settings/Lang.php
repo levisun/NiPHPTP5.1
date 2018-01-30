@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Lang.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 namespace app\admin\logic\settings;
 
@@ -56,7 +56,7 @@ class Lang
         // 验证请求数据
         $result = validate('admin/lang', $receive_data, 'settings');
         if (true !== $result) {
-            return backData($result, 'ERROR');
+            return $result;
         }
 
         $config_file = Env::get('app_path') . 'admin' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
@@ -71,6 +71,6 @@ class Lang
         $config['lang_switch_on'] = $receive_data['lang_switch_on'] ? true : false;
         file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
 
-        return backData(lang('save success'), 'SUCCESS');
+        return true;
     }
 }

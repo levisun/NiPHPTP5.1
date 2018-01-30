@@ -20,19 +20,19 @@
         css:        "__CSS__",
         js:         "__JS__",
         img:        "__IMG__",
-        controller: "{:strtolower($Request.controller)}",
+        controller: "{$Request.controller|lower}",
         action:     "{$Request.action}",
     };
     function handle(_result, _url) {
-        if (_result.error_msg === 'ILLEGAL') {
+        if (_result.error_msg === "ILLEGAL") {
             $.reload();
-        } else if (_result.error_msg === 'SUCCESS' && _result.return_code === 'SUCCESS') {
+        } else if (_result.error_msg === "SUCCESS" && _result.return_code === "SUCCESS") {
             if (typeof(_url) != "undefined") {
                 $.uiToast(_result.return_msg);
                 $.redirect(request.domain+_url);
             } else {
                 $.uiToast(_result.return_msg);
-                $.reload();
+                // $.reload();
             }
         } else {
             $.uiToast(_result.return_msg);

@@ -267,7 +267,7 @@
                     <label for="water_image" class="col-lg-2 control-label">{:lang('water image')}</label>
                     <div class="col-lg-10">
                         <input type="text" name="water_image" id="water_image" class="form-control" value="">
-                        <button type="button" class="btn btn-success marginTB-xs" id="upload" data-type="water" data-id="water_image" data-model="common">{:lang('button upload')}</button>
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload" >{:lang('button upload')}</button>
                         <img src="" id="img-water_image" width="100">
                     </div>
                 </div>
@@ -291,33 +291,30 @@ $.loading({
         method: "image.getData.settings"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
-        $.printError('REQUEST ERROR', result);
-        return ;
-    }
-
-    for (index in result.return_result) {
-        if (index == 'auto_image' && result.return_result[index]) {
-            $(".auto_image").addClass("checked");
-            $("#auto_image").attr("checked", "checked");
-        } else if (index == "add_water") {
-            $(".add_water"+result.return_result[index]).addClass("checked");
-            $("#add_water"+result.return_result[index]).attr("checked", "checked");
-        } else if (index == "water_type") {
-            $(".water_type"+result.return_result[index]).addClass("checked");
-            $("#water_type"+result.return_result[index]).attr("checked", "checked");
-        } else if (index == "water_location") {
-            $(".water_location"+result.return_result[index]).addClass("checked");
-            $("#water_location"+result.return_result[index]).attr("checked", "checked");
-        } else {
-            $("#"+index).val($.htmlDecode(result.return_result[index]));
+    if (result.return_code === "SUCCESS") {
+        for (index in result.return_result) {
+            if (index == 'auto_image' && result.return_result[index]) {
+                $(".auto_image").addClass("checked");
+                $("#auto_image").attr("checked", "checked");
+            } else if (index == "add_water") {
+                $(".add_water"+result.return_result[index]).addClass("checked");
+                $("#add_water"+result.return_result[index]).attr("checked", "checked");
+            } else if (index == "water_type") {
+                $(".water_type"+result.return_result[index]).addClass("checked");
+                $("#water_type"+result.return_result[index]).attr("checked", "checked");
+            } else if (index == "water_location") {
+                $(".water_location"+result.return_result[index]).addClass("checked");
+                $("#water_location"+result.return_result[index]).attr("checked", "checked");
+            } else {
+                $("#"+index).val($.htmlDecode(result.return_result[index]));
+            }
         }
     }
 });
 
 $.uiPopup("init", {
     title:   "上传",
-    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload[]' id='upload-file' /></form>",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
     footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
 });
 $("#upload").click(function(){
@@ -328,13 +325,25 @@ $(".layoutUi-close").click(function(){
 });
 $(".upload-btn").click(function(){
     $.upload({
-        url: request.api.upload,
+        url: request.api.upload+"?type=water&model=common",
         file: $("#uploadForm")[0],
     }, function(result){
-        alert(result);
+        var dir = result.return_result.save_dir + result.return_result.file_name;
+        $("#water_image").val(dir);
+        $("#img-water_image").attr("src",  result.return_result.domain + dir);
+        $.uiPopup("hide");
     });
 });
-// $(".layoutUi-popup-mask").click(function(){
-//     $.uiPopup("hide");
-// });
+$("form").submit(function(){
+    var form_data = "method=image.update.settings";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
+    return false;
+});
 </script>

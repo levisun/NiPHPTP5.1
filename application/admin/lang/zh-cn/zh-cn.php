@@ -75,7 +75,7 @@ return [
         'settings_safe'     => '安全与效率设置',
         'settings_email'    => '邮件设置',
 
-        'theme_template'    => '网站界面设置',
+        'theme_cms'         => '网站界面设置',
         'theme_member'      => '会员界面设置',
         'theme_mall'        => '商城界面设置',
 

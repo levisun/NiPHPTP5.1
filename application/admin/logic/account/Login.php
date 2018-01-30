@@ -28,14 +28,14 @@ class Login
         );
         $result = validate('admin/Login', $receive_data, 'account');
         if (true !== $result) {
-            return backData($result, 'ERROR');
+            return $result;
         }
 
         // IP锁定 直接返回false
         $login_ip = request()->ip(0, true);
         $module   = request()->module();
         if (logic('common/RequestLog')->isLockIp($login_ip, $module)) {
-            return backData(lang('error username or password'), 'ERROR');
+            return lang('error username or password');
         }
 
         // 获得用户信息
@@ -43,14 +43,14 @@ class Login
         if (false === $user_data) {
             // 用户不存在 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
-            return backData(lang('error username or password'), 'ERROR');
+            return lang('error username or password');
         }
 
         // 登录密码错误
         if (!$this->checkPassword($receive_data['password'], $user_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
-            return backData(lang('error username or password'), 'ERROR');
+            return lang('error username or password');
         }
 
         // 更新登录信息
@@ -62,7 +62,7 @@ class Login
         // 登录成功 清除锁定IP
         logic('common/RequestLog')->removeLockIp($login_ip, $module);
 
-        return backData(lang('login success'), 'SUCCESS');
+        return true;
     }
 
     /**

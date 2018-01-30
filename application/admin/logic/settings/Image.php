@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @version   CVS: $Id: Image.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 namespace app\admin\logic\settings;
 
@@ -80,7 +80,7 @@ class Image
         // 验证请求数据
         $result = validate('admin/image', $receive_data, 'settings');
         if (true !== $result) {
-            return backData($result, 'ERROR');
+            return $result;
         }
 
         unset($receive_data['__token__']);
@@ -99,6 +99,6 @@ class Image
             ->update($data);
         }
 
-        return backData(lang('save success'), 'SUCCESS');
+        return true;
     }
 }

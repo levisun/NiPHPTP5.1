@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `np_access` (
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`),
   KEY `node_id` (`node_id`),
-  KEY `status` ('status')
+  KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '权限表';
 INSERT INTO `np_access` (`role_id`, `node_id`, `status`, `level`, `module`) VALUES
 (1, 1, 1, 1, 'admin'),
@@ -21,7 +21,7 @@ INSERT INTO `np_access` (`role_id`, `node_id`, `status`, `level`, `module`) VALU
 (1, 7, 1, 3, 'safe'),
 (1, 8, 1, 3, 'email'),
 (1, 9, 1, 2, 'theme'),
-(1, 10, 1, 3, 'template'),
+(1, 10, 1, 3, 'cms'),
 (1, 11, 1, 3, 'member'),
 (1, 12, 1, 3, 'mall'),
 (1, 13, 1, 2, 'category'),
@@ -99,7 +99,7 @@ INSERT INTO np_node(`id`, `name`, `title`, `status`, `remark`, `sort`, `pid`, `l
 (8, 'email', '邮件设置设置', 1, '邮件设置方法', 6, 2, 3),
 
 (9, 'theme', '界面', 1, '界面控制器', 2, 1, 2),
-(10, 'template', '网站界面设置', 1, '网站界面设置方法', 1, 9, 3),
+(10, 'cms', '网站界面设置', 1, '网站界面设置方法', 1, 9, 3),
 (11, 'member', '会员界面设置', 1, '会员界面设置方法', 2, 9, 3),
 (12, 'mall', '商城界面设置', 1, '商城界面设置方法', 3, 9, 3),
 

@@ -69,7 +69,8 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `appid` (`appid`),
-  UNIQUE KEY `openid` (`openid`)
+  UNIQUE KEY `openid` (`openid`),
+  KEY `unionid` (`unionid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT '微信用户信息表';
 
 DROP TABLE IF EXISTS `np_level_member`;

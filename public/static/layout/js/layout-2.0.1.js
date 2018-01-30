@@ -207,6 +207,30 @@
     }
 
     /**
+     * 上传
+     */
+    jQuery.upload = function (_params, _callback) {
+        _params.type = this.isset(_params.type, "post");
+
+        var form_data = new FormData(_params.file);
+
+        jQuery.ajax({
+            url: _params.url,
+            type: _params.type,
+            cache: false,
+            data: form_data,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                _callback(result);
+            },
+            error: function (result) {
+                _callback(result);
+            }
+        });
+    }
+
+    /**
      * 加载更多
      */
     jQuery.more = function (_params, _callback) {
@@ -228,30 +252,6 @@
                         $("body").attr("Layout-loading-bool", "true");
                     }, 1500);
                 });
-            }
-        });
-    }
-
-    /**
-     * 上传
-     */
-    jQuery.upload = function (_params, _callback) {
-        _params.type = this.isset(_params.type, "post");
-
-        var form_data = new FormData(_params.file);
-
-        jQuery.ajax({
-            url: _params.url,
-            type: _params.type,
-            cache: false,
-            data: form_data,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                _callback(result);
-            },
-            error: function (result) {
-                _callback(result);
             }
         });
     }

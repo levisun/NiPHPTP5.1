@@ -63,7 +63,6 @@ $.loading({
     }
 }, function(result){
     if (result.return_code !== "SUCCESS") {
-        $.printError('REQUEST ERROR', result);
         return ;
     }
 
@@ -104,5 +103,6 @@ $(".submit").click(function(){
     }, function(result){
         handle(result);
     });
+    return false;
 });
 </script>

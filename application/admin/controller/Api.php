@@ -193,14 +193,26 @@ class Api extends Controller
 
         if ($receive !== false) {
             // 操作返回信息
-            $result['return_code']   = $receive['return_code'];
-            $result['return_msg']    = $receive['return_msg'];
+            if ($receive === true) {
+                $result['return_code']   = 'SUCCESS';
+                $result['return_msg']    = lang('save success');
+            } else {
+                $result['return_code']   = 'ERROR';
+                $result['return_msg']    = $receive;
+            }
+
             $result['return_result'] = '';
         }
 
         return json($result);
     }
 
+    /**
+     * 上传
+     * @access public
+     * @param
+     * @return json
+     */
     public function upload()
     {
         $result = [];
@@ -208,39 +220,23 @@ class Api extends Controller
 
         if (!$this->hasIllegal() && !$this->hasAuth(ture)) {
             $error = 'ILLEGAL';
+        } else {
+            $receive = logic('admin/upload')->file();
         }
 
-        if (request()->isPost()) {
-            $receive_data = [
-                'upload'   => input('file.upload'),
-                'type'     => input('param.type'),
-                'model'    => input('param.model'),
-            ];
+        $result['form data']   = input('param.');
+        $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
 
-            // 验证请求数据
-            $receive = validate('admin/upload', $receive_data);
-            if (true !== $receive) {
-                $receive = backData($receive, 'ERROR');
-            }
-
-            $result['form data']   = input('param.');
-            $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
-            $result['return_code'] = 'ERROR';
-
-            if ($receive !== false) {
-                $result['return_code']   = 'SUCCESS';
-                $result['return_msg']    = '';
-                $result['return_result'] = $receive;
-            }
-
-            return json($result);
-
-            print_r($receive_data);
-        halt(1);
+        if (is_string($receive)) {
+            $result['return_code']   = 'ERROR';
+            $result['return_msg']    = $receive;
+            $result['return_result'] = '';
+        } else {
+            $result['return_code']   = 'SUCCESS';
+            $result['return_msg']    = '';
+            $result['return_result'] = $receive;
         }
 
         return json($result);
-
-
     }
 }

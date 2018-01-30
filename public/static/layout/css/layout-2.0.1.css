@@ -158,9 +158,11 @@ a:hover,a:active,a:focus {
     transition: all .4s ease;
     z-index: 100;
     opacity: 0;
+    display: none;
 }
 .layoutUi-popup-show .layoutUi-popup-container {
     opacity: 1;
+    display: block;
 }
 .layoutUi-popup-show .layoutUi-popup-mask {
     display: block;
