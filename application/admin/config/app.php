@@ -21,7 +21,7 @@ return [
     ],
 
     // 默认控制器名
-    'default_controller'      => 'Account',
+    'default_controller'      => 'account',
     // 默认操作名
     'default_action'          => 'login',
 
@@ -38,7 +38,7 @@ return [
     // 需要认证的控制器
     'require_auth_controller' => '',
     // 无需认证的控制器
-    'not_auth_controller'     => 'Account',
+    'not_auth_controller'     => 'account',
     // 需要认证的方法
     'require_auth_action'     => '',
     // 无需认证的方法

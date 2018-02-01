@@ -119,9 +119,11 @@ class Api extends Controller
      */
     private function hasAuth($_strict = false)
     {
+        $not_auth_action = explode(',', config('not_auth_action'));
+
         if (session('?' . config('user_auth_key'))) {
             return true;
-        } elseif (!$_strict && $this->logic == 'login' && $this->action == 'login') {
+        } elseif (!$_strict && in_array($this->action, $not_auth_action)) {
             return true;
         } else {
             return false;
@@ -139,26 +141,26 @@ class Api extends Controller
         $result = [];
         $receive = false;
 
-        if (!$this->hasIllegal() && !$this->hasAuth()) {
-            $error = 'ILLEGAL';
+        $result['form data']   = input('param.');
+
+        if (!$this->hasIllegal() || !$this->hasAuth()) {
+            $result['error_msg'] = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
-            $error = $this->logic . ' undefined';
+            $result['error_msg'] = $this->logic . ' undefined';
         } elseif (!$this->hasAction()) {
-            $error = $this->logic . '->' . $this->action . ' undefined';
+            $result['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
         } else {
             $logic   = $this->object;
             $action  = $this->action;
             $receive = $logic->$action();
-        }
+            $result['error_msg']   = $receive === false ? 'EMPTY' : 'SUCCESS';
 
-        $result['form data']   = input('param.');
-        $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
-        $result['return_code'] = 'ERROR';
-
-        if ($receive !== false) {
-            $result['return_code']   = 'SUCCESS';
-            $result['return_msg']    = '';
-            $result['return_result'] = $receive;
+            $result['return_code'] = 'ERROR';
+            if ($receive !== false) {
+                $result['return_code']   = 'SUCCESS';
+                $result['return_msg']    = '';
+                $result['return_result'] = $receive;
+            }
         }
 
         return json($result);
@@ -175,33 +177,34 @@ class Api extends Controller
         $result = [];
         $receive = false;
 
-        if (!$this->hasIllegal() && !$this->hasAuth()) {
-            $error = 'ILLEGAL';
+        $result['form data']   = input('param.');
+
+        if (!$this->hasIllegal() || !$this->hasAuth()) {
+            $result['error_msg'] = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
-            $error = $this->logic . ' undefined';
+            $result['error_msg'] = $this->logic . ' undefined';
         } elseif (!$this->hasAction()) {
-            $error = $this->logic . '->' . $this->action . ' undefined';
+            $result['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
         } else {
             $logic   = $this->object;
             $action  = $this->action;
             $receive = $logic->$action();
-        }
+            $result['error_msg']   = $receive === false ? 'EMPTY' : 'SUCCESS';
 
-        $result['form data']   = input('param.');
-        $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
-        $result['return_code'] = 'ERROR';
+            $result['return_code'] = 'ERROR';
 
-        if ($receive !== false) {
-            // 操作返回信息
-            if ($receive === true) {
-                $result['return_code']   = 'SUCCESS';
-                $result['return_msg']    = lang('save success');
-            } else {
-                $result['return_code']   = 'ERROR';
-                $result['return_msg']    = $receive;
+            if ($receive !== false) {
+                // 操作返回信息
+                if ($receive === true) {
+                    $result['return_code'] = 'SUCCESS';
+                    $result['return_msg']  = lang('save success');
+                } else {
+                    $result['return_code'] = 'ERROR';
+                    $result['return_msg']  = $receive;
+                }
+
+                $result['return_result'] = '';
             }
-
-            $result['return_result'] = '';
         }
 
         return json($result);
@@ -218,23 +221,23 @@ class Api extends Controller
         $result = [];
         $receive = false;
 
-        if (!$this->hasIllegal() && !$this->hasAuth(ture)) {
-            $error = 'ILLEGAL';
+        $result['form data']   = input('param.');
+
+        if (!$this->hasIllegal() || !$this->hasAuth(true)) {
+            $result['error_msg'] = 'ILLEGAL';
         } else {
             $receive = logic('admin/upload')->file();
-        }
+            $result['error_msg']   = $receive === false ? 'EMPTY' : 'SUCCESS';
 
-        $result['form data']   = input('param.');
-        $result['error_msg']   = $receive === false ? $error : 'SUCCESS';
-
-        if (is_string($receive)) {
-            $result['return_code']   = 'ERROR';
-            $result['return_msg']    = $receive;
-            $result['return_result'] = '';
-        } else {
-            $result['return_code']   = 'SUCCESS';
-            $result['return_msg']    = '';
-            $result['return_result'] = $receive;
+            if (is_string($receive)) {
+                $result['return_code']   = 'ERROR';
+                $result['return_msg']    = $receive;
+                $result['return_result'] = '';
+            } else {
+                $result['return_code']   = 'SUCCESS';
+                $result['return_msg']    = '';
+                $result['return_result'] = $receive;
+            }
         }
 
         return json($result);

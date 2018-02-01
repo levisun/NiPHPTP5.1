@@ -288,7 +288,7 @@
 $.loading({
     url: request.api.query,
     data: {
-        method: "image.getData.settings"
+        method: "image.data.settings"
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
@@ -335,7 +335,7 @@ $(".upload-btn").click(function(){
     });
 });
 $("form").submit(function(){
-    var form_data = "method=image.update.settings";
+    var form_data = "method=image.edit.settings";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

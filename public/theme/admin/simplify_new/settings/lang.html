@@ -59,7 +59,7 @@
 $.loading({
     url: request.api.query,
     data: {
-        method: "lang.getData.settings"
+        method: "lang.data.settings"
     }
 }, function(result){
     if (result.return_code !== "SUCCESS") {
@@ -93,7 +93,7 @@ $.loading({
 });
 
 $(".submit").click(function(){
-    var form_data = "method=lang.update.settings";
+    var form_data = "method=lang.edit.settings";
     form_data += "&"+$("form").serialize();
 
     $.loading({

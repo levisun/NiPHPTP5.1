@@ -25,17 +25,23 @@
     };
     function handle(_result, _url) {
         if (_result.error_msg === "ILLEGAL") {
+            // $.uiToast("请求超时！");
             $.reload();
-        } else if (_result.error_msg === "SUCCESS" && _result.return_code === "SUCCESS") {
-            if (typeof(_url) != "undefined") {
+        } else if (_result.error_msg === "SUCCESS") {
+            if (_result.return_code === "SUCCESS") {
                 $.uiToast(_result.return_msg);
-                $.redirect(request.domain+_url);
+                if (typeof(_url) != "undefined") {
+                    $.redirect(request.domain+_url);
+                } else {
+                    $.reload();
+                }
             } else {
                 $.uiToast(_result.return_msg);
-                // $.reload();
+                $.reload();
             }
         } else {
-            $.uiToast(_result.return_msg);
+            $.uiToast("错误请求！");
+            $.reload();
         }
     }
     </script>
@@ -75,7 +81,6 @@
 {__CONTENT__}
 
 {/neq}
-
 {js href="__JS__simplify/simplify.js" /}
 </body>
 </html>

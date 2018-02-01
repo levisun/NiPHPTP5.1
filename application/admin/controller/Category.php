@@ -22,8 +22,12 @@ class Category extends Base
      * @param
      * @return mixed
      */
-    public function category()
+    public function category($operate = '')
     {
-        return $this->fetch();
+        if ($operate === 'added') {
+            return $this->fetch('category_added');
+        } else {
+            return $this->fetch();
+        }
     }
 }

@@ -22,7 +22,7 @@ class Email
      * @param
      * @return array
      */
-    public function getData()
+    public function data()
     {
         $map = [
             ['name', 'in', 'smtp_host,smtp_port,smtp_username,smtp_password,smtp_from_email,smtp_from_name'],
@@ -44,12 +44,12 @@ class Email
     }
 
     /**
-     * 修改
+     * 编辑
      * @access public
      * @param
      * @return mixed
      */
-    public function update()
+    public function edit()
     {
         $receive_data = [
             'smtp_host'       => input('post.smtp_host'),

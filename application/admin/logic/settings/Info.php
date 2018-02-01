@@ -22,7 +22,7 @@ class Info
      * @param
      * @return array
      */
-    public function getData()
+    public function data()
     {
         $member = $this->member();
 

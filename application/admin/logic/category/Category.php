@@ -22,7 +22,7 @@ class Category
      * @param
      * @return array
      */
-    public function all()
+    public function data()
     {
         $map = [
             ['c.pid', '=', input('param.pid/f', 0)],
@@ -66,6 +66,91 @@ class Category
             $result[$key]->url = $url;
 
         }
+
+        return $result;
+    }
+
+    /**
+     * 获得父级数据
+     * @access public
+     * @param
+     * @return array
+     */
+    public function getParentData()
+    {
+        $map = [
+            ['id', '=', input('param.pid/f', 0)],
+            ['lang', '=', lang(':detect')],
+        ];
+
+        $model_category = new ModelCategory;
+
+        $result =
+        model('Category', 'common')->field(true)
+        ->where($map)
+        ->find();
+
+        return $result;
+    }
+
+    /**
+     * 获得导航类型
+     * @access public
+     * @param
+     * @return array
+     */
+    public function type()
+    {
+        return [
+            ['id' => 1, 'name' => lang('type top')],
+            ['id' => 2, 'name' => lang('type main')],
+            ['id' => 3, 'name' => lang('type foot')],
+            ['id' => 4, 'name' => lang('type other')]
+        ];
+    }
+
+    /**
+     * 获得开启的模型
+     * @access public
+     * @param
+     * @return array
+     */
+    public function models()
+    {
+        $map = [
+            ['status', '=', 1],
+        ];
+
+        $result =
+        model('common/models')
+        ->field(['id', 'name'])
+        ->where($map)
+        ->select();
+
+        foreach ($result as $key => $value) {
+            $result[$key]['model_name'] = $value->model_name;
+        }
+
+        return $result;
+    }
+
+    /**
+     * 获得开启的会员等级
+     * @access public
+     * @param
+     * @return array
+     */
+    public function level()
+    {
+        $map = [
+            ['status', '=', 1],
+        ];
+
+        $result =
+        model('common/level')
+        ->field(['id', 'name'])
+        ->where($map)
+        ->select();
 
         return $result;
     }

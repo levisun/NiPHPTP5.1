@@ -18,6 +18,7 @@ use think\facade\Lang;
 
 
 /**
+ * TP原方法$filter为null值不能进行过滤
  * 获取输入数据 支持默认值和过滤
  * @param string    $key 获取的变量名
  * @param mixed     $default 默认值
@@ -147,7 +148,7 @@ function lang($_name, $_vars = [], $_lang = '')
 
 /**
  * 运行时间与占用内存
- * @param  boolean $start
+ * @param  boolean $_start
  * @return mixed
  */
 use_time_memory(true);
@@ -167,15 +168,18 @@ function use_time_memory($_start = false)
 }
 
 /**
- * 清理运行垃圾文件
- * @param
+ * 清除运行垃圾文件
+ * 开发模式不自动清除
+ * @param  boolean $_remove
  * @return void
  */
-if (!rand(0, 10)) {
-    remove_rundata();
-}
-function remove_rundata()
+remove_rundata(!APP_DEBUG);
+function remove_rundata($_remove = false)
 {
+    if (rand(0, 9) === 0 && !$_remove) {
+        return false;
+    }
+
     $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
     $dir .= 'runtime' . DIRECTORY_SEPARATOR;
 
@@ -183,36 +187,26 @@ function remove_rundata()
     $log   = $dir . 'log' . DIRECTORY_SEPARATOR . '*';
     $temp  = $dir . 'temp' . DIRECTORY_SEPARATOR . '*';
 
-    // $all_files = (array) glob($temp);
     $all_files = [];
     $files = [
         'cache' => (array) glob($cache),
         'log'   => (array) glob($log),
+        'tmep'  => (array) glob($temp)
     ];
 
     $child = [];
-    foreach ($files['log'] as $path) {
-        $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-        if ($arr) {
-            $child = array_merge($child, $arr);
-        } else {
-            $child[] = $path;
-        }
-
-    }
-    $all_files = array_merge($all_files, $child);
-
-    $child = [];
-    foreach ($files['cache'] as $path) {
-        if (is_dir($path)) {
+    foreach ($files as $dir_name) {
+        $child = [];
+        foreach ($dir_name as $path) {
             $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-            $child = array_merge($child, $arr);
-        } else {
-            $child[] = $path;
+            if ($arr) {
+                $child = array_merge($child, $arr);
+            } else {
+                $child[] = $path;
+            }
         }
-
+        $all_files = array_merge($all_files, $child);
     }
-    $all_files = array_merge($all_files, $child);
 
     shuffle($all_files);
     $all_files = array_slice($all_files, 0, 100);
@@ -359,44 +353,30 @@ function escape_xss($_data)
             '/[\s]+</si' => '<',   // 多余回车
             '/>[\s]+/si' => '>',
 
-            // 特殊字符
-            '/(〃|”|“|")/si'  => '&quot;',
-            '/(￥)/si'      => '&yen;',
-            '/(—|－|～)/si' => '-',
-            '/(\*)/si'      => '&lowast;',
-            '/(`)/si'       => '&acute;',
-            '/(™)/si'       => '&trade;',
-            '/(®)/si'       => '&reg;',
-            '/(©)/si'       => '&copy;',
-            '/(’|‘|\')/si'  => '&acute;',
-            '/(×)/si'       => '&times;',
-            '/(÷)/si'       => '&divide;',
-            '/(,)/si'       => '&sbquo;',
-            '/à|á|å|â|ä/si' => 'a',
-            '/è|é|ê|ẽ|ë/si' => 'e',
-            '/ì|í|î/si'     => 'i',
-            '/ò|ó|ô|ø/si'   => 'o',
-            '/ù|ú|ů|û/si'   => 'u',
-            '/ç|č/si'       => 'c',
-            '/ñ|ň/si'       => 'n',
-            '/ľ/si'         => 'l',
-            '/ý/si'         => 'y',
-            '/ť/si'         => 't',
-            '/ž/si'         => 'z',
-            '/š/si'         => 's',
-            '/æ/si'         => 'ae',
-            '/ö/si'         => 'oe',
-            '/ü/si'         => 'ue',
-            '/Ä/si'         => 'Ae',
-            '/Ü/si'         => 'Ue',
-            '/Ö/si'         => 'Oe',
-            '/ß/si'         => 'ss',
-
+            // SQL关键字
+            '/(and)/si'      => '&#97;nd',
+            '/(between)/si'  => '&#98;etween',
+            '/(chr)/si'      => '&#99;hr',
+            '/(char)/si'     => '&#99;har',
+            // '/(count)/si'    => '&#99;ount',
+            '/(create)/si'   => '&#99;reate',
+            '/(declare)/si'  => '&#100;eclare',
+            '/(delete)/si'   => '&#100;elete',
+            '/(execute)/si'  => '&#101;xecute',
+            '/(insert)/si'   => '&#105;nsert',
+            '/(join)/si'     => '&#106;oin',
+            '/(update)/si'   => '&#117;pdate',
+            '/(master)/si'   => '&#109;aster',
+            '/(mid)/si'      => '&#109;id',
+            // '/(or)/si'       => '&#111;r',
+            '/(select)/si'   => '&#115;elect',
+            '/(truncate)/si' => '&#116;runcate',
+            '/(where)/si'    => '&#119;here',
         ];
         $_data = preg_replace(array_keys($pattern), array_values($pattern), $_data);
 
-        // 全角转半角
-        $strtr = [
+        $pattern = [
+            // 全角转半角
             '０' => '0', '１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
             '６' => '6', '７' => '7', '８' => '8', '９' => '9',
 
@@ -412,13 +392,34 @@ function escape_xss($_data)
             'ｓ' => 's', 'ｔ' => 't', 'ｕ' => 'u', 'ｖ' => 'v', 'ｗ' => 'w', 'ｘ' => 'x',
             'ｙ' => 'y', 'ｚ' => 'z',
 
-            '（' => '(', '）' => ')', '〔' => '[', '〕' => ']', '【' => '[', '】' => ']',
-            '〖' => '[', '〗' => ']', '｛' => '{', '｝' => '}', '％' => '%', '＋' => '+',
-            '：' => ':', '？' => '?', '！' => '!',
+            '（' => '(', '）' => ')',
+            '〔' => '[', '【' => '[', '〖' => '[',
+            '〕' => ']', '】' => ']', '〗' => ']',
+            '｛' => '{', '｝' => '}',
+            '％' => '%', '＋' => '+', '：' => ':', '？' => '?', '！' => '!',
             '…' => '...', '‖' => '|', '｜' => '|', '　' => '',
-            ];
 
-        $_data = strtr($_data, $strtr);
+            // 特殊字符
+            '￥' => '&yen;',
+            '〃' => '&quot;',
+            '”'  => '&quot;',
+            '“'  => '&quot;',
+            '*'  => '&lowast;',
+            '`'  => '&acute;',
+            '™'  => '&trade;',
+            '®'  => '&reg;',
+            '©'  => '&copy;',
+            '×'  => '&times;',
+            '÷'  => '&divide;',
+            '’'  => '&acute;',
+            '‘'  => '&acute;',
+            '%'  => '&#37;',
+            '!'  => '&#33;',
+            '—'  => '-',
+            '－'  => '-',
+            '～'  => '-',
+            ];
+        $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);
 
         // 个性字符过虑
         $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';

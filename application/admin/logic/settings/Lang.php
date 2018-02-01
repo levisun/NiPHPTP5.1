@@ -24,7 +24,7 @@ class Lang
      * @param
      * @return array
      */
-    public function getData()
+    public function data()
     {
         $data = [
             'lang_switch_on'   => config('lang_switch_on') ? 1 : 0,
@@ -39,12 +39,12 @@ class Lang
     }
 
     /**
-     * 保存修改语言设置
+     * 编辑
      * @access public
      * @param
      * @return mixed
      */
-    public function update()
+    public function edit()
     {
         $receive_data = [
             'system'         => input('post.system'),
