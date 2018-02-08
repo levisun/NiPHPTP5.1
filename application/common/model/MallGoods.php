@@ -51,16 +51,16 @@ class MallGoods extends Model
     /**
      * 新增
      * @access protected
-     * @param  array  $_form_data
+     * @param  array  $_receive_data
      * @return mixed
      */
-    protected function added($_form_data)
+    protected function added($_receive_data)
     {
-        unset($_form_data['id'], $_form_data['__token__']);
+        unset($_receive_data['id'], $_receive_data['__token__']);
 
         $result =
         $this->allowField(true)
-        ->create($_form_data);
+        ->create($_receive_data);
 
         return $result->id;
     }
@@ -87,21 +87,21 @@ class MallGoods extends Model
     /**
      * 修改
      * @access protected
-     * @param  array  $_form_data
+     * @param  array  $_receive_data
      * @return boolean
      */
-    protected function editor($_form_data)
+    protected function editor($_receive_data)
     {
         $map  = [
-            ['id', '=', $_form_data['id']],
+            ['id', '=', $_receive_data['id']],
         ];
 
-        unset($_form_data['id'], $_form_data['__token__']);
+        unset($_receive_data['id'], $_receive_data['__token__']);
 
         $result =
         $this->allowField(true)
         ->where($map)
-        ->update($_form_data);
+        ->update($_receive_data);
 
         return !!$result;
     }

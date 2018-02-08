@@ -24,10 +24,7 @@ class Category extends Base
      */
     public function category($operate = '')
     {
-        if ($operate === 'added') {
-            return $this->fetch('category_added');
-        } else {
-            return $this->fetch();
-        }
+        $tpl = $operate ? 'category_' . $operate : '';
+        return $this->fetch($tpl);
     }
 }

@@ -13,6 +13,9 @@
  */
 namespace app\admin\logic\category;
 
+use think\facade\Env;
+use \File;
+
 class Category
 {
 
@@ -22,7 +25,7 @@ class Category
      * @param
      * @return array
      */
-    public function data()
+    public function query()
     {
         $map = [
             ['c.pid', '=', input('param.pid/f', 0)],
@@ -48,20 +51,23 @@ class Category
             $result[$key]->show      = $value->show;
             $result[$key]->channel   = $value->channel;
 
-            $url = $value->operation_url;
+            $url = [
+                'add_child' => url('category/category', ['operate' => 'added', 'pid' => $value['id']]),
+                'editor'    => url('category/category', ['operate' => 'editor', 'id' => $value['id']]),
+                'remove'    => url('category/category', ['operate' => 'remove', 'id' => $value['id']]),
+            ];
+
             if ($value->pid) {
-                $url['back'] = url('');
+                $url['back'] = url('category/category');
             } else {
                 $url['back'] = false;
             }
 
             if ($value->child) {
-                $url['child'] = url('', ['pid' => $value['id']]);
+                $url['child'] = url('category/category', ['pid' => $value['id']]);
             } else {
                 $url['child'] = false;
             }
-
-            $url['add_child'] = url('', ['operate' => 'added','pid' => $value['id']]);
 
             $result[$key]->url = $url;
 
@@ -153,5 +159,104 @@ class Category
         ->select();
 
         return $result;
+    }
+
+    /**
+     * 新增栏目
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function added()
+    {
+        $receive_data = [
+            'name'            => input('post.name'),
+            'aliases'         => input('post.aliases'),
+            'pid'             => input('post.pid/f', 0),
+            'type_id'         => input('post.type_id/f', 1),
+            'model_id'        => input('post.model_id/f', 1),
+            'is_show'         => input('post.is_show/f', 1),
+            'is_channel'      => input('post.is_channel/f', 0),
+            'image'           => input('post.image'),
+            'seo_title'       => input('post.seo_title'),
+            'seo_keywords'    => input('post.seo_keywords'),
+            'seo_description' => input('post.seo_description'),
+            'access_id'       => input('post.access_id/f', 0),
+            'lang'            => lang(':detect'),
+            '__token__'       => input('post.__token__'),
+        ];
+
+        $result = validate('admin/category.added', $receive_data, 'category');
+        if (true !== $result) {
+            return $result;
+        }
+
+        unset($receive_data['__token__']);
+
+        $result = model('common/category')
+        ->added($receive_data);
+
+        return !!$result;
+    }
+
+    /**
+     * 删除分类
+     * @access public
+     * @param  int    $_id
+     * @return mixed
+     */
+    public function remove($_id = 0)
+    {
+        $_id = $_id ? $_id : input('post.id/f');
+
+        // 查询子栏目
+        $map  = [
+            ['pid', '=', $_id],
+        ];
+
+        $result =
+        model('common/category')->field(true)
+        ->where($map)
+        ->find();
+
+        // 子栏目存在 递归删除子栏目
+        if ($result) {
+            $params = [
+                'id'  => $result['id'],
+            ];
+
+            $this->remove($params);
+        }
+
+        // 查询当前分类信息
+        $map  = [
+            ['id', '=', $_id],
+        ];
+        $result =
+        model('common/category')->field(true)
+        ->where($map)
+        ->find();
+        // 删除图片
+        File::remove(Env::get('root_path') . basename(request()->root()) . $result['image']);
+
+        return model('common/category')->remove(['id' => $_id]);
+    }
+
+    /**
+     * 查询要修改的数据
+     * @access public
+     * @param
+     * @return array
+     */
+    public function find()
+    {
+        $map = [
+            ['id', '=', input('post.id/f')]
+        ];
+
+        return
+        model('common/category')->field(true)
+        ->where($map)
+        ->find();
     }
 }

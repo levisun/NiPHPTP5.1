@@ -73,7 +73,14 @@ class Base extends Controller
         $this->assign('BREADCRUMB', $tit_bre['breadcrumb']);
         $this->assign('SUB_TITLE', $tit_bre['sub_title']);
 
-        cookie('__sign', encrypt($this->requestParam['module'] . '.' . time()));
+        // AJAX请求加密签名
+        cookie('__sign', sha1(
+            date('m') .
+            $this->request->url(true) .
+            date('Y') .
+            $this->request->domain() .
+            date('d')
+        ));
     }
 
     /**

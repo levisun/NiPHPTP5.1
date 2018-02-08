@@ -16,8 +16,6 @@ namespace app\common\logic;
 use think\Image;
 use think\facade\Env;
 
-use app\common\model\Config as ModelConfig;
-
 class Upload
 {
     // 上传需要参数
@@ -39,7 +37,7 @@ class Upload
     private function init($_params)
     {
         $this->uploadParams = $this->params($_params['type'], $_params['model']);
-        $this->savePath     = Env::get('root_path') . 'public';
+        $this->savePath     = Env::get('root_path') . basename(request()->root());
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
         // $this->savePath    .= DIRECTORY_SEPARATOR;
@@ -181,7 +179,7 @@ class Upload
         }
 
         $thumb_width = $thumb_height = 0;
-        if ($_type == 'image') {
+        if ($_type === 'image') {
             $map = [
                 ['name', 'in', $_model . '_module_width,' . $_model . '_module_height'],
                 ['lang', '=', lang(':detect')],
@@ -193,13 +191,15 @@ class Upload
 
             $thumb_width = $result[$_model . '_module_width'];
             $thumb_height = $result[$_model . '_module_height'];
-        } elseif (!in_array($_type, ['water', 'ckeditor'])) {
+        } /*elseif (!in_array($_type, ['water', 'ckeditor'])) {
             $thumb_width = $thumb_height = 500;
-        }
+        } else {
+
+        }*/
 
         return [
             'dir'          => $dir,
-            'create_water' => $_type == 'image' ? true : false,
+            'create_water' => $_type === 'image' ? true : false,
             'create_thumb' => $thumb_width ? true : false,
             'thumb_width'  => $thumb_width,
             'thumb_height' => $thumb_height,

@@ -48,8 +48,8 @@
                     <label for="is_show" class="col-lg-2 control-label">{:lang('isshow')}</label>
                     <div class="col-lg-10">
                         <div class="radio inline-block">
-                            <div class="custom-radio m-right-xs is_show1 checked">
-                                <input type="radio" id="is_show1" name="is_show" value="1" checked>
+                            <div class="custom-radio m-right-xs is_show1">
+                                <input type="radio" id="is_show1" name="is_show" value="1">
                                 <label for="is_show1"></label>
                             </div>
                             <div class="inline-block vertical-top">
@@ -80,8 +80,8 @@
                             </div>
                         </div>
                         <div class="radio inline-block">
-                            <div class="custom-radio m-right-xs is_channel0 checked">
-                                <input type="radio" id="is_channel0" name="is_channel" value="0" checked>
+                            <div class="custom-radio m-right-xs is_channel0">
+                                <input type="radio" id="is_channel0" name="is_channel" value="0" >
                                 <label for="is_channel0"></label>
                             </div>
                             <div class="inline-block vertical-top">
@@ -94,7 +94,7 @@
                     <label for="image" class="col-lg-2 control-label">{:lang('image')}</label>
                     <div class="col-lg-10">
                         <input type="text" name="image" id="image" class="form-control" value="">
-                        <button type="button" class="btn btn-success marginTB-xs" id="upload">{:lang('button upload')}</button>
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload" data-type="category" data-id="image" data-model="">{:lang('button upload')}</button>
                         <img src="" id="img-image" width="100">
                     </div>
                 </div>
@@ -128,6 +128,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -138,12 +139,27 @@
 <script type="text/javascript">
 $.loading({
     url: request.api.query,
+    async: false,
+    data: {
+        method: "category.find.category",
+        id: "{$Request.param.id}"
+    }
+}, function(result) {
+    // body...
+});
+
+$.loading({
+    url: request.api.query,
     data: {
         method: "category.type.category"
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
-        var type_option = eachToOption(result.return_result, "id", "name");
+        var type_option = "";
+        for (var index in result.return_result) {
+            type_option += "<option value='"+result.return_result[index].id+"'";
+            type_option += ">"+result.return_result[index].name+"</option>";
+        }
         $("#type_id").html(type_option);
     }
 });
@@ -155,7 +171,11 @@ $.loading({
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
-        var models_option = eachToOption(result.return_result, "id", "model_name");
+        var models_option = "";
+        for (var index in result.return_result) {
+            models_option += "<option value='"+result.return_result[index].id+"'";
+            models_option += ">"+result.return_result[index].model_name+"</option>";
+        }
         $("#model_id").html(models_option);
     }
 });
@@ -167,7 +187,11 @@ $.loading({
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
-        var level_option = eachToOption(result.return_result, "id", "name");
+        var level_option = "";
+        for (var index in result.return_result) {
+            level_option += "<option value='"+result.return_result[index].id+"'";
+            level_option += ">"+result.return_result[index].name+"</option>";
+        }
         $("#access_id").append(level_option);
     }
 });
@@ -189,19 +213,6 @@ $(".upload-btn").click(function(){
         $("#img-image").attr("src",  result.return_result.domain + dir);
         $.uiPopup({}, "hide");
     });
-});
-
-$("form").submit(function(){
-    var form_data = "method=category.added.category";
-    form_data += "&"+$(this).serialize();
-    $.loading({
-        url: request.api.settle,
-        async: false,
-        data: form_data,
-    }, function(result){
-        handle(result, "admin/category/category.shtml");
-    });
-    return false;
 });
 
 </script>

@@ -22,7 +22,7 @@ class Safe
      * @param
      * @return array
      */
-    public function data()
+    public function query()
     {
         $map = [
             ['name', 'in', 'system_portal,content_check,member_login_captcha,website_submit_captcha,upload_file_max,upload_file_type,website_static'],
@@ -52,7 +52,7 @@ class Safe
      * @param
      * @return mixed
      */
-    public function edit()
+    public function editor()
     {
         $receive_data = [
             'content_check'          => input('post.content_check/f'),

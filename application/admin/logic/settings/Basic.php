@@ -22,7 +22,7 @@ class Basic
      * @param
      * @return array
      */
-    public function data()
+    public function query()
     {
         $map = [
             ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script'],
@@ -49,7 +49,7 @@ class Basic
      * @param
      * @return mixed
      */
-    public function edit()
+    public function editor()
     {
         $receive_data = [
             'website_name'        => input('post.website_name'),

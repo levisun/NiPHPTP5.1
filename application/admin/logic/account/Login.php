@@ -26,7 +26,7 @@ class Login
         $receive_data = request()->only(
             ['username', 'password', 'captcha', '__token__'], 'post'
         );
-        $result = validate('admin/Login', $receive_data, 'account');
+        $result = validate('admin/login', $receive_data, 'account');
         if (true !== $result) {
             return $result;
         }

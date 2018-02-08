@@ -23,26 +23,55 @@
         controller: "{$Request.controller|lower}",
         action:     "{$Request.action}",
     };
-    function handle(_result, _url) {
+    /**
+     * handle
+     * @param mixed  _result
+     * @param string _url
+     * @param string _reload
+     * return
+     */
+    function handle(_result, _url, _reload) {
         if (_result.error_msg === "ILLEGAL") {
             // $.uiToast("请求超时！");
             $.reload();
         } else if (_result.error_msg === "SUCCESS") {
             if (_result.return_code === "SUCCESS") {
                 $.uiToast(_result.return_msg);
-                if (typeof(_url) != "undefined") {
+                if (typeof(_url) != "undefined" && _url) {
                     $.redirect(request.domain+_url);
-                } else {
-                    $.reload();
+                    return false;
                 }
             } else {
                 $.uiToast(_result.return_msg);
+            }
+
+            if (typeof(_reload) == "undefined" && _reload) {
                 $.reload();
             }
         } else {
             $.uiToast("错误请求！");
-            $.reload();
+            // $.reload();
         }
+    }
+    function eachToOption(_data, _value, _name, _selected, _rep) {
+        if (typeof(_rep) == "undefined") {
+            _rep = "";
+        }
+
+        var option = "";
+        for (var index in _data) {
+            option += "<option value='"+_data[index][_value]+"'";
+            if (_selected == _data[index][_value]) {
+                option += " selected ";
+            }
+
+            option += ">"+_rep+_data[index][_name]+"</option>";
+            if (typeof(_data[index].child) != "undefined") {
+                option += eachToOption(_data[index].child, _value, _name, _selected, _rep+"--");
+            }
+        }
+
+        return option;
     }
     </script>
 </head>

@@ -24,7 +24,7 @@ class Lang
      * @param
      * @return array
      */
-    public function data()
+    public function query()
     {
         $data = [
             'lang_switch_on'   => config('lang_switch_on') ? 1 : 0,
@@ -44,7 +44,7 @@ class Lang
      * @param
      * @return mixed
      */
-    public function edit()
+    public function editor()
     {
         $receive_data = [
             'system'         => input('post.system'),

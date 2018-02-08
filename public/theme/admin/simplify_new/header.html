@@ -32,8 +32,8 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-                        <li>
-                            <a href="{:url('account/logout')}">
+                        <li class="logout">
+                            <a >
                                 <i class="fa fa-power-off fa-lg"></i>
                                 <span class="m-left-xs">{:lang('logout')}</span>
                             </a>
@@ -95,8 +95,8 @@
                                         <span class="m-left-xs">{:lang('update admin')}</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="{:url('account/logout')}">
+                                <li class="logout">
+                                    <a >
                                         <i class="fa fa-power-off fa-lg"></i>
                                         <span class="m-left-xs">{:lang('logout')}</span>
                                     </a>
@@ -121,3 +121,15 @@
         </div>
     </div>
 </header>
+<script type="text/javascript">
+$(".logout").click(function(){
+    $.loading({
+        url: request.api.settle,
+        data: {
+            method: "logout.logout.account"
+        }
+    }, function(result){
+        handle(result, "admin/settings/info.shtml");
+    });
+});
+</script>

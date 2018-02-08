@@ -59,8 +59,16 @@ class Api extends Controller
         $this->sign = cookie('?__sign') ? cookie('__sign') : false;
 
         if ($this->sign) {
-            list($this->module, $sign_time) = explode('.', decrypt($this->sign), 2);
-            if ($sign_time + 1140 >= time()) {
+            $http_referer = sha1(
+                date('m') .
+                $this->request->server('http_referer') .
+                date('Y') .
+                $this->request->domain() .
+                date('d')
+            );
+
+            if ($this->sign === $http_referer) {
+                $this->module = strtolower($this->request->module());
                 return true;
             } else {
                 return false;

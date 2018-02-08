@@ -126,7 +126,7 @@
 $.loading({
     url: request.api.query,
     data: {
-        method: "info.data.settings"
+        method: "info.sysinfo.settings"
     }
 }, function(result){
     if (result.return_code !== "SUCCESS") {
@@ -134,29 +134,50 @@ $.loading({
     }
 
     var html = "";
-    for (var index in result.return_result.sys_info) {
-        html += "<tr><th>"+result.return_result.sys_info[index]["name"]+"</th><td>"+result.return_result.sys_info[index]["value"]+"</td></tr>";
+    for (var index in result.return_result) {
+        html += "<tr><th>"+result.return_result[index].name+"</th><td>"+result.return_result[index].value+"</td></tr>";
     }
     $(".no-margin tbody").append(html);
+});
 
-    $(".bg-danger .statistic-title").text(result.return_result.sys_make["member"]["name"]);
-    $(".bg-danger .statistic-value").text(result.return_result.sys_make["member"]["value"][0]["name"]+":"+result.return_result.sys_make["member"]["value"][0]["value"]);
-    $(".bg-danger .m-top-md").text(result.return_result.sys_make["member"]["value"][1]["name"]+":"+result.return_result.sys_make["member"]["value"][1]["value"]);
+$.loading({
+    url: request.api.query,
+    data: {
+        method: "info.make.settings"
+    }
+}, function(result){
+    if (result.return_code !== "SUCCESS") {
+        return ;
+    }
 
-    $(".bg-info .statistic-title").text(result.return_result.sys_make["feed_msg"]["name"]);
-    $(".bg-info .statistic-value").text(result.return_result.sys_make["feed_msg"]["value"][0]["name"]+":"+result.return_result.sys_make["feed_msg"]["value"][0]["value"]);
-    $(".bg-info .m-top-md").text(result.return_result.sys_make["feed_msg"]["value"][1]["name"]+":"+result.return_result.sys_make["feed_msg"]["value"][1]["value"]);
+    $(".bg-danger .statistic-title").text(result.return_result["member"]["name"]);
+    $(".bg-danger .statistic-value").text(result.return_result["member"]["value"][0]["name"]+":"+result.return_result["member"]["value"][0]["value"]);
+    $(".bg-danger .m-top-md").text(result.return_result["member"]["value"][1]["name"]+":"+result.return_result["member"]["value"][1]["value"]);
 
-    $(".bg-purple .statistic-title").text(result.return_result.sys_make["ads_link"]["name"]);
-    $(".bg-purple .statistic-value").text(result.return_result.sys_make["ads_link"]["value"][0]["name"]+":"+result.return_result.sys_make["ads_link"]["value"][0]["value"]);
-    $(".bg-purple .m-top-md").text(result.return_result.sys_make["ads_link"]["value"][1]["name"]+":"+result.return_result.sys_make["ads_link"]["value"][1]["value"]);
+    $(".bg-info .statistic-title").text(result.return_result["feed_msg"]["name"]);
+    $(".bg-info .statistic-value").text(result.return_result["feed_msg"]["value"][0]["name"]+":"+result.return_result["feed_msg"]["value"][0]["value"]);
+    $(".bg-info .m-top-md").text(result.return_result["feed_msg"]["value"][1]["name"]+":"+result.return_result["feed_msg"]["value"][1]["value"]);
 
+    $(".bg-purple .statistic-title").text(result.return_result["ads_link"]["name"]);
+    $(".bg-purple .statistic-value").text(result.return_result["ads_link"]["value"][0]["name"]+":"+result.return_result["ads_link"]["value"][0]["value"]);
+    $(".bg-purple .m-top-md").text(result.return_result["ads_link"]["value"][1]["name"]+":"+result.return_result["ads_link"]["value"][1]["value"]);
+});
+
+$.loading({
+    url: request.api.query,
+    data: {
+        method: "info.visit.settings"
+    }
+}, function(result){
+    if (result.return_code !== "SUCCESS") {
+        return ;
+    }
 
     //Flot Chart (Total Sales)
     var d1 = [];
     for (var i = 0; i <= 10; i += 1) {
         //d1.push([i, parseInt(Math.random() * 30)]);
-        d1 = [result.return_result.visit_info["value"]];
+        d1 = [result.return_result.value];
     }
 
     function plotWithOptions() {
@@ -214,4 +235,8 @@ $.loading({
 
     plotWithOptions();
 });
+
+
+
+
 </script>

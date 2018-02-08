@@ -288,7 +288,7 @@
 $.loading({
     url: request.api.query,
     data: {
-        method: "image.data.settings"
+        method: "image.query.settings"
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
@@ -312,17 +312,13 @@ $.loading({
     }
 });
 
-$.uiPopup("init", {
+$.uiPopup({
+    element: "#upload",
     title:   "上传",
     content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
     footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
 });
-$("#upload").click(function(){
-    $.uiPopup("show");
-});
-$(".layoutUi-close").click(function(){
-    $.uiPopup("hide");
-});
+
 $(".upload-btn").click(function(){
     $.upload({
         url: request.api.upload+"?type=water&model=common",
@@ -334,8 +330,9 @@ $(".upload-btn").click(function(){
         $.uiPopup("hide");
     });
 });
+
 $("form").submit(function(){
-    var form_data = "method=image.edit.settings";
+    var form_data = "method=image.editor.settings";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

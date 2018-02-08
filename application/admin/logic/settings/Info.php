@@ -17,15 +17,13 @@ class Info
 {
 
     /**
-     * 系统信息
+     * 系统与框架版本
      * @access public
      * @param
      * @return array
      */
-    public function data()
+    public function sysinfo()
     {
-        $member = $this->member();
-
         $gd_info = gd_info();
         $gd  = strtr($gd_info['GD Version'], ['bundled (' => '', ' compatible)' => '']) . '(';
         $gd .= $gd_info['GIF Read Support'] ? ' GIF' : '';
@@ -34,96 +32,100 @@ class Info
         $gd .= ')';
 
         $result = [
-            'sys_info' => [
-                // 系统与框架版本
-                [
-                    'name'  => lang('sys version'),
-                    'value' => 'NC' . NP_VERSION . ' TP' . App()->version(),
-                ],
-                // 操作系统
-                [
-                    'name'  => lang('sys os'),
-                    'value' => PHP_OS,
-                ],
-                // 运行环境
-                [
-                    'name'  => lang('sys env'),
-                    'value' => request()->server('SERVER_SOFTWARE'),
-                ],
-                // 数据库类型与版本
-                [
-                    'name'  => lang('sys db'),
-                    'value' => config('database.type') . $this->dbVersion(),
-                ],
-                [
-                    'name'  => 'GD',
-                    'value' => $gd,
-                ],
-                [
-                    'name'  => lang('sys timezone'),
-                    'value' => config('default_timezone'),
-                ],
-                [
-                    'name'  => lang('sys copy'),
-                    'value' => '失眠小枕头 [levisun.mail@gmail.com]',
-                ],
-                [
-                    'name'  => lang('sys upgrade'),
-                    'value' => '',
-                ],
+            // 系统与框架版本
+            [
+                'name'  => lang('sys version'),
+                'value' => 'NC' . NP_VERSION . ' TP' . App()->version(),
             ],
-            'sys_make' => [
-                // 会员统计
-                'member' => [
-                    'name'  => lang('member'),
-                    'value' => [
-                        [
-                            'name'  => lang('member count'),
-                            'value' => $member['count'],
-                        ],
-                        [
-                            'name'  => lang('member reg'),
-                            'value' => $member['reg'],
-                        ],
-                    ],
-                ],
-                // 反馈与留言统计
-                'feed_msg' => [
-                    'name'  => lang('feedback and message'),
-                    'value' => [
-                        [
-                            'name'  => lang('feedback'),
-                            'value' => $this->feedback(),
-                        ],
-                        [
-                            'name'  => lang('message'),
-                            'value' => $this->message(),
-                        ],
-                    ],
-                ],
-                // 广告与友情链接统计
-                'ads_link' => [
-                    'name'  => lang('tg'),
-                    'value' => [
-                        [
-                            'name'  => lang('ads'),
-                            'value' => $this->ads(),
-                        ],
-                        [
-                            'name'  => lang('link'),
-                            'value' => $this->link(),
-                        ],
-                    ],
-                ],
+            // 操作系统
+            [
+                'name'  => lang('sys os'),
+                'value' => PHP_OS,
             ],
+            // 运行环境
+            [
+                'name'  => lang('sys env'),
+                'value' => request()->server('SERVER_SOFTWARE'),
+            ],
+            // 数据库类型与版本
+            [
+                'name'  => lang('sys db'),
+                'value' => config('database.type') . $this->dbVersion(),
+            ],
+            [
+                'name'  => 'GD',
+                'value' => $gd,
+            ],
+            [
+                'name'  => lang('sys timezone'),
+                'value' => config('default_timezone'),
+            ],
+            [
+                'name'  => lang('sys copy'),
+                'value' => '失眠小枕头 [levisun.mail@gmail.com]',
+            ],
+            [
+                'name'  => lang('sys upgrade'),
+                'value' => '',
+            ]
+        ];
 
-            // 访问统计
-            'visit_info' => [
-                [
-                    'name'  => 'visit',
-                    'value' => $this->visit(),
-                ],
+        return $result;
+    }
+
+    /**
+     * 统计信息
+     * @access public
+     * @param
+     * @return array
+     */
+    public function make()
+    {
+        $member = $this->member();
+
+        $result = [
+            // 会员统计
+            'member' => [
+                'name'  => lang('member'),
+                'value' => [
+                    [
+                        'name'  => lang('member count'),
+                        'value' => $member['count'],
+                    ],
+                    [
+                        'name'  => lang('member reg'),
+                        'value' => $member['reg'],
+                    ]
+                ]
             ],
+            // 反馈与留言统计
+            'feed_msg' => [
+                'name'  => lang('feedback and message'),
+                'value' => [
+                    [
+                        'name'  => lang('feedback'),
+                        'value' => $this->feedback(),
+                    ],
+                    [
+                        'name'  => lang('message'),
+                        'value' => $this->message(),
+                    ]
+                ]
+            ],
+            // 广告与友情链接统计
+            'ads_link' => [
+                'name'  => lang('tg'),
+                'value' => [
+                    [
+                        'name'  => lang('ads'),
+                        'value' => $this->ads(),
+                    ],
+                    [
+                        'name'  => lang('link'),
+                        'value' => $this->link(),
+                    ]
+                ]
+            ]
         ];
 
         return $result;
@@ -131,11 +133,11 @@ class Info
 
     /**
      * 查询访问数据
-     * @access private
+     * @access public
      * @param
      * @return array
      */
-    private function visit()
+    public function visit()
     {
         $map = [
             ['date', '>=', strtotime('-7 days')]
@@ -171,7 +173,12 @@ class Info
             $visit['count'] = '';
         }
 
-        return $visit;
+        $result = [
+            'name'  => 'visit',
+            'value' => $visit,
+        ];
+
+        return $result;
     }
 
     /**

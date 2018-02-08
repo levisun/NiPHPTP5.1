@@ -22,7 +22,7 @@ class Image
      * @param
      * @return array
      */
-    public function data()
+    public function query()
     {
         $map = [
             ['name', 'in', 'auto_image,add_water,water_type,water_location,water_text,water_image,article_module_width,article_module_height,ask_module_width,ask_module_height,download_module_width,download_module_height,job_module_width,job_module_height,link_module_width,link_module_height,page_module_width,page_module_height,picture_module_width,picture_module_height,product_module_width,product_module_height'],
@@ -49,7 +49,7 @@ class Image
      * @param
      * @return mixed
      */
-    public function edit()
+    public function editor()
     {
         $receive_data = [
             'auto_image'             => input('post.auto_image/f'),

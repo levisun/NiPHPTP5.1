@@ -73,7 +73,8 @@ iframe {
 
 /* 轻提示样式 */
 .layoutUi-toast-mask,
-.layoutUi-popup-mask {
+.layoutUi-popup-mask,
+.layoutUi-loadpopup-mask {
     position: fixed;
     top: 0;
     left: 0;
@@ -82,7 +83,8 @@ iframe {
     z-index: 99;
     background: rgba(0 , 0, 0, .2);
 }
-.layoutUi-toast-tips {
+.layoutUi-toast-tips,
+.layoutUi-loadpopup-tips {
     position: fixed;
     top: 35%;
     left: 30%;
@@ -110,7 +112,8 @@ iframe {
     text-align: center;
     vertical-align: middle;
 }
-.layoutUi-loading {
+.layoutUi-loading,
+.layoutUi-loadpopup-loading {
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -120,6 +123,17 @@ iframe {
     -webkit-background-size: 100%;
     background-size: 100%;
     margin-right: 4px
+}
+.layoutUi-loadpopup-tips {
+    left: 35%;
+    width: 30%;
+}
+.layoutUi-loadpopup-loading {
+    width: 50px;
+    height: 50px;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
 }
 .layoutUi-loadmore-tips {
     display: inline-block;

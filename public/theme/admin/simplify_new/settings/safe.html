@@ -130,7 +130,7 @@
 $.loading({
     url: request.api.query,
     data: {
-        method: "safe.data.settings"
+        method: "safe.query.settings"
     }
 }, function(result){
     if (result.return_code === "SUCCESS") {
@@ -144,7 +144,7 @@ $.loading({
     }
 });
 $("form").submit(function(){
-    var form_data = "method=safe.edit.settings";
+    var form_data = "method=safe.editor.settings";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

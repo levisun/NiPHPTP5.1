@@ -114,7 +114,7 @@
     /**
      * 弹出层
      */
-    jQuery.uiPopup = function (_status = "init", _params) {
+    jQuery.uiPopup = function (_params, _status = "init") {
         if (_status === "init") {
             var style = this.isset(_params.style, "");
             if (style) {
@@ -132,25 +132,48 @@
                 html += "<div class='layoutUi-popup-footer'>"+_params.footer+"</div>";
             }
             html += "</div></div>";
-            $("body").append(html);
+            html += "<script type='text/javascript'>$('.layoutUi-close').click(function(){$.uiPopup({}, 'hide');});$('.layoutUi-popup-mask').click(function(){$.uiPopup({}, 'hide');});$('"+_params.element+"').click(function(){$.uiPopup({}, 'show');});</script>";
+            jQuery("body").append(html);
         } else if (_status === "show") {
-            $(".layoutUi-popup").addClass("layoutUi-popup-show");
+            jQuery(".layoutUi-popup").addClass("layoutUi-popup-show");
         } else if (_status === "hide") {
-            $(".layoutUi-popup").removeClass("layoutUi-popup-show");
+            jQuery(".layoutUi-popup").removeClass("layoutUi-popup-show");
+        }
+    }
+
+    /**
+     * 加载弹框提示
+     */
+    jQuery.uiLoadpopup = function (_tips = "正拼命加载中...", _element = "body") {
+        if (_tips === false) {
+            jQuery("div.layoutUi-loadpopup").remove();
+            jQuery("html").removeAttr("style");
+            jQuery("body").removeAttr("style");
+        } else {
+            var html = "";
+            jQuery("html").css({"height": "100%", "overflow": "hidden"});
+            jQuery("body").css({"height": "100%", "overflow": "hidden"});
+            html  = "<div class='layoutUi-loadpopup'>";
+            html += "<div class='layoutUi-loadpopup-mask'></div>";
+            html += "<div class='layoutUi-loadpopup-tips'>";
+            html += "<div class='layoutUi-loadpopup-loading'></div>"+_tips;
+            html += "</div>";
+            html += "</div>";
+            jQuery(_element).append(html);
         }
     }
 
     /**
      * 轻加载提示
      */
-    jQuery.uiLoad = function (_tips, _element = "body") {
+    jQuery.uiLoadmore = function (_tips = "正拼命加载中...", _element = "body") {
         if (_tips === false) {
-            $("div.layoutUi-loadmore").remove();
+            jQuery("div.layoutUi-loadmore").remove();
         } else {
             var html = "";
             if (_tips === "nodata") {
                 html  = "<div class='layoutUi-loadmore layoutUi-loadmore-nodata'>";
-                html += "<div class='layoutUi-loadmore-tips'>我是有底线的！</div>";
+                html += "<div class='layoutUi-loadmore-tips'>我可是有底线的！</div>";
                 html += "</div>";
             } else {
                 html  = "<div class='layoutUi-loadmore'>";
@@ -158,7 +181,7 @@
                 html += "<div class='layoutUi-loadmore-tips'>"+_tips+"</div>";
                 html += "</div>";
             }
-            $(_element).append(html);
+            jQuery(_element).append(html);
         }
     }
 
@@ -173,23 +196,6 @@
             $("div.layoutUi-toast-mask").remove();
             $("div.layoutUi-toast-tips").remove();
         }, _time * 1000);
-    }
-
-    jQuery.domain = function () {
-        var path_name = location.pathname;
-        var project_name = path_name.substring(0, path_name.substr(1).indexOf("/") + 1);
-        var php_self = path_name.substring(
-            path_name.substr(1).indexOf("/") + 2,
-            path_name.substr(1).indexOf(".php") + 5
-            ) + "/";
-
-        if (window.location.host == "localhost") {
-            var domain = location.protocol + "//" + window.location.host + project_name + "/";
-        } else {
-            var domain = location.protocol + "//" + window.location.host + "/";
-        }
-
-        return domain;
     }
 
     /**
@@ -234,22 +240,30 @@
      * 加载更多
      */
     jQuery.more = function (_params, _callback) {
-        $("body").attr("Layout-loading-page", 1);
-        $("body").attr("Layout-loading-bool", "true");
-        $(window).scroll(function () {
-            var is = $("body").attr("Layout-loading-bool");
-            if (is == "true" && $(window).scrollTop() >= ($(document).height() - $(window).height()) / 1.05) {
-                var page_num = $("body").attr("Layout-loading-page");
+        jQuery("body").attr("Layout-loading-page", 1);
+        jQuery("body").attr("Layout-loading-bool", "true");
+
+        jQuery(window).scroll(function () {
+            var is = jQuery("body").attr("Layout-loading-bool");
+            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) / 1.05) {
+
+                jQuery("html").css({"height": "100%", "overflow": "hidden"});
+                jQuery("body").css({"height": "100%", "overflow": "hidden"});
+
+                var page_num = jQuery("body").attr("Layout-loading-page");
                     page_num++;
-                $("body").attr("Layout-loading-page", page_num);
-                $("body").attr("Layout-loading-bool", "false");
+
+                jQuery("body").attr("Layout-loading-page", page_num);
+                jQuery("body").attr("Layout-loading-bool", "false");
 
                 _params["data"]["p"] = page_num;
                 this.loading(_params, function (result) {
                     _callback(result);
 
                     setTimeout(function () {
-                        $("body").attr("Layout-loading-bool", "true");
+                        jQuery("body").attr("Layout-loading-bool", "true");
+                        jQuery("html").removeAttr("style");
+                        jQuery("body").removeAttr("style");
                     }, 1500);
                 });
             }
@@ -267,6 +281,7 @@
             ajax_cache    = this.isset(_params.cache, false),
             ajax_dataType = this.isset(_params.dataType, ""),
             ajax_processData = this.isset(_params.processData, true);
+
         jQuery.ajax({
             type: ajax_type,
             async: ajax_async,
@@ -288,17 +303,17 @@
      */
     jQuery.scrollTop = function (_element) {
         // 监听滚动
-        $(window).scroll(function () {
-            if ($(window).scrollTop() >= ($(document).height() - $(window).height()) / 2) {
-                $(_element).fadeIn(1000);
+        jQuery(window).scroll(function () {
+            if (jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) / 2) {
+                jQuery(_element).fadeIn(1000);
             } else {
-                $(_element).fadeOut(500);
+                jQuery(_element).fadeOut(500);
             }
         });
 
         // 点击回到顶部
-        $(_element).click(function(){
-            $("body,html").animate({scrollTop: 0}, 300);
+        jQuery(_element).click(function(){
+            jQuery("body,html").animate({scrollTop: 0}, 300);
         });
     }
 

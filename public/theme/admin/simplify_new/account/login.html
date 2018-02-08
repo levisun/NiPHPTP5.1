@@ -32,6 +32,7 @@
 $("form").submit(function(){
     var form_data = "method=login.login.account";
     form_data += "&"+$(this).serialize();
+    $.uiLoadpopup();
     $.loading({
         url: request.api.settle,
         async: false,
