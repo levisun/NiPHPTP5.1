@@ -73,6 +73,24 @@
 
         return option;
     }
+    function eachToInput(_data) {
+        for (var index in _data) {
+            var type = $("#"+index).attr("type");
+            if (type == "text" || type == "hidden") {
+                $("#"+index).val(_data[index]);
+            } else if (typeof(type) == "undefined") {
+                $("#"+index).val('_data[index]');
+            } else {
+
+            }
+
+            var type = $("#"+index+_data[index]).attr("type");
+            if (type == "radio") {
+                $("#"+index+_data[index]).attr("checked", "checked");
+                $("."+index+_data[index]).addClass("checked");
+            }
+        }
+    }
     </script>
 </head>
 

@@ -100,7 +100,11 @@ class Upload
             $save_name = str_replace('.' . $this->uploadFileExt, '_thumb.' . $this->uploadFileExt, $_file_name);
             // 生成缩略图
             $image = Image::open($this->savePath . $_file_name);
-            $image->thumb($this->uploadParams['thumb_width'], $this->uploadParams['thumb_height'], Image::THUMB_CENTER)
+            $image->thumb(
+                $this->uploadParams['thumb_width'],
+                $this->uploadParams['thumb_height'],
+                Image::THUMB_CENTER
+            )
             ->save($this->savePath . $save_name);
 
             // 生成水印
@@ -177,6 +181,7 @@ class Upload
         } else {
             $dir = $_type . '/';
         }
+        $dir .= date('Y') . '/' . date('Ym') . '/';
 
         $thumb_width = $thumb_height = 0;
         if ($_type === 'image') {

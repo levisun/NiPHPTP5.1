@@ -27,4 +27,10 @@ class Category extends Base
         $tpl = $operate ? 'category_' . $operate : '';
         return $this->fetch($tpl);
     }
+
+    public function model($operate = '')
+    {
+        $tpl = $operate ? 'model_' . $operate : '';
+        return $this->fetch($tpl);
+    }
 }

@@ -82,17 +82,15 @@ class Category
      * @param
      * @return array
      */
-    public function getParentData()
+    public function parent()
     {
         $map = [
-            ['id', '=', input('param.pid/f', 0)],
+            ['id', '=', input('post.pid/f', 0)],
             ['lang', '=', lang(':detect')],
         ];
 
-        $model_category = new ModelCategory;
-
         $result =
-        model('Category', 'common')->field(true)
+        model('common/category')->field(true)
         ->where($map)
         ->find();
 
@@ -254,9 +252,56 @@ class Category
             ['id', '=', input('post.id/f')]
         ];
 
-        return
-        model('common/category')->field(true)
+        return model('common/category')->field(true)
         ->where($map)
         ->find();
+    }
+
+    /**
+     * 编辑
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function editor()
+    {
+        $receive_data = [
+            'id'              => input('post.id/f'),
+            'name'            => input('post.name'),
+            'aliases'         => input('post.aliases'),
+            'pid'             => input('post.pid/f', 0),
+            'type_id'         => input('post.type_id/f', 1),
+            'model_id'        => input('post.model_id/f', 1),
+            'is_show'         => input('post.is_show/f', 1),
+            'is_channel'      => input('post.is_channel/f', 0),
+            'image'           => input('post.image'),
+            'seo_title'       => input('post.seo_title'),
+            'seo_keywords'    => input('post.seo_keywords'),
+            'seo_description' => input('post.seo_description'),
+            'access_id'       => input('post.access_id/f', 0),
+            '__token__'       => input('post.__token__'),
+        ];
+
+        $result = validate('admin/category.editor', $receive_data, 'category');
+        if (true !== $result) {
+            return $result;
+        }
+
+        return model('common/category')->editor($receive_data);
+    }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {
+        $receive_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        return model('common/category')->sort($receive_data);
     }
 }

@@ -161,9 +161,11 @@ function use_time_memory($_start = false)
         lang('run time') .
         Debug::getRangeTime('memory_start', 'end', 2) . 's ' .
         lang('run memory') .
-        Debug::getRangeMem('memory_start', 'end') . ' ' .
+        Debug::getRangeMem('memory_start', 'end');
+
+        /* . ' ' .
         lang('run file load') .
-        count(get_included_files());
+        count(get_included_files())*/
     }
 }
 
@@ -181,17 +183,14 @@ function remove_rundata($_remove = false)
     }
 
     $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-    $dir .= 'runtime' . DIRECTORY_SEPARATOR;
-
-    $cache = $dir . 'cache' . DIRECTORY_SEPARATOR . '*';
-    $log   = $dir . 'log' . DIRECTORY_SEPARATOR . '*';
-    $temp  = $dir . 'temp' . DIRECTORY_SEPARATOR . '*';
+    // $dir .= 'runtime' . DIRECTORY_SEPARATOR;
 
     $all_files = [];
     $files = [
-        'cache' => (array) glob($cache),
-        'log'   => (array) glob($log),
-        'tmep'  => (array) glob($temp)
+        'cache'  => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . '*'),
+        'log'    => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . '*'),
+        'tmep'   => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . '*'),
+        // 'backup' => (array) glob($dir . 'public' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . '*'),
     ];
 
     $child = [];
@@ -228,7 +227,7 @@ function remove_rundata($_remove = false)
  * @param  string $_authkey 密钥
  * @return string           加密后的字符串
  */
-function encrypt($_str, $_authkey='0af4769d381ece7b4fddd59dcf048da6') {
+function encrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
     $coded = '';
     $keylength = strlen($_authkey);
     for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
@@ -243,7 +242,7 @@ function encrypt($_str, $_authkey='0af4769d381ece7b4fddd59dcf048da6') {
  * @param  string $_authkey 密钥
  * @return string           加密前的字符串
  */
-function decrypt($_str, $_authkey='0af4769d381ece7b4fddd59dcf048da6') {
+function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
     $coded = '';
     $keylength = strlen($_authkey);
     $_str = base64_decode($_str);

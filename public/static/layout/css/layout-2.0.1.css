@@ -87,12 +87,12 @@ iframe {
 .layoutUi-loadpopup-tips {
     position: fixed;
     top: 35%;
-    left: 30%;
+    left: 40%;
     transform: translateZ(0) translateY(-100%);
     background: rgba(0, 0, 0, .7);
     color: #fff;
     font-size: 14px;
-    width: 40%;
+    width: 20%;
     line-height: 1.5em;
     margin: 0 auto;
     box-sizing: border-box;
@@ -114,8 +114,8 @@ iframe {
 }
 .layoutUi-loading,
 .layoutUi-loadpopup-loading {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     display: inline-block;
     vertical-align: middle;
     animation: layoutUiLoading 1s steps(12,end) infinite;
@@ -124,13 +124,7 @@ iframe {
     background-size: 100%;
     margin-right: 4px
 }
-.layoutUi-loadpopup-tips {
-    left: 35%;
-    width: 30%;
-}
 .layoutUi-loadpopup-loading {
-    width: 50px;
-    height: 50px;
     display: block;
     margin: 0 auto;
     margin-bottom: 10px;

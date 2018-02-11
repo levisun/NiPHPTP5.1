@@ -46,9 +46,9 @@
     </div>
 </div>
 <script type="text/javascript">
-$.uiLoadpopup();
 $.loading({
     url: request.api.query,
+    animation: true,
     data: {
         method: "category.query.category"
     }
@@ -88,11 +88,10 @@ $.loading({
         list = list + "</tr>";
     }
     $("#dataTable tbody").prepend(list);
-    $.uiLoadpopup(false);
 });
 
 $("form").submit(function(){
-    var form_data = "method=category.data.category";
+    var form_data = "method=category.sort.category";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

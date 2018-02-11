@@ -50,6 +50,10 @@ think
 build.php
 json.php
 public/backup/*.zip
+public/upload/*/*/*/*/*.jpg
+public/upload/*/*/*/*/*.png
+public/upload/*/*/*/*.jpg
+public/upload/*/*/*/*.png
 public/upload/*/*/*.jpg
 public/upload/*/*/*.png
 runtime/

@@ -36,7 +36,7 @@
                 result_msg:    "SUCCESS"
             };
 
-            this.each(function(){
+            jQuery.each(function(){
                 var each = {
                     type:       jQuery(this).attr("validate-type"),
                     msg:        jQuery(this).attr("validate-msg"),
@@ -80,7 +80,7 @@
          */
         eleEach: function () {
             var each = new Array;
-            this.each(function(){
+            jQuery.each(function(){
                 var arr = {
                     name:       jQuery(this).attr("name"),
                     id:         jQuery(this).attr("id"),
@@ -116,19 +116,19 @@
      */
     jQuery.uiPopup = function (_params, _status = "init") {
         if (_status === "init") {
-            var style = this.isset(_params.style, "");
+            var style = jQuery.isset(_params.style, "");
             if (style) {
                 style = "layoutUi-popup-"+style;
             }
 
             var html = "<div class='layoutUi-popup "+style+"'><div class='layoutUi-popup-mask'></div><div class='layoutUi-popup-container'><div class='layoutUi-pull-right layoutUi-close' style='margin: 10px' bindtap=''></div>";
-            if (this.isset(_params.title)) {
+            if (jQuery.isset(_params.title)) {
                 html += "<div class='layoutUi-popup-header'>"+_params.title+"</div>";
             }
-            if (this.isset(_params.content)) {
+            if (jQuery.isset(_params.content)) {
                 html += "<div class='layoutUi-popup-content'>"+_params.content+"</div>";
             }
-            if (this.isset(_params.footer)) {
+            if (jQuery.isset(_params.footer)) {
                 html += "<div class='layoutUi-popup-footer'>"+_params.footer+"</div>";
             }
             html += "</div></div>";
@@ -144,7 +144,7 @@
     /**
      * 加载弹框提示
      */
-    jQuery.uiLoadpopup = function (_tips = "正拼命加载中...", _element = "body") {
+    jQuery.uiLoadpopup = function (_tips = "加载中...", _element = "body") {
         if (_tips === false) {
             jQuery("div.layoutUi-loadpopup").remove();
             jQuery("html").removeAttr("style");
@@ -216,7 +216,9 @@
      * 上传
      */
     jQuery.upload = function (_params, _callback) {
-        _params.type = this.isset(_params.type, "post");
+        jQuery.uiLoadpopup();
+
+        _params.type = jQuery.isset(_params.type, "post");
 
         var form_data = new FormData(_params.file);
 
@@ -229,9 +231,11 @@
             contentType: false,
             success: function (result) {
                 _callback(result);
+                jQuery.uiLoadpopup(false);
             },
             error: function (result) {
                 _callback(result);
+                jQuery.uiLoadpopup(false);
             }
         });
     }
@@ -257,7 +261,7 @@
                 jQuery("body").attr("Layout-loading-bool", "false");
 
                 _params["data"]["p"] = page_num;
-                this.loading(_params, function (result) {
+                jQuery.loading(_params, function (result) {
                     _callback(result);
 
                     setTimeout(function () {
@@ -274,13 +278,19 @@
      * 加载
      */
     jQuery.loading = function (_params, _callback) {
-        var ajax_type     = this.isset(_params.type, "post"),
-            ajax_url      = this.isset(_params.url, "?ajax_url=undefined"),
-            ajax_data     = this.isset(_params.data, {}),
-            ajax_async    = this.isset(_params.async, true),
-            ajax_cache    = this.isset(_params.cache, false),
-            ajax_dataType = this.isset(_params.dataType, ""),
-            ajax_processData = this.isset(_params.processData, true);
+        if (jQuery.isset(_params.animation) && _params.animation === true) {
+            jQuery.uiLoadpopup();
+        }
+
+        var ajax_type     = jQuery.isset(_params.type, "post"),
+            ajax_url      = jQuery.isset(_params.url, "?ajax_url=undefined"),
+            ajax_data     = jQuery.isset(_params.data, {}),
+            ajax_async    = jQuery.isset(_params.async, true),
+            ajax_cache    = jQuery.isset(_params.cache, false),
+            ajax_dataType = jQuery.isset(_params.dataType, ""),
+            ajax_processData = jQuery.isset(_params.processData, true);
+
+
 
         jQuery.ajax({
             type: ajax_type,
@@ -291,9 +301,15 @@
             data: ajax_data,
             success: function (result) {
                 _callback(result);
+                if (jQuery.isset(_params.animation) && _params.animation === true) {
+                    jQuery.uiLoadpopup(false);
+                }
             },
             error: function (result) {
                 _callback(result);
+                if (jQuery.isset(_params.animation) && _params.animation === true) {
+                    jQuery.uiLoadpopup(false);
+                }
             }
         });
     }
