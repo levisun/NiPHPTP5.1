@@ -115,23 +115,6 @@ class Models extends Model
 
     /**
      * 获取器
-     * 操作url
-     * @access protected
-     * @param
-     * @return string
-     */
-    protected function getOperationUrlAttr($_value, $_data)
-    {
-        $url = [
-            'editor' => url('', array('operate' => 'editor', 'id' => $_data['id'])),
-            'remove' => url('', array('operate' => 'remove', 'id' => $_data['id'])),
-        ];
-
-        return $url;
-    }
-
-    /**
-     * 获取器
      * 模型名称
      * @access protected
      * @param  int    $_value

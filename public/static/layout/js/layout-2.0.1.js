@@ -166,14 +166,14 @@
     /**
      * 轻加载提示
      */
-    jQuery.uiLoadmore = function (_tips = "正拼命加载中...", _element = "body") {
+    jQuery.uiLoadmore = function (_tips = "加载中...", _element = "body") {
         if (_tips === false) {
             jQuery("div.layoutUi-loadmore").remove();
         } else {
             var html = "";
             if (_tips === "nodata") {
                 html  = "<div class='layoutUi-loadmore layoutUi-loadmore-nodata'>";
-                html += "<div class='layoutUi-loadmore-tips'>我可是有底线的！</div>";
+                html += "<div class='layoutUi-loadmore-tips'>我可是有底线的^_^</div>";
                 html += "</div>";
             } else {
                 html  = "<div class='layoutUi-loadmore'>";

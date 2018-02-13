@@ -74,12 +74,13 @@ class Base extends Controller
         $this->assign('SUB_TITLE', $tit_bre['sub_title']);
 
         // AJAX请求加密签名
-        cookie('__sign', sha1(
-            date('m') .
+        $flag = md5(time());
+        cookie('__flag', $flag);
+        cookie('__sign', md5(
+            date('Ymd') .
             $this->request->url(true) .
-            date('Y') .
             $this->request->domain() .
-            date('d')
+            $flag
         ));
     }
 

@@ -84,6 +84,9 @@ class Category
      */
     public function parent()
     {
+        if (!input('post.pid/f', 0)) {
+            return ;
+        }
         $map = [
             ['id', '=', input('post.pid/f', 0)],
             ['lang', '=', lang(':detect')],
@@ -126,8 +129,7 @@ class Category
         ];
 
         $result =
-        model('common/models')
-        ->field(['id', 'name'])
+        model('common/models')->field(['id', 'name'])
         ->where($map)
         ->select();
 
@@ -151,8 +153,7 @@ class Category
         ];
 
         $result =
-        model('common/level')
-        ->field(['id', 'name'])
+        model('common/level')->field(['id', 'name'])
         ->where($map)
         ->select();
 

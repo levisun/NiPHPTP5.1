@@ -6,8 +6,6 @@ return [
     'update admin'          => '修改管理员信息',
     'logout'                => '注销',
     'upload file'           => '上传文件',
-    'run time'              => '运行时间：',
-    'run memory'            => '占用内存：',
     'remark'                => '备注',
     'status'                => '状态',
     'status no'             => '未启用',

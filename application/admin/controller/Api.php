@@ -57,14 +57,13 @@ class Api extends Controller
     private function hasIllegal()
     {
         $this->sign = cookie('?__sign') ? cookie('__sign') : false;
-
-        if ($this->sign) {
-            $http_referer = sha1(
-                date('m') .
+        $flag = cookie('?__flag') ? cookie('__flag') : false;
+        if ($this->sign && $flag) {
+            $http_referer = md5(
+                date('Ymd') .
                 $this->request->server('http_referer') .
-                date('Y') .
                 $this->request->domain() .
-                date('d')
+                $flag
             );
 
             if ($this->sign === $http_referer) {
@@ -171,6 +170,8 @@ class Api extends Controller
             }
         }
 
+        $result['use_time_memory'] = use_time_memory();
+
         return json($result);
     }
 
@@ -215,6 +216,8 @@ class Api extends Controller
             }
         }
 
+        $result['use_time_memory'] = use_time_memory();
+
         return json($result);
     }
 
@@ -247,6 +250,8 @@ class Api extends Controller
                 $result['return_result'] = $receive;
             }
         }
+
+        $result['use_time_memory'] = use_time_memory();
 
         return json($result);
     }

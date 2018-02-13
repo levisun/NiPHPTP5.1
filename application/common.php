@@ -54,8 +54,8 @@ function input($key = '', $default = null, $filter = '')
 
 /**
  * 实例化模型
- * @param  string $_name   [模块名/]控制器名
- * @param  string $_layer  业务层名
+ * @param  string $_name  [模块名/]控制器名
+ * @param  string $_layer 业务层名
  * @return object
  */
 function logic($_name, $_layer = 'logic')
@@ -158,9 +158,7 @@ function use_time_memory($_start = false)
         Debug::remark('memory_start');
     } else {
         return
-        lang('run time') .
-        Debug::getRangeTime('memory_start', 'end', 2) . 's ' .
-        lang('run memory') .
+        Debug::getRangeTime('memory_start', 'end', 2) . ' S/' .
         Debug::getRangeMem('memory_start', 'end');
 
         /* . ' ' .

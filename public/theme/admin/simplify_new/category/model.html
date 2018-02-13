@@ -43,5 +43,17 @@
     </div>
 </div>
 <script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "model.query.category"
+    }
+}, function(result){
+    if (result.return_code !== "SUCCESS") {
+        return false;
+    }
 
+
+});
 </script>
