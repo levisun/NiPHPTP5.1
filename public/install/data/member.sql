@@ -51,7 +51,8 @@ DROP TABLE IF EXISTS `np_member_wechat`;
 CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
-  `appid` varchar(32) NOT NULL DEFAULT '' COMMENT 'APPID',
+  `appid` varchar(32) NOT NULL COMMENT 'APPID',
+  `appname` varchar(32) NOT NULL COMMENT 'APP NAME'
   `subscribe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '关注状态',
   `openid` varchar(32) NOT NULL DEFAULT '' COMMENT '用户标识',
   `nickname` varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
@@ -69,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `appid` (`appid`),
+  KEY `appname` (`appname`),
   UNIQUE KEY `openid` (`openid`),
   KEY `unionid` (`unionid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT '微信用户信息表';

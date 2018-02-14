@@ -3,9 +3,7 @@
         {$SUB_TITLE}
 
         <span class="smart-widget-option">
-            <a href="{:url('', array('operate' => 'added'))}" class="btn btn-default btn-xs">
-                <span class="fa fa-plus"></span>{:lang('button add')}
-            </a>
+
         </span>
     </div>
     <div class="smart-widget-inner">
@@ -14,25 +12,14 @@
                 <table class="table table-striped" id="dataTable">
                     <thead>
                         <tr>
-                            <th>{:lang('sort')}</th>
+                            <th>{:lang('id')}</th>
                             <th>{:lang('modelname')}</th>
                             <th>{:lang('tablename')}</th>
                             <th>{:lang('status')}</th>
-                            <th>{:lang('operate')}</th>
+                            <!-- <th>{:lang('operate')}</th> -->
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr>
-                            <td>
-                                <input type="hidden" name="operate" value="sort">
-                                <input type="submit" value="{:lang('sort')}" class="btn btn-primary">
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
                     </tbody>
                 </table>
             </form>
@@ -47,13 +34,24 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "model.query.category"
+        method: "model.query.category",
+        p: "{$Request.param.p}"
     }
 }, function(result){
     if (result.return_code !== "SUCCESS") {
         return false;
     }
+    var list = "";
+    for (var index in result.return_result.list) {
+        list = list + "<tr>";
+        list = list + "<td>"+result.return_result.list[index].id+"</td>";
+        list = list + "<td>"+result.return_result.list[index].model_name+"</td>";
+        list = list + "<td>"+result.return_result.list[index].table_name+"</td>";
+        list = list + "<td>"+result.return_result.list[index].model_status+"</td>";
 
-
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+    $("#paging").prepend(result.return_result.page);
 });
 </script>

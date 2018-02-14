@@ -62,7 +62,6 @@ class Base extends Controller
 
             // 按钮状态
             $this->assign('button_search', false);
-            $this->assign('button_added', false);
         } elseif ($this->requestParam['controller'] != 'account') {
             $this->redirect(url('account/login'));
         }

@@ -129,5 +129,17 @@
 
 {/neq}
 {js href="__JS__simplify/simplify.js" /}
+<script type="text/javascript">
+$("._handle_logout").click(function(){
+    $.loading({
+        url: request.api.settle,
+        data: {
+            method: "logout.logout.account"
+        }
+    }, function(result){
+        handle(result, "admin/settings/info.shtml");
+    });
+});
+</script>
 </body>
 </html>

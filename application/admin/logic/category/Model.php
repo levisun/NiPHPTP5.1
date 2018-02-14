@@ -29,7 +29,9 @@ class Model
         $result =
         model('common/models')->field(true)
         ->order('id DESC')
-        ->paginate();
+        ->paginate(null, null, [
+            'path' => url('category/model'),
+        ]);
 
         foreach ($result as $key => $value) {
             $result[$key]->model_status = $value->model_status;
@@ -46,7 +48,7 @@ class Model
         $list = $result->toArray();
 
         return [
-            'data' => $list['data'],
+            'list' => $list['data'],
             'page' => $page
         ];
     }
