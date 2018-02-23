@@ -36,7 +36,7 @@
                 result_msg:    "SUCCESS"
             };
 
-            jQuery.each(function(){
+            jQuery(this).each(function(){
                 var each = {
                     type:       jQuery(this).attr("validate-type"),
                     msg:        jQuery(this).attr("validate-msg"),
@@ -80,13 +80,15 @@
          */
         eleEach: function () {
             var each = new Array;
-            jQuery.each(function(){
+            jQuery(this).each(function(){
                 var arr = {
+                    self:       this,
                     name:       jQuery(this).attr("name"),
                     id:         jQuery(this).attr("id"),
                     class:      jQuery(this).attr("class"),
                     src:        jQuery(this).attr("src"),
                     title:      jQuery(this).attr("title"),
+                    href:       jQuery(this).attr("href"),
 
                     value:      jQuery(this).val(),
                     text:       jQuery(this).text(),
@@ -418,10 +420,23 @@
     /**
      * URL get参数
      */
-    jQuery.getParam = function (_key) {
+    jQuery.urlParam = function (_key, _url = "") {
         var reg = new RegExp("(^|&)" + _key + "=([^&]*)(&|$)");
-        var result = window.location.search.substr(1).match(reg);
-        return result ? decodeURIComponent(result[2]) : null;
+        var value = "";
+        if (_url) {
+            var array = this.explode("?", _url);
+            _url = array[1] ? array[1] : "";
+        } else {
+            _url = window.location.search.substr(1);
+        }
+
+        var result = _url.match(reg);
+
+        if (result) {
+            value = decodeURIComponent(result[2]);
+        }
+
+        return value ? value : null;
     }
 
     /**

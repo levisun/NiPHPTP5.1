@@ -2,5 +2,5 @@
 return [
     'type'      => 'bootstrap',
     'var_page'  => 'p',
-    'list_rows' => 1,
+    'list_rows' => 20,
 ];

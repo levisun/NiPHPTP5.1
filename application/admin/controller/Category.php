@@ -28,9 +28,21 @@ class Category extends Base
         return $this->fetch($tpl);
     }
 
+    /**
+     * 管理模型
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function model($operate = '')
     {
         $tpl = $operate ? 'model_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    public function fields($operate = '')
+    {
+        $tpl = $operate ? 'fields_' . $operate : '';
         return $this->fetch($tpl);
     }
 }

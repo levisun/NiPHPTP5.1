@@ -34,8 +34,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "model.query.category",
-        p: "{$Request.param.p}"
+        method: "model.query.category"
     }
 }, function(result){
     if (result.return_code !== "SUCCESS") {
@@ -53,5 +52,50 @@ $.loading({
     }
     $("#dataTable tbody").prepend(list);
     $("#paging").prepend(result.return_result.page);
+    var ele = $("#paging a").eleEach();
+    for (var index in ele) {
+        $(ele[index].self).attr("url", ele[index].href);
+        $(ele[index].self).removeAttr("href");
+    }
 });
+
+$("body").on("click", "#paging a", function(){
+    var page = $.urlParam("p", $(this).attr("url"));
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            method: "model.query.category",
+            p: page
+        }
+    }, function(result){
+        if (result.return_code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+
+        var list = "";
+        for (var index in result.return_result.list) {
+            list = list + "<tr>";
+            list = list + "<td>"+result.return_result.list[index].id+"</td>";
+            list = list + "<td>"+result.return_result.list[index].model_name+"</td>";
+            list = list + "<td>"+result.return_result.list[index].table_name+"</td>";
+            list = list + "<td>"+result.return_result.list[index].model_status+"</td>";
+
+            list = list + "</tr>";
+        }
+        $("#dataTable tbody").prepend(list);
+        $("#paging").prepend(result.return_result.page);
+        var ele = $("#paging a").eleEach();
+        for (var index in ele) {
+            $(ele[index].self).attr("url", ele[index].href);
+            $(ele[index].self).removeAttr("href");
+        }
+    });
+});
+
+
+
 </script>
