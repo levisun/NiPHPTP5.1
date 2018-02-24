@@ -98,22 +98,10 @@ class Fields extends Model
     protected function getRequireAttr($_value, $_data)
     {
         $require = [
-            lang('not require'),
             lang('require'),
+            lang('not require'),
         ];
 
         return $require[$_data['is_require']];
-    }
-
-    /**
-     * 获取器
-     * 栏目模型名
-     * @access protected
-     * @param  string $_value
-     * @return string
-     */
-    protected function getModelNameAttr($_value)
-    {
-        return lang('model ' . $_value);
     }
 }

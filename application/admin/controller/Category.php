@@ -40,9 +40,31 @@ class Category extends Base
         return $this->fetch($tpl);
     }
 
+    /**
+     * 管理自定义字段
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function fields($operate = '')
     {
+        $this->assign('button_search', 1);
+
         $tpl = $operate ? 'fields_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
+     * 管理分类
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function type($operate = '')
+    {
+        $this->assign('button_search', 1);
+
+        $tpl = $operate ? 'type_' . $operate : '';
         return $this->fetch($tpl);
     }
 }

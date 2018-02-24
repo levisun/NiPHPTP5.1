@@ -13,8 +13,6 @@
  */
 namespace app\admin\logic\category;
 
-use think\facade\Env;
-
 class Model
 {
 

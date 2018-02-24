@@ -1,0 +1,129 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('fieldsname')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="type_id" class="col-lg-2 control-label">{:lang('fieldstype')}</label>
+                    <div class="col-lg-10">
+                        <select name="type_id" id="type_id" class="form-control">
+                            <option value="">{:lang('select type')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="category_id" class="col-lg-2 control-label">{:lang('fieldscategory')}</label>
+                    <div class="col-lg-10">
+                        <select name="category_id" id="category_id" class="form-control fieldsCategory">
+                            <option value="">{:lang('select category')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="is_require" class="col-lg-2 control-label">{:lang('isrequire')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs checked">
+                                <input type="radio" id="is_require1" name="is_require" value="1" checked>
+                                <label for="is_require1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('yes')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="is_require0" name="is_require" value="0">
+                                <label for="is_require0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('no')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-lg-2 control-label">{:lang('remark')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="description" id="description" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="id" id="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var editor_data = {};
+$.loading({
+    url: request.api.query,
+    async: false,
+    data: {
+        method: "fields.find.category",
+        id: "{$Request.param.id}"
+    }
+}, function(result) {
+    if (result.return_code === "SUCCESS") {
+        editor_data = result.return_result;
+        eachToInput(editor_data);
+
+        $(".is_require"+result.return_result.is_require).addClass("checked");
+        $("#is_require"+result.return_result.is_require).attr("checked", "checked");
+    }
+});
+
+
+
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "fields.type.category"
+    }
+}, function(result){
+    if (result.return_code === "SUCCESS") {
+        var type_option = eachToOption(result.return_result, "id", "name", editor_data.type_id);
+        $("#type_id").append(type_option);
+    }
+});
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "fields.category.category"
+    }
+}, function(result){
+    if (result.return_code === "SUCCESS") {
+        var category_option = eachToOption(result.return_result, "id", "name", editor_data.category_id);
+        $("#category_id").append(category_option);
+    }
+});
+
+$("form").submit(function(){
+    var form_data = "method=fields.editor.category";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result, "admin/category/fields.shtml");
+    });
+    return false;
+});
+</script>

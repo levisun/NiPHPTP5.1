@@ -238,7 +238,8 @@ class Category
         // 删除图片
         File::remove(Env::get('root_path') . basename(request()->root()) . $result['image']);
 
-        return model('common/category')->remove(['id' => $_id]);
+        return model('common/category')
+        ->remove(['id' => $_id]);
     }
 
     /**
@@ -288,7 +289,8 @@ class Category
             return $result;
         }
 
-        return model('common/category')->editor($receive_data);
+        return model('common/category')
+        ->editor($receive_data);
     }
 
     /**
@@ -303,6 +305,7 @@ class Category
             'id' => input('post.sort/a'),
         ];
 
-        return model('common/category')->sort($receive_data);
+        return model('common/category')
+        ->sort($receive_data);
     }
 }

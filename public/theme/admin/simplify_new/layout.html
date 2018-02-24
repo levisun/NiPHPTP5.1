@@ -49,8 +49,8 @@
                 $.reload();
             }
         } else {
-            $.uiToast("错误请求！");
-            // $.reload();
+            $.uiToast("操作成功！");
+            $.reload();
         }
     }
     function eachToOption(_data, _value, _name, _selected, _rep) {
@@ -79,7 +79,7 @@
             if (type == "text" || type == "hidden") {
                 $("#"+index).val(_data[index]);
             } else if (typeof(type) == "undefined") {
-                $("#"+index).val('_data[index]');
+                $("#"+index).val(_data[index]);
             } else {
 
             }
@@ -89,6 +89,13 @@
                 $("#"+index+_data[index]).attr("checked", "checked");
                 $("."+index+_data[index]).addClass("checked");
             }
+        }
+    }
+    function pagingToAjax() {
+        var ele = $("#paging a").eleEach();
+        for (var index in ele) {
+            $(ele[index].self).attr("url", ele[index].href);
+            $(ele[index].self).removeAttr("href");
         }
     }
     </script>

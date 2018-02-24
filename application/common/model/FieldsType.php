@@ -88,7 +88,7 @@ class FieldsType extends Model
 
     /**
      * 获取器
-     * 栏目模型名
+     * 字段名
      * @access protected
      * @param  string $_value
      * @return string

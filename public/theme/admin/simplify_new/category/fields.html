@@ -33,5 +33,89 @@
     </div>
 </div>
 <script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "fields.query.category"
+    }
+}, function(result){
+    if (result.return_code !== "SUCCESS") {
+        return false;
+    }
 
+    var list = "";
+    for (var index in result.return_result.list) {
+        list = list + "<tr>";
+        list = list + "<td>"+result.return_result.list[index].name+"</td>";
+        list = list + "<td>"+result.return_result.list[index].cat_name+"</td>";
+        list = list + "<td>"+result.return_result.list[index].type_name+"</td>";
+        list = list + "<td>"+result.return_result.list[index].require+"</td>";
+
+        list = list + "<td>";
+        list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        list = list + "<a class='np-btn-remove' data-id='"+result.return_result.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+    $("#paging").prepend(result.return_result.page);
+    pagingToAjax();
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "fields.remove.category",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.return_code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
+});
+
+$(document).on("click", "#paging a", function(){
+    var page = $.urlParam("p", $(this).attr("url"));
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            method: "fields.query.category",
+            p: page
+        }
+    }, function(result){
+        if (result.return_code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+        var list = "";
+        for (var index in result.return_result.list) {
+            list = list + "<tr>";
+            list = list + "<td>"+result.return_result.list[index].name+"</td>";
+            list = list + "<td>"+result.return_result.list[index].cat_name+"</td>";
+            list = list + "<td>"+result.return_result.list[index].type_name+"</td>";
+            list = list + "<td>"+result.return_result.list[index].require+"</td>";
+
+            list = list + "<td>";
+            list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.return_result.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "</td>";
+
+            list = list + "</tr>";
+        }
+        $("#dataTable tbody").prepend(list);
+        $("#paging").prepend(result.return_result.page);
+        pagingToAjax();
+    });
+});
 </script>

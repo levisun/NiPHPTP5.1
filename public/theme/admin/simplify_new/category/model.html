@@ -52,14 +52,10 @@ $.loading({
     }
     $("#dataTable tbody").prepend(list);
     $("#paging").prepend(result.return_result.page);
-    var ele = $("#paging a").eleEach();
-    for (var index in ele) {
-        $(ele[index].self).attr("url", ele[index].href);
-        $(ele[index].self).removeAttr("href");
-    }
+    pagingToAjax();
 });
 
-$("body").on("click", "#paging a", function(){
+$(document).on("click", "#paging a", function(){
     var page = $.urlParam("p", $(this).attr("url"));
     $.loading({
         url: request.api.query,
@@ -75,7 +71,6 @@ $("body").on("click", "#paging a", function(){
         $("#dataTable tbody tr").remove();
         $("#paging ul").remove();
 
-
         var list = "";
         for (var index in result.return_result.list) {
             list = list + "<tr>";
@@ -86,16 +81,11 @@ $("body").on("click", "#paging a", function(){
 
             list = list + "</tr>";
         }
+
         $("#dataTable tbody").prepend(list);
         $("#paging").prepend(result.return_result.page);
-        var ele = $("#paging a").eleEach();
-        for (var index in ele) {
-            $(ele[index].self).attr("url", ele[index].href);
-            $(ele[index].self).removeAttr("href");
-        }
+        pagingToAjax();
     });
 });
-
-
 
 </script>
