@@ -31,6 +31,8 @@ return [
     'hide'                  => '隐藏',
     'empty'                 => '空',
 
+    'run time memory'       => '运行时间/占用内存：',
+
     // 按钮
     'button upload'         => '上传',
     'button editor'         => '编辑',

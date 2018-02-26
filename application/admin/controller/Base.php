@@ -7,14 +7,12 @@
  * @category  admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Base.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/12
  */
 namespace app\admin\controller;
 
 use think\Controller;
-use think\facade\Env;
 
 class Base extends Controller
 {
@@ -41,7 +39,7 @@ class Base extends Controller
         $this->domain = $this->request->domain() . $this->request->root() . '/';
 
         $this->setTemplate();
-        LoadLang();
+        lang(':load');
 
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
@@ -92,7 +90,7 @@ class Base extends Controller
     private function setTemplate()
     {
         // 重新定义模板目录
-        $view_path  = Env::get('root_path') . basename($this->request->root());
+        $view_path  = env('root_path') . basename($this->request->root());
         $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
         $view_path .= $this->request->module() . DIRECTORY_SEPARATOR;
         $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;

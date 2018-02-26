@@ -1,23 +1,26 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006-2016 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+/**
+ *
+ * 应用入口文件
+ *
+ * @package   NiPHPCMS
+ * @category  application
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @link      www.NiPHP.com
+ * @since     2017/12
+ */
 
-// [ 应用入口文件 ]
 namespace think;
 
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('require PHP >= 5.6.0 !');
 // CB|Alpha 内测版 RC|Beta 正式候选版 Demo 演示版 Stable 稳定版 Release 正式版
-define('NP_VERSION', '2.0.5 CB180224');
+define('NP_VERSION', '2.0.5 CB180226');
 define('APP_DEBUG', true);
-set_time_limit(300);
-ini_set('memory_limit', '8M');
+
+set_time_limit(300);                    // 设置远行时间
+ini_set('memory_limit', '8M');          // 设置运行内存
+APP_DEBUG OR ob_start('ob_gzhandler');  // 开启gzip压缩
 
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';

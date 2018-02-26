@@ -7,14 +7,12 @@
  * @category  common\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Upload.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 namespace app\common\logic;
 
 use think\Image;
-use think\facade\Env;
 
 class Upload
 {
@@ -37,7 +35,7 @@ class Upload
     private function init($_params)
     {
         $this->uploadParams = $this->params($_params['type'], $_params['model']);
-        $this->savePath     = Env::get('root_path') . basename(request()->root());
+        $this->savePath     = env('root_path') . basename(request()->root());
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
         // $this->savePath    .= DIRECTORY_SEPARATOR;
@@ -146,14 +144,14 @@ class Upload
 
             if ($config_data['water_type']) {
                 // 图片水印
-                $water_image  = Env::get('root_path') . basename(request()->root());
+                $water_image  = env('root_path') . basename(request()->root());
                 $water_image .= $config_data['water_image'];
                 $image = Image::open($this->savePath . $_file_name);
                 $image->water($water_image, $config_data['water_location'], 50);
                 $image->save($this->savePath . $_file_name);
             } else {
                 // 文字水印
-                $font_path  = Env::get('root_path');
+                $font_path  = env('root_path');
                 $font_path .= basename(request()->root()) . DIRECTORY_SEPARATOR;
                 $font_path .= 'static' . DIRECTORY_SEPARATOR;
                 $font_path .= 'layout' . DIRECTORY_SEPARATOR;

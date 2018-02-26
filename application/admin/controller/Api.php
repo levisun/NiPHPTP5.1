@@ -7,14 +7,12 @@
  * @category  admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Receive.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/12
  */
 namespace app\admin\controller;
 
 use think\Controller;
-use think\facade\Env;
 
 class Api extends Controller
 {
@@ -38,7 +36,7 @@ class Api extends Controller
      */
     protected function initialize()
     {
-        LoadLang();
+        lang(':load');
 
         $this->method = input('post.method');
 
@@ -85,7 +83,7 @@ class Api extends Controller
      */
     private function hasLogic()
     {
-        $this->file  = Env::get('app_path') . DIRECTORY_SEPARATOR;
+        $this->file  = env('app_path') . DIRECTORY_SEPARATOR;
         $this->file .= $this->module . DIRECTORY_SEPARATOR;
         $this->file .= 'logic' . DIRECTORY_SEPARATOR;
 

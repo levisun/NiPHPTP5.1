@@ -7,13 +7,11 @@
  * @category  admin\logic\category
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Category.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/12
  */
 namespace app\admin\logic\category;
 
-use think\facade\Env;
 use \File;
 
 class Category
@@ -236,7 +234,7 @@ class Category
         ->where($map)
         ->find();
         // 删除图片
-        File::remove(Env::get('root_path') . basename(request()->root()) . $result['image']);
+        File::remove(env('root_path') . basename(request()->root()) . $result['image']);
 
         return model('common/category')
         ->remove(['id' => $_id]);

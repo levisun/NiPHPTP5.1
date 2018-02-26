@@ -7,9 +7,8 @@
  * @category  config
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: app.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 
 return [
@@ -45,4 +44,13 @@ return [
     'url_route_must'         => false,
     // 域名部署
     'url_domain_deploy'      => false,
+
+    // 异常页面的模板文件
+    // 'exception_tmpl'         => __DIR__ . '/tpl/think_exception.tpl',
+    // 错误显示信息,非调试模式有效
+    'error_message'          => '页面错误！请稍后再试～',
+    // 显示错误信息
+    'show_error_msg'         => false,
+    // 异常处理handle类 留空使用 \think\exception\Handle
+    'exception_handle'       => '',
 ];

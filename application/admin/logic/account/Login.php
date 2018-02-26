@@ -7,7 +7,6 @@
  * @category  admin\logic\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: Login.php v1.0.1 $
  * @link      www.NiPHP.com
  * @since     2017/12
  */
@@ -54,7 +53,7 @@ class Login
         }
 
         // 更新登录信息
-        $this->updateLogin($user_data['id'], $login_ip);
+        // $this->updateLogin($user_data['id'], $login_ip);
 
         // 生成登录用户认证信息
         $this->createAuth($user_data);

@@ -7,15 +7,12 @@
  * @category  application
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
- * @version   CVS: $Id: common.php v1.0.1 $
  * @link      www.NiPHP.com
- * @since     2017/09/13
+ * @since     2017/12
  */
 
 use think\facade\Debug;
-use think\facade\Env;
 use think\facade\Lang;
-
 
 /**
  * TP原方法$filter为null值不能进行过滤
@@ -138,7 +135,23 @@ function validate($_name, $_data, $_layer = 'validate')
  */
 function lang($_name, $_vars = [], $_lang = '')
 {
-    if ($_name == ':detect') {
+    if ($_name == ':load') {
+        // 允许的语言
+        Lang::setAllowLangList(config('lang_list'));
+
+        $lang_path  = env('app_path') . request()->module();
+        $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
+        $lang_path .= Lang::detect() . DIRECTORY_SEPARATOR;
+
+        // 加载全局语言包
+        Lang::load($lang_path . Lang::detect() . '.php');
+
+        // 加载对应语言包
+        $lang_name  = strtolower(request()->controller()) . DIRECTORY_SEPARATOR;
+        $lang_name .= strtolower(request()->action());
+        Lang::load($lang_path . $lang_name . '.php');
+        $return = true;
+    } elseif ($_name == ':detect') {
         $return = Lang::detect();
     } else {
         $return = Lang::get($_name, $_vars, $_lang);
@@ -158,7 +171,8 @@ function use_time_memory($_start = false)
         Debug::remark('memory_start');
     } else {
         return
-        Debug::getRangeTime('memory_start', 'end', 2) . ' S/' .
+        lang('run time memory') .
+        Debug::getRangeTime('memory_start', 'end', 4) . ' S/' .
         Debug::getRangeMem('memory_start', 'end');
 
         /* . ' ' .
@@ -173,6 +187,7 @@ function use_time_memory($_start = false)
  * @param  boolean $_remove
  * @return void
  */
+defined('APP_DEBUG') or define('APP_DEBUG', true);
 remove_rundata(!APP_DEBUG);
 function remove_rundata($_remove = false)
 {
