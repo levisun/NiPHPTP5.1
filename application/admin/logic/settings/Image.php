@@ -98,6 +98,9 @@ class Image
             ->update($data);
         }
 
+        $lang = lang('_menu');
+        create_action_log($lang['settings_image'], 'config_editor');
+
         return true;
     }
 }

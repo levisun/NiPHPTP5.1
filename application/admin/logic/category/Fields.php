@@ -130,15 +130,15 @@ class Fields
             '__token__'   => input('post.__token__'),
         ];
 
-        $result = validate('admin/fields.added', $receive_data, 'category');
+        $result = validate('admin/fields.added', input('post.'), 'category');
         if (true !== $result) {
             return $result;
         }
 
-        unset($receive_data['__token__']);
-
         $result = model('common/fields')
         ->added($receive_data);
+
+        create_action_log($receive_data['name'], 'fields_added');
 
         return !!$result;
     }
@@ -154,6 +154,17 @@ class Fields
         $receive_data = [
             'id'  => input('post.id/f'),
         ];
+
+        $map  = [
+            ['id', '=', $receive_data['id']],
+        ];
+
+        $result =
+        model('common/fields')->field(true)
+        ->where($map)
+        ->find();
+
+        create_action_log($result['name'], 'fields_remove');
 
         return model('common/fields')
         ->remove($receive_data);
@@ -194,13 +205,13 @@ class Fields
             '__token__'   => input('post.__token__'),
         ];
 
-        $result = validate('admin/fields.editor', $receive_data, 'category');
+        $result = validate('admin/fields.editor', input('post.'), 'category');
 
         if (true !== $result) {
             return $result;
         }
 
-        unset($receive_data['__token__']);
+        create_action_log($receive_data['name'], 'fields_editor');
 
         return model('common/fields')
         ->editor($receive_data);

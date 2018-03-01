@@ -82,6 +82,9 @@ class Email
             ->update($data);
         }
 
+        $lang = lang('_menu');
+        create_action_log($lang['settings_email'], 'config_editor');
+
         return true;
     }
 }

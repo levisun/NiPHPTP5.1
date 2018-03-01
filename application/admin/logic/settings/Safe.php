@@ -85,6 +85,9 @@ class Safe
             ->update($data);
         }
 
+        $lang = lang('_menu');
+        create_action_log($lang['settings_safe'], 'config_editor');
+
         return true;
     }
 }

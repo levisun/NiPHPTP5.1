@@ -171,9 +171,8 @@ function use_time_memory($_start = false)
         Debug::remark('memory_start');
     } else {
         return
-        lang('run time memory') .
         Debug::getRangeTime('memory_start', 'end', 4) . ' S/' .
-        Debug::getRangeMem('memory_start', 'end');
+        Debug::getMemPeak('memory_start', 'end', 4);
 
         /* . ' ' .
         lang('run file load') .
@@ -366,7 +365,7 @@ function escape_xss($_data)
             '/>[\s]+/si' => '>',
 
             // SQL关键字
-            '/(and)/si'      => '&#97;nd',
+            // '/(and)/si'      => '&#97;nd',
             '/(between)/si'  => '&#98;etween',
             '/(chr)/si'      => '&#99;hr',
             '/(char)/si'     => '&#99;har',

@@ -23,6 +23,7 @@ class Logout
      */
     public function logout()
     {
+        create_action_log('', 'admin_logout');
         session(null);
         cookie(null);
         return true;

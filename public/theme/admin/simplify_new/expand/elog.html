@@ -1,0 +1,51 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <table class="table table-striped" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>{:lang('elog date')}</th>
+                            <th>{:lang('elog file size')}</th>
+                            <th>{:lang('operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "elog.query.expand"
+    }
+}, function(result){
+    if (result.return_code !== "SUCCESS") {
+        return false;
+    }
+
+    var list = "";
+    for (var index in result.return_result) {
+        list = list + "<tr>";
+        list = list + "<td>"+index+"</td>";
+        list = list + "<td>"+result.return_result[index].size+"</td>";
+
+        list = list + "<td>";
+        list = list + "<a href='"+result.return_result[index].show+"'><i class='fa fa-eye'></i>{:lang('button view')}</a>"
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+});
+</script>

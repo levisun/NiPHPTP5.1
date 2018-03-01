@@ -328,7 +328,7 @@ $(".upload-btn").click(function(){
         var dir = result.return_result.save_dir + result.return_result.file_name;
         $("#water_image").val(dir);
         $("#img-water_image").attr("src",  result.return_result.domain + dir);
-        $.uiPopup("hide");
+        $.uiPopup({}, "hide");
     });
 });
 

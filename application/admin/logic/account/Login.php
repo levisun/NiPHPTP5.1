@@ -53,13 +53,15 @@ class Login
         }
 
         // 更新登录信息
-        // $this->updateLogin($user_data['id'], $login_ip);
+        $this->updateLogin($user_data['id'], $login_ip);
 
         // 生成登录用户认证信息
         $this->createAuth($user_data);
 
         // 登录成功 清除锁定IP
         logic('common/RequestLog')->removeLockIp($login_ip, $module);
+
+        create_action_log('', 'admin_login');
 
         return true;
     }

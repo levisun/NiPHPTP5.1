@@ -11,3 +11,26 @@
  * @since     2017/12
  */
 
+function create_action_log($_msg, $_action = '')
+{
+    if (!$_action) {
+        $_action = strtolower(request()->controller() . '_' . request()->action());
+    }
+
+    $map = [
+        ['name', '=', $_action]
+    ];
+    $result = model('common/action')
+    ->where($map)
+    ->find();
+
+    $data = [
+        'action_id' => $result['id'],
+        'user_id'   => session(config('user_auth_key')),
+        'action_ip' => request()->ip(0, true),
+        'module'    => request()->module(),
+        'remark'    => $_msg,
+    ];
+    model('common/actionLog')
+    ->added($data);
+}

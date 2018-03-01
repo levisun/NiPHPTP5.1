@@ -183,7 +183,7 @@ class Category
             '__token__'       => input('post.__token__'),
         ];
 
-        $result = validate('admin/category.added', $receive_data, 'category');
+        $result = validate('admin/category.added', input('post.'), 'category');
         if (true !== $result) {
             return $result;
         }
@@ -192,6 +192,8 @@ class Category
 
         $result = model('common/category')
         ->added($receive_data);
+
+        create_action_log($receive_data['name'], 'category_added');
 
         return !!$result;
     }
@@ -215,6 +217,8 @@ class Category
         model('common/category')->field(true)
         ->where($map)
         ->find();
+
+        create_action_log($result['name'], 'category_remove');
 
         // 子栏目存在 递归删除子栏目
         if ($result) {
@@ -282,10 +286,12 @@ class Category
             '__token__'       => input('post.__token__'),
         ];
 
-        $result = validate('admin/category.editor', $receive_data, 'category');
+        $result = validate('admin/category.editor', input('post.'), 'category');
         if (true !== $result) {
             return $result;
         }
+
+        create_action_log($receive_data['name'], 'category_editor');
 
         return model('common/category')
         ->editor($receive_data);
@@ -302,6 +308,8 @@ class Category
         $receive_data = [
             'id' => input('post.sort/a'),
         ];
+
+        create_action_log('', 'category_sort');
 
         return model('common/category')
         ->sort($receive_data);

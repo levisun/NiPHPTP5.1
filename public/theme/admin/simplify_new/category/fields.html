@@ -64,24 +64,6 @@ $.loading({
     pagingToAjax();
 });
 
-$(document).on("click", ".np-btn-remove", function(){
-    var id = $(this).attr("data-id");
-    $.loading({
-        url: request.api.settle,
-        async: false,
-        data: {
-            method: "fields.remove.category",
-            id: id
-        },
-    }, function(result){
-        handle(result, false, false);
-        if (result.return_code === "SUCCESS") {
-            $.reload();
-        }
-    });
-    return false;
-});
-
 $(document).on("click", "#paging a", function(){
     var page = $.urlParam("p", $(this).attr("url"));
     $.loading({
@@ -117,5 +99,23 @@ $(document).on("click", "#paging a", function(){
         $("#paging").prepend(result.return_result.page);
         pagingToAjax();
     });
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "fields.remove.category",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.return_code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
 });
 </script>

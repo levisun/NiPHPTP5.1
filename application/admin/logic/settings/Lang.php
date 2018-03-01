@@ -68,6 +68,9 @@ class Lang
         $config['lang_switch_on'] = $receive_data['lang_switch_on'] ? true : false;
         file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
 
+        $lang = lang('_menu');
+        create_action_log($lang['settings_lang'], 'config_editor');
+
         return true;
     }
 }
