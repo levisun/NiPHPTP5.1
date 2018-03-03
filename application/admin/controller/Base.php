@@ -58,8 +58,8 @@ class Base extends Controller
             $auth_menu = logic('admin/auth', 'account')->getMenu();
             $this->assign('AUTH_MENU', json_encode($auth_menu));
 
-            // 按钮状态
-            $this->assign('button_search', false);
+            // 搜索按钮状态
+            $this->assign('button_search', 0);
         } elseif ($this->requestParam['controller'] != 'account') {
             $this->redirect(url('account/login'));
         }

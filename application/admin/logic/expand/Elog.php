@@ -25,6 +25,7 @@ class Elog
     {
         $dir  = env('root_path') . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . '*';
         $file = (array) glob($dir);
+        rsort($file);
 
         $file_dir = [];
         foreach ($file as $key => $value) {

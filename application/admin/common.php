@@ -11,6 +11,13 @@
  * @since     2017/12
  */
 
+/**
+ * 记录操作日志
+ * @access public
+ * @param  string $_msg
+ * @param  string $_action
+ * @return void
+ */
 function create_action_log($_msg, $_action = '')
 {
     if (!$_action) {
