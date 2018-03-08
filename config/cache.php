@@ -17,6 +17,6 @@ return [
     // 缓存前缀
     'prefix' => 'np_insomnia_',
     // 缓存有效期 0表示永久缓存
-    'expire' => 1200,
+    'expire' => 28800,
     // 'cache_subdir' => false,
 ];

@@ -36,6 +36,7 @@ class Api extends Controller
      */
     protected function initialize()
     {
+        // 加载语言包
         lang(':load');
 
         $this->method = input('post.method');
@@ -47,7 +48,7 @@ class Api extends Controller
     }
 
     /**
-     * 判断业务类是否存在
+     * 判断是否合法请求
      * @access private
      * @param
      * @return boolean

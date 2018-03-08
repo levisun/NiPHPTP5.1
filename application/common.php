@@ -195,7 +195,6 @@ function remove_rundata($_remove = false)
     }
 
     $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-    // $dir .= 'runtime' . DIRECTORY_SEPARATOR;
 
     $all_files = [];
     $files = [
@@ -360,16 +359,16 @@ function escape_xss($_data)
         $_data = preg_replace($pattern, '', $_data);
 
         $pattern = [
-            '/[  ]+/si' => ' ',    // 多余空格
-            '/[\s]+</si' => '<',   // 多余回车
+            '/[  ]+/si'  => ' ',    // 多余空格
+            '/[\s]+</si' => '<',    // 多余回车
             '/>[\s]+/si' => '>',
 
             // SQL关键字
-            '/( and)/si'      => ' &#97;nd',
+            '/( and)/si'     => ' &#97;nd',
             '/(between)/si'  => '&#98;etween',
-            '/( chr)/si'      => ' &#99;hr',
-            '/( char)/si'     => ' &#99;har',
-            '/( count)/si'    => ' &#99;ount',
+            '/( chr)/si'     => ' &#99;hr',
+            '/( char)/si'    => ' &#99;har',
+            '/( count)/si'   => ' &#99;ount',
             '/(create)/si'   => '&#99;reate',
             '/(declare)/si'  => '&#100;eclare',
             '/(delete)/si'   => '&#100;elete',
@@ -378,8 +377,8 @@ function escape_xss($_data)
             '/(join)/si'     => '&#106;oin',
             '/(update)/si'   => '&#117;pdate',
             '/(master)/si'   => '&#109;aster',
-            '/( mid)/si'      => ' &#109;id',
-            '/( or)/si'       => ' &#111;r',
+            '/( mid)/si'     => ' &#109;id',
+            '/( or)/si'      => ' &#111;r',
             '/(select)/si'   => '&#115;elect',
             '/(truncate)/si' => '&#116;runcate',
             '/(where)/si'    => '&#119;here',
@@ -430,7 +429,13 @@ function escape_xss($_data)
             '－'  => '-',
             '～'  => '-',
             ];
+
         $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);
+
+        // 过虑emoji表情
+        $_data = preg_replace_callback('/./u', function (array $match) {
+            return strlen($match[0]) >= 4 ? '' : $match[0];
+        }, $_data);
 
         // 个性字符过虑
         $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
