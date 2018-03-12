@@ -34,7 +34,7 @@ class Upload
      */
     private function init($_params)
     {
-        $this->uploadParams = $this->params($_params['type'], $_params['model']);
+        $this->uploadParams = $this->params($_params['type']);
         $this->savePath     = env('root_path') . basename(request()->root());
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
@@ -171,10 +171,10 @@ class Upload
      * @param  string  $_model 模型
      * @return array
      */
-    private function params($_type, $_model)
+    private function params($_type)
     {
         // 安上传类型生成上传目录
-        if (in_array($_type, ['image', 'ckeditor'])) {
+        if (in_array($_type, ['image', 'images', 'ckeditor'])) {
             $dir = 'images/';
         } else {
             $dir = $_type . '/';
@@ -182,7 +182,8 @@ class Upload
         $dir .= date('Y') . '/' . date('Ym') . '/';
 
         $thumb_width = $thumb_height = 0;
-        if ($_type === 'image') {
+
+        if (in_array($_type, ['article', 'ask', 'download', 'job', 'link', 'page', 'picture', 'product'])) {
             $map = [
                 ['name', 'in', $_model . '_module_width,' . $_model . '_module_height'],
                 ['lang', '=', lang(':detect')],
@@ -192,13 +193,12 @@ class Upload
             model('common/config')->where($map)
             ->column('name, value');
 
-            $thumb_width = $result[$_model . '_module_width'];
-            $thumb_height = $result[$_model . '_module_height'];
-        } /*elseif (!in_array($_type, ['water', 'ckeditor'])) {
-            $thumb_width = $thumb_height = 500;
-        } else {
+            if (!empty($result)) {
+                $thumb_width  = $result[$_model . '_module_width'];
+                $thumb_height = $result[$_model . '_module_height'];
+            }
+        }
 
-        }*/
 
         return [
             'dir'          => $dir,

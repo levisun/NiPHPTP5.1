@@ -15,7 +15,7 @@ namespace think;
 
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('require PHP >= 5.6.0 !');
 // CB|Alpha 内测版 RC|Beta 正式候选版 Demo 演示版 Stable 稳定版 Release 正式版
-define('NP_VERSION', '2.0.5 CB2108');
+define('NP_VERSION', '2.0.5 CB2112');
 // 调试开关
 define('APP_DEBUG', true);
 // 设置超时时间

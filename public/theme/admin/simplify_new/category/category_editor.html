@@ -203,7 +203,7 @@ $.uiPopup({
 
 $(".upload-btn").click(function(){
     $.upload({
-        url: request.api.upload+"?type=category&model=common",
+        url: request.api.upload+"?type=category",
         file: $("#uploadForm")[0],
     }, function(result){
         var dir = result.return_result.save_dir + result.return_result.file_name;

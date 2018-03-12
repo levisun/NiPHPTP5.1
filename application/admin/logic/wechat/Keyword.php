@@ -35,17 +35,17 @@ class Keyword
             $map[] = ['keyword', 'like', $key . '%'];
         }
 
+        //根据类型判断URL
+        if ($type == 0) {
+            $url = 'wechat/keyword';
+        }
+
         $result =
         model('common/Reply')->field(true)
         ->order('id DESC')
         ->paginate(null, null, [
-            'path' => url('wechat/keyword'),
+            'path' => url($url),
         ]);
-
-        //根据类型判断URL
-        if ($type === 0) {
-            $url = 'wechat/keyword';
-        }
 
         foreach ($result as $key => $value) {
             $result[$key]->type_name = $value->type_name;

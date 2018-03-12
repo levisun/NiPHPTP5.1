@@ -322,7 +322,7 @@ $.uiPopup({
 
 $(".upload-btn").click(function(){
     $.upload({
-        url: request.api.upload+"?type=water&model=common",
+        url: request.api.upload+"?type=water",
         file: $("#uploadForm")[0],
     }, function(result){
         var dir = result.return_result.save_dir + result.return_result.file_name;

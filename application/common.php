@@ -14,40 +14,7 @@
 use think\facade\Debug;
 use think\facade\Lang;
 
-/**
- * TP原方法$filter为null值不能进行过滤
- * 获取输入数据 支持默认值和过滤
- * @param string    $key 获取的变量名
- * @param mixed     $default 默认值
- * @param string    $filter 过滤方法
- * @return mixed
- */
-function input($key = '', $default = null, $filter = '')
-{
-    if (0 === strpos($key, '?')) {
-        $key = substr($key, 1);
-        $has = true;
-    }
 
-    if ($pos = strpos($key, '.')) {
-        // 指定参数来源
-        $method = substr($key, 0, $pos);
-        if (in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'route', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
-            $key = substr($key, $pos + 1);
-        } else {
-            $method = 'param';
-        }
-    } else {
-        // 默认为自动判断
-        $method = 'param';
-    }
-
-    if (isset($has)) {
-        return request()->has($key, $method, $default);
-    } else {
-        return request()->$method($key, $default, $filter);
-    }
-}
 
 /**
  * 实例化模型
@@ -186,7 +153,6 @@ function use_time_memory($_start = false)
  * @param  boolean $_remove
  * @return void
  */
-defined('APP_DEBUG') or define('APP_DEBUG', true);
 remove_rundata(!APP_DEBUG);
 function remove_rundata($_remove = false)
 {
