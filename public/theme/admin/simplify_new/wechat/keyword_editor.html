@@ -52,8 +52,8 @@
                         </div>
                         <div class="radio inline-block">
                             <div class="custom-radio m-right-xs">
-                                <input type="radio" id="status2" name="status" value="0">
-                                <label for="status2"></label>
+                                <input type="radio" id="status0" name="status" value="0">
+                                <label for="status0"></label>
                             </div>
                             <div class="inline-block vertical-top">
                                 {:lang('button close')}
@@ -65,7 +65,8 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="hidden" name="type" value="{$type}">
+                        <input type="hidden" name="type" id="type" value="{$type}">
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -75,6 +76,21 @@
 </div>
 
 <script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    async: false,
+    data: {
+        method: "keyword.find.wechat",
+        id: "{$Request.param.id}"
+    }
+}, function(result) {
+    if (result.return_code === "SUCCESS") {
+        eachToInput(result.return_result);
+    }
+});
+
+
+
 $.uiPopup({
     element: "#upload",
     title:   "上传",
@@ -95,7 +111,7 @@ $(".upload-btn").click(function(){
 });
 
 $("form").submit(function(){
-    var form_data = "method=keyword.added.wechat";
+    var form_data = "method=keyword.editor.wechat";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

@@ -34,6 +34,11 @@ class Timing
         $this->request($_sleep_time);
     }
 
+    public function __set($name, $value)
+    {
+        $this->$name = $value;
+    }
+
     private function isRunning($_open)
     {
         if (!$_open && is_file($this->dir . $this->hashName . '.timing')) {
@@ -80,6 +85,7 @@ class Timing
     {
         $_run = file_get_contents($this->dir . $this->hashName . '.timing');
         if (time() >= $_run + $_time_out) {
+            unlink($this->dir . $this->hashName . '.timing');
             $this->runLog('end');
             return false;
         }

@@ -63,7 +63,7 @@ $.loading({
         list = list + "<td>"+result.return_result.list[index].keyword+"</td>";
         list = list + "<td>"+result.return_result.list[index].title+"</td>";
         list = list + "<td>"+result.return_result.list[index].content+"</td>";
-        list = list + "<td>"+result.return_result.list[index].image+"</td>";
+        list = list + "<td><img src='"+result.return_result.list[index].image+"' width='100' /></td>";
         list = list + "<td>"+result.return_result.list[index].status+"</td>";
         list = list + "<td>";
         list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
@@ -99,7 +99,7 @@ $(document).on("click", "#paging a", function(){
             list = list + "<td>"+result.return_result.list[index].keyword+"</td>";
             list = list + "<td>"+result.return_result.list[index].title+"</td>";
             list = list + "<td>"+result.return_result.list[index].content+"</td>";
-            list = list + "<td>"+result.return_result.list[index].image+"</td>";
+            list = list + "<td><img src='"+result.return_result.list[index].image+"' width='100' /></td>";
             list = list + "<td>"+result.return_result.list[index].status+"</td>";
             list = list + "<td>";
             list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
@@ -111,6 +111,19 @@ $(document).on("click", "#paging a", function(){
         $("#paging").prepend(result.return_result.page);
         pagingToAjax();
     });
+});
+
+$("form").submit(function(){
+    var form_data = "method=keyword.remove.wechat";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
+    return false;
 });
 
 $(document).on("click", ".np-btn-remove", function(){
