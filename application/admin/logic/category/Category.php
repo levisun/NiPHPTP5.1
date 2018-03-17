@@ -223,7 +223,7 @@ class Category
         // 子栏目存在 递归删除子栏目
         if ($result) {
             $params = [
-                'id'  => $result['id'],
+                'id' => $result['id'],
             ];
 
             $this->remove($params);

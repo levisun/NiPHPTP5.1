@@ -41,6 +41,7 @@ class Upload
             $msg = is_string($result) ? $result : $result['save_dir'] . $result['file_name'];
 
             create_action_log($msg, 'upload_file');
+            remove_old_upload_file($msg);
 
             return $result;
         } else {

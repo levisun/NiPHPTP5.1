@@ -122,12 +122,8 @@ class Type
      */
     public function remove()
     {
-        $receive_data = [
-            'id'  => input('post.id/f'),
-        ];
-
         $map  = [
-            ['id', '=', $receive_data['id']],
+            ['id', '=', input('post.id/f')],
         ];
 
         $result =
@@ -137,6 +133,9 @@ class Type
 
         create_action_log($result['name'], 'type_remove');
 
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
         return model('common/type')
         ->remove($receive_data);
     }

@@ -22,7 +22,7 @@ class Api extends Controller
     private $action;    // 业务类方法
     private $layer;     // 业务类所在层
 
-    private $file;      // 文件路径
+    private $file_path; // 文件路径
     private $sign;      // 加密签名
 
     private $object;    // 业务逻辑类实例化
@@ -84,17 +84,17 @@ class Api extends Controller
      */
     private function hasLogic()
     {
-        $this->file  = env('app_path') . DIRECTORY_SEPARATOR;
-        $this->file .= $this->module . DIRECTORY_SEPARATOR;
-        $this->file .= 'logic' . DIRECTORY_SEPARATOR;
+        $this->file_path  = env('app_path') . DIRECTORY_SEPARATOR;
+        $this->file_path .= $this->module . DIRECTORY_SEPARATOR;
+        $this->file_path .= 'logic' . DIRECTORY_SEPARATOR;
 
         if ($this->layer !== 'logic') {
-            $this->file .= $this->layer . DIRECTORY_SEPARATOR;
+            $this->file_path .= $this->layer . DIRECTORY_SEPARATOR;
         }
 
-        $this->file .= $this->logic . '.php';
+        $this->file_path .= $this->logic . '.php';
 
-        if (is_file($this->file)) {
+        if (is_file($this->file_path)) {
             return true;
         } else {
             return false;
@@ -171,6 +171,8 @@ class Api extends Controller
 
         $result['use_time_memory'] = use_time_memory();
 
+        remove_old_upload_file(false);
+
         return json($result);
     }
 
@@ -216,6 +218,8 @@ class Api extends Controller
         }
 
         $result['use_time_memory'] = use_time_memory();
+
+        remove_old_upload_file();
 
         return json($result);
     }

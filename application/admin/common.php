@@ -12,8 +12,31 @@
  */
 
 /**
+ * 删除旧的未保存的上传文件
+ * @param  mixed $_path
+ * @return void
+ */
+function remove_old_upload_file($_path = null)
+{
+    if (cookie('?__upfile')) {
+        if (is_null($_path)) {
+            // $_path=null时表示上传文件已写入库中，删除此记录
+            cookie('__upfile', null);
+        } else {
+            // 删除上次上传没有保存文件
+            $upfile = cookie('__upfile');
+            if (!empty($upfile)) {
+                \File::remove(env('root_path') . basename(request()->root()) . $upfile);
+            }
+            cookie('__upfile', $_path);
+        }
+    } else {
+        cookie('__upfile', $_path);
+    }
+}
+
+/**
  * 记录操作日志
- * @access public
  * @param  string $_msg
  * @param  string $_action
  * @return void

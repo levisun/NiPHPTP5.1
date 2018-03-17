@@ -150,13 +150,13 @@ function use_time_memory($_start = false)
 /**
  * 清除运行垃圾文件
  * 开发模式不自动清除
- * @param  boolean $_remove
+ * @param
  * @return void
  */
-remove_rundata(!APP_DEBUG);
-function remove_rundata($_remove = false)
+remove_rundata();
+function remove_rundata()
 {
-    if (rand(0, 9) === 0 && !$_remove) {
+    if (rand(0, 9) === 0) {
         return false;
     }
 
@@ -164,9 +164,9 @@ function remove_rundata($_remove = false)
 
     $all_files = [];
     $files = [
-        'cache'  => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . '*'),
-        'log'    => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . '*'),
-        'tmep'   => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR . '*'),
+        'cache' => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . '*'),
+        'log'   => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . '*'),
+        'tmep'  => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'temp' .  DIRECTORY_SEPARATOR . '*'),
         // 'backup' => (array) glob($dir . 'public' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . '*'),
     ];
 
@@ -188,7 +188,7 @@ function remove_rundata($_remove = false)
     $all_files = array_slice($all_files, 0, 100);
 
     foreach ($all_files as $path) {
-        if (filectime($path) <= strtotime('-7 days')) {
+        if (filectime($path) <= strtotime('-' . RUN_FIEL_EXPIRE . ' days')) {
             if (is_dir($path)) {
                 @rmdir($path);
             } else {

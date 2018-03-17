@@ -12,6 +12,8 @@
  */
 namespace app\admin\logic\wechat;
 
+use \File;
+
 class Keyword
 {
 
@@ -41,7 +43,7 @@ class Keyword
         }
 
         $result =
-        model('common/Reply')->field(true)
+        model('common/reply')->field(true)
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url($url),
@@ -107,21 +109,20 @@ class Keyword
      */
     public function remove()
     {
-        $receive_data = [
-            'id'  => input('post.id/f'),
-        ];
-
         $map  = [
-            ['id', '=', $receive_data['id']],
+            ['id', '=', input('post.id/f')],
         ];
 
-        $result =
-        model('common/reply')->field(true)
-        ->where($map)
-        ->find();
+        $result = $this->find();
+
+        // 删除图片
+        File::remove(env('root_path') . basename(request()->root()) . $result['image']);
 
         create_action_log($result['keyword'], 'wechat_keyword_remove');
 
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
         return model('common/reply')
         ->remove($receive_data);
     }

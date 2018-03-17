@@ -151,12 +151,8 @@ class Fields
      */
     public function remove()
     {
-        $receive_data = [
-            'id'  => input('post.id/f'),
-        ];
-
         $map  = [
-            ['id', '=', $receive_data['id']],
+            ['id', '=', input('post.id/f')],
         ];
 
         $result =
@@ -166,6 +162,9 @@ class Fields
 
         create_action_log($result['name'], 'fields_remove');
 
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
         return model('common/fields')
         ->remove($receive_data);
     }
