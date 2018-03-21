@@ -88,4 +88,61 @@ class Node extends Model
 
         return !!$result;
     }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort($_receive_data)
+    {
+        $data = [];
+        foreach ($_receive_data['id'] as $key => $value) {
+            $data[] = [
+                'id'   => $key,
+                'sort' => $value,
+            ];
+        }
+
+        $result =
+        $this->saveAll($data);
+
+        return !!$result;
+    }
+
+    /**
+     * 获取器
+     * 节点状态
+     * @access protected
+     * @param  int    $value
+     * @return string
+     */
+    protected function getStatusAttr($_value, $_data)
+    {
+        $status = [
+            0 => lang('status no'),
+            1 => lang('status yes'),
+        ];
+
+        return $status[$_data['status']];
+    }
+
+    /**
+     * 获取器
+     * 节点状态
+     * @access protected
+     * @param  int    $value
+     * @return string
+     */
+    protected function getLevelNameAttr($_value, $_data)
+    {
+        $level = [
+            1 => lang('module'),
+            2 => lang('controller'),
+            3 => lang('method'),
+        ];
+
+        return $level[$_data['level']];
+    }
 }

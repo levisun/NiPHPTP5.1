@@ -12,6 +12,37 @@
  */
 
 /**
+ * 节点格式化
+ * @param  array $_result
+ * @param  int   $_pid
+ * @return array
+ */
+function node_format($_result, $_pid = 0)
+{
+    $node = [];
+    foreach ($_result as $key => $value) {
+        if ($value['pid'] == $_pid) {
+            $ext = '';
+            for ($i=1; $i < $value['level']; $i++) {
+                $ext .= '|__';
+            }
+            $value['title'] = $ext . $value['title'];
+
+            $node[] = $value;
+
+            $temp = node_format($_result, $value['id']);
+            if (!empty($temp)) {
+                $node = array_merge($node, $temp);
+            }
+
+            unset($_result[$key]);
+        }
+    }
+
+    return $node;
+}
+
+/**
  * 删除旧的未保存的上传文件
  * @param  mixed $_path
  * @return void

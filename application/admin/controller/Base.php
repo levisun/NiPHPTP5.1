@@ -23,6 +23,9 @@ class Base extends Controller
 
     protected function initialize()
     {
+        // 清除运行垃圾文件
+        remove_rundata();
+
         // 请求参数
         $this->requestParam = [
             // 请求模块
@@ -92,21 +95,21 @@ class Base extends Controller
         // 重新定义模板目录
         $view_path  = env('root_path') . basename($this->request->root());
         $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
-        $view_path .= $this->request->module() . DIRECTORY_SEPARATOR;
+        $view_path .= 'admin' . DIRECTORY_SEPARATOR;
         $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
 
         // 模板地址 带域名
-        $default_theme  = $this->domain . 'theme/' . $this->request->module();
-        $default_theme .= '/'. config('default_theme') . '/';
+        $default_theme  = $this->domain . 'theme/admin/';
+        $default_theme .= config('default_theme') . '/';
 
         $replace = [
             '__DOMAIN__'   => $this->domain,
             '__PHP_SELF__' => basename($this->request->baseFile()),
             '__STATIC__'   => $this->domain . 'static/',
             '__THEME__'    => config('default_theme'),
-            '__CSS__'      => $default_theme . 'static/css/',
-            '__JS__'       => $default_theme . 'static/js/',
-            '__IMG__'      => $default_theme . 'static/images/',
+            '__CSS__'      => $default_theme . 'css/',
+            '__JS__'       => $default_theme . 'js/',
+            '__IMG__'      => $default_theme . 'images/',
         ];
 
         $template = config('template.');

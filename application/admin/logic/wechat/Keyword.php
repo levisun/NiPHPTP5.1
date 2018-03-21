@@ -37,9 +37,13 @@ class Keyword
             $map[] = ['keyword', 'like', $key . '%'];
         }
 
-        //根据类型判断URL
+        // 根据类型判断URL
         if ($type == 0) {
             $url = 'wechat/keyword';
+        } elseif ($type == 1) {
+            $url = 'wechat/auto';
+        } else {
+            $url = 'wechat/attention';
         }
 
         $result =

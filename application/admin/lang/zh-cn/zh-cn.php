@@ -54,6 +54,10 @@ return [
     'model link'            => '友链模型',
     'model external'        => '外部模型',
 
+    'module'                => '模块',
+    'controller'            => '控制器',
+    'method'                => '方法',
+
     // 导航
     '_nav' => [
         'settings'          => '设置',

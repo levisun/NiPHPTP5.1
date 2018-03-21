@@ -14,8 +14,6 @@
 use think\facade\Debug;
 use think\facade\Lang;
 
-
-
 /**
  * 实例化模型
  * @param  string $_name  [模块名/]控制器名
@@ -153,10 +151,9 @@ function use_time_memory($_start = false)
  * @param
  * @return void
  */
-remove_rundata();
 function remove_rundata()
 {
-    if (rand(0, 9) === 0) {
+    if (rand(0, 29) !== 0) {
         return false;
     }
 
@@ -185,10 +182,11 @@ function remove_rundata()
     }
 
     shuffle($all_files);
-    $all_files = array_slice($all_files, 0, 100);
+    $all_files = array_slice($all_files, 0, 1000);
 
+    $days = APP_DEBUG ? '-7 days' : '-30 days';
     foreach ($all_files as $path) {
-        if (filectime($path) <= strtotime('-' . RUN_FIEL_EXPIRE . ' days')) {
+        if (filectime($path) <= strtotime($days)) {
             if (is_dir($path)) {
                 @rmdir($path);
             } else {

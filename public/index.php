@@ -16,11 +16,9 @@ namespace think;
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('require PHP >= 5.6.0 !');
 // CB|Alpha 内测版 RC|Beta 正式候选版 Demo 演示版 Stable 稳定版 Release 正式版
-define('NP_VERSION', '2.0.5 CB2117');
+define('NP_VERSION', '2.0.5 CB2121');
 // 调试开关
 define('APP_DEBUG', true);
-// 数据缓存、模板编译和日志文件保存时长(天)
-define('RUN_FIEL_EXPIRE', APP_DEBUG ? 7 : 30);
 // 设置超时时间
 set_time_limit(300);
 // 设置运行内存

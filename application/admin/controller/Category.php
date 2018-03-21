@@ -18,7 +18,7 @@ class Category extends Base
     /**
      * 管理栏目
      * @access public
-     * @param
+     * @param  string $operate
      * @return mixed
      */
     public function category($operate = '')
@@ -30,7 +30,7 @@ class Category extends Base
     /**
      * 管理模型
      * @access public
-     * @param
+     * @param  string $operate
      * @return mixed
      */
     public function model($operate = '')
@@ -42,7 +42,7 @@ class Category extends Base
     /**
      * 管理自定义字段
      * @access public
-     * @param
+     * @param  string $operate
      * @return mixed
      */
     public function fields($operate = '')
@@ -56,7 +56,7 @@ class Category extends Base
     /**
      * 管理分类
      * @access public
-     * @param
+     * @param  string $operate
      * @return mixed
      */
     public function type($operate = '')

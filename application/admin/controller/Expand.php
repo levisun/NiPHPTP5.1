@@ -29,7 +29,7 @@ class Expand extends Base
     /**
      * 错误日志
      * @access public
-     * @param
+     * @param  string $operate
      * @return mixed
      */
     public function elog($operate = '')

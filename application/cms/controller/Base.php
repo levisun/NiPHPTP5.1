@@ -16,52 +16,39 @@ class Index
 {
 
     /**
-     * 模版设置
-     * @access protected
+     * 设置模板
+     * @access private
      * @param
      * @return void
      */
-    private function theme()
+    private function setTemplate()
     {
-        $view_path  = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
-        $view_path .= 'theme' . DIRECTORY_SEPARATOR . $this->request->module();
-        $view_path .= DIRECTORY_SEPARATOR . config('default_theme') . DIRECTORY_SEPARATOR;
+        // 重新定义模板目录
+        $view_path  = env('root_path') . basename($this->request->root());
+        $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
+        $view_path .= 'cms' . DIRECTORY_SEPARATOR;
+        $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
+
+        // 模板地址 带域名
+        $default_theme  = $this->domain . 'theme/cms/';
+        $default_theme .= config('default_theme') . '/';
+
+        $replace = [
+            '__DOMAIN__'   => $this->domain,
+            '__PHP_SELF__' => basename($this->request->baseFile()),
+            '__STATIC__'   => $this->domain . 'static/',
+            '__THEME__'    => config('default_theme'),
+            '__CSS__'      => $default_theme . 'css/',
+            '__JS__'       => $default_theme . 'js/',
+            '__IMG__'      => $default_theme . 'images/',
+        ];
 
         $template = config('template.');
         $template['view_path'] = $view_path;
+        $template['tpl_replace_string'] = $replace;
+        config('template.view_path', $view_path);
+        config('template.tpl_replace_string', $replace);
+
         $this->view->engine($template);
-
-        // 默认跳转页面对应的模板文件
-        $dispatch = [
-            'dispatch_success_tmpl' => $view_path . 'dispatch_jump.html',
-            'dispatch_error_tmpl'   => $view_path . 'dispatch_jump.html',
-        ];
-        config($dispatch, 'app');
-
-        // 获得域名地址
-        $domain  = $this->request->domain();
-        $domain .= substr($this->request->baseFile(), 0, -9);
-        $default_theme  = $domain . 'theme/' . $this->request->module();
-        $default_theme .= '/'. config('default_theme') . '/';
-
-        $replace = [
-            '__DOMAIN__'   => $domain,
-            '__PHP_SELF__' => basename($this->request->baseFile()),
-            '__STATIC__'   => $domain . 'static/',
-            '__THEME__'    => config('default_theme'),
-            '__CSS__'      => $default_theme . 'static/css/',
-            '__JS__'       => $default_theme . 'static/js/',
-            '__IMG__'      => $default_theme . 'static/images/',
-        ];
-
-        // 注入常用模板变量
-        $common = logic('Common', 'logic\common');
-        $auth_data = $common->createSysData();
-
-        $replace['__TITLE__'] = $auth_data['title'];
-
-        $this->view->replace($replace);
-
-        $this->assign('request_param', json_encode($this->requestParam));
     }
 }

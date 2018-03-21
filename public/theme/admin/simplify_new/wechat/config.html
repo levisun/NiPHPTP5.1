@@ -1,0 +1,76 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="" class="col-lg-2 control-label">{:lang('server')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" id="wechat_server" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wechat_token" class="col-lg-2 control-label">{:lang('token')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="wechat_token" id="wechat_token" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wechat_encodingaeskey" class="col-lg-2 control-label">{:lang('encodingaeskey')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="wechat_encodingaeskey" id="wechat_encodingaeskey" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wechat_appid" class="col-lg-2 control-label">{:lang('appid')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="wechat_appid" id="wechat_appid" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="wechat_appsecret" class="col-lg-2 control-label">{:lang('appsecret')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="wechat_appsecret" id="wechat_appsecret" class="form-control" value="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$('#wechat_server').val(request.domain+'wechat.shtml');
+
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "config.query.wechat",
+    }
+}, function(result){
+    if (result.return_code === "SUCCESS") {
+        eachToInput(result.return_result);
+    }
+});
+
+$("form").submit(function(){
+    var form_data = "method=config.editor.wechat";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
+    return false;
+});
+</script>
