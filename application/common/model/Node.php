@@ -118,7 +118,7 @@ class Node extends Model
      * @param  int    $value
      * @return string
      */
-    protected function getStatusAttr($_value, $_data)
+    protected function getStatusNameAttr($_value, $_data)
     {
         $status = [
             0 => lang('status no'),

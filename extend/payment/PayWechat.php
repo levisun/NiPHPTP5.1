@@ -38,6 +38,12 @@ class PayWechat
         ];
     }
 
+    /**
+     * 支付
+     * @access public
+     * @param  array $_params
+     * @return mixed
+     */
     public function transfer($_params)
     {
         $_params = array(
@@ -56,7 +62,7 @@ class PayWechat
         $this->params['nonce_str']        = $this->getNonceStr(32);
         $this->params['partner_trade_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
         $this->params['spbill_create_ip'] = $this->ip(0, true);
-        $this->params['sign']       = $this->getSign($this->params);
+        $this->params['sign']             = $this->getSign($this->params);
 
         $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
         $response = $this->postXmlCurl($this->toXml(), $url, true);
@@ -232,7 +238,6 @@ class PayWechat
         $this->params['op_user_id']    = $this->config['mch_id'];
         $this->params['sign']          = $this->getSign($this->params);
 
-        $url = 'https://api.mch.weixin.qq.com/pay/orderquery';
         $url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
         $response = $this->postXmlCurl($this->toXml(), $url, true);
         $return = $this->formXml($response);

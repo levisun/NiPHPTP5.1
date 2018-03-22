@@ -17,6 +17,24 @@ use app\admin\controller\Base;
 class User extends Base
 {
 
+    /**
+     * 管理员
+     * @access public
+     * @param  string $operate
+     * @return mixed
+     */
+    public function admin($operate = '')
+    {
+        $tpl = $operate ? 'admin_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
+     * 系统节点
+     * @access public
+     * @param  string $operate
+     * @return mixed
+     */
     public function node($operate = '')
     {
         $tpl = $operate ? 'node_' . $operate : '';

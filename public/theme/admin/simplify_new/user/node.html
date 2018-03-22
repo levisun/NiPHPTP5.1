@@ -59,7 +59,7 @@ $.loading({
         list = list + "<td><input type='text' name='sort["+result.return_result[index].id+"]' class='form-control mini' value='"+result.return_result[index].sort+"'></td>";
         list = list + "<td>"+result.return_result[index].title+"</td>";
         list = list + "<td>"+result.return_result[index].name+"</td>";
-        list = list + "<td>"+result.return_result[index].status+"</td>";
+        list = list + "<td>"+result.return_result[index].status_name+"</td>";
         list = list + "<td>"+result.return_result[index].remark+"</td>";
         list = list + "<td>"+result.return_result[index].level_name+"</td>";
 
@@ -75,5 +75,23 @@ $.loading({
         list = list + "</tr>";
     }
     $("#dataTable tbody").prepend(list);
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "node.remove.user",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.return_code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
 });
 </script>

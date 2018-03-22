@@ -70,6 +70,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -78,6 +79,21 @@
     </div>
 </div>
 <script type="text/javascript">
+var editor_data = {};
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "node.find.user",
+        id: "{$Request.param.id}"
+    }
+}, function(result){
+    if (result.return_code === "SUCCESS") {
+        editor_data = result.return_result;
+        eachToInput(editor_data);
+    }
+});
+
 $.loading({
     url: request.api.query,
     animation: true,
@@ -88,12 +104,12 @@ $.loading({
     if (result.return_code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.return_result, "id", "title");
+    var option = eachToOption(result.return_result, "id", "title", editor_data.pid);
     $("#pid").append(option);
 });
 
 $("form").submit(function(){
-    var form_data = "method=node.added.user";
+    var form_data = "method=node.editor.user";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

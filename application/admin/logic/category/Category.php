@@ -36,7 +36,8 @@ class Category
         }
 
         $result =
-        model('common/category')->view('category c', true)
+        model('common/category')
+        ->view('category c', true)
         ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
         ->view('category cc', ['id' => 'child'], 'c.id=cc.pid', 'LEFT')
         ->where($map)
