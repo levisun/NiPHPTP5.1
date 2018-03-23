@@ -42,4 +42,87 @@ $.loading({
     if (result.return_code !== "SUCCESS") {
         return false;
     }
+
+    var list = "";
+    for (var index in result.return_result.list) {
+        list = list + "<tr>";
+        list = list + "<td>"+result.return_result.list[index].username+"</td>";
+        list = list + "<td>"+result.return_result.list[index].role_name+"</td>";
+        list = list + "<td>["+result.return_result.list[index].last_login_ip+"]"+result.return_result.list[index].last_login_ip_attr+"</td>";
+        list = list + "<td>"+result.return_result.list[index].last_login_time+"</td>";
+
+        list = list + "<td>";
+        if (result.return_result.list[index].url.editor) {
+            list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        }
+        if (result.return_result.list[index].url.remove) {
+            list = list + "<a class='np-btn-remove' data-id='"+result.return_result.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        }
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+    $("#paging").prepend(result.return_result.page);
+    pagingToAjax();
 });
+
+$(document).on("click", "#paging a", function(){
+    var page = $.urlParam("p", $(this).attr("url"));
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            method: "fields.query.category",
+            p: page
+        }
+    }, function(result){
+        if (result.return_code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+        var list = "";
+        for (var index in result.return_result.list) {
+            list = list + "<tr>";
+            list = list + "<td>"+result.return_result.list[index].username+"</td>";
+            list = list + "<td>"+result.return_result.list[index].role_name+"</td>";
+            list = list + "<td>["+result.return_result.list[index].last_login_ip+"]"+result.return_result.list[index].last_login_ip_attr+"</td>";
+            list = list + "<td>"+result.return_result.list[index].last_login_time+"</td>";
+
+            list = list + "<td>";
+            if (result.return_result.list[index].url.editor) {
+                list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            }
+            if (result.return_result.list[index].url.remove) {
+                list = list + "<a class='np-btn-remove' data-id='"+result.return_result.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            }
+            list = list + "</td>";
+
+            list = list + "</tr>";
+        }
+        $("#dataTable tbody").prepend(list);
+        $("#paging").prepend(result.return_result.page);
+        pagingToAjax();
+    });
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "admin.remove.user",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.return_code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
+});
+</script>

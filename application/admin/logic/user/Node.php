@@ -141,9 +141,27 @@ class Node
             return $result;
         }
 
-        create_action_log($receive_data['name'], 'fields_editor');
+        create_action_log($receive_data['name'], 'node_editor');
 
         return model('common/node')
         ->editor($receive_data);
+    }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {
+        $receive_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        create_action_log('', 'node_sort');
+
+        return model('common/node')
+        ->sort($receive_data);
     }
 }

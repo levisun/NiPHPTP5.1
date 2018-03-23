@@ -77,6 +77,19 @@ $.loading({
     $("#dataTable tbody").prepend(list);
 });
 
+$("form").submit(function(){
+    var form_data = "method=node.sort.user";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
+    return false;
+});
+
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.loading({
