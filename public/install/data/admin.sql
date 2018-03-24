@@ -169,9 +169,11 @@ INSERT INTO np_role(`name`, `pid`, `status`, `remark`) VALUES('创始人', 0, 1,
 
 DROP TABLE IF EXISTS `np_role_admin`;
 CREATE TABLE IF NOT EXISTS `np_role_admin` (
-  `user_id` smallint(6) unsigned NOT NULL COMMENT '管理员ID',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL COMMENT '管理员ID',
   `role_id` smallint(6) unsigned DEFAULT NULL COMMENT '组ID',
-  PRIMARY KEY (`user_id`),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
   KEY `group_id` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '管理员组关系表';
 INSERT INTO np_role_admin(`role_id`, `user_id`) VALUES(1, 1);

@@ -55,8 +55,6 @@ thinkphp/
 vendor/
 
 
-
-
 public/backup/*.zip
 public/upload/*/*/*/*/*.jpg
 public/upload/*/*/*/*/*.png
@@ -64,7 +62,3 @@ public/upload/*/*/*/*.jpg
 public/upload/*/*/*/*.png
 public/upload/*/*/*.jpg
 public/upload/*/*/*.png
-
-
-
-application/admin_old

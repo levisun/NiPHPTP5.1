@@ -284,15 +284,13 @@
             jQuery.uiLoadpopup();
         }
 
-        var ajax_type     = jQuery.isset(_params.type, "post"),
-            ajax_url      = jQuery.isset(_params.url, "?ajax_url=undefined"),
-            ajax_data     = jQuery.isset(_params.data, {}),
-            ajax_async    = jQuery.isset(_params.async, true),
-            ajax_cache    = jQuery.isset(_params.cache, false),
-            ajax_dataType = jQuery.isset(_params.dataType, ""),
+        var ajax_type        = jQuery.isset(_params.type, "post"),
+            ajax_url         = jQuery.isset(_params.url, "?ajax_url=undefined"),
+            ajax_data        = jQuery.isset(_params.data, {}),
+            ajax_async       = jQuery.isset(_params.async, true),
+            ajax_cache       = jQuery.isset(_params.cache, false),
+            ajax_dataType    = jQuery.isset(_params.dataType, ""),
             ajax_processData = jQuery.isset(_params.processData, true);
-
-
 
         jQuery.ajax({
             type: ajax_type,

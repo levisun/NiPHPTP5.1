@@ -60,7 +60,8 @@ class PayWechat
         $this->params['mch_appid']        = $this->config['appid'];
         $this->params['mchid']            = $this->config['mch_id'];
         $this->params['nonce_str']        = $this->getNonceStr(32);
-        $this->params['partner_trade_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        // $this->params['partner_trade_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        $this->params['partner_trade_no'] = $this->orderNo($this->config['mch_id']);
         $this->params['spbill_create_ip'] = $this->ip(0, true);
         $this->params['sign']             = $this->getSign($this->params);
 
@@ -80,7 +81,8 @@ class PayWechat
         $this->params = $_params;
 
         $this->params['nonce_str']  = $this->getNonceStr(32);
-        $this->params['mch_billno'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        // $this->params['mch_billno'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        $this->params['mch_billno'] = $this->orderNo($this->config['mch_id']);
         $this->params['mch_id']     = $this->config['mch_id'];
         $this->params['wxappid']    = $this->config['appid'];
         $this->params['client_ip']  = $this->ip(0, true);
@@ -234,7 +236,8 @@ class PayWechat
         $this->params['appid']         = $this->config['appid'];
         $this->params['mch_id']        = $this->config['mch_id'];
         $this->params['nonce_str']     = $this->getNonceStr(32);
-        $this->params['out_refund_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        // $this->params['out_refund_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
+        $this->params['out_refund_no'] = $this->orderNo($this->config['mch_id']);
         $this->params['op_user_id']    = $this->config['mch_id'];
         $this->params['sign']          = $this->getSign($this->params);
 
@@ -454,6 +457,20 @@ class PayWechat
             $string .= substr($chars, mt_rand(0, $count), 1);
         }
         return $string;
+    }
+
+    /**
+     * 生成订单号
+     * @access private
+     * @param  string $other
+     * @return string
+     */
+    private function orderNo($other = '')
+    {
+        list($micro, $time) = explode(' ', microtime());
+        $micro = str_pad($micro * 1000000, 6, 0, STR_PAD_LEFT);
+
+        return $time . $micro . mt_rand(111, 999) . $other;
     }
 
     /**

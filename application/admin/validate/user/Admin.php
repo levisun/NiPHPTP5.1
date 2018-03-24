@@ -10,7 +10,7 @@
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-namespace app\admin\validate;
+namespace app\admin\validate\user;
 
 use think\Validate;
 

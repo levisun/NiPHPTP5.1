@@ -76,14 +76,21 @@ class Admin
         ->select();
     }
 
+    /**
+     * 新增
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function added()
     {
         $receive_data = [
-            'title'        => input('post.username'),
+            'username'     => input('post.username'),
             'password'     => input('post.password'),
-            'not_password' => input('post.not_password', 0),
+            'not_password' => input('post.not_password'),
             'email'        => input('post.email', 1),
             'role'         => input('post.role/f'),
+            'salt'         => rand(111111, 999999),
             '__token__'    => input('post.__token__'),
         ];
 
@@ -94,8 +101,21 @@ class Admin
 
         unset($receive_data['__token__']);
 
-        $result = model('common/admin')
-        ->added($receive_data);
+        $admin_data = [
+            'username' => $receive_data['username'],
+            'password' => md5(md5($receive_data['password']) . $receive_data['salt']),
+            'email'    => $receive_data['email'],
+            'salt'     => $receive_data['salt'],
+        ];
+        $admin_id = model('common/admin')
+        ->added($admin_data);
+
+        $role_data = [
+            'user_id' => $admin_id,
+            'role_id' => $receive_data['role']
+        ];
+        model('common/RoleAdmin')
+        ->added($role_data);
 
         create_action_log($receive_data['username'], 'admin_added');
 

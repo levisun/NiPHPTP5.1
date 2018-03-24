@@ -64,14 +64,14 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=node.added.user";
+    var form_data = "method=admin.added.user";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/user/node.shtml");
+        handle(result, "admin/user/admin.shtml");
     });
     return false;
 });
