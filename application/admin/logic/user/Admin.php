@@ -37,7 +37,7 @@ class Admin
         ->view('admin a', $field)
         ->view('role_admin ra', [], 'ra.user_id=a.id')
         ->view('role r', ['name' => 'role_name'], 'r.id=ra.role_id')
-        ->order('a.update_time DESC')
+        ->order('a.update_time DESC, a.id DESC')
         ->paginate(null, null, [
             'path' => url('user/admin'),
         ]);
@@ -120,5 +120,103 @@ class Admin
         create_action_log($receive_data['username'], 'admin_added');
 
         return !!$result;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param
+     *　@return mixed
+     */
+    public function remove()
+    {
+        $map  = [
+            ['id', '=', input('post.id/f')],
+        ];
+
+        $result =
+        model('common/admin')->field(true)
+        ->where($map)
+        ->find();
+
+        create_action_log($result['username'], 'node_remove');
+
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
+        $result = model('common/admin')
+        ->remove($receive_data);
+
+        if ($result) {
+            $receive_data = [
+                'user_id' => input('post.id/f'),
+            ];
+            model('common/RoleAdmin')
+            ->remove($receive_data);
+        }
+
+        return $result;
+    }
+
+    /**
+     * 查询要修改的数据
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function find()
+    {
+        $field = [
+            'id',
+            'username',
+            'email',
+            'last_login_ip',
+            'last_login_ip_attr',
+            'last_login_time',
+            'create_time',
+            'update_time'
+        ];
+
+        $map = [
+            ['a.id', '=', input('post.id/f')]
+        ];
+
+        return
+        model('common/admin')
+        ->view('admin a', $field)
+        ->view('role_admin ra', ['role_id'], 'ra.user_id=a.id')
+        ->where($map)
+        ->find();
+    }
+
+    /**
+     * 编辑
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function editor()
+    {
+        $receive_data = [
+            'id'        => input('post.id/f'),
+            'title'     => input('post.title'),
+            'name'      => input('post.name'),
+            'pid'       => input('post.pid/f', 0),
+            'level'     => input('post.level/f', 1),
+            'remark'    => input('post.remark'),
+            'status'    => input('post.status/f', 1),
+            '__token__' => input('post.__token__'),
+        ];
+
+        $result = validate('admin/node.editor', input('post.'), 'user');
+
+        if (true !== $result) {
+            return $result;
+        }
+
+        create_action_log($receive_data['name'], 'node_editor');
+
+        return model('common/node')
+        ->editor($receive_data);
     }
 }

@@ -15,6 +15,12 @@ namespace app\cms\controller;
 class Index
 {
 
+    protected function initialize()
+    {
+        // 清除运行垃圾文件
+        remove_rundata();
+    }
+
     /**
      * 设置模板
      * @access private

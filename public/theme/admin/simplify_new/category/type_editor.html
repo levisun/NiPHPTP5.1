@@ -42,6 +42,7 @@ var editor_data = {};
 $.loading({
     url: request.api.query,
     async: false,
+    animation: true,
     data: {
         method: "type.find.category",
         id: "{$Request.param.id}"

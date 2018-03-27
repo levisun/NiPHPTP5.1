@@ -49,16 +49,3 @@ Temporary Items
 think
 build.php
 json.php
-
-runtime/
-thinkphp/
-vendor/
-
-
-public/backup/*.zip
-public/upload/*/*/*/*/*.jpg
-public/upload/*/*/*/*/*.png
-public/upload/*/*/*/*.jpg
-public/upload/*/*/*/*.png
-public/upload/*/*/*.jpg
-public/upload/*/*/*.png

@@ -141,6 +141,7 @@ var editor_data = {};
 $.loading({
     url: request.api.query,
     async: false,
+    animation: true,
     data: {
         method: "category.find.category",
         id: "{$Request.param.id}"
