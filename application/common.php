@@ -15,6 +15,19 @@ use think\facade\Debug;
 use think\facade\Lang;
 
 /**
+ * 密码加密
+ * @param  string $_password
+ * @param  string $_salt
+ * @return string
+ */
+function md5Password($_password, $_salt)
+{
+    $_password = md5(trim($_password));
+    $_password = md5($_password . $_salt);
+    return $_password;
+}
+
+/**
  * 实例化模型
  * @param  string $_name  [模块名/]控制器名
  * @param  string $_layer 业务层名

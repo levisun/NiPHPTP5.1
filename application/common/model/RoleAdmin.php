@@ -52,7 +52,7 @@ class RoleAdmin extends Model
     public function remove($_receive_data)
     {
         $map  = [
-            ['id', '=', $_receive_data['id']],
+            ['user_id', '=', $_receive_data['user_id']],
         ];
 
         $result =
@@ -71,10 +71,10 @@ class RoleAdmin extends Model
     public function editor($_receive_data)
     {
         $map  = [
-            ['id', '=', $_receive_data['id']],
+            ['user_id', '=', $_receive_data['user_id']],
         ];
 
-        unset($_receive_data['id'], $_receive_data['__token__']);
+        unset($_receive_data['user_id'], $_receive_data['__token__']);
 
         $result =
         $this->allowField(true)

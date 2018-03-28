@@ -46,7 +46,7 @@ class Login
         }
 
         // 登录密码错误
-        if (!$this->checkPassword($receive_data['password'], $user_data['password'], $user_data['salt'])) {
+        if ($user_data['password'] !== md5Password($receive_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
             return lang('error username or password');
@@ -87,21 +87,6 @@ class Login
         ->find();
 
         return !empty($result) ? $result : false;
-    }
-
-    /**
-     * 验证登录密码
-     * @access private
-     * @param  string  $_form_pws 请求密码
-     * @param  string  $_password 密码
-     * @param  string  $_salt     佐料
-     * @return boolean
-     */
-    private function checkPassword($_rec_psw, $_password, $_salt)
-    {
-        $_rec_psw = md5(trim($_rec_psw));
-        $_rec_psw = md5($_rec_psw . $_salt);
-        return $_password === $_rec_psw;
     }
 
     /**

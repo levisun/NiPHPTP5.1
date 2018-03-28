@@ -13,44 +13,44 @@
 
 return [
     // 应用调试模式
-    'app_debug'              => APP_DEBUG,
+    'app_debug'            => APP_DEBUG,
     // 应用Trace
-    'app_trace'              => APP_DEBUG,
+    'app_trace'            => APP_DEBUG,
     // 默认时区
-    'default_timezone'       => 'PRC',
+    'default_timezone'     => 'PRC',
     // 默认全局过滤方法 用逗号分隔多个
-    'default_filter'         => 'trim,strip_tags,escape_xss',
-    'content_filter'         => 'trim,escape_xss,htmlspecialchars',
+    'default_filter'       => 'trim,strip_tags,escape_xss',
+    'content_filter'       => 'trim,escape_xss,htmlspecialchars',
     // 是否开启多语言
-    'lang_switch_on'         => true,
+    'lang_switch_on'       => true,
     // 默认语言
-    'default_lang'           => 'zh-cn',
-    'lang_list'              => ['zh-cn', 'en-us'],
+    'default_lang'         => 'zh-cn',
+    'lang_list'            => ['zh-cn', 'en-us'],
     // 默认模块名
-    'default_module'         => 'cms',
+    'default_module'       => 'cms',
     // 禁止访问模块
-    'deny_module_list'       => ['common'],
+    'deny_module_list'     => ['common'],
     // 默认控制器名
-    'default_controller'     => 'Index',
+    'default_controller'   => 'Index',
     // 默认操作名
-    'default_action'         => 'index',
+    'default_action'       => 'index',
     // pathinfo分隔符
-    'pathinfo_depr'          => '/',
+    'pathinfo_depr'        => '/',
     // URL伪静态后缀
-    'url_html_suffix'        => 'shtml',
+    'url_html_suffix'      => 'shtml',
     // 路由使用完整匹配
-    'route_complete_match'   => true,
+    'route_complete_match' => true,
     // 是否强制使用路由
-    'url_route_must'         => false,
+    'url_route_must'       => false,
     // 域名部署
-    'url_domain_deploy'      => false,
+    'url_domain_deploy'    => false,
 
     // 异常页面的模板文件
-    // 'exception_tmpl'         => __DIR__ . '/tpl/think_exception.tpl',
+    // 'exception_tmpl'       => __DIR__ . '/tpl/think_exception.tpl',
     // 错误显示信息,非调试模式有效
-    'error_message'          => '页面错误！请稍后再试～',
+    'error_message'        => '页面错误！请稍后再试～',
     // 显示错误信息
-    'show_error_msg'         => false,
+    'show_error_msg'       => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
-    'exception_handle'       => '',
+    'exception_handle'     => '',
 ];

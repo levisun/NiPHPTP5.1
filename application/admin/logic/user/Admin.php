@@ -88,7 +88,7 @@ class Admin
             'username'     => input('post.username'),
             'password'     => input('post.password'),
             'not_password' => input('post.not_password'),
-            'email'        => input('post.email', 1),
+            'email'        => input('post.email'),
             'role'         => input('post.role/f'),
             'salt'         => rand(111111, 999999),
             '__token__'    => input('post.__token__'),
@@ -103,7 +103,8 @@ class Admin
 
         $admin_data = [
             'username' => $receive_data['username'],
-            'password' => md5(md5($receive_data['password']) . $receive_data['salt']),
+            // 'password' => md5(md5($receive_data['password']) . $receive_data['salt']),
+            'password' => md5Password($receive_data['password'], $receive_data['salt']),
             'email'    => $receive_data['email'],
             'salt'     => $receive_data['salt'],
         ];
@@ -114,7 +115,7 @@ class Admin
             'user_id' => $admin_id,
             'role_id' => $receive_data['role']
         ];
-        model('common/RoleAdmin')
+        $result = model('common/RoleAdmin')
         ->added($role_data);
 
         create_action_log($receive_data['username'], 'admin_added');
@@ -198,25 +199,48 @@ class Admin
     public function editor()
     {
         $receive_data = [
-            'id'        => input('post.id/f'),
-            'title'     => input('post.title'),
-            'name'      => input('post.name'),
-            'pid'       => input('post.pid/f', 0),
-            'level'     => input('post.level/f', 1),
-            'remark'    => input('post.remark'),
-            'status'    => input('post.status/f', 1),
-            '__token__' => input('post.__token__'),
+            'id'           => input('post.id/f'),
+            'username'     => input('post.username'),
+            'password'     => input('post.password'),
+            'not_password' => input('post.not_password'),
+            'email'        => input('post.email'),
+            'role'         => input('post.role/f'),
+            'salt'         => rand(111111, 999999),
+            '__token__'    => input('post.__token__'),
         ];
 
-        $result = validate('admin/node.editor', input('post.'), 'user');
+        if ($receive_data['password']) {
+            $result = validate('admin/admin.editor', input('post.'), 'user');
+            $admin_data = [
+                'id'       => $receive_data['id'],
+                'username' => $receive_data['username'],
+                'password' => md5Password($receive_data['password'], $receive_data['salt']),
+                'email'    => $receive_data['email'],
+                'salt'     => $receive_data['salt'],
+            ];
+        } else {
+            $result = validate('admin/admin.editorNoPwd', input('post.'), 'user');
+            $admin_data = [
+                'id'       => $receive_data['id'],
+                'username' => $receive_data['username'],
+                'email'    => $receive_data['email'],
+            ];
+        }
 
         if (true !== $result) {
             return $result;
         }
 
-        create_action_log($receive_data['name'], 'node_editor');
+        $result = model('common/admin')->editor($admin_data);
 
-        return model('common/node')
-        ->editor($receive_data);
+        $role_data = [
+            'user_id' => $receive_data['id'],
+            'role_id' => $receive_data['role'],
+        ];
+        model('common/RoleAdmin')->editor($role_data);
+
+        create_action_log($receive_data['username'], 'admin_editor');
+
+        return !!$result;
     }
 }

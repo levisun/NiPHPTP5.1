@@ -83,6 +83,8 @@ class Admin extends Model
 
         unset($_receive_data['id'], $_receive_data['__token__']);
 
+        $_receive_data['update_time'] = time();
+
         $result =
         $this->allowField(true)
         ->where($map)

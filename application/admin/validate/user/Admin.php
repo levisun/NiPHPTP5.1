@@ -57,5 +57,11 @@ class Admin extends Validate
             'email',
             'role'
         ],
+        'editorNoPwd' => [
+            'id',
+            'username',
+            'email',
+            'role'
+        ],
     ];
 }
