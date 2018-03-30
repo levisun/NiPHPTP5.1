@@ -4,7 +4,7 @@
  * 登录 - 帐户 - 业务层
  *
  * @package   NiPHPCMS
- * @category  admin\logic\account
+ * @category  application\admin\logic\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -46,7 +46,7 @@ class Login
         }
 
         // 登录密码错误
-        if ($user_data['password'] !== md5Password($receive_data['password'], $user_data['salt'])) {
+        if ($user_data['password'] !== md5_password($receive_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
             return lang('error username or password');

@@ -4,7 +4,7 @@
  * 登录 - 账户 - 验证器
  *
  * @package   NiPHPCMS
- * @category  admin\validate\account
+ * @category  application\admin\validate\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

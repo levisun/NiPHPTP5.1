@@ -4,7 +4,7 @@
  * 全局 - 控制器
  *
  * @package   NiPHPCMS
- * @category  cms\controller
+ * @category  application\cms\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -14,11 +14,36 @@ namespace app\cms\controller;
 
 class Index
 {
+    // 请求参数
+    protected $requestParam = [];
+
+    protected $domain = '';
 
     protected function initialize()
     {
         // 清除运行垃圾文件
         remove_rundata();
+
+        // AJAX请求加密签名
+        ajax_sign();
+
+        // 请求参数
+        $this->requestParam = [
+            // 请求模块
+            'module'     => strtolower($this->request->module()),
+            // 请求控制器
+            'controller' => strtolower($this->request->controller()),
+            // 请求方法
+            'action'     => strtolower($this->request->action()),
+            // 语言
+            'lang'       => lang(':detect'),
+        ];
+
+        // 域名
+        $this->domain = $this->request->domain() . $this->request->root() . '/';
+
+        $this->setTemplate();
+        lang(':load');
     }
 
     /**

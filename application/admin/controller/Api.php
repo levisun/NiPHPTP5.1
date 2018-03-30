@@ -4,7 +4,7 @@
  * API - 控制器
  *
  * @package   NiPHPCMS
- * @category  admin\controller
+ * @category  application\admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -39,41 +39,14 @@ class Api extends Controller
         // 加载语言包
         lang(':load');
 
+        $this->module = strtolower($this->request->module());
+
         $this->method = input('post.method');
 
         $method = explode('.', $this->method);
         $this->logic  = $method[0];
         $this->action = !empty($method[1]) ? $method[1] : 'index';
         $this->layer  = !empty($method[2]) ? $method[2] : 'logic';
-    }
-
-    /**
-     * 判断是否合法请求
-     * @access private
-     * @param
-     * @return boolean
-     */
-    private function hasIllegal()
-    {
-        $this->sign = cookie('?__sign') ? cookie('__sign') : false;
-        $flag = cookie('?__flag') ? cookie('__flag') : false;
-        if ($this->sign && $flag) {
-            $http_referer = md5(
-                date('Ymd') .
-                $this->request->server('http_referer') .
-                $this->request->domain() .
-                $flag
-            );
-
-            if ($this->sign === $http_referer) {
-                $this->module = strtolower($this->request->module());
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -149,7 +122,7 @@ class Api extends Controller
 
         $result['form data']   = input('param.');
 
-        if (!$this->hasIllegal() || !$this->hasAuth()) {
+        if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
             $result['error_msg'] = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
             $result['error_msg'] = $this->logic . ' undefined';
@@ -189,7 +162,7 @@ class Api extends Controller
 
         $result['form data']   = input('param.');
 
-        if (!$this->hasIllegal() || !$this->hasAuth()) {
+        if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
             $result['error_msg'] = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
             $result['error_msg'] = $this->logic . ' undefined';
@@ -237,7 +210,7 @@ class Api extends Controller
 
         $result['form data']   = input('param.');
 
-        if (!$this->hasIllegal() || !$this->hasAuth(true)) {
+        if (!has_illegal_ajax_sign() || !$this->hasAuth(true)) {
             $result['error_msg'] = 'ILLEGAL';
         } else {
             $receive = logic('admin/upload')->file();

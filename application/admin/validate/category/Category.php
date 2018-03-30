@@ -4,7 +4,7 @@
  * 管理栏目 - 栏目 - 验证器
  *
  * @package   NiPHPCMS
- * @category  admin\validate\category
+ * @category  application\admin\validate\category
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

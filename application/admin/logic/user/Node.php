@@ -4,7 +4,7 @@
  * 系统节点 - 用户 - 业务层
  *
  * @package   NiPHPCMS
- * @category  admin\logic\user
+ * @category  application\admin\logic\user
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

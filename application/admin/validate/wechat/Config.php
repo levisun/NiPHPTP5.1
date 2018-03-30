@@ -4,7 +4,7 @@
  * 接口设置 - 微信 - 验证器
  *
  * @package   NiPHPCMS
- * @category  admin\validate\wechat
+ * @category  application\admin\validate\wechat
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

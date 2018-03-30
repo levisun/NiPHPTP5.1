@@ -4,7 +4,7 @@
  * 系统信息 - 设置 - 业务层
  *
  * @package   NiPHPCMS
- * @category  admin\logic\settings
+ * @category  application\admin\logic\settings
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

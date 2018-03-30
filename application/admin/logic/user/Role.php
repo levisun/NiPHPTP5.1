@@ -1,46 +1,51 @@
 <?php
 /**
  *
- * 管理模型 - 栏目 - 控制器
+ * 管理员组 - 用户 - 业务层
  *
  * @package   NiPHPCMS
- * @category  application\admin\logic\category
+ * @category  application\admin\logic\user
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-namespace app\admin\logic\category;
+namespace app\admin\logic\user;
 
-class Model
+class Role
 {
 
     /**
      * 查询
      * @access public
      * @param
-     * @return array
+     * @return mixed
      */
     public function query()
     {
         $result =
-        model('common/models')->field(true)
+        model('common/role')
         ->order('id DESC')
         ->paginate(null, null, [
-            'path' => url('category/model'),
+            'path' => url('user/role'),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->model_status = $value->model_status;
-            $result[$key]->model_name   = $value->model_name;
-
-            if ($value->id > 9) {
+            $result[$key]->status_name = $value->status_name;
+            if ($value->id == 1) {
                 $result[$key]->url = [
-                    'editor' => url('category/model', ['operate' => 'editor', 'id' => $value['id']]),
-                    'remove' => url('category/model', ['operate' => 'remove', 'id' => $value['id']]),
+                    'editor' => '',
+                    'remove' => '',
+                ];
+            } else {
+                $result[$key]->url = [
+                    'editor' => url('user/role', ['operate' => 'editor', 'id' => $value['id']]),
+                    'remove' => url('user/role', ['operate' => 'remove', 'id' => $value['id']]),
                 ];
             }
+
         }
+
         $page = $result->render();
         $list = $result->toArray();
 
@@ -49,4 +54,5 @@ class Model
             'page' => $page
         ];
     }
+
 }

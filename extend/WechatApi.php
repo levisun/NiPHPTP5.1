@@ -3,7 +3,7 @@
  * 微信API接口
  *
  * @package   NiPHPCMS
- * @category  extend\util\
+ * @category  extend
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

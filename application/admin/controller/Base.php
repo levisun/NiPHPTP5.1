@@ -4,7 +4,7 @@
  * 全局 - 控制器
  *
  * @package   NiPHPCMS
- * @category  admin\controller
+ * @category  application\admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -24,7 +24,10 @@ class Base extends Controller
     protected function initialize()
     {
         // 清除运行垃圾文件
-        remove_rundata();
+        if (APP_DEBUG) remove_rundata();
+
+        // AJAX请求加密签名
+        ajax_sign();
 
         // 请求参数
         $this->requestParam = [
@@ -72,16 +75,6 @@ class Base extends Controller
         $this->assign('TITLE', $tit_bre['title']);
         $this->assign('BREADCRUMB', $tit_bre['breadcrumb']);
         $this->assign('SUB_TITLE', $tit_bre['sub_title']);
-
-        // AJAX请求加密签名
-        $flag = md5(time());
-        cookie('__flag', $flag);
-        cookie('__sign', md5(
-            date('Ymd') .
-            $this->request->url(true) .
-            $this->request->domain() .
-            $flag
-        ));
     }
 
     /**

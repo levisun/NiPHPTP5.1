@@ -14,13 +14,60 @@
 use think\facade\Debug;
 use think\facade\Lang;
 
+
+/**
+ * AJAX请求签名
+ * @return
+ */
+function ajax_sign()
+{
+    $flag = md5(time());
+    cookie('__flag', $flag);
+    cookie('__sign', md5(
+        date('Ymd') .
+        request()->module() .
+        request()->url(true) .
+        request()->domain() .
+        $flag
+    ));
+}
+
+/**
+ * 校验AJAX请求签名合法性
+ * @return boolean
+ */
+function has_illegal_ajax_sign()
+{
+    $sign = cookie('?__sign') ? cookie('__sign') : false;
+    $flag = cookie('?__flag') ? cookie('__flag') : false;
+    if ($sign && $flag) {
+        $http_referer = md5(
+            date('Ymd') .
+            request()->module() .
+            request()->server('http_referer') .
+            request()->domain() .
+            $flag
+        );
+
+        if ($sign === $http_referer) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+    } else {
+        $result = false;
+    }
+
+    return $result;
+}
+
 /**
  * 密码加密
  * @param  string $_password
  * @param  string $_salt
  * @return string
  */
-function md5Password($_password, $_salt)
+function md5_password($_password, $_salt)
 {
     $_password = md5(trim($_password));
     $_password = md5($_password . $_salt);

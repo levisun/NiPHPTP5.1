@@ -4,7 +4,7 @@
  * 用户 - 控制器
  *
  * @package   NiPHPCMS
- * @category  admin\controller
+ * @category  application\admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -26,6 +26,18 @@ class User extends Base
     public function admin($operate = '')
     {
         $tpl = $operate ? 'admin_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
+     * 管理员组
+     * @access public
+     * @param  string $operate
+     * @return mixed
+     */
+    public function role($operate = '')
+    {
+        $tpl = $operate ? 'role_' . $operate : '';
         return $this->fetch($tpl);
     }
 

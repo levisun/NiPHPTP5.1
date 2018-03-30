@@ -4,7 +4,7 @@
  * 管理员 - 用户 - 业务层
  *
  * @package   NiPHPCMS
- * @category  admin\logic\user
+ * @category  application\admin\logic\user
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -104,7 +104,7 @@ class Admin
         $admin_data = [
             'username' => $receive_data['username'],
             // 'password' => md5(md5($receive_data['password']) . $receive_data['salt']),
-            'password' => md5Password($receive_data['password'], $receive_data['salt']),
+            'password' => md5_password($receive_data['password'], $receive_data['salt']),
             'email'    => $receive_data['email'],
             'salt'     => $receive_data['salt'],
         ];
@@ -140,7 +140,7 @@ class Admin
         ->where($map)
         ->find();
 
-        create_action_log($result['username'], 'node_remove');
+        create_action_log($result['username'], 'admin_remove');
 
         $receive_data = [
             'id' => input('post.id/f'),
@@ -214,7 +214,7 @@ class Admin
             $admin_data = [
                 'id'       => $receive_data['id'],
                 'username' => $receive_data['username'],
-                'password' => md5Password($receive_data['password'], $receive_data['salt']),
+                'password' => md5_password($receive_data['password'], $receive_data['salt']),
                 'email'    => $receive_data['email'],
                 'salt'     => $receive_data['salt'],
             ];
