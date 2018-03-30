@@ -1,0 +1,104 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('rolename')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="status" class="col-lg-2 control-label">{:lang('status')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs checked">
+                                <input type="radio" id="status1" name="status" value="1" checked>
+                                <label for="status1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button open')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="status0" name="status" value="0">
+                                <label for="status0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button close')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="remark" class="col-lg-2 control-label">{:lang('remark')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="remark" id="remark" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-lg-2 control-label">{:lang('rolenode')}</label>
+                    <div class="col-lg-10">
+                        <div class="checkbox inline-block" id="role_node">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        method: "role.node.user",
+    }
+}, function(result){
+    if (result.return_code !== "SUCCESS") {
+        return false;
+    }
+
+    var input = "";
+    for (var index in result.return_result) {
+        var value = result.return_result[index];
+        input += "<input type='hidden' name='node["+value.level+"]["+value.name+"]' value='"+value.id+"' checked />";
+
+        for (var ind in value.child) {
+            var val = value.child[ind];
+            input += "<p>";
+            input += "<div class='custom-checkbox'>";
+            input += "<input type='checkbox' name='node["+val.level+"]["+val.name+"]' id='node["+val.level+"]["+val.name+"]' class='checkbox-red' value='"+val.id+"' checked />";
+            input += "<label for='node["+val.level+"]["+val.name+"]'></label>"
+            input += "</div>";
+
+            input += "<div class='inline-block vertical-top'>"+val.title+"</div>";
+
+            for (var i in val.child) {
+                var v = val.child[i];
+                input += "<div class='custom-checkbox'>";
+                input += "<input type='checkbox' name='node["+v.level+"]["+val.name+"_"+v.name+"]' id='node["+v.level+"]["+val.name+"_"+v.name+"]' class='checkbox-red' value='"+v.id+"' />";
+                input += "<label for='node["+v.level+"]["+val.name+"_"+v.name+"]'></label>"
+                input += "</div>";
+
+                input += "<div class='inline-block vertical-top'>"+v.title+"</div>";
+            }
+            input += "</p>";
+        }
+    }
+    $("#role_node").prepend(input);
+});
+</script>

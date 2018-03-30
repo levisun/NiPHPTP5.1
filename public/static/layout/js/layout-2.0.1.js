@@ -225,10 +225,10 @@
         var form_data = new FormData(_params.file);
 
         jQuery.ajax({
-            url: _params.url,
-            type: _params.type,
-            cache: false,
-            data: form_data,
+            url:         _params.url,
+            type:        _params.type,
+            cache:       false,
+            data:        form_data,
             processData: false,
             contentType: false,
             success: function (result) {
@@ -293,12 +293,12 @@
             ajax_processData = jQuery.isset(_params.processData, true);
 
         jQuery.ajax({
-            type: ajax_type,
-            async: ajax_async,
-            cache: ajax_cache,
+            type:     ajax_type,
+            async:    ajax_async,
+            cache:    ajax_cache,
             dataType: ajax_dataType,
-            url: ajax_url,
-            data: ajax_data,
+            url:      ajax_url,
+            data:     ajax_data,
             success: function (result) {
                 _callback(result);
                 if (jQuery.isset(_params.animation) && _params.animation === true) {

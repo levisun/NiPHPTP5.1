@@ -55,4 +55,52 @@ class Role
         ];
     }
 
+    /**
+     * 获得权限节点
+     * @access public
+     * @param  int    $_parent_id 父ID
+     * @return array
+     */
+    public function node($_parent_id = 0)
+    {
+        $map = [
+            ['status', '=', 1]
+        ];
+
+        if ($_parent_id) {
+            $map[] = ['pid', '=', $_parent_id];
+        } else {
+            $map[] = ['id', '=', 1];
+        }
+
+        $result =
+        model('common/node')
+        ->where($map)
+        ->order('sort ASC')
+        ->select();
+
+        foreach ($result as $key => $value) {
+            $child = $this->node($value->id);
+            if (!empty($child)) {
+                $result[$key]->child = $child;
+            }
+
+        }
+        return $result;
+    }
+
+    public function added()
+    {
+        $r = input('post.');
+        halt($r);
+        $receive_data = [
+            'username'     => input('post.username'),
+            'password'     => input('post.password'),
+            'not_password' => input('post.not_password'),
+            'email'        => input('post.email'),
+            'role'         => input('post.role/f'),
+            'salt'         => rand(111111, 999999),
+            '__token__'    => input('post.__token__'),
+        ];
+    }
 }
