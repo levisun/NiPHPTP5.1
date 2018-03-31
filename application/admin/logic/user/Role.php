@@ -91,16 +91,18 @@ class Role
 
     public function added()
     {
-        $r = input('post.');
-        halt($r);
         $receive_data = [
-            'username'     => input('post.username'),
-            'password'     => input('post.password'),
-            'not_password' => input('post.not_password'),
-            'email'        => input('post.email'),
-            'role'         => input('post.role/f'),
-            'salt'         => rand(111111, 999999),
-            '__token__'    => input('post.__token__'),
+            'name'      => input('post.name'),
+            'status'    => input('post.status/f'),
+            'remark'    => input('post.remark/f'),
+            'node'      => input('post.node/a'),
+            '__token__' => input('post.__token__'),
         ];
+
+        $result = validate('admin/role.added', input('post.'), 'user');
+        if (true !== $result) {
+            return $result;
+        }
+        halt($receive_data);
     }
 }

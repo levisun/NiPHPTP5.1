@@ -101,4 +101,17 @@ $.loading({
     }
     $("#role_node").prepend(input);
 });
+
+$("form").submit(function(){
+    var form_data = "method=role.added.user";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        // handle(result, "admin/user/role.shtml");
+    });
+    return false;
+});
 </script>

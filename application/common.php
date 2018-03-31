@@ -14,66 +14,6 @@
 use think\facade\Debug;
 use think\facade\Lang;
 
-
-/**
- * AJAX请求签名
- * @return
- */
-function ajax_sign()
-{
-    $flag = md5(time());
-    cookie('__flag', $flag);
-    cookie('__sign', md5(
-        date('Ymd') .
-        request()->module() .
-        request()->url(true) .
-        request()->domain() .
-        $flag
-    ));
-}
-
-/**
- * 校验AJAX请求签名合法性
- * @return boolean
- */
-function has_illegal_ajax_sign()
-{
-    $sign = cookie('?__sign') ? cookie('__sign') : false;
-    $flag = cookie('?__flag') ? cookie('__flag') : false;
-    if ($sign && $flag) {
-        $http_referer = md5(
-            date('Ymd') .
-            request()->module() .
-            request()->server('http_referer') .
-            request()->domain() .
-            $flag
-        );
-
-        if ($sign === $http_referer) {
-            $result = true;
-        } else {
-            $result = false;
-        }
-    } else {
-        $result = false;
-    }
-
-    return $result;
-}
-
-/**
- * 密码加密
- * @param  string $_password
- * @param  string $_salt
- * @return string
- */
-function md5_password($_password, $_salt)
-{
-    $_password = md5(trim($_password));
-    $_password = md5($_password . $_salt);
-    return $_password;
-}
-
 /**
  * 实例化模型
  * @param  string $_name  [模块名/]控制器名
@@ -184,6 +124,56 @@ function lang($_name, $_vars = [], $_lang = '')
     return $return;
 }
 
+
+/**
+ * AJAX请求签名
+ * @return
+ */
+function ajax_sign()
+{
+    cookie('__sign', md5(time()));
+    session('__sign', md5(
+        request()->domain() . request()->url(true)
+    ));
+}
+
+/**
+ * 校验AJAX请求签名合法性
+ * @return boolean
+ */
+function has_illegal_ajax_sign()
+{
+    $sign = session('?__sign') ? session('__sign') : false;
+    if ($sign) {
+        $http_referer = md5(
+            request()->domain() . request()->server('http_referer')
+        );
+
+        if ($sign === $http_referer) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+    } else {
+        $result = false;
+    }
+
+    return $result;
+}
+
+/**
+ * 密码加密
+ * @param  string $_password
+ * @param  string $_salt
+ * @return string
+ */
+function md5_password($_password, $_salt)
+{
+    $_password = md5(trim($_password));
+    $_password = md5($_password . $_salt);
+    return $_password;
+}
+
 /**
  * 运行时间与占用内存
  * @param  boolean $_start
@@ -196,7 +186,9 @@ function use_time_memory($_start = false)
         Debug::remark('memory_start');
     } else {
         return
+        lang('run time') .
         Debug::getRangeTime('memory_start', 'end', 4) . ' S/' .
+        lang('run memory') .
         Debug::getMemPeak('memory_start', 'end', 4);
 
         /* . ' ' .

@@ -94,4 +94,13 @@ function create_action_log($_msg, $_action = '')
     ];
     model('common/actionLog')
     ->added($data);
+
+    // 删除过期日志
+    $days = APP_DEBUG ? '-7 days' : '-30 days';
+    $map = [
+        ['create_time', '<=', strtotime($days)]
+    ];
+    model('common/actionLog')
+    ->where($map)
+    ->delete();
 }

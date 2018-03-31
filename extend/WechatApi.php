@@ -235,7 +235,7 @@ class WechatApi extends Wechat
                 }
             } else {
                 // 直接跳转不授权获取code
-                $url = $this->url();
+                $url = request()->url();
                 $url = $this->getOauthRedirect($url, 'wechatOauth', 'snsapi_base');
                 header('Location:' . $url);
                 exit();
@@ -251,7 +251,7 @@ class WechatApi extends Wechat
      */
     public function jsSign($_debug = 'false', $_version = '1.2.0')
     {
-        $result = parent::getJsSign($this->url());
+        $result = parent::getJsSign(request()->url());
 
         $code = [
             'wechat_js_sign' => $result,
@@ -266,40 +266,6 @@ class WechatApi extends Wechat
     }
 
     /**
-     * 当前URL地址
-     * @access public
-     * @param
-     * @return string
-     */
-    protected function url()
-    {
-        // 判断协议
-        if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
-            $scheme = 'https';
-        } elseif (isset($_SERVER['REQUEST_SCHEME']) && 'https' == $_SERVER['REQUEST_SCHEME']) {
-            $scheme = 'https';
-        } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
-            $scheme = 'https';
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO']) {
-            $scheme = 'https';
-        } else {
-            $scheme = 'http';
-        }
-
-        if (isset($_SERVER['HTTP_X_REWRITE_URL'])) {
-            $url = $_SERVER['HTTP_X_REWRITE_URL'];
-        } elseif (isset($_SERVER['REQUEST_URI'])) {
-            $url = $_SERVER['REQUEST_URI'];
-        } elseif (isset($_SERVER['ORIG_PATH_INFO'])) {
-            $url = $_SERVER['ORIG_PATH_INFO'] . (!empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '');
-        } else {
-            $url = '';
-        }
-
-        return $scheme . '://' . $_SERVER['HTTP_HOST'] . $url;
-    }
-
-    /**
      * 设置缓存，按需重载
      * @access protected
      * @param  string  $_cachename
@@ -310,13 +276,15 @@ class WechatApi extends Wechat
     protected function setCache($_cachename, $_value, $_expired = 7100)
     {
         // cache('_cachename', $_value, $_expired);
-        $time = time() + $_expired;
-        $file = $_cachename . '.php';
+        $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
 
-        $data = array(
+        $file = $dir . $_cachename . '.php';
+
+        $data = [
             'value' => $_value,
-            'time' => $time,
-            );
+            'time'  => time() + $_expired,
+            ];
 
         file_put_contents($file, '<?php $cache=' . var_export($data, true) . ';?>', true);
 
@@ -332,7 +300,11 @@ class WechatApi extends Wechat
     protected function getCache($_cachename)
     {
         // cache($_cachename);
-        $file = $_cachename . '.php';
+        $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
+
+        $file = $dir . $_cachename . '.php';
+
         if (is_file($file)) {
             include $file;
             if (!empty($cache) && $cache['time'] >= time()) {
@@ -356,7 +328,11 @@ class WechatApi extends Wechat
     protected function removeCache($_cachename)
     {
         // cache($_cachename, null);
-        $file = $_cachename . '.php';
+        $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
+
+        $file = $dir . $_cachename . '.php';
+
         unlink($file);
         return false;
     }

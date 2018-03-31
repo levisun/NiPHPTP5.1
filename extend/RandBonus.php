@@ -32,7 +32,7 @@ class RandBonus
      * @param  int $_max    每人最大金额
      * @return array
      */
-    public function getBonus($_amount, $_total, $_min = null, $_max = null)
+    public function getBonus($_amount, $_total, $_min = null, $_max = null, $_all = false)
     {
         $_total  = (int) $_total;
         $average = (int) ($_amount * 100);
@@ -97,7 +97,7 @@ class RandBonus
             }
 
             // 如果还有余钱，则尝试加到小红包里，如果加不进去，则尝试下一个。
-            while ($_amount > 0) {
+            while ($_amount > 0 && $_all) {
                 for ($i = 0; $i < $_total; $i++) {
                     if ($_amount > 0 && $result[$i] < $_max) {
                         $result[$i]++;

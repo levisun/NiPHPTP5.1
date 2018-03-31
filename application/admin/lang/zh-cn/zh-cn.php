@@ -32,6 +32,8 @@ return [
     'empty'                 => '空',
 
     'run time memory'       => '运行时间/占用内存：',
+    'run time'              => '时间',
+    'run memory'            => '内存',
 
     // 按钮
     'button upload'         => '上传',
