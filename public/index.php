@@ -22,25 +22,19 @@ define('APP_DEBUG', true);
 // Demo 演示版
 // Stable 稳定版
 // Release 正式版
-define('NP_VERSION', '2.0.6 CB2130');
+define('NP_VERSION', '2.0.6 CB2209');
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('require PHP >= 5.6.0 !');
-
-if (APP_DEBUG) {
-    // 设置超时时间
-    set_time_limit(300);
-    // 设置运行内存
-    ini_set('memory_limit', '32M');
-} else {
-    // 设置超时时间
-    set_time_limit(600);
-    // 设置运行内存
-    ini_set('memory_limit', '128M');
-    // 开启gzip压缩
-    if (extension_loaded('zlib')) ob_start('ob_gzhandler');
-}
-
+// 设置超时时间
+set_time_limit(600);
+// 设置运行内存
+ini_set('memory_limit', '32M');
+// 开启gzip压缩
+if (!APP_DEBUG &&
+    extension_loaded('zlib') &&
+    strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
+ob_start('ob_gzhandler');
 
 
 // 加载基础文件

@@ -131,9 +131,12 @@ function lang($_name, $_vars = [], $_lang = '')
  */
 function ajax_sign()
 {
-    cookie('__sign', md5(time()));
+    cookie('__sign', md5(
+        time()
+    ));
+
     session('__sign', md5(
-        request()->domain() . request()->url(true)
+        request()->domain() . escape_xss(request()->url(true))
     ));
 }
 
@@ -144,6 +147,7 @@ function ajax_sign()
 function has_illegal_ajax_sign()
 {
     $sign = session('?__sign') ? session('__sign') : false;
+
     if ($sign) {
         $http_referer = md5(
             request()->domain() . request()->server('http_referer')
@@ -375,16 +379,15 @@ function escape_xss($_data)
         $_data = preg_replace($pattern, '', $_data);
 
         $pattern = [
-            '/[  ]+/si'  => ' ',    // 多余空格
             '/[\s]+</si' => '<',    // 多余回车
             '/>[\s]+/si' => '>',
 
             // SQL关键字
-            '/( and)/si'     => ' &#97;nd',
+            '/(and )/si'     => '&#97;nd ',
             '/(between)/si'  => '&#98;etween',
-            '/( chr)/si'     => ' &#99;hr',
-            '/( char)/si'    => ' &#99;har',
-            '/( count)/si'   => ' &#99;ount',
+            '/(chr )/si'     => '&#99;hr ',
+            '/(char )/si'    => '&#99;har ',
+            '/(count )/si'   => '&#99;ount ',
             '/(create)/si'   => '&#99;reate',
             '/(declare)/si'  => '&#100;eclare',
             '/(delete)/si'   => '&#100;elete',
@@ -393,8 +396,8 @@ function escape_xss($_data)
             '/(join)/si'     => '&#106;oin',
             '/(update)/si'   => '&#117;pdate',
             '/(master)/si'   => '&#109;aster',
-            '/( mid)/si'     => ' &#109;id',
-            '/( or)/si'      => ' &#111;r',
+            '/(mid )/si'     => '&#109;id ',
+            '/(or )/si'      => '&#111;r ',
             '/(select)/si'   => '&#115;elect',
             '/(truncate)/si' => '&#116;runcate',
             '/(where)/si'    => '&#119;here',
@@ -418,44 +421,79 @@ function escape_xss($_data)
             'ｓ' => 's', 'ｔ' => 't', 'ｕ' => 'u', 'ｖ' => 'v', 'ｗ' => 'w', 'ｘ' => 'x',
             'ｙ' => 'y', 'ｚ' => 'z',
 
-            '（' => '(', '）' => ')',
+
             '〔' => '[', '【' => '[', '〖' => '[',
             '〕' => ']', '】' => ']', '〗' => ']',
-            '｛' => '{', '｝' => '}',
-            '％' => '%', '＋' => '+', '：' => ':', '？' => '?', '！' => '!',
-            '…' => '...', '‖' => '|', '｜' => '|', '　' => '',
-
-            // 特殊字符
+            '＋' => '&#43;',
+            '！' => '&#33;',
+            '｜' => '&#124;',
             '￥' => '&yen;',
             '〃' => '&quot;',
-            '”'  => '&quot;',
-            '“'  => '&quot;',
-            '*'  => '&lowast;',
-            '`'  => '&acute;',
+            '＂' => '&quot;',
+            '－' => '&ndash;',
+            '～' => '&#126;',
+            '…' => '&#133;',
+            '（' => '&#40;',
+            '）' => '&#41;',
+            '｛' => '&#123;',
+            '｝' => '&#125;',
+            '？' => '&#129;',
+            '％' => '&#37;',
+            '：' => '&#58;',
+
+            '　' => '',
+
+            // 特殊字符
+            '‖'  => '&#124;',
+            '”'  => '&rdquo;',
+            '“'  => '&ldquo;',
+            '’'  => '&rsquo;',
+            '‘'  => '&lsquo;',
             '™'  => '&trade;',
             '®'  => '&reg;',
             '©'  => '&copy;',
+            '—'  => '&ndash;',
             '×'  => '&times;',
             '÷'  => '&divide;',
-            '’'  => '&acute;',
-            '‘'  => '&acute;',
+            '℃' => '&#8451;',
+            '℉' => '&#8457;',
+
+            // 安全字符
+            '|'  => '&#124;',
+            '*'  => '&#42;',
+            '`'  => '&acute;',
+            '\\' => '&#92;',
+            '~'  => '&#126;',
+            '‚'  => '&sbquo;',
+            ','  => '&#44;',
+            // '.'  => '&#46;',
+            '^'  => '&#94;',
+
+            // HTML中的JS无法执行
+            '\'' => '&#039;',
             '%'  => '&#37;',
             '!'  => '&#33;',
-            '—'  => '-',
-            '－'  => '-',
-            '～'  => '-',
+            '-'  => '&ndash;',
+            '?'  => '&#129;',
+            '+'  => '&#43;',
+            ':'  => '&#58;',
+            '='  => '&#61;',
+            '('  => '&#40;',
+            ')'  => '&#41;',
+
+
             ];
 
         $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);
 
-        // 过虑emoji表情
-        $_data = preg_replace_callback('/./u', function (array $match) {
-            return strlen($match[0]) >= 4 ? '' : $match[0];
-        }, $_data);
+        // 过虑emoji表情 替换成*
+        // $value = json_encode($_data);
+        // $value = preg_replace('/\\\u[ed][0-9a-f]{3}\\\u[ed][0-9a-f]{3}/', '&#42;', $value);
+        // $_data = json_decode($value);
 
         // 个性字符过虑
-        $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
-        $_data = preg_replace($rule, '', $_data);
+        // $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
+        // $_data = preg_replace($rule, '', $_data);
     }
 
     return $_data;

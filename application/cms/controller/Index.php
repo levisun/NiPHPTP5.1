@@ -17,17 +17,5 @@ class Index
     public function index()
     {
 
-        $res = new \RandBonus;
-        $r = $res->getBonus(2000000, 1000, 1, 200);
-        halt($r);
-        foreach ($r as $key => $value) {
-            if ($value < 0) {
-                echo $value;
-            }
-        }
-        halt(array_sum($r));
-
-        // 15307330
-        return json(array(123, 333));
     }
 }

@@ -54,7 +54,7 @@ class Basic
             'website_name'        => input('post.website_name'),
             'website_keywords'    => input('post.website_keywords'),
             'website_description' => input('post.website_description'),
-            'bottom_message'      => input('post.bottom_message', '', 'trim,escape_xss,htmlspecialchars'),
+            'bottom_message'      => input('post.bottom_message', '', config('content_filter')),
             'copyright'           => input('post.copyright'),
             'script'              => input('post.script', '', 'trim,htmlspecialchars'),
             '__token__'           => input('post.__token__'),

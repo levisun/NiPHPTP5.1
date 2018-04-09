@@ -89,6 +89,12 @@ class Role
         return $result;
     }
 
+    /**
+     * 增加
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function added()
     {
         $receive_data = [
@@ -103,6 +109,8 @@ class Role
         if (true !== $result) {
             return $result;
         }
+
+
         halt($receive_data);
     }
 }
