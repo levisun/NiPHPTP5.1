@@ -62,7 +62,7 @@ class PayWechat
         $this->params['nonce_str']        = $this->getNonceStr(32);
         // $this->params['partner_trade_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
         $this->params['partner_trade_no'] = $this->orderNo($this->config['mch_id']);
-        $this->params['spbill_create_ip'] = $this->ip(0, true);
+        $this->params['spbill_create_ip'] = $_SERVER['REMOTE_ADDR'];
         $this->params['sign']             = $this->getSign($this->params);
 
         $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
@@ -85,7 +85,7 @@ class PayWechat
         $this->params['mch_billno'] = $this->orderNo($this->config['mch_id']);
         $this->params['mch_id']     = $this->config['mch_id'];
         $this->params['wxappid']    = $this->config['appid'];
-        $this->params['client_ip']  = $this->ip(0, true);
+        $this->params['client_ip']  = $_SERVER['REMOTE_ADDR'];
         $this->params['sign']       = $this->getSign($this->params);
 
         $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
@@ -167,6 +167,8 @@ class PayWechat
      */
     public function respond()
     {
+        $return = false;
+
         if (!empty($_GET['out_trade_no'])) {
             $out_trade_no = $_GET['out_trade_no'];
             $result = $this->queryOrder(['out_trade_no' => $out_trade_no]);
@@ -178,11 +180,7 @@ class PayWechat
                     'trade_type'     => $result['trade_type'],      // 支付类型
                     'transaction_id' => $result['transaction_id'],  // 微信订单号
                 ];
-            } else {
-                $return = false;
             }
-        } else {
-            $return = false;
         }
 
         return $return;
@@ -196,9 +194,10 @@ class PayWechat
      */
     public function notify()
     {
+        $return = false;
+
         if (!empty($GLOBALS['HTTP_RAW_POST_DATA'])) {
             $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
-            // $result = (array) simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
             $result = $this->formXml($xml);
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
                 $result = $this->queryOrder(['out_trade_no' => $result['out_trade_no']]);
@@ -210,14 +209,8 @@ class PayWechat
                         'trade_type'     => $result['trade_type'],      // 支付类型
                         'transaction_id' => $result['transaction_id'],  // 微信订单号
                     ];
-                } else {
-                    $return = false;
                 }
-            } else {
-                $return = false;
             }
-        } else {
-            $return = false;
         }
 
         return $return;
@@ -337,7 +330,7 @@ class PayWechat
         $this->params['appid']            = $this->config['appid'];
         $this->params['mch_id']           = $this->config['mch_id'];
         $this->params['nonce_str']        = $this->getNonceStr(32);
-        $this->params['spbill_create_ip'] = $this->ip(0, true);
+        $this->params['spbill_create_ip'] = $_SERVER['REMOTE_ADDR'];
         $this->params['time_start']       = date('YmdHis');
         $this->params['time_expire']      = date('YmdHis', time() + 600);
         $this->params['sign']             = $this->getSign($this->params);
@@ -471,45 +464,5 @@ class PayWechat
         $micro = str_pad($micro * 1000000, 6, 0, STR_PAD_LEFT);
 
         return $time . $micro . mt_rand(111, 999) . $other;
-    }
-
-    /**
-     * 获取客户端IP地址
-     * @access private
-     * @param  integer   $_type 返回类型 0 返回IP地址 1 返回IPV4地址数字
-     * @param  boolean   $adv 是否进行高级模式获取（有可能被伪装）
-     * @return mixed
-     */
-    private function ip($_type = 0, $_adv = true)
-    {
-        $_type      = $_type ? 1 : 0;
-        static $ip = null;
-
-        if (null !== $ip) {
-            return $ip[$_type];
-        }
-
-        if ($_adv) {
-            if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $arr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-                $pos = array_search('unknown', $arr);
-                if (false !== $pos) {
-                    unset($arr[$pos]);
-                }
-                $ip = trim(current($arr));
-            } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        // IP地址合法验证
-        $long = sprintf("%u", ip2long($ip));
-        $ip   = $long ? [$ip, $long] : ['0.0.0.0', 0];
-
-        return $ip[$_type];
     }
 }
