@@ -11,7 +11,6 @@
  */
 class RandBonus
 {
-    private $amount;
 
     /**
      * 构造
@@ -74,7 +73,7 @@ class RandBonus
         }
 
         return array(
-            'amount' => $_amount,
+            'amount' => $_amount / 100,
             'total'  => $_total,
             'sum_bonus' => array_sum($result),
             'bonus'  => $result,

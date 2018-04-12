@@ -12,7 +12,7 @@
  */
 namespace app\admin\logic\category;
 
-use \File;
+
 
 class Category
 {
@@ -239,7 +239,7 @@ class Category
         ->where($map)
         ->find();
         // 删除图片
-        File::remove(env('root_path') . basename(request()->root()) . $result['image']);
+        \File::remove(env('root_path') . basename(request()->root()) . $result['image']);
 
         return model('common/category')
         ->remove(['id' => $_id]);

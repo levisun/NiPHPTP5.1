@@ -191,7 +191,8 @@ class Info
         $model_member = model('common/member');
 
         $result['count'] =
-        $model_member->count();
+        $model_member
+        ->count();
 
         $map = [
             ['status', '=', 0]
@@ -212,7 +213,8 @@ class Info
     private function feedback()
     {
         $result =
-        model('common/feedback')->count();
+        model('common/feedback')
+        ->count();
 
         return $result;
     }
@@ -226,7 +228,8 @@ class Info
     private function message()
     {
         $result =
-        model('common/message')->count();
+        model('common/message')
+        ->count();
 
         return $result;
     }
@@ -240,7 +243,8 @@ class Info
     private function link()
     {
         $result =
-        model('common/link')->count();
+        model('common/link')
+        ->count();
 
         return $result;
     }
@@ -273,7 +277,8 @@ class Info
     private function dbVersion()
     {
         $result =
-        model('common/config')->query('SELECT version()');
+        model('common/config')
+        ->query('SELECT version()');
 
         return $result[0]['version()'];
     }

@@ -12,8 +12,6 @@
  */
 namespace app\admin\logic\wechat;
 
-use \File;
-
 class Keyword
 {
 
@@ -120,7 +118,7 @@ class Keyword
         $result = $this->find();
 
         // 删除图片
-        File::remove(env('root_path') . basename(request()->root()) . $result['image']);
+        \File::remove(env('root_path') . basename(request()->root()) . $result['image']);
 
         create_action_log($result['keyword'], 'wechat_keyword_remove');
 

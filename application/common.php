@@ -132,7 +132,7 @@ function lang($_name, $_vars = [], $_lang = '')
 function ajax_sign()
 {
     cookie('__sign', md5(
-        time()
+        time() . 'sign'
     ));
 
     session('__sign', md5(
@@ -146,14 +146,12 @@ function ajax_sign()
  */
 function has_illegal_ajax_sign()
 {
-    $sign = session('?__sign') ? session('__sign') : false;
-
-    if ($sign) {
+    if (session('?__sign')) {
         $http_referer = md5(
             request()->domain() . request()->server('http_referer')
         );
 
-        if ($sign === $http_referer) {
+        if (session('__sign') === $http_referer) {
             $result = true;
         } else {
             $result = false;
@@ -213,7 +211,7 @@ function remove_rundata()
         return false;
     }
 
-    $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
 
     $all_files = [];
     $files = [
@@ -296,91 +294,88 @@ function escape_xss($_data)
         }
     } else {
         $pattern = [
-            '/<\?php(.*?)\?>/si',
-            '/<\?(.*?)\?>/si',
-            '/<%(.*?)%>/si',
-            '/<\?php|<\?|\?>|<%|%>/si',
+            '/<\?php(.*?)\?>/si'                            => '',
+            '/<\?(.*?)\?>/si'                               => '',
+            '/<%(.*?)%>/si'                                 => '',
+            '/<\?php|<\?|\?>|<%|%>/si'                      => '',
 
-            '/on([a-zA-Z]*?)(=)["|\'](.*?)["|\']/si',
-            '/(javascript:)(.*?)(\))/si',
-            '/<\!--.*?-->/si',
-            '/<(\!.*?)>/si',
+            '/on([a-zA-Z]*?)(=)["|\'](.*?)["|\']/si'        => '',
+            '/(javascript:)(.*?)(\))/si'                    => '',
+            '/<\!--.*?-->/si'                               => '',
+            '/<(\!.*?)>/si'                                 => '',
 
-            '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si',
-            '/<(\/?javascript.*?)>/si',
+            '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si' => '',
+            '/<(\/?javascript.*?)>/si'                      => '',
 
-            '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si',
-            '/<(\/?vbscript.*?)>/si',
+            '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si'     => '',
+            '/<(\/?vbscript.*?)>/si'                        => '',
 
-            '/<(expression.*?)>(.*?)<(\/expression.*?)>/si',
-            '/<(\/?expression.*?)>/si',
+            '/<(expression.*?)>(.*?)<(\/expression.*?)>/si' => '',
+            '/<(\/?expression.*?)>/si'                      => '',
 
-            '/<(applet.*?)>(.*?)<(\/applet.*?)>/si',
-            '/<(\/?applet.*?)>/si',
+            '/<(applet.*?)>(.*?)<(\/applet.*?)>/si'         => '',
+            '/<(\/?applet.*?)>/si'                          => '',
 
-            '/<(xml.*?)>(.*?)<(\/xml.*?)>/si',
-            '/<(\/?xml.*?)>/si',
+            '/<(xml.*?)>(.*?)<(\/xml.*?)>/si'               => '',
+            '/<(\/?xml.*?)>/si'                             => '',
 
-            '/<(blink.*?)>(.*?)<(\/blink.*?)>/si',
-            '/<(\/?blink.*?)>/si',
+            '/<(blink.*?)>(.*?)<(\/blink.*?)>/si'           => '',
+            '/<(\/?blink.*?)>/si'                           => '',
 
-            '/<(link.*?)>(.*?)<(\/link.*?)>/si',
-            '/<(\/?link.*?)>/si',
+            '/<(link.*?)>(.*?)<(\/link.*?)>/si'             => '',
+            '/<(\/?link.*?)>/si'                            => '',
 
-            '/<(script.*?)>(.*?)<(\/script.*?)>/si',
-            '/<(\/?script.*?)>/si',
+            '/<(script.*?)>(.*?)<(\/script.*?)>/si'         => '',
+            '/<(\/?script.*?)>/si'                          => '',
 
-            '/<(embed.*?)>(.*?)<(\/embed.*?)>/si',
-            '/<(\/?embed.*?)>/si',
+            '/<(embed.*?)>(.*?)<(\/embed.*?)>/si'           => '',
+            '/<(\/?embed.*?)>/si'                           => '',
 
-            '/<(object.*?)>(.*?)<(\/object.*?)>/si',
-            '/<(\/?object.*?)>/si',
+            '/<(object.*?)>(.*?)<(\/object.*?)>/si'         => '',
+            '/<(\/?object.*?)>/si'                          => '',
 
-            '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si',
-            '/<(\/?iframe.*?)>/si',
+            '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si'         => '',
+            '/<(\/?iframe.*?)>/si'                          => '',
 
-            '/<(frame.*?)>(.*?)<(\/frame.*?)>/si',
-            '/<(\/?frame.*?)>/si',
+            '/<(frame.*?)>(.*?)<(\/frame.*?)>/si'           => '',
+            '/<(\/?frame.*?)>/si'                           => '',
 
-            '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si',
-            '/<(\/?frameset.*?)>/si',
+            '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si'     => '',
+            '/<(\/?frameset.*?)>/si'                        => '',
 
-            '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',
-            '/<(\/?ilayer.*?)>/si',
+            '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si'         => '',
+            '/<(\/?ilayer.*?)>/si'                          => '',
 
-            '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',
-            '/<(\/?layer.*?)>/si',
+            '/<(layer.*?)>(.*?)<(\/layer.*?)>/si'           => '',
+            '/<(\/?layer.*?)>/si'                           => '',
 
-            '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',
-            '/<(\/?bgsound.*?)>/si',
+            '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si'       => '',
+            '/<(\/?bgsound.*?)>/si'                         => '',
 
-            '/<(title.*?)>(.*?)<(\/title.*?)>/si',
-            '/<(\/?title.*?)>/si',
+            '/<(title.*?)>(.*?)<(\/title.*?)>/si'           => '',
+            '/<(\/?title.*?)>/si'                           => '',
 
-            '/<(base.*?)>(.*?)<(\/base.*?)>/si',
-            '/<(\/?base.*?)>/si',
+            '/<(base.*?)>(.*?)<(\/base.*?)>/si'             => '',
+            '/<(\/?base.*?)>/si'                            => '',
 
-            '/<(meta.*?)>(.*?)<(\/meta.*?)>/si',
-            '/<(\/?meta.*?)>/si',
+            '/<(meta.*?)>(.*?)<(\/meta.*?)>/si'             => '',
+            '/<(\/?meta.*?)>/si'                            => '',
 
-            '/<(style.*?)>(.*?)<(\/style.*?)>/si',
-            '/<(\/?style.*?)>/si',
+            '/<(style.*?)>(.*?)<(\/style.*?)>/si'           => '',
+            '/<(\/?style.*?)>/si'                           => '',
 
-            '/<(html.*?)>(.*?)<(\/html.*?)>/si',
-            '/<(\/?html.*?)>/si',
+            '/<(html.*?)>(.*?)<(\/html.*?)>/si'             => '',
+            '/<(\/?html.*?)>/si'                            => '',
 
-            '/<(head.*?)>(.*?)<(\/head.*?)>/si',
-            '/<(\/?head.*?)>/si',
+            '/<(head.*?)>(.*?)<(\/head.*?)>/si'             => '',
+            '/<(\/?head.*?)>/si'                            => '',
 
-            '/<(body.*?)>(.*?)<(\/body.*?)>/si',
-            '/<(\/?body.*?)>/si',
-        ];
+            '/<(body.*?)>(.*?)<(\/body.*?)>/si'             => '',
+            '/<(\/?body.*?)>/si'                            => '',
 
-        $_data = preg_replace($pattern, '', $_data);
-
-        $pattern = [
-            '/[\s]+</si' => '<',    // 多余回车
-            '/>[\s]+/si' => '>',
+            // 多余回车
+            '/[\s]+</si'     => '<',
+            '/>[\s]+/si'     => '>',
 
             // SQL关键字
             '/(and )/si'     => '&#97;nd ',
@@ -401,10 +396,7 @@ function escape_xss($_data)
             '/(select)/si'   => '&#115;elect',
             '/(truncate)/si' => '&#116;runcate',
             '/(where)/si'    => '&#119;here',
-        ];
-        $_data = preg_replace(array_keys($pattern), array_values($pattern), $_data);
 
-        $pattern = [
             // 全角转半角
             '０' => '0', '１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
             '６' => '6', '７' => '7', '８' => '8', '９' => '9',
@@ -480,7 +472,6 @@ function escape_xss($_data)
             '='  => '&#61;',
             '('  => '&#40;',
             ')'  => '&#41;',
-
 
             ];
 

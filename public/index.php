@@ -33,8 +33,10 @@ ini_set('memory_limit', '32M');
 // 开启gzip压缩
 if (!APP_DEBUG &&
     extension_loaded('zlib') &&
-    strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false)
-ob_start('ob_gzhandler');
+    strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
+    ob_start('ob_gzhandler');
+}
+
 
 
 // 加载基础文件

@@ -1,22 +1,6 @@
 <?php
 
-function vicword($_string)
-{
-    ini_set('memory_limit', '512M');
 
-    define('_VIC_WORD_DICT_PATH_', __DIR__ . 'extend/vicword/data/dict.igb');
-    $fc = new VicWord('igb');
-    $result = $fc->getAutoWord($_string);
-    $tag = array();
-    foreach ($result as $key => $value) {
-        $len = mb_strlen($value[0], 'utf8');
-        if ($len <= 4 && $len > 1) {
-            $tag[] = $value[0];
-        }
-
-    }
-    return $tag;
-}
 
 function readerExcel($file_name)
 {
@@ -68,19 +52,7 @@ function createExcel($file_name, $data)
 }
 
 
-function pscws($_text)
-{
-    $pscws4 = new PSCWS4;
-    $pscws4->set_dict(EXT_LIB_PATH . 'util/scws/lib/dict.utf8.xdb');
-    $pscws4->send_text($_text);
-    $tag = array();
-    while ($some = $pscws4->get_result()) {
-        foreach ($some as $key => $value) {
-            $tag[] = $value['word'];
-        }
-    }
-    return $tag;
-}
+
 
 /**
  * 采集

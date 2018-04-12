@@ -117,36 +117,39 @@ class Api extends Controller
      */
     public function query()
     {
-        $result = [];
-        $receive = false;
+        $json = [];
+        $result = false;
 
-        $result['form data']   = input('param.');
+        $json['form data']   = input('param.');
 
         if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
-            $result['error_msg'] = 'ILLEGAL';
+            $json['error_msg'] = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
-            $result['error_msg'] = $this->logic . ' undefined';
+            $json['error_msg'] = $this->logic . ' undefined';
         } elseif (!$this->hasAction()) {
-            $result['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
+            $json['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
         } else {
-            $logic   = $this->object;
-            $action  = $this->action;
-            $receive = $logic->$action();
-            $result['error_msg']   = $receive === false ? 'EMPTY' : 'SUCCESS';
+            $logic  = $this->object;
+            $action = $this->action;
+            $result = $logic->$action();
+            $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
-            $result['return_code'] = 'ERROR';
-            if ($receive !== false) {
-                $result['return_code']   = 'SUCCESS';
-                $result['return_msg']    = '';
-                $result['return_result'] = $receive;
+            $json['return_code'] = 'ERROR';
+            if ($result !== false) {
+                $json['return_code']   = 'SUCCESS';
+                $json['return_msg']    = '';
+                $json['return_result'] = $result;
             }
         }
 
-        $result['use_time_memory'] = use_time_memory();
+        $json['use_time_memory'] = use_time_memory();
 
         remove_old_upload_file(false);
 
-        return json($result);
+        return json($json)->header([
+            'Cache-control' => 'public,max-age=1140',
+            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 days')) . ' GMT',
+        ]);
     }
 
     /**
@@ -157,44 +160,44 @@ class Api extends Controller
      */
     public function settle()
     {
-        $result = [];
-        $receive = false;
+        $json = [];
+        $result = false;
 
-        $result['form data']   = input('param.');
+        $json['form data']   = input('param.');
 
         if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
-            $result['error_msg'] = 'ILLEGAL';
+            $json['error_msg'] = 'ILLEGAL';
         } elseif (!$this->hasLogic()) {
-            $result['error_msg'] = $this->logic . ' undefined';
+            $json['error_msg'] = $this->logic . ' undefined';
         } elseif (!$this->hasAction()) {
-            $result['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
+            $json['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
         } else {
-            $logic   = $this->object;
-            $action  = $this->action;
-            $receive = $logic->$action();
-            $result['error_msg']   = $receive === false ? 'EMPTY' : 'SUCCESS';
+            $logic  = $this->object;
+            $action = $this->action;
+            $result = $logic->$action();
+            $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
-            $result['return_code'] = 'ERROR';
+            $json['return_code'] = 'ERROR';
 
-            if ($receive !== false) {
+            if ($result !== false) {
                 // 操作返回信息
-                if ($receive === true) {
-                    $result['return_code'] = 'SUCCESS';
-                    $result['return_msg']  = lang('save success');
+                if ($result === true) {
+                    $json['return_code'] = 'SUCCESS';
+                    $json['return_msg']  = lang('save success');
                 } else {
-                    $result['return_code'] = 'ERROR';
-                    $result['return_msg']  = $receive;
+                    $json['return_code'] = 'ERROR';
+                    $json['return_msg']  = $result;
                 }
 
-                $result['return_result'] = '';
+                $json['return_result'] = '';
             }
         }
 
-        $result['use_time_memory'] = use_time_memory();
+        $json['use_time_memory'] = use_time_memory();
 
         remove_old_upload_file();
 
-        return json($result);
+        return json($json, 201);
     }
 
     /**
@@ -205,30 +208,30 @@ class Api extends Controller
      */
     public function upload()
     {
-        $result = [];
-        $receive = false;
+        $json = [];
+        $result = false;
 
-        $result['form data']   = input('param.');
+        $json['form data']   = input('param.');
 
         if (!has_illegal_ajax_sign() || !$this->hasAuth(true)) {
-            $result['error_msg'] = 'ILLEGAL';
+            $json['error_msg'] = 'ILLEGAL';
         } else {
-            $receive = logic('admin/upload')->file();
-            $result['error_msg']   = $receive === false ? 'EMPTY' : 'SUCCESS';
+            $result = logic('admin/upload')->file();
+            $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
-            if (is_string($receive)) {
-                $result['return_code']   = 'ERROR';
-                $result['return_msg']    = $receive;
-                $result['return_result'] = '';
+            if (is_string($result)) {
+                $json['return_code']   = 'ERROR';
+                $json['return_msg']    = $result;
+                $json['return_result'] = '';
             } else {
-                $result['return_code']   = 'SUCCESS';
-                $result['return_msg']    = '';
-                $result['return_result'] = $receive;
+                $json['return_code']   = 'SUCCESS';
+                $json['return_msg']    = '';
+                $json['return_result'] = $result;
             }
         }
 
-        $result['use_time_memory'] = use_time_memory();
+        $json['use_time_memory'] = use_time_memory();
 
-        return json($result);
+        return json($json, 201);
     }
 }
