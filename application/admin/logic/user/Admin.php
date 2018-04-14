@@ -67,7 +67,8 @@ class Admin
     public function role()
     {
         $map = array(
-            ['status', '=', 1]
+            ['status', '=', 1],
+            ['id', '<>', 1],
         );
 
         return model('common/role')

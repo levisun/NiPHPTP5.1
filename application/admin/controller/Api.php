@@ -12,9 +12,9 @@
  */
 namespace app\admin\controller;
 
-use think\Controller;
+// use think\Controller;
 
-class Api extends Controller
+class Api
 {
     private $module;    // 模块
     private $method;    // 接收method值
@@ -34,12 +34,12 @@ class Api extends Controller
      * @param
      * @return void
      */
-    protected function initialize()
+    public function __construct()
     {
         // 加载语言包
         lang(':load');
 
-        $this->module = strtolower($this->request->module());
+        $this->module = strtolower(request()->module());
 
         $this->method = input('post.method');
 
@@ -142,14 +142,9 @@ class Api extends Controller
             }
         }
 
-        $json['use_time_memory'] = use_time_memory();
-
         remove_old_upload_file(false);
 
-        return json($json)->header([
-            'Cache-control' => 'public,max-age=1140',
-            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 days')) . ' GMT',
-        ]);
+        return json($json);
     }
 
     /**
@@ -193,8 +188,6 @@ class Api extends Controller
             }
         }
 
-        $json['use_time_memory'] = use_time_memory();
-
         remove_old_upload_file();
 
         return json($json, 201);
@@ -229,8 +222,6 @@ class Api extends Controller
                 $json['return_result'] = $result;
             }
         }
-
-        $json['use_time_memory'] = use_time_memory();
 
         return json($json, 201);
     }

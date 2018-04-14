@@ -22,7 +22,7 @@ define('APP_DEBUG', true);
 // Demo 演示版
 // Stable 稳定版
 // Release 正式版
-define('NP_VERSION', '2.0.6 CB2209');
+define('NP_VERSION', '2.0.6 CB2214');
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('require PHP >= 5.6.0 !');
@@ -33,7 +33,8 @@ ini_set('memory_limit', '32M');
 // 开启gzip压缩
 if (!APP_DEBUG &&
     extension_loaded('zlib') &&
-    strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
+    strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false
+) {
     ob_start('ob_gzhandler');
 }
 

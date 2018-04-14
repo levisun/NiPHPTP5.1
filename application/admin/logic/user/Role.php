@@ -23,8 +23,12 @@ class Role
      */
     public function query()
     {
+        $map = [
+            ['id', '<>', 1],
+        ];
         $result =
         model('common/role')
+        ->where($map)
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url('user/role'),

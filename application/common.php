@@ -374,14 +374,14 @@ function escape_xss($_data)
             '/<(\/?body.*?)>/si'                            => '',
 
             // 多余回车
-            '/[\s]+</si'     => '<',
-            '/>[\s]+/si'     => '>',
+            '/[\r\n\f]+</si'     => '<',
+            '/>[\r\n\f]+/si'     => '>',
 
             // SQL关键字
             '/(and )/si'     => '&#97;nd ',
             '/(between)/si'  => '&#98;etween',
-            '/(chr )/si'     => '&#99;hr ',
-            '/(char )/si'    => '&#99;har ',
+            '/(chr)/si'      => '&#99;hr',
+            '/(char)/si'     => '&#99;har',
             '/(count )/si'   => '&#99;ount ',
             '/(create)/si'   => '&#99;reate',
             '/(declare)/si'  => '&#100;eclare',
@@ -396,7 +396,10 @@ function escape_xss($_data)
             '/(select)/si'   => '&#115;elect',
             '/(truncate)/si' => '&#116;runcate',
             '/(where)/si'    => '&#119;here',
+        ];
+        $_data = preg_replace(array_keys($pattern), array_values($pattern), $_data);
 
+        $pattern = [
             // 全角转半角
             '０' => '0', '１' => '1', '２' => '2', '３' => '3', '４' => '4', '５' => '5',
             '６' => '6', '７' => '7', '８' => '8', '９' => '9',
@@ -472,8 +475,7 @@ function escape_xss($_data)
             '='  => '&#61;',
             '('  => '&#40;',
             ')'  => '&#41;',
-
-            ];
+        ];
 
         $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);
 

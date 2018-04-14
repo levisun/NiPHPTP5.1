@@ -82,7 +82,7 @@ $.loading({
             input += "<p>";
             input += "<div class='custom-checkbox'>";
             input += "<input type='checkbox' name='node["+val.level+"]["+val.name+"]' id='node["+val.level+"]["+val.name+"]' class='checkbox-red' value='"+val.id+"' checked />";
-            input += "<label for='node["+val.level+"]["+val.name+"]'></label>"
+            input += "<label for='node["+val.level+"]["+val.name+"]'></label>";
             input += "</div>";
 
             input += "<div class='inline-block vertical-top'>"+val.title+"</div>";
@@ -91,7 +91,7 @@ $.loading({
                 var v = val.child[i];
                 input += "<div class='custom-checkbox'>";
                 input += "<input type='checkbox' name='node["+v.level+"]["+val.name+"_"+v.name+"]' id='node["+v.level+"]["+val.name+"_"+v.name+"]' class='checkbox-red' value='"+v.id+"' />";
-                input += "<label for='node["+v.level+"]["+val.name+"_"+v.name+"]'></label>"
+                input += "<label for='node["+v.level+"]["+val.name+"_"+v.name+"]'></label>";
                 input += "</div>";
 
                 input += "<div class='inline-block vertical-top'>"+v.title+"</div>";

@@ -32,7 +32,6 @@
      */
     function handle(_result, _url, _reload) {
         if (_result.error_msg === "ILLEGAL") {
-            // $.uiToast("请求超时！");
             $.reload();
         } else if (_result.error_msg === "SUCCESS") {
             if (_result.return_code === "SUCCESS") {
