@@ -9,21 +9,16 @@
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', true);
-
-
-
+define('APP_DEBUG', false);
 // CB|Alpha 内测版
 // RC|Beta 正式候选版
 // Demo 演示版
 // Stable 稳定版
 // Release 正式版
-define('NP_VERSION', '2.0.6 CB2214');
-
+define('NP_VERSION', '2.0.6 CB 2217');
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('require PHP >= 5.6.0 !');
 // 设置超时时间
