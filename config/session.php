@@ -23,4 +23,7 @@ return [
     'auto_start'     => false,
     'httponly'       => true,
     'secure'         => false,
+
+    'expire'         => 28800,
+
 ];

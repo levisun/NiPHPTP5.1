@@ -112,17 +112,6 @@ class Base extends Controller
         config('template.tpl_replace_string', $replace);
 
         $this->view->engine($template);
-        if (!APP_DEBUG) {
-            $this->view->filter(function($content){
-                $pattern = [
-                    '/<\!--.*?-->/si'                 => '',    // HTML注释
-                    '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
-                    '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
-                    '/(\r|\n|\f)/si'                  => '',    // 回车回行
-                    '/( ){2,}/si'                     => '',    // 空格
-                ];
-                return preg_replace(array_keys($pattern), array_values($pattern), $content);
-            });
-        }
+        $this->view->filter('view_filter');
     }
 }

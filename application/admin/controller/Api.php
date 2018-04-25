@@ -12,8 +12,6 @@
  */
 namespace app\admin\controller;
 
-// use think\Controller;
-
 class Api
 {
     private $module;    // 模块
@@ -36,9 +34,6 @@ class Api
      */
     public function __construct()
     {
-        // 加载语言包
-        lang(':load');
-
         $this->module = strtolower(request()->module());
 
         $this->method = input('post.method');
@@ -47,6 +42,9 @@ class Api
         $this->logic  = $method[0];
         $this->action = !empty($method[1]) ? $method[1] : 'index';
         $this->layer  = !empty($method[2]) ? $method[2] : 'logic';
+
+        // 加载语言包
+        lang(':load');
     }
 
     /**
@@ -110,6 +108,44 @@ class Api
     }
 
     /**
+     * 返回错误信息
+     * @param  string  $_msg         提示信息
+     * @param  integer $_code        错误代码
+     * @param  array   $_data        返回数据
+     * @param  array   $_extend_data 附加数据
+     * @return json
+     */
+    private function outputData($_msg = '', $_code = 'SUCCESS', $_data, $_extend_data = [])
+    {
+        $return = [
+            'return_code'   => $_code,
+            'return_msg'    => $_msg,
+            'return_result' => $_data,
+            'return_oth'    => $_extend_data,
+        ];
+
+        return json($return);
+    }
+
+    /**
+     * 返回错误信息
+     * @param  string  $_msg         错误信息
+     * @param  integer $_code        错误代码
+     * @param  array   $_extend_data 附加数据
+     * @return json
+     */
+    private function outputError($_msg = 'ERROR', $_code = 40001, $_extend_data = [])
+    {
+        $return = [
+            'error_code' => $_code,
+            'error_msg'  => $_msg,
+            'oth'        => $_extend_data,
+        ];
+
+        return json($return);
+    }
+
+    /**
      * 查询请求
      * @access public
      * @param
@@ -117,34 +153,48 @@ class Api
      */
     public function query()
     {
-        $json = [];
-        $result = false;
-
-        $json['form data']   = input('param.');
-
         if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
-            $json['error_msg'] = 'ILLEGAL';
+            $output = $this->outputError(
+                'ILLEGAL',
+                40001,
+                input('param.')
+            );
         } elseif (!$this->hasLogic()) {
-            $json['error_msg'] = $this->logic . ' undefined';
+            $output = $this->outputError(
+                $this->logic . ' undefined',
+                40002,
+                input('param.')
+            );
         } elseif (!$this->hasAction()) {
-            $json['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
+            $output = $this->outputError(
+                $this->logic . '->' . $this->action . ' undefined',
+                40003,
+                input('param.')
+            );
         } else {
             $logic  = $this->object;
             $action = $this->action;
             $result = $logic->$action();
-            $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
-            $json['return_code'] = 'ERROR';
-            if ($result !== false) {
-                $json['return_code']   = 'SUCCESS';
-                $json['return_msg']    = '';
-                $json['return_result'] = $result;
+            remove_old_upload_file(false);
+
+            if ($result === false) {
+                $output = $this->outputError(
+                    'request error',
+                    40004,
+                    input('param.')
+                );
+            } else {
+                $output = $this->outputData(
+                    'request success',
+                    'SUCCESS',
+                    $result,
+                    input('param.')
+                );
             }
         }
 
-        remove_old_upload_file(false);
-
-        return json($json);
+        return $output;
     }
 
     /**
@@ -155,42 +205,57 @@ class Api
      */
     public function settle()
     {
-        $json = [];
-        $result = false;
-
-        $json['form data']   = input('param.');
-
         if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
-            $json['error_msg'] = 'ILLEGAL';
+            $output = $this->outputError(
+                'ILLEGAL',
+                40001,
+                input('param.')
+            );
         } elseif (!$this->hasLogic()) {
-            $json['error_msg'] = $this->logic . ' undefined';
+            $output = $this->outputError(
+                $this->logic . ' undefined',
+                40002,
+                input('param.')
+            );
         } elseif (!$this->hasAction()) {
-            $json['error_msg'] = $this->logic . '->' . $this->action . ' undefined';
+            $output = $this->outputError(
+                $this->logic . '->' . $this->action . ' undefined',
+                40003,
+                input('param.')
+            );
         } else {
             $logic  = $this->object;
             $action = $this->action;
             $result = $logic->$action();
-            $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
-            $json['return_code'] = 'ERROR';
+            remove_old_upload_file();
 
-            if ($result !== false) {
-                // 操作返回信息
+            if ($result === false) {
+                $output = $this->outputError(
+                    'data error',
+                    40004,
+                    input('param.')
+                );
+            } else {
                 if ($result === true) {
-                    $json['return_code'] = 'SUCCESS';
-                    $json['return_msg']  = lang('save success');
+                    $output = $this->outputData(
+                        lang('save success'),
+                        'SUCCESS',
+                        $result,
+                        input('param.')
+                    );
                 } else {
-                    $json['return_code'] = 'ERROR';
-                    $json['return_msg']  = $result;
+                    $output = $this->outputData(
+                        $result,
+                        'ERROR',
+                        [],
+                        input('param.')
+                    );
                 }
-
-                $json['return_result'] = '';
             }
         }
 
-        remove_old_upload_file();
-
-        return json($json, 201);
+        return $output;
     }
 
     /**
@@ -207,7 +272,11 @@ class Api
         $json['form data']   = input('param.');
 
         if (!has_illegal_ajax_sign() || !$this->hasAuth(true)) {
-            $json['error_msg'] = 'ILLEGAL';
+            $output = $this->outputError(
+                'ILLEGAL',
+                40001,
+                input('param.')
+            );
         } else {
             $result = logic('admin/upload')->file();
             $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
@@ -223,6 +292,6 @@ class Api
             }
         }
 
-        return json($json, 201);
+        return json($json);
     }
 }

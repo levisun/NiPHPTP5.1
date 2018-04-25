@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `np_link` (
   `category_id` smallint(6) unsigned NOT NULL COMMENT '栏目ID',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
-  `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发布人ID',
   `url` varchar(500) NOT NULL DEFAULT '' COMMENT '跳转链接',

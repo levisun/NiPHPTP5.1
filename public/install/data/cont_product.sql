@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `np_product` (
   `is_com` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐',
   `is_top` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '置顶',
   `is_hot` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '最热',
-  `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
+  `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
   `comment_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '评论量',
   `username` varchar(20) NOT NULL COMMENT '作者名',

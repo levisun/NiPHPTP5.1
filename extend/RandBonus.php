@@ -55,7 +55,7 @@ class RandBonus
                 $money = mt_rand($_min, $safe_total);
 
                 $_amount = ($_amount - $money);
-                $result[] = $money / 100;
+                $result[] = ($money / 100);
             }
 
             if ($_amount < $_total * 150) {
@@ -64,7 +64,7 @@ class RandBonus
                         $money = $value * 100;
                         if ($_amount > 0 && $money < $_max) {
                             $money++;
-                            $result[$key] = $money / 100;
+                            $result[$key] = ($money / 100);
                             $_amount--;
                         }
                     }
@@ -73,11 +73,10 @@ class RandBonus
         }
 
         return array(
-            'amount' => $_amount / 100,
-            'total'  => $_total,
+            'amount'    => $_amount / 100,
+            'total'     => $_total,
             'sum_bonus' => array_sum($result),
-            'bonus'  => $result,
-
+            'bonus'     => $result,
         );
     }
 }

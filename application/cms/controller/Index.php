@@ -16,6 +16,10 @@ class Index
 {
     public function index()
     {
+        halt(1);
 
+        $r = new \RandBonus;
+        $red = $r->getBonus(200, 90, 1, 30);
+        var_dump($red);
     }
 }
