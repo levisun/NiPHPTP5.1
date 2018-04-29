@@ -114,6 +114,10 @@ class Role
             return $result;
         }
 
+        unset($receive_data['__token__']);
+
+        // $result = model('common/role')
+        // ->added($receive_data);
 
         halt($receive_data);
     }

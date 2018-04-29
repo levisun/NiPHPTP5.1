@@ -61,76 +61,101 @@ return [
     'method'                => '方法',
 
     // 导航
-    '_nav' => [
-        'settings'          => '设置',
-        'theme'             => '界面',
-        'category'          => '栏目',
-        'content'           => '内容',
-        'user'              => '用户',
-        'wechat'            => '微信',
-        'mall'              => '商城',
-        'book'              => '书库',
-        'expand'            => '扩展',
+    '__nav' => [
+        'settings' => [
+            'name'  => '设置',
+            'child' => [
+                'info'  => '系统信息',
+                'basic' => '基础设置',
+                'lang'  => '语言设置',
+                'image' => '图片设置',
+                'safe'  => '安全与效率设置',
+                'email' => '邮件设置',
+            ],
         ],
-
-    '_menu' => [
-        'settings_info'     => '系统信息',
-        'settings_basic'    => '基础设置',
-        'settings_lang'     => '语言设置',
-        'settings_image'    => '图片设置',
-        'settings_safe'     => '安全与效率设置',
-        'settings_email'    => '邮件设置',
-
-        'theme_cms'         => '网站界面设置',
-        'theme_member'      => '会员界面设置',
-        'theme_mall'        => '商城界面设置',
-
-        'category_category' => '管理栏目',
-        'category_model'    => '管理模型',
-        'category_fields'   => '自定义字段',
-        'category_type'     => '管理类别',
-
-        'content_content'   => '管理内容',
-        'content_banner'    => '管理幻灯片',
-        'content_ads'       => '管理广告',
-        'content_comment'   => '管理评论',
-        'content_cache'     => '更新缓存或静态',
-        'content_recycle'   => '内容回收站',
-
-        'user_member'       => '会员管理',
-        'user_check'        => '审核会员',
-        'user_level'        => '会员等级管理',
-        'user_admin'        => '管理员管理',
-        'user_role'         => '管理员组管理',
-        'user_node'         => '系统节点管理',
-
-        'wechat_keyword'    => '关键词自动回复',
-        'wechat_auto'       => '默认自动回复',
-        'wechat_attention'  => '关注自动回复',
-        'wechat_config'     => '接口配置',
-        'wechat_module'     => '营销推广模块',
-        'wechat_menu'       => '自定义菜单',
-
-        'mall_goods'        => '管理商品',
-        'mall_orders'       => '管理订单',
-        'mall_category'     => '管理商城导航',
-        'mall_type'         => '管理商品分类',
-        'mall_brand'        => '管理商品品牌',
-        'mall_brand'        => '管理商品品牌',
-        'mall_comment'      => '管理商品评论',
-        'mall_account'      => '账户流水',
-        'mall_grecycle'     => '商品回收站',
-        'mall_settings'     => '商城设置',
-
-        'book_book'         => '管理书库',
-        'book_type'         => '管理分类',
-        'book_user'         => '管理作者',
-
-        'expand_app'        => '应用中心',
-        'expand_upgrade'    => '在线升级',
-        'expand_databack'   => '数据备份',
-        'expand_log'        => '系统日志',
-        'expand_elog'       => '错误日志',
-        'expand_visit'      => '访问统计',
+        'theme' => [
+            'name'  => '界面',
+            'child' => [
+                'cms'    => '网站界面设置',
+                'member' => '会员界面设置',
+                'mall'   => '商城界面设置',
+            ],
         ],
+        'category' => [
+            'name'  => '栏目',
+            'child' => [
+                'category' => '管理栏目',
+                'model'    => '管理模型',
+                'fields'   => '自定义字段',
+                'type'     => '管理类别',
+            ],
+        ],
+        'content' => [
+            'name'  => '内容',
+            'child' => [
+                'content' => '管理内容',
+                'banner'  => '管理幻灯片',
+                'ads'     => '管理广告',
+                'comment' => '管理评论',
+                'cache'   => '更新缓存或静态',
+                'recycle' => '内容回收站',
+            ],
+        ],
+        'user' => [
+            'name'  => '用户',
+            'child' => [
+                'member' => '会员管理',
+                'check'  => '审核会员',
+                'level'  => '会员等级管理',
+                'admin'  => '管理员管理',
+                'role'   => '管理员组管理',
+                'node'   => '系统节点管理',
+            ],
+        ],
+        'wechat' => [
+            'name'  => '微信',
+            'child' => [
+                'keyword'   => '关键词自动回复',
+                'auto'      => '默认自动回复',
+                'attention' => '关注自动回复',
+                'config'    => '接口配置',
+                'module'    => '营销推广模块',
+                'menu'      => '自定义菜单',
+            ],
+        ],
+        'mall' => [
+            'name'  => '商城',
+            'child' => [
+                'goods'    => '管理商品',
+                'orders'   => '管理订单',
+                'category' => '管理商城导航',
+                'type'     => '管理商品分类',
+                'brand'    => '管理商品品牌',
+                'brand'    => '管理商品品牌',
+                'comment'  => '管理商品评论',
+                'account'  => '账户流水',
+                'grecycle' => '商品回收站',
+                'settings' => '商城设置',
+            ],
+        ],
+        'book' => [
+            'name'  => '书库',
+            'child' => [
+                'book' => '管理书库',
+                'type' => '管理分类',
+                'user' => '管理作者',
+            ],
+        ],
+        'expand' => [
+            'name'  => '扩展',
+            'child' => [
+                'app'      => '应用中心',
+                'upgrade'  => '在线升级',
+                'databack' => '数据备份',
+                'log'      => '系统日志',
+                'elog'     => '错误日志',
+                'visit'    => '访问统计',
+            ],
+        ],
+    ],
 ];

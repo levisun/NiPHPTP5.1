@@ -15,6 +15,27 @@ use think\facade\Debug;
 use think\facade\Lang;
 
 /**
+ * 模板过滤
+ * @param  string $_content
+ * @return string
+ */
+function view_filter($_content)
+{
+    if (APP_DEBUG) {
+        return $_content;
+    } else {
+        $pattern = [
+            '/<\!--.*?-->/si'                 => '',    // HTML注释
+            '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
+            '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
+            '/(\r|\n|\f)/si'                  => '',    // 回车回行
+            '/( ){2,}/si'                     => '',    // 空格
+        ];
+        return preg_replace(array_keys($pattern), array_values($pattern), $_content);
+    }
+}
+
+/**
  * 实例化模型
  * @param  string $_name  [模块名/]控制器名
  * @param  string $_layer 业务层名
@@ -279,27 +300,6 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
         $coded .= substr($_str, $i, $keylength) ^ $_authkey;
     }
     return $coded;
-}
-
-/**
- * 模板过滤
- * @param  string $_content
- * @return string
- */
-function view_filter($_content)
-{
-    if (APP_DEBUG) {
-        return $_content;
-    } else {
-        $pattern = [
-            '/<\!--.*?-->/si'                 => '',    // HTML注释
-            '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
-            '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
-            '/(\r|\n|\f)/si'                  => '',    // 回车回行
-            '/( ){2,}/si'                     => '',    // 空格
-        ];
-        return preg_replace(array_keys($pattern), array_values($pattern), $_content);
-    }
 }
 
 /**

@@ -33,10 +33,7 @@ class Auth
             $auth = session('_access_list');
             $auth = $auth[strtoupper(request()->module())];
 
-            $nav_and_menu = [
-                'nav'  => lang('_nav'),
-                'menu' => lang('_menu'),
-            ];
+            $nav = lang('__nav');
 
             foreach ($auth as $key => $value) {
                 $controller = strtolower($key);
@@ -50,11 +47,11 @@ class Auth
                     }
 
                     $auth_menu[$controller]['icon'] = config('app.icon.' . $controller);
-                    $auth_menu[$controller]['name'] = $nav_and_menu['nav'][$controller];
+                    $auth_menu[$controller]['name'] = $nav[$controller]['name'];
                     $auth_menu[$controller]['menu'][] = [
                         'action' => $action,
                         'url'    => url($controller . '/' . $action),
-                        'lang'   => $nav_and_menu['menu'][$controller . '_' . $action],
+                        'lang'   => $nav[$controller]['child'][$action],
                     ];
                 }
             }
@@ -98,10 +95,8 @@ class Auth
      */
     private function getWebSiteTitle()
     {
-        $nav_and_menu = [
-            'nav'  => lang('_nav'),
-            'menu' => lang('_menu'),
-        ];
+        $nav = lang('__nav');
+
         $controller = strtolower(request()->controller());
         $action     = request()->action();
 
@@ -112,8 +107,8 @@ class Auth
             // 上传方法
            $title = lang('upload file') . ' - NIPHPCMS';
         } else {
-            $title = $nav_and_menu['menu'][$controller . '_' . $action];
-            $title .= ' - ' . $nav_and_menu['nav'][$controller] . ' - NIPHPCMS';
+            $title = $nav[$controller]['child'][$action];
+            $title .= ' - ' . $nav[$controller]['name'] . ' - NIPHPCMS';
         }
 
         return $title;
@@ -127,10 +122,8 @@ class Auth
      */
     private function getBreadcrumb()
     {
-        $nav_and_menu = [
-            'nav'  => lang('_nav'),
-            'menu' => lang('_menu'),
-        ];
+        $nav = lang('__nav');
+
         $controller = strtolower(request()->controller());
         $action     = request()->action();
 
@@ -142,9 +135,10 @@ class Auth
         $breadcrumb .= lang('website home') . '</a></li>';
 
         $breadcrumb .= '<li><a href="';
-        $breadcrumb .= url($controller . '/' . $controller);
-        $breadcrumb .= '">' . $nav_and_menu['nav'][$controller] . '</a></li>';
-
+        $breadcrumb .= url(
+            $controller . '/' . current(array_keys($nav[$controller]['child']))
+        );
+        $breadcrumb .= '">' . $nav[$controller]['name'] . '</a></li>';
 
         if ('upload' == $action) {
             // 上传方法
@@ -154,10 +148,9 @@ class Auth
         } else {
             $breadcrumb .= '<li><a href="';
             $breadcrumb .= url($controller . '/' . $action) . '">';
-            $breadcrumb .= $nav_and_menu['menu'][$controller . '_' . $action];
+            $breadcrumb .= $nav[$controller]['child'][$action];
             $breadcrumb .= '</a></li>';
         }
-
 
         if (request()->param('cid')) {
             $bread = $this->getBreadcrumbParent(request()->param('cid'));
