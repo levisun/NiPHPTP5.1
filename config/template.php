@@ -30,6 +30,6 @@ return [
     'display_cache' => !APP_DEBUG,
     // php标签
     'tpl_deny_php'  => true,
-
-    // 'tpl_deny_func_list' => 'echo,exit,die,var_dump,print,pirnt_r',
+    // 模板引擎禁用函数
+    'tpl_deny_func_list' => 'echo,exit,die,var_export,var_dump',
 ];

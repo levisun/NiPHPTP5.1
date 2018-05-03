@@ -104,7 +104,7 @@ class Role
         $receive_data = [
             'name'      => input('post.name'),
             'status'    => input('post.status/f'),
-            'remark'    => input('post.remark/f'),
+            'remark'    => input('post.remark'),
             'node'      => input('post.node/a'),
             '__token__' => input('post.__token__'),
         ];
@@ -116,9 +116,84 @@ class Role
 
         unset($receive_data['__token__']);
 
-        // $result = model('common/role')
-        // ->added($receive_data);
+        $result = model('common/role')->transaction(function(){
+            $role_data = [
+                'name'   => input('post.name'),
+                'status' => input('post.status/f'),
+                'remark' => input('post.remark/f'),
+            ];
+            $role_id = model('common/role')
+            ->added($role_data);
 
-        halt($receive_data);
+            if ($role_id == false) {
+                return false;
+            }
+
+
+            $map = [
+                ['role_id', '=', $role_id],
+            ];
+            model('common/access')
+            ->where($map)
+            ->delete();
+
+            $node = input('post.node/a');
+            $node_data = [
+                'role_id' => $role_id,
+                'status'  => 1,
+            ];
+            foreach ($node as $key => $value) {
+                foreach ($value as $k => $val) {
+                    $k = explode('_', $k);
+                    $k = !empty($k[1]) ? $k[1] : $k[0];
+                    $node_data['node_id'] = $val;
+                    $node_data['level']   = $key;
+                    $node_data['module']  = $k;
+
+                    model('common/access')
+                    ->added($node_data);
+                }
+            }
+
+            create_action_log($role_data['name'], 'role_added');
+
+            return !!$role_id;
+
+        });
+
+        return $result;
+    }
+
+    /**
+     * 查询要修改的数据
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function find()
+    {
+        $map = [
+            ['id', '=', input('post.id/f')]
+        ];
+
+        $role_data = model('common/role')->field(true)
+        ->where($map)
+        ->find();
+
+        $map = [
+            ['role_id', '=', $role_data['id']],
+        ];
+        $result = model('common/access')
+        ->field('node_id')
+        ->where($map)
+        ->select();
+        $access = [];
+        foreach ($result as $key => $value) {
+            $access[] = $value['node_id'];
+        }
+
+        $role_data['access'] = $access;
+
+        return $role_data;
     }
 }

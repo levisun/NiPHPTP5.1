@@ -79,9 +79,9 @@ class Auth
             // 上传方法
             $result['sub_title'] = lang('upload file');
         } else {
-            $menu = lang('_menu');
-            if (!empty($menu[$controller . '_' . $action])) {
-                $result['sub_title'] = $menu[$controller . '_' . $action];
+            $nav = lang('__nav');
+            if (!empty($nav[$controller]['child'][$action])) {
+                $result['sub_title'] = $nav[$controller]['child'][$action];
             }
         }
         return $result;

@@ -104,7 +104,6 @@ class Admin
 
         $admin_data = [
             'username' => $receive_data['username'],
-            // 'password' => md5(md5($receive_data['password']) . $receive_data['salt']),
             'password' => md5_password($receive_data['password'], $receive_data['salt']),
             'email'    => $receive_data['email'],
             'salt'     => $receive_data['salt'],

@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `np_node` (
 INSERT INTO np_node(`id`, `name`, `title`, `status`, `remark`, `sort`, `pid`, `level`) VALUES
 (1, 'admin', '后台', 1, '后台模块', 0, 0, 1),
 
-(2, 'Settings', '设置', 1, '设置控制器', 1, 1, 2),
+(2, 'settings', '设置', 1, '设置控制器', 1, 1, 2),
 (3, 'info', '系统信息', 1, '系统信息方法', 1, 2, 3),
 (4, 'basic', '基本设置', 1, '基本设置方法', 2, 2, 3),
 (5, 'lang', '语言设置', 1, '语言设置方法', 3, 2, 3),

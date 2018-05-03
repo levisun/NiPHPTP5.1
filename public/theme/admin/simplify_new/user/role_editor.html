@@ -52,6 +52,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -60,6 +61,24 @@
     </div>
 </div>
 <script type="text/javascript">
+var editor_data = {};
+var access = {};
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        method: "role.find.user",
+        id: "{$Request.param.id}"
+    }
+}, function(result){
+    if (result.return_code === "SUCCESS") {
+        editor_data = result.return_result;
+        access = editor_data.access;
+        eachToInput(editor_data);
+    }
+});
+
 $.loading({
     url: request.api.query,
     async: false,
@@ -81,8 +100,11 @@ $.loading({
             var val = value.child[ind];
             input += "<p>";
             input += "<div class='custom-checkbox'>";
-            input += "<input type='checkbox' name='node["+val.level+"]["+val.name+"]' id='node"+val.level+val.name+"' class='checkbox-red' value='"+val.id+"' checked />";
-            input += "<label for='node"+val.level+val.name+"'></label>";
+            input += "<input type='checkbox' name='node["+val.level+"]["+val.name+"]' id='node"+val.level+val.name+"' class='checkbox-red' value='"+val.id+"'";
+            if ($.in_array(val.id, access)) {
+                input += " checked ";
+            }
+            input += " /><label for='node"+val.level+val.name+"'></label>";
             input += "</div>";
 
             input += "<div class='inline-block vertical-top'>"+val.title+"</div>";
@@ -90,8 +112,11 @@ $.loading({
             for (var i in val.child) {
                 var v = val.child[i];
                 input += "<div class='custom-checkbox'>";
-                input += "<input type='checkbox' name='node["+v.level+"]["+val.name+"_"+v.name+"]' id='node"+v.level+val.name+"_"+v.name+"' class='checkbox-red' value='"+v.id+"' />";
-                input += "<label for='node"+v.level+val.name+"_"+v.name+"'></label>";
+                input += "<input type='checkbox' name='node["+v.level+"]["+val.name+"_"+v.name+"]' id='node"+v.level+val.name+"_"+v.name+"' class='checkbox-red' value='"+v.id+"'";
+                if ($.in_array(v.id, access)) {
+                    input += " checked ";
+                }
+                input += " /><label for='node"+v.level+val.name+"_"+v.name+"'></label>";
                 input += "</div>";
 
                 input += "<div class='inline-block vertical-top'>"+v.title+"</div>";

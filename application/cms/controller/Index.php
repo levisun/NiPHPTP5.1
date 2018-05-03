@@ -12,14 +12,10 @@
  */
 namespace app\cms\controller;
 
-class Index
+class Index extends Base
 {
     public function index()
     {
-        halt(1);
-
-        $r = new \RandBonus;
-        $red = $r->getBonus(200, 90, 1, 30);
-        var_dump($red);
+        return $this->fetch('index');
     }
 }

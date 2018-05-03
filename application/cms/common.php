@@ -22,3 +22,14 @@ function concurrent_error()
         abort(502, '并发压力');
     }
 }
+
+/**
+ * 是否微信请求
+ * @param
+ * @return boolean
+ */
+function is_wechat_request()
+{
+    $agent = request()->header('user-agent');
+    return !!strpos($agent, 'MicroMessenger');
+}

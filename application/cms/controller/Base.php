@@ -12,7 +12,9 @@
  */
 namespace app\cms\controller;
 
-class Index
+use think\Controller;
+
+class Base extends Controller
 {
     // 请求参数
     protected $requestParam = [];
@@ -64,6 +66,21 @@ class Index
         $default_theme  = $this->domain . 'theme/cms/';
         $default_theme .= config('default_theme') . '/';
 
+        if (is_wechat_request()) {
+            if (is_dir($view_path . 'wechat' . DIRECTORY_SEPARATOR)) {
+                $view_path     .= 'wechat' . DIRECTORY_SEPARATOR;
+                $default_theme .= 'wechat/';
+            } elseif (is_dir($view_path . 'mobile' . DIRECTORY_SEPARATOR)) {
+                $view_path     .= 'mobile' . DIRECTORY_SEPARATOR;
+                $default_theme .= 'mobile/';
+            }
+        } elseif (request()->isMobile()) {
+            if (is_dir($view_path . 'mobile' . DIRECTORY_SEPARATOR)) {
+                $view_path     .= 'mobile' . DIRECTORY_SEPARATOR;
+                $default_theme .= 'mobile/';
+            }
+        }
+
         $replace = [
             '__DOMAIN__'   => $this->domain,
             '__PHP_SELF__' => basename($this->request->baseFile()),
@@ -77,8 +94,10 @@ class Index
         $template = config('template.');
         $template['view_path'] = $view_path;
         $template['tpl_replace_string'] = $replace;
+        $template['view_depr'] = '_';
         config('template.view_path', $view_path);
         config('template.tpl_replace_string', $replace);
+        config('template.view_depr', '_');
 
         $this->view->engine($template);
         $this->view->filter('view_filter');

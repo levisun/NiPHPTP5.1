@@ -415,6 +415,15 @@
         return string;
     }
 
+    jQuery.in_array = function (_search, _array){
+        for(var index in _array){
+            if(_array[index] == _search){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * URL get参数
      */
