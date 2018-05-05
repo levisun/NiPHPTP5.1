@@ -165,6 +165,16 @@ class Role
     }
 
     /**
+     * 删除
+     * @access public
+     * @param
+     *　@return mixed
+     */
+    public function remove()
+    {
+    }
+
+    /**
      * 查询要修改的数据
      * @access public
      * @param
@@ -195,5 +205,77 @@ class Role
         $role_data['access'] = $access;
 
         return $role_data;
+    }
+
+    /**
+     * 编辑
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function editor()
+    {
+        $receive_data = [
+            'id'        => input('post.id/f'),
+            'name'      => input('post.name'),
+            'status'    => input('post.status/f'),
+            'remark'    => input('post.remark'),
+            'node'      => input('post.node/a'),
+            '__token__' => input('post.__token__'),
+        ];
+
+        $result = validate('admin/role.editor', input('post.'), 'user');
+        if (true !== $result) {
+            return $result;
+        }
+
+        unset($receive_data['__token__']);
+
+        $result = model('common/role')->transaction(function(){
+            $role_data = [
+                'id'     => input('post.id/f'),
+                'name'   => input('post.name'),
+                'status' => input('post.status/f'),
+                'remark' => input('post.remark/f'),
+            ];
+            $result = model('common/role')
+            ->editor($role_data);
+
+            if ($result == false) {
+                return false;
+            }
+
+
+            $map = [
+                ['role_id', '=', input('post.id/f')],
+            ];
+            model('common/access')
+            ->where($map)
+            ->delete();
+
+            $node = input('post.node/a');
+            $node_data = [
+                'role_id' => $role_id,
+                'status'  => 1,
+            ];
+            foreach ($node as $key => $value) {
+                foreach ($value as $k => $val) {
+                    $k = explode('_', $k);
+                    $k = !empty($k[1]) ? $k[1] : $k[0];
+                    $node_data['node_id'] = $val;
+                    $node_data['level']   = $key;
+                    $node_data['module']  = $k;
+
+                    model('common/access')
+                    ->added($node_data);
+                }
+            }
+
+            create_action_log($role_data['name'], 'role_editor');
+
+            return !!$role_id;
+        });
+
+        return $result;
     }
 }

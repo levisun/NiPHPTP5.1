@@ -128,7 +128,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=role.added.user";
+    var form_data = "method=role.editor.user";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

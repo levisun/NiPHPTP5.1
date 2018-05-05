@@ -21,18 +21,24 @@ use think\facade\Lang;
  */
 function view_filter($_content)
 {
-    if (APP_DEBUG) {
-        return $_content;
-    } else {
-        $pattern = [
-            '/<\!--.*?-->/si'                 => '',    // HTML注释
-            '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
-            '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
-            '/(\r|\n|\f)/si'                  => '',    // 回车回行
-            '/( ){2,}/si'                     => '',    // 空格
-        ];
-        return preg_replace(array_keys($pattern), array_values($pattern), $_content);
+    $pattern = [
+        '/<\!--.*?-->/si'                 => '',    // HTML注释
+        '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
+        '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
+        '/( ){2,}/si'                     => '',    // 空格
+    ];
+
+    if (!APP_DEBUG) {
+        $pattern['/(\r|\n|\f)/si'] = '';
     }
+
+    $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
+
+    /*if (!APP_DEBUG) {
+        Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
+    }*/
+
+    return $_content;
 }
 
 /**
@@ -156,8 +162,10 @@ function ajax_sign()
         time() . 'sign'
     ));
 
-    session('__sign', md5(
-        request()->domain() . escape_xss(request()->url(true))
+    session('__sign', sha1(
+        md5(date('Y-m-d')) .
+        md5(request()->domain() .
+            escape_xss(request()->url(true)))
     ));
 }
 
@@ -168,8 +176,10 @@ function ajax_sign()
 function has_illegal_ajax_sign()
 {
     if (session('?__sign')) {
-        $http_referer = md5(
-            request()->domain() . request()->server('http_referer')
+        $http_referer = sha1(
+            md5(date('Y-m-d')) .
+            md5(request()->domain() .
+                request()->server('http_referer'))
         );
 
         if (session('__sign') === $http_referer) {
@@ -205,6 +215,10 @@ function md5_password($_password, $_salt)
 use_time_memory(true);
 function use_time_memory($_start = false)
 {
+    if (!APP_DEBUG) {
+        return ;
+    }
+
     if ($_start) {
         Debug::remark('memory_start');
     } else {

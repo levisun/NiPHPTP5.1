@@ -12,7 +12,7 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', true);
+define('APP_DEBUG', false);
 // CB|Alpha 内测版
 // RC|Beta 正式候选版
 // Demo 演示版
@@ -26,12 +26,17 @@ set_time_limit(600);
 // 设置运行内存
 ini_set('memory_limit', '32M');
 // 开启gzip压缩
-if (!APP_DEBUG &&
+if (!APP_DEBUG && function_exists('ob_gzhandler')) {
+    ob_start('ob_gzhandler');
+}
+/*if (!APP_DEBUG &&
     extension_loaded('zlib') &&
     strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false
 ) {
     ob_start('ob_gzhandler');
-}
+}*/
+
+
 
 
 
