@@ -18,18 +18,49 @@ class HtmlCacheBehavior
 
     public function run()
     {
-        if (!APP_DEBUG && request()->controller() != 'Api') {
+        $request =
+        !request()->isAjax() &&
+        !request()->isPjax() &&
+        !request()->isPost();
+
+        if (!APP_DEBUG && $request) {
             $this->isAuth();
 
             $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
             $html_path .= request()->module() . DIRECTORY_SEPARATOR;
-            $html_path .= md5(request()->url()) . '.html';
+            $file_name  = md5(request()->url());
+            $html_path .= substr($file_name, 0, 1) . DIRECTORY_SEPARATOR;
+            $html_path .= $file_name . '.html';
 
             if (is_file($html_path)) {
                 include $html_path;
+
+                // AJAX请求加密签名
+                ajax_sign();
+
                 exit();
             }
         }
+    }
+
+    public function write($_content)
+    {
+
+        $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
+        $html_path .= request()->module() . DIRECTORY_SEPARATOR;
+
+        // 开启调试删除HTML文件
+        if (APP_DEBUG) {
+            \File::remove($html_path);
+            return false;
+        }
+
+        $file_name  = md5(request()->url());
+        $html_path .= substr($file_name, 0, 1) . DIRECTORY_SEPARATOR;
+        $html_path .= $file_name . '.html';
+
+        $storage = new \think\template\driver\File;
+        $storage->write($html_path, $_content);
     }
 
     /**
@@ -51,7 +82,7 @@ class HtmlCacheBehavior
                     $this->redirect(url('settings/info'));
                 }
             }
-        } elseif (request()->module() == 'cms') {
+        } elseif (request()->module() == 'user') {
             # code...
         }
     }
@@ -66,15 +97,5 @@ class HtmlCacheBehavior
     {
         header('Location:' . $_url);
         exit();
-    }
-
-    public function write($_content)
-    {
-        $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
-        $html_path .= request()->module() . DIRECTORY_SEPARATOR;
-        $html_path .= md5(request()->url()) . '.html';
-
-        $storage = new \think\template\driver\File;
-        $storage->write($html_path, $_content);
     }
 }

@@ -9,6 +9,15 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+// Route::pattern([
+    // 'cid' => '\d+',
+    // 'id'  => '\d+',
+// ]);
+
+// Route::name('admin')->cache('__URL__', 600);
+// Route::rule('admin/account/login', 'admin/login')->cache(3600);
+// Route::rule('admin/settings/info', 'admin/settings/info')->cache(3600);
+
 return [
     // 全局变量规则定义
     '__pattern__' => [

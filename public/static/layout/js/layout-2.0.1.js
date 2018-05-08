@@ -151,6 +151,7 @@
             jQuery("div.layoutUi-loadpopup").remove();
             jQuery("html").removeAttr("style");
             jQuery("body").removeAttr("style");
+            clearTimeout(st);
         } else {
             var html = "";
             jQuery("html").css({"height": "100%", "overflow": "hidden"});
@@ -162,6 +163,10 @@
             html += "</div>";
             html += "</div>";
             jQuery(_element).append(html);
+
+            var st = setTimeout(function(){
+                jQuery.uiLoadpopup(false);
+            }, 15 * 1000);
         }
     }
 
@@ -391,6 +396,13 @@
     }
 
     /**
+     * 重写URL地址[不刷新]
+     */
+    jQuery.rewriteUrl = function(_url) {
+        history.replaceState(null, null, _url);
+    }
+
+    /**
      * 是否选中
      */
     jQuery.isChecked = function(_element) {
@@ -415,6 +427,9 @@
         return string;
     }
 
+    /**
+     * 搜索数组中是否存在指定的值
+     */
     jQuery.in_array = function (_search, _array){
         for(var index in _array){
             if(_array[index] == _search){
