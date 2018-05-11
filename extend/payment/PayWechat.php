@@ -155,8 +155,12 @@ class PayWechat
         $this->params['device_info'] = 'WEB';
 
         $result = $this->unifiedOrder();
-        $code_url = urlencode($result['code_url']);
-        return 'http://paysdk.weixin.qq.com/example/qrcode.php?data=' . $code_url;
+        if ($result['return_code'] === 'FAIL') {
+            return $result['return_msg'];
+        } else {
+            $code_url = urlencode($result['code_url']);
+            return 'http://paysdk.weixin.qq.com/example/qrcode.php?data=' . $code_url;
+        }
     }
 
     /**

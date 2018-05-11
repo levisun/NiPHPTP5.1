@@ -172,6 +172,50 @@ class Role
      */
     public function remove()
     {
+        $result = model('common/role')->transaction(function(){
+            $map  = [
+                ['id', '=', input('post.id/f')],
+            ];
+
+            $result =
+            model('common/role')->field(true)
+            ->where($map)
+            ->find();
+
+            create_action_log($result['name'], 'node_remove');
+
+            $receive_data = [
+                'id' => input('post.id/f'),
+            ];
+            model('common/role')
+            ->remove($receive_data);
+
+            $map = [
+                ['role_admin', '=', input('post.id/f')]
+            ];
+            $role_admin =
+            model('common/RoleAdmin')
+            ->where($map)
+            ->select();
+            $admin_id = [];
+            foreach ($role_admin as $key => $value) {
+                $admin_id[] = $value['user_id'];
+            }
+
+            $map = [
+                ['id', 'in', implode(',', $role_admin)]
+            ];
+            model('common/admin')
+            $this->where($map)
+            ->delete();
+
+            $receive_data = [
+                'role_id' => input('post.id/f'),
+            ];
+            model('common/role_admin')
+            ->remove($receive_data);
+        });
+
     }
 
     /**

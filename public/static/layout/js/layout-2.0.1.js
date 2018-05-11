@@ -118,19 +118,19 @@
      */
     jQuery.uiPopup = function (_params, _status = "init") {
         if (_status === "init") {
-            var style = jQuery.isset(_params.style, "");
+            var style = jQuery.isSet(_params.style, "");
             if (style) {
                 style = "layoutUi-popup-"+style;
             }
 
             var html = "<div class='layoutUi-popup "+style+"'><div class='layoutUi-popup-mask'></div><div class='layoutUi-popup-container'><div class='layoutUi-pull-right layoutUi-close' style='margin: 10px' bindtap=''></div>";
-            if (jQuery.isset(_params.title)) {
+            if (jQuery.isSet(_params.title)) {
                 html += "<div class='layoutUi-popup-header'>"+_params.title+"</div>";
             }
-            if (jQuery.isset(_params.content)) {
+            if (jQuery.isSet(_params.content)) {
                 html += "<div class='layoutUi-popup-content'>"+_params.content+"</div>";
             }
-            if (jQuery.isset(_params.footer)) {
+            if (jQuery.isSet(_params.footer)) {
                 html += "<div class='layoutUi-popup-footer'>"+_params.footer+"</div>";
             }
             html += "</div></div>";
@@ -149,12 +149,10 @@
     jQuery.uiLoadpopup = function (_tips = "加载中...", _element = "body") {
         if (_tips === false) {
             jQuery("div.layoutUi-loadpopup").remove();
-            jQuery("html").removeAttr("style");
             jQuery("body").removeAttr("style");
             clearTimeout(st);
         } else {
             var html = "";
-            jQuery("html").css({"height": "100%", "overflow": "hidden"});
             jQuery("body").css({"height": "100%", "overflow": "hidden"});
             html  = "<div class='layoutUi-loadpopup'>";
             html += "<div class='layoutUi-loadpopup-mask'></div>";
@@ -225,7 +223,7 @@
     jQuery.upload = function (_params, _callback) {
         jQuery.uiLoadpopup();
 
-        _params.type = jQuery.isset(_params.type, "post");
+        _params.type = jQuery.isSet(_params.type, "post");
 
         var form_data = new FormData(_params.file);
 
@@ -250,16 +248,13 @@
     /**
      * 加载更多
      */
-    jQuery.more = function (_params, _callback) {
+    jQuery.loadMore = function (_callback) {
         jQuery("body").attr("Layout-loading-page", 1);
         jQuery("body").attr("Layout-loading-bool", "true");
 
-        jQuery(window).scroll(function () {
+        jQuery(window).scroll(function(){
             var is = jQuery("body").attr("Layout-loading-bool");
             if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) / 1.05) {
-
-                jQuery("html").css({"height": "100%", "overflow": "hidden"});
-                jQuery("body").css({"height": "100%", "overflow": "hidden"});
 
                 var page_num = jQuery("body").attr("Layout-loading-page");
                     page_num++;
@@ -267,15 +262,18 @@
                 jQuery("body").attr("Layout-loading-page", page_num);
                 jQuery("body").attr("Layout-loading-bool", "false");
 
-                _params["data"]["p"] = page_num;
-                jQuery.loading(_params, function (result) {
-                    _callback(result);
+                jQuery.loading({
+                    type: "get",
+                    url: window.location.href,
+                    animation: true,
+                    data: {
+                        p: page_num,
+                    },
+                }, function (result) {
+                    jQuery("body").attr("Layout-loading-bool", "true");
+                    jQuery("body").removeAttr("style");
 
-                    setTimeout(function () {
-                        jQuery("body").attr("Layout-loading-bool", "true");
-                        jQuery("html").removeAttr("style");
-                        jQuery("body").removeAttr("style");
-                    }, 1500);
+                    _callback(result);
                 });
             }
         });
@@ -285,17 +283,17 @@
      * 加载
      */
     jQuery.loading = function (_params, _callback) {
-        if (jQuery.isset(_params.animation) && _params.animation === true) {
+        if (jQuery.isSet(_params.animation) && _params.animation === true) {
             jQuery.uiLoadpopup();
         }
 
-        var ajax_type        = jQuery.isset(_params.type, "post"),
-            ajax_url         = jQuery.isset(_params.url, "?ajax_url=undefined"),
-            ajax_data        = jQuery.isset(_params.data, {}),
-            ajax_async       = jQuery.isset(_params.async, true),
-            ajax_cache       = jQuery.isset(_params.cache, false),
-            ajax_dataType    = jQuery.isset(_params.dataType, ""),
-            ajax_processData = jQuery.isset(_params.processData, true);
+        var ajax_type        = jQuery.isSet(_params.type, "post"),
+            ajax_url         = jQuery.isSet(_params.url, "?ajax_url=undefined"),
+            ajax_data        = jQuery.isSet(_params.data, {}),
+            ajax_async       = jQuery.isSet(_params.async, true),
+            ajax_cache       = jQuery.isSet(_params.cache, false),
+            ajax_dataType    = jQuery.isSet(_params.dataType, ""),
+            ajax_processData = jQuery.isSet(_params.processData, true);
 
         jQuery.ajax({
             type:     ajax_type,
@@ -306,13 +304,13 @@
             data:     ajax_data,
             success: function (result) {
                 _callback(result);
-                if (jQuery.isset(_params.animation) && _params.animation === true) {
+                if (jQuery.isSet(_params.animation) && _params.animation === true) {
                     jQuery.uiLoadpopup(false);
                 }
             },
             error: function (result) {
                 _callback(result);
-                if (jQuery.isset(_params.animation) && _params.animation === true) {
+                if (jQuery.isSet(_params.animation) && _params.animation === true) {
                     jQuery.uiLoadpopup(false);
                 }
             }
@@ -369,7 +367,7 @@
     /**
      * 变量是否存在
      */
-    jQuery.isset = function (_name, _default) {
+    jQuery.isSet = function (_name, _default) {
         if (typeof(_name) == "undefined") {
             if (typeof(_default) == "undefined") {
                 return false;
@@ -442,7 +440,7 @@
     /**
      * URL get参数
      */
-    jQuery.urlParam = function (_key, _url = "") {
+    jQuery.urlParam = function (_key, _default = "", _url = "") {
         var reg = new RegExp("(^|&)" + _key + "=([^&]*)(&|$)");
         var value = "";
         if (_url) {
@@ -458,7 +456,7 @@
             value = decodeURIComponent(result[2]);
         }
 
-        return value ? value : null;
+        return value ? value : _default;
     }
 
     /**

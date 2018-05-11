@@ -18,13 +18,17 @@ class HtmlCacheBehavior
 
     public function run()
     {
+        if (in_array(request()->module(), ['admin', 'user'])) {
+            return ;
+        }
+
         $request =
         !request()->isAjax() &&
         !request()->isPjax() &&
         !request()->isPost();
 
         if (!APP_DEBUG && $request) {
-            $this->isAuth();
+            // $this->isAuth();
 
             $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
             $html_path .= request()->module() . DIRECTORY_SEPARATOR;
@@ -33,11 +37,10 @@ class HtmlCacheBehavior
             $html_path .= $file_name . '.html';
 
             if (is_file($html_path)) {
-                include $html_path;
-
                 // AJAX请求加密签名
                 ajax_sign();
 
+                include_once $html_path;
                 exit();
             }
         }
@@ -45,6 +48,9 @@ class HtmlCacheBehavior
 
     public function write($_content)
     {
+        if (in_array(request()->module(), ['admin', 'user'])) {
+            return ;
+        }
 
         $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
         $html_path .= request()->module() . DIRECTORY_SEPARATOR;
@@ -52,15 +58,15 @@ class HtmlCacheBehavior
         // 开启调试删除HTML文件
         if (APP_DEBUG) {
             \File::remove($html_path);
-            return false;
+            return ;
+        } else {
+            $file_name  = md5(request()->url());
+            $html_path .= substr($file_name, 0, 1) . DIRECTORY_SEPARATOR;
+            $html_path .= $file_name . '.html';
+
+            $storage = new \think\template\driver\File;
+            $storage->write($html_path, $_content);
         }
-
-        $file_name  = md5(request()->url());
-        $html_path .= substr($file_name, 0, 1) . DIRECTORY_SEPARATOR;
-        $html_path .= $file_name . '.html';
-
-        $storage = new \think\template\driver\File;
-        $storage->write($html_path, $_content);
     }
 
     /**

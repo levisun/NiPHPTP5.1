@@ -2,7 +2,6 @@
 # robots.txt for NiPHPCMS
 #
 User-agent: *
-Disallow: /backup/
 Disallow: /install/
 Disallow: /static/
 Disallow: /theme/
