@@ -34,7 +34,7 @@ function view_filter($_content)
 
     $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
 
-    Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
+    // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;
 }
@@ -244,13 +244,13 @@ function remove_rundata()
         return false;
     }
 
-    $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR;
+    $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
 
     $all_files = [];
     $files = [
-        'cache' => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . '*'),
-        'log'   => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . '*'),
-        'tmep'  => (array) glob($dir . 'runtime' . DIRECTORY_SEPARATOR . 'temp' .  DIRECTORY_SEPARATOR . '*'),
+        'cache' => (array) glob($dir . 'cache' . DIRECTORY_SEPARATOR . '*'),
+        'log'   => (array) glob($dir . 'log' . DIRECTORY_SEPARATOR . '*'),
+        'tmep'  => (array) glob($dir . 'temp' .  DIRECTORY_SEPARATOR . '*'),
         // 'backup' => (array) glob($dir . 'public' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . '*'),
     ];
 

@@ -18,12 +18,12 @@ function _handleLogin(_request) {
         async: false,
         data: data,
     }, function(result){
-        if (result.error_msg === 'ILLEGAL') {
+        if (result.msg === 'ILLEGAL') {
             $.reload();
-        } else if (result.error_msg === 'SUCCESS' && result.return_code === 'SUCCESS') {
+        } else if (result.msg === 'SUCCESS' && result.code === 'SUCCESS') {
             $.redirect(_request.domain+"admin/settings/info.shtml");
         } else {
-            $.uiToast(result.return_msg);
+            $.uiToast(result.msg);
         }
     });
 }

@@ -89,8 +89,8 @@ $.loading({
         id: "{$Request.param.id}"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        editor_data = result.return_result;
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
         eachToInput(editor_data);
     }
 });
@@ -102,10 +102,10 @@ $.loading({
         method: "node.query.user",
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.return_result, "id", "title", editor_data.pid);
+    var option = eachToOption(result.data, "id", "title", editor_data.pid);
     $("#pid").append(option);
 });
 

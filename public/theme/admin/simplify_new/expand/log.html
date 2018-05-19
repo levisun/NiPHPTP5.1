@@ -35,27 +35,27 @@ $.loading({
         method: "log.query.expand"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
 
     var list = "";
-    for (var index in result.return_result.list) {
+    for (var index in result.data.list) {
         list = list + "<tr>";
-        list = list + "<td>["+result.return_result.list[index].role_name+"]"+result.return_result.list[index].username+"</td>";
-        list = list + "<td>["+result.return_result.list[index].module+"]"+result.return_result.list[index].title+"</td>";
-        list = list + "<td>"+result.return_result.list[index].remark+"</td>";
-        list = list + "<td>"+result.return_result.list[index].action_ip+"</td>";
-        list = list + "<td>"+result.return_result.list[index].create_time+"</td>";
+        list = list + "<td>["+result.data.list[index].role_name+"]"+result.data.list[index].username+"</td>";
+        list = list + "<td>["+result.data.list[index].module+"]"+result.data.list[index].title+"</td>";
+        list = list + "<td>"+result.data.list[index].remark+"</td>";
+        list = list + "<td>"+result.data.list[index].action_ip+"</td>";
+        list = list + "<td>"+result.data.list[index].create_time+"</td>";
         list = list + "</tr>";
     }
     $("#dataTable tbody").prepend(list);
-    $("#paging").prepend(result.return_result.page);
+    $("#paging").prepend(result.data.page);
     pagingToAjax();
 });
 
 $(document).on("click", "#paging a", function(){
-    var page = $.urlParam("p", $(this).attr("url"));
+    var page = $.urlParam("p", "", $(this).attr("url"));
     $.loading({
         url: request.api.query,
         animation: true,
@@ -64,24 +64,24 @@ $(document).on("click", "#paging a", function(){
             p: page
         }
     }, function(result){
-        if (result.return_code !== "SUCCESS") {
+        if (result.code !== "SUCCESS") {
             return false;
         }
         $("#dataTable tbody tr").remove();
         $("#paging ul").remove();
 
         var list = "";
-        for (var index in result.return_result.list) {
+        for (var index in result.data.list) {
             list = list + "<tr>";
-            list = list + "<td>["+result.return_result.list[index].role_name+"]"+result.return_result.list[index].username+"</td>";
-            list = list + "<td>["+result.return_result.list[index].module+"]"+result.return_result.list[index].title+"</td>";
-            list = list + "<td>"+result.return_result.list[index].remark+"</td>";
-            list = list + "<td>"+result.return_result.list[index].action_ip+"</td>";
-            list = list + "<td>"+result.return_result.list[index].create_time+"</td>";
+            list = list + "<td>["+result.data.list[index].role_name+"]"+result.data.list[index].username+"</td>";
+            list = list + "<td>["+result.data.list[index].module+"]"+result.data.list[index].title+"</td>";
+            list = list + "<td>"+result.data.list[index].remark+"</td>";
+            list = list + "<td>"+result.data.list[index].action_ip+"</td>";
+            list = list + "<td>"+result.data.list[index].create_time+"</td>";
             list = list + "</tr>";
         }
         $("#dataTable tbody").prepend(list);
-        $("#paging").prepend(result.return_result.page);
+        $("#paging").prepend(result.data.page);
         pagingToAjax();
     });
 });

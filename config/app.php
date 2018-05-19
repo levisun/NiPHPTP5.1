@@ -57,4 +57,7 @@ return [
     'request_cache'        => false,
     'request_cache_expire' => null,
     'request_cache_except' => [],
+
+    'route_check_cache'     => false,
+    'route_check_cache_key' => '',
 ];

@@ -18,6 +18,30 @@ class User extends Base
 {
 
     /**
+     * 会员管理
+     * @access public
+     * @param  string $operate
+     * @return mixed
+     */
+    public function member($operate = '')
+    {
+        $tpl = $operate ? 'member_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
+     * 会员等级管理
+     * @access public
+     * @param  string $operate
+     * @return mixed
+     */
+    public function level($operate = '')
+    {
+        $tpl = $operate ? 'level_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
      * 管理员
      * @access public
      * @param  string $operate

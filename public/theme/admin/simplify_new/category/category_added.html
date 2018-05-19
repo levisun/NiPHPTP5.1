@@ -144,10 +144,10 @@ $.loading({
         pid: "{$Request.param.pid}"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        if (result.return_result) {
-            $("#pid").val(result.return_result.id);
-            $("#parent").val(result.return_result.name);
+    if (result.code === "SUCCESS") {
+        if (result.data) {
+            $("#pid").val(result.data.id);
+            $("#parent").val(result.data.name);
         } else {
             $("#pid").val("0");
             $("#parent").val("{:lang('empty')}");
@@ -162,8 +162,8 @@ $.loading({
         method: "category.type.category"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        var type_option = eachToOption(result.return_result, "id", "name");
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name");
         $("#type_id").html(type_option);
     }
 });
@@ -175,8 +175,8 @@ $.loading({
         method: "category.models.category"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        var models_option = eachToOption(result.return_result, "id", "model_name");
+    if (result.code === "SUCCESS") {
+        var models_option = eachToOption(result.data, "id", "model_name");
         $("#model_id").html(models_option);
     }
 });
@@ -188,8 +188,8 @@ $.loading({
         method: "category.level.category"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        var level_option = eachToOption(result.return_result, "id", "name");
+    if (result.code === "SUCCESS") {
+        var level_option = eachToOption(result.data, "id", "name");
         $("#access_id").append(level_option);
     }
 });
@@ -206,9 +206,9 @@ $(".upload-btn").click(function(){
         url: request.api.upload+"?type=category",
         file: $("#uploadForm")[0],
     }, function(result){
-        var dir = result.return_result.save_dir + result.return_result.file_name;
+        var dir = result.data.save_dir + result.data.file_name;
         $("#image").val(dir);
-        $("#img-image").attr("src",  result.return_result.domain + dir);
+        $("#img-image").attr("src",  result.data.domain + dir);
         $.uiPopup({}, "hide");
     });
 });

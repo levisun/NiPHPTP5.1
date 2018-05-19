@@ -85,10 +85,10 @@ $.loading({
         method: "node.query.user",
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.return_result, "id", "title");
+    var option = eachToOption(result.data, "id", "title");
     $("#pid").append(option);
 });
 

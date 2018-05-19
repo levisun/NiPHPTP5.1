@@ -72,8 +72,8 @@ $.loading({
         id: "{$Request.param.id}"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        editor_data = result.return_result;
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
         access = editor_data.access;
         eachToInput(editor_data);
     }
@@ -87,13 +87,13 @@ $.loading({
         method: "role.node.user",
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
 
     var input = "";
-    for (var index in result.return_result) {
-        var value = result.return_result[index];
+    for (var index in result.data) {
+        var value = result.data[index];
         input += "<input type='hidden' name='node["+value.level+"]["+value.name+"]' value='"+value.id+"' checked />";
 
         for (var ind in value.child) {
@@ -135,7 +135,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/user/role.shtml");
+        // handle(result, "admin/user/role.shtml");
     });
     return false;
 });

@@ -44,8 +44,8 @@ $.loading({
         method: "type.category.category"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        var type_option = eachToOption(result.return_result, "id", "name");
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name");
         $("#category_id").append(type_option);
     }
 });

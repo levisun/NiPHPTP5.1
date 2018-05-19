@@ -206,7 +206,7 @@ class Role
                 ['id', 'in', implode(',', $role_admin)]
             ];
             model('common/admin')
-            $this->where($map)
+            ->where($map)
             ->delete();
 
             $receive_data = [
@@ -282,10 +282,10 @@ class Role
                 'status' => input('post.status/f'),
                 'remark' => input('post.remark/f'),
             ];
-            $result = model('common/role')
+            $res = model('common/role')
             ->editor($role_data);
 
-            if ($result == false) {
+            if ($res === false) {
                 return false;
             }
 
@@ -299,7 +299,7 @@ class Role
 
             $node = input('post.node/a');
             $node_data = [
-                'role_id' => $role_id,
+                'role_id' => input('post.id/f'),
                 'status'  => 1,
             ];
             foreach ($node as $key => $value) {
@@ -317,7 +317,7 @@ class Role
 
             create_action_log($role_data['name'], 'role_editor');
 
-            return !!$role_id;
+            return !!$res;
         });
 
         return $result;

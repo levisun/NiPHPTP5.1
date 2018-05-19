@@ -134,12 +134,12 @@ $.loading({
         method: "safe.query.settings"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        for (var index in result.return_result) {
+    if (result.code === "SUCCESS") {
+        for (var index in result.data) {
             if (index != "upload_file_max" && index != "upload_file_type") {
-                $("#"+index+result.return_result[index]).attr("checked", "checked");
+                $("#"+index+result.data[index]).attr("checked", "checked");
             } else {
-                $("#"+index).val(result.return_result[index]);
+                $("#"+index).val(result.data[index]);
             }
         }
     }

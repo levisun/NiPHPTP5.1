@@ -35,13 +35,11 @@ function to_yen($value, $param = true)
 
 /**
  * 生成订单号
- * @param  string $other
  * @return string
  */
-function order_no($other = '')
+function order_no()
 {
     list($micro, $time) = explode(' ', microtime());
     $micro = str_pad($micro * 1000000, 6, 0, STR_PAD_LEFT);
-
-    return $time . $micro . mt_rand(111, 999) . $other;
+    return substr($time, 0, 5) . date('YmdHis') . $micro . mt_rand(1111111, 9999999);
 }

@@ -60,8 +60,8 @@ $.loading({
         id: "{$Request.param.id}"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        editor_data = result.return_result;
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
         eachToInput(editor_data);
     }
 });
@@ -73,10 +73,10 @@ $.loading({
         method: "admin.role.user",
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.return_result, "id", "name", editor_data.role_id);
+    var option = eachToOption(result.data, "id", "name", editor_data.role_id);
     $("#role").append(option);
 });
 

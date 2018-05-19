@@ -52,32 +52,32 @@ $.loading({
         type: "{$type}"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
 
     var list = "";
-    for (var index in result.return_result.list) {
+    for (var index in result.data.list) {
         list = list + "<tr>";
-        list = list + "<td><input type='text' name='sort["+result.return_result.list[index].id+"]' class='form-control mini' value='"+result.return_result.list[index].sort+"'></td>";
-        list = list + "<td>"+result.return_result.list[index].keyword+"</td>";
-        list = list + "<td>"+result.return_result.list[index].title+"</td>";
-        list = list + "<td>"+result.return_result.list[index].content+"</td>";
-        list = list + "<td><img src='"+result.return_result.list[index].image+"' width='100' /></td>";
-        list = list + "<td>"+result.return_result.list[index].status+"</td>";
+        list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
+        list = list + "<td>"+result.data.list[index].keyword+"</td>";
+        list = list + "<td>"+result.data.list[index].title+"</td>";
+        list = list + "<td>"+result.data.list[index].content+"</td>";
+        list = list + "<td><img src='"+result.data.list[index].image+"' width='100' /></td>";
+        list = list + "<td>"+result.data.list[index].status+"</td>";
         list = list + "<td>";
-        list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-        list = list + "<a class='np-btn-remove' data-id='"+result.return_result.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
         list = list + "</td>";
         list = list + "</tr>";
     }
     $("#dataTable tbody").prepend(list);
-    $("#paging").prepend(result.return_result.page);
+    $("#paging").prepend(result.data.page);
     pagingToAjax();
 });
 
 $(document).on("click", "#paging a", function(){
-    var page = $.urlParam("p", $(this).attr("url"));
+    var page = $.urlParam("p", "", $(this).attr("url"));
     $.loading({
         url: request.api.query,
         animation: true,
@@ -86,29 +86,29 @@ $(document).on("click", "#paging a", function(){
             p: page
         }
     }, function(result){
-        if (result.return_code !== "SUCCESS") {
+        if (result.code !== "SUCCESS") {
             return false;
         }
         $("#dataTable tbody tr").remove();
         $("#paging ul").remove();
 
         var list = "";
-        for (var index in result.return_result.list) {
+        for (var index in result.data.list) {
             list = list + "<tr>";
-            list = list + "<td><input type='text' name='sort["+result.return_result.list[index].id+"]' class='form-control mini' value='"+result.return_result.list[index].sort+"'></td>";
-            list = list + "<td>"+result.return_result.list[index].keyword+"</td>";
-            list = list + "<td>"+result.return_result.list[index].title+"</td>";
-            list = list + "<td>"+result.return_result.list[index].content+"</td>";
-            list = list + "<td><img src='"+result.return_result.list[index].image+"' width='100' /></td>";
-            list = list + "<td>"+result.return_result.list[index].status+"</td>";
+            list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
+            list = list + "<td>"+result.data.list[index].keyword+"</td>";
+            list = list + "<td>"+result.data.list[index].title+"</td>";
+            list = list + "<td>"+result.data.list[index].content+"</td>";
+            list = list + "<td><img src='"+result.data.list[index].image+"' width='100' /></td>";
+            list = list + "<td>"+result.data.list[index].status+"</td>";
             list = list + "<td>";
-            list = list + "<a href='"+result.return_result.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-            list = list + "<a class='np-btn-remove' data-id='"+result.return_result.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
             list = list + "</td>";
             list = list + "</tr>";
         }
         $("#dataTable tbody").prepend(list);
-        $("#paging").prepend(result.return_result.page);
+        $("#paging").prepend(result.data.page);
         pagingToAjax();
     });
 });
@@ -137,7 +137,7 @@ $(document).on("click", ".np-btn-remove", function(){
         },
     }, function(result){
         handle(result, false, false);
-        if (result.return_code === "SUCCESS") {
+        if (result.code === "SUCCESS") {
             $.reload();
         }
     });

@@ -37,26 +37,26 @@ $.loading({
         method: "model.query.category"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
     var list = "";
-    for (var index in result.return_result.list) {
+    for (var index in result.data.list) {
         list = list + "<tr>";
-        list = list + "<td>"+result.return_result.list[index].id+"</td>";
-        list = list + "<td>"+result.return_result.list[index].model_name+"</td>";
-        list = list + "<td>"+result.return_result.list[index].table_name+"</td>";
-        list = list + "<td>"+result.return_result.list[index].model_status+"</td>";
+        list = list + "<td>"+result.data.list[index].id+"</td>";
+        list = list + "<td>"+result.data.list[index].model_name+"</td>";
+        list = list + "<td>"+result.data.list[index].table_name+"</td>";
+        list = list + "<td>"+result.data.list[index].model_status+"</td>";
 
         list = list + "</tr>";
     }
     $("#dataTable tbody").prepend(list);
-    $("#paging").prepend(result.return_result.page);
+    $("#paging").prepend(result.data.page);
     pagingToAjax();
 });
 
 $(document).on("click", "#paging a", function(){
-    var page = $.urlParam("p", $(this).attr("url"));
+    var page = $.urlParam("p", "", $(this).attr("url"));
     $.loading({
         url: request.api.query,
         animation: true,
@@ -65,25 +65,25 @@ $(document).on("click", "#paging a", function(){
             p: page
         }
     }, function(result){
-        if (result.return_code !== "SUCCESS") {
+        if (result.code !== "SUCCESS") {
             return false;
         }
         $("#dataTable tbody tr").remove();
         $("#paging ul").remove();
 
         var list = "";
-        for (var index in result.return_result.list) {
+        for (var index in result.data.list) {
             list = list + "<tr>";
-            list = list + "<td>"+result.return_result.list[index].id+"</td>";
-            list = list + "<td>"+result.return_result.list[index].model_name+"</td>";
-            list = list + "<td>"+result.return_result.list[index].table_name+"</td>";
-            list = list + "<td>"+result.return_result.list[index].model_status+"</td>";
+            list = list + "<td>"+result.data.list[index].id+"</td>";
+            list = list + "<td>"+result.data.list[index].model_name+"</td>";
+            list = list + "<td>"+result.data.list[index].table_name+"</td>";
+            list = list + "<td>"+result.data.list[index].model_status+"</td>";
 
             list = list + "</tr>";
         }
 
         $("#dataTable tbody").prepend(list);
-        $("#paging").prepend(result.return_result.page);
+        $("#paging").prepend(result.data.page);
         pagingToAjax();
     });
 });

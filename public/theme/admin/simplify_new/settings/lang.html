@@ -63,32 +63,32 @@ $.loading({
         method: "lang.query.settings"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return ;
     }
 
-    $(".lang_switch_on"+result.return_result["lang_switch_on"]).addClass("checked");
-    $("#lang_switch_on"+result.return_result["lang_switch_on"]).attr("checked", "checked");
+    $(".lang_switch_on"+result.data["lang_switch_on"]).addClass("checked");
+    $("#lang_switch_on"+result.data["lang_switch_on"]).attr("checked", "checked");
 
     var option = '';
-    for (var index in result.return_result["lang_list"]) {
-        if (result.return_result["lang_list"][index] == result.return_result["sys_default_lang"]) {
+    for (var index in result.data["lang_list"]) {
+        if (result.data["lang_list"][index] == result.data["sys_default_lang"]) {
             checked = "selected='selected'";
         } else {
             checked = "";
         }
-        option = option + "<option value='"+result.return_result["lang_list"][index]+"' "+checked+">"+result.return_result["lang_list"][index]+"</option>";
+        option = option + "<option value='"+result.data["lang_list"][index]+"' "+checked+">"+result.data["lang_list"][index]+"</option>";
     }
     $(".sys_default_lang").html(option);
 
     var option = '';
-    for (var index in result.return_result["lang_list"]) {
-        if (result.return_result["lang_list"][index] == result.return_result["web_default_lang"]) {
+    for (var index in result.data["lang_list"]) {
+        if (result.data["lang_list"][index] == result.data["web_default_lang"]) {
             checked = "selected='selected'";
         } else {
             checked = "";
         }
-        option = option + "<option value='"+result.return_result["lang_list"][index]+"' "+checked+">"+result.return_result["lang_list"][index]+"</option>";
+        option = option + "<option value='"+result.data["lang_list"][index]+"' "+checked+">"+result.data["lang_list"][index]+"</option>";
     }
     $(".web_default_lang").html(option);
 });

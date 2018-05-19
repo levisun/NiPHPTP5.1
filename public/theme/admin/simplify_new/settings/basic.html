@@ -61,9 +61,9 @@ $.loading({
         method: "basic.query.settings"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        for (var index in result.return_result) {
-            $("#"+index).val($.htmlDecode(result.return_result[index]));
+    if (result.code === "SUCCESS") {
+        for (var index in result.data) {
+            $("#"+index).val($.htmlDecode(result.data[index]));
         }
     }
 });

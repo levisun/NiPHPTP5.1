@@ -54,35 +54,35 @@ $.loading({
         pid: "{$Request.param.pid}"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
 
     var list = "";
-    for (var index in result.return_result) {
+    for (var index in result.data) {
         list = list + "<tr>";
-        list = list + "<td><input type='text' name='sort["+result.return_result[index].id+"]' class='form-control mini' value='"+result.return_result[index].sort+"'></td>";
-        list = list + "<td>"+result.return_result[index]["id"]+"</td><td>"+result.return_result[index]["name"]+"</td>";
-        list = list + "<td>"+result.return_result[index].type_name+"</td>";
-        list = list + "<td>"+result.return_result[index].model_name+"</td>";
-        list = list + "<td>"+result.return_result[index].show+"</td>";
-        list = list + "<td>"+result.return_result[index].channel+"</td>";
+        list = list + "<td><input type='text' name='sort["+result.data[index].id+"]' class='form-control mini' value='"+result.data[index].sort+"'></td>";
+        list = list + "<td>"+result.data[index]["id"]+"</td><td>"+result.data[index]["name"]+"</td>";
+        list = list + "<td>"+result.data[index].type_name+"</td>";
+        list = list + "<td>"+result.data[index].model_name+"</td>";
+        list = list + "<td>"+result.data[index].show+"</td>";
+        list = list + "<td>"+result.data[index].channel+"</td>";
 
         list = list + "<td>";
-        if (result.return_result[index].url.back) {
-            list = list + "<a href='"+result.return_result[index].url.back+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
+        if (result.data[index].url.back) {
+            list = list + "<a href='"+result.data[index].url.back+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
         }
-        if (result.return_result[index].url.child) {
-            list = list + "<a href='"+result.return_result[index].url.child+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
+        if (result.data[index].url.child) {
+            list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
         }
-        if (result.return_result[index].url.add_child) {
-            list = list + "<a href='"+result.return_result[index].url.add_child+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
+        if (result.data[index].url.add_child) {
+            list = list + "<a href='"+result.data[index].url.add_child+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
         }
-        if (result.return_result[index].url.editor) {
-            list = list + "<a href='"+result.return_result[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        if (result.data[index].url.editor) {
+            list = list + "<a href='"+result.data[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         }
-        if (result.return_result[index].url.remove) {
-            list = list + "<a class='np-btn-remove' data-id='"+result.return_result[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        if (result.data[index].url.remove) {
+            list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
         }
         list = list + "</td>";
 
@@ -115,7 +115,7 @@ $(document).on("click", ".np-btn-remove", function(){
         },
     }, function(result){
         handle(result, false, false);
-        if (result.return_code === "SUCCESS") {
+        if (result.code === "SUCCESS") {
             $.reload();
         }
     });

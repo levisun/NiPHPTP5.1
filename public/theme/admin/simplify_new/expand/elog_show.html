@@ -19,9 +19,9 @@ $.loading({
         id: "{$Request.param.id}"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
-    $("#dataPre").text(result.return_result);
+    $("#dataPre").text(result.data);
 });
 </script>

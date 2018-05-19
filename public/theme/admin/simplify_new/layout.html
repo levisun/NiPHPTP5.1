@@ -31,17 +31,17 @@
      * return
      */
     function handle(_result, _url, _reload) {
-        if (_result.error_msg === "ILLEGAL") {
+        if (_result.msg === "ILLEGAL") {
             $.reload();
-        } else if (_result.error_msg === "SUCCESS") {
-            if (_result.return_code === "SUCCESS") {
-                $.uiToast(_result.return_msg);
+        } else if (_result.msg === "SUCCESS") {
+            if (_result.code === "SUCCESS") {
+                $.uiToast(_result.msg);
                 if (typeof(_url) != "undefined" && _url) {
                     $.redirect(request.domain+_url);
                     return false;
                 }
             } else {
-                $.uiToast(_result.return_msg);
+                $.uiToast(_result.msg);
             }
 
             if (typeof(_reload) == "undefined" && _reload) {

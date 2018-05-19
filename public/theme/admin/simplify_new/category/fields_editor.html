@@ -79,12 +79,12 @@ $.loading({
         id: "{$Request.param.id}"
     }
 }, function(result) {
-    if (result.return_code === "SUCCESS") {
-        editor_data = result.return_result;
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
         eachToInput(editor_data);
 
-        $(".is_require"+result.return_result.is_require).addClass("checked");
-        $("#is_require"+result.return_result.is_require).attr("checked", "checked");
+        $(".is_require"+result.data.is_require).addClass("checked");
+        $("#is_require"+result.data.is_require).attr("checked", "checked");
     }
 });
 
@@ -97,8 +97,8 @@ $.loading({
         method: "fields.type.category"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        var type_option = eachToOption(result.return_result, "id", "name", editor_data.type_id);
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
         $("#type_id").append(type_option);
     }
 });
@@ -109,8 +109,8 @@ $.loading({
         method: "fields.category.category"
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        var category_option = eachToOption(result.return_result, "id", "name", editor_data.category_id);
+    if (result.code === "SUCCESS") {
+        var category_option = eachToOption(result.data, "id", "name", editor_data.category_id);
         $("#category_id").append(category_option);
     }
 });

@@ -56,10 +56,10 @@ $.loading({
         method: "admin.role.user",
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.return_result, "id", "name");
+    var option = eachToOption(result.data, "id", "name");
     $("#role").append(option);
 });
 

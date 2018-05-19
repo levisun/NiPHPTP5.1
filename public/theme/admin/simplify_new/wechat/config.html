@@ -56,8 +56,8 @@ $.loading({
         method: "config.query.wechat",
     }
 }, function(result){
-    if (result.return_code === "SUCCESS") {
-        eachToInput(result.return_result);
+    if (result.code === "SUCCESS") {
+        eachToInput(result.data);
     }
 });
 

@@ -30,18 +30,18 @@ $.loading({
         method: "elog.query.expand"
     }
 }, function(result){
-    if (result.return_code !== "SUCCESS") {
+    if (result.code !== "SUCCESS") {
         return false;
     }
 
     var list = "";
-    for (var index in result.return_result) {
+    for (var index in result.data) {
         list = list + "<tr>";
         list = list + "<td>"+index+"</td>";
-        list = list + "<td>"+result.return_result[index].size+"</td>";
+        list = list + "<td>"+result.data[index].size+"</td>";
 
         list = list + "<td>";
-        list = list + "<a href='"+result.return_result[index].show+"'><i class='fa fa-eye'></i>{:lang('button view')}</a>"
+        list = list + "<a href='"+result.data[index].show+"'><i class='fa fa-eye'></i>{:lang('button view')}</a>"
         list = list + "</td>";
 
         list = list + "</tr>";

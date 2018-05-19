@@ -85,8 +85,8 @@ $.loading({
         id: "{$Request.param.id}"
     }
 }, function(result) {
-    if (result.return_code === "SUCCESS") {
-        eachToInput(result.return_result);
+    if (result.code === "SUCCESS") {
+        eachToInput(result.data);
     }
 });
 
@@ -104,9 +104,9 @@ $(".upload-btn").click(function(){
         url: request.api.upload+"?type=wechat",
         file: $("#uploadForm")[0],
     }, function(result){
-        var dir = result.return_result.save_dir + result.return_result.file_name;
+        var dir = result.data.save_dir + result.data.file_name;
         $("#image").val(dir);
-        $("#img-image").attr("src",  result.return_result.domain + dir);
+        $("#img-image").attr("src",  result.data.domain + dir);
         $.uiPopup({}, "hide");
     });
 });

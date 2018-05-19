@@ -118,10 +118,10 @@ class Api
     private function outputData($_msg = '', $_code = 'SUCCESS', $_data, $_extend_data = [])
     {
         $return = [
-            'return_code'   => $_code,
-            'return_msg'    => $_msg,
-            'return_result' => $_data,
-            'return_oth'    => $_extend_data,
+            'code' => $_code,
+            'msg'  => $_msg,
+            'data' => $_data,
+            'oth'  => $_extend_data,
         ];
 
         return json($return);
@@ -137,9 +137,9 @@ class Api
     private function outputError($_msg = 'ERROR', $_code = 40001, $_extend_data = [])
     {
         $return = [
-            'error_code' => $_code,
-            'error_msg'  => $_msg,
-            'oth'        => $_extend_data,
+            'code' => $_code,
+            'msg'  => $_msg,
+            'oth'  => $_extend_data,
         ];
 
         return json($return);
@@ -279,16 +279,16 @@ class Api
             );
         } else {
             $result = logic('admin/upload')->file();
-            $json['error_msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
+            $json['msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
             if (is_string($result)) {
-                $json['return_code']   = 'ERROR';
-                $json['return_msg']    = $result;
-                $json['return_result'] = '';
+                $json['code']   = 'ERROR';
+                $json['msg']    = $result;
+                $json['result'] = '';
             } else {
-                $json['return_code']   = 'SUCCESS';
-                $json['return_msg']    = '';
-                $json['return_result'] = $result;
+                $json['code']   = 'SUCCESS';
+                $json['msg']    = '';
+                $json['result'] = $result;
             }
         }
 
