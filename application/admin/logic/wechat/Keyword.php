@@ -88,7 +88,7 @@ class Keyword
             '__token__' => input('post.__token__'),
         ];
 
-        $result = validate('admin/keyword.added', input('post.'), 'wechat');
+        $result = validate('admin/wechat/keyword.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -167,7 +167,7 @@ class Keyword
             '__token__' => input('post.__token__'),
         ];
 
-        $result = validate('admin/keyword.editor', input('post.'), 'wechat');
+        $result = validate('admin/wechat/keyword.editor', input('post.'));
         if (true !== $result) {
             return $result;
         }

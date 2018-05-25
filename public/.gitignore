@@ -1,9 +1,2 @@
 backup/*.zip
-upload/ads/*
-upload/album/*
-upload/category/*
-upload/icon/*
-upload/images/*
-upload/user/*
-upload/water/*
-upload/wechat/*
+upload/*

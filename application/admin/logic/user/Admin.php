@@ -95,7 +95,7 @@ class Admin
             '__token__'    => input('post.__token__'),
         ];
 
-        $result = validate('admin/admin.added', input('post.'), 'user');
+        $result = validate('admin/user/admin.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -210,7 +210,7 @@ class Admin
         ];
 
         if ($receive_data['password']) {
-            $result = validate('admin/admin.editor', input('post.'), 'user');
+            $result = validate('admin/user/admin.editor', input('post.'));
             $admin_data = [
                 'id'       => $receive_data['id'],
                 'username' => $receive_data['username'],
@@ -219,7 +219,7 @@ class Admin
                 'salt'     => $receive_data['salt'],
             ];
         } else {
-            $result = validate('admin/admin.editorNoPwd', input('post.'), 'user');
+            $result = validate('admin/user/admin.editorNoPwd', input('post.'));
             $admin_data = [
                 'id'       => $receive_data['id'],
                 'username' => $receive_data['username'],

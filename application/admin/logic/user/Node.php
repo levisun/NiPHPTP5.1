@@ -58,7 +58,7 @@ class Node
             '__token__' => input('post.__token__'),
         ];
 
-        $result = validate('admin/node.added', input('post.'), 'user');
+        $result = validate('admin/user/node.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -135,7 +135,7 @@ class Node
             '__token__' => input('post.__token__'),
         ];
 
-        $result = validate('admin/node.editor', input('post.'), 'user');
+        $result = validate('admin/user/node.editor', input('post.'));
 
         if (true !== $result) {
             return $result;

@@ -80,7 +80,7 @@ class Api
      */
     private function hasAction()
     {
-        $this->object = logic($this->module . '/' . $this->logic, $this->layer);
+        $this->object = logic($this->module . '/' . $this->layer . '/' . $this->logic);
         if (method_exists($this->object, $this->action)) {
             return true;
         } else {

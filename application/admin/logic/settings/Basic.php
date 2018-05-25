@@ -29,7 +29,8 @@ class Basic
         ];
 
         $result =
-        model('common/config')->field(true)
+        model('common/config')
+        ->field(true)
         ->where($map)
         ->select();
 
@@ -61,7 +62,7 @@ class Basic
         ];
 
         // 验证请求数据
-        $result = validate('admin/basic', $receive_data, 'settings');
+        $result = validate('admin/settings/basic', $receive_data);
         if (true !== $result) {
             return $result;
         }
@@ -77,13 +78,14 @@ class Basic
             ];
             $data = ['value' => $value];
 
-            $model_config->allowField(true)
+            $model_config
+            ->allowField(true)
             ->where($map)
             ->update($data);
         }
 
-        $lang = lang('_menu');
-        create_action_log($lang['settings_basic'], 'config_editor');
+        $lang = lang('__nav');
+        create_action_log($lang['settings']['child']['basic'], 'config_editor');
 
         return true;
     }

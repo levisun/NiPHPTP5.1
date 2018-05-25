@@ -59,7 +59,7 @@ class Config
         ];
 
         // 验证请求数据
-        $result = validate('admin/config', $receive_data, 'wechat');
+        $result = validate('admin/wechat/config', $receive_data);
         if (true !== $result) {
             return $result;
         }
@@ -80,8 +80,8 @@ class Config
             ->update($data);
         }
 
-        $lang = lang('_menu');
-        create_action_log($lang['wechat_config'], 'config_editor');
+        $lang = lang('__nav');
+        create_action_log($lang['settings']['child']['config'], 'config_editor');
 
         return true;
     }

@@ -130,7 +130,7 @@ class Fields
             '__token__'   => input('post.__token__'),
         ];
 
-        $result = validate('admin/fields.added', input('post.'), 'category');
+        $result = validate('admin/category/fields.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -204,7 +204,7 @@ class Fields
             '__token__'   => input('post.__token__'),
         ];
 
-        $result = validate('admin/fields.editor', input('post.'), 'category');
+        $result = validate('admin/category/fields.editor', input('post.'));
 
         if (true !== $result) {
             return $result;

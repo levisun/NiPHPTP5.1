@@ -51,7 +51,7 @@ class Lang
         ];
 
         // 验证请求数据
-        $result = validate('admin/lang', $receive_data, 'settings');
+        $result = validate('admin/settings/lang', $receive_data);
         if (true !== $result) {
             return $result;
         }
@@ -68,8 +68,8 @@ class Lang
         $config['lang_switch_on'] = $receive_data['lang_switch_on'] ? true : false;
         file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
 
-        $lang = lang('_menu');
-        create_action_log($lang['settings_lang'], 'config_editor');
+        $lang = lang('__nav');
+        create_action_log($lang['settings']['child']['lang'], 'config_editor');
 
         return true;
     }

@@ -101,7 +101,7 @@ class Level
             'remark'    => input('post.remark'),
             '__token__' => input('post.__token__'),
         ];
-        $result = validate('admin/level.editor', input('post.'), 'user');
+        $result = validate('admin/user/level.editor', input('post.'));
 
         if (true !== $result) {
             return $result;

@@ -41,22 +41,25 @@ function view_filter($_content)
 
 /**
  * 实例化模型
- * @param  string $_name  [模块名/]控制器名
- * @param  string $_layer 业务层名
+ * @param  string $_name  [模块名/][业务名/]控制器名
  * @return object
  */
-function logic($_name, $_layer = 'logic')
+function logic($_name)
 {
-    if (strpos($_name, '/') === false) {
-        $_name = request()->module() . '/' . $_name;
+    if (strpos($_name, '/') !== false) {
+        if (count(explode('/', $_name)) == 3) {
+            list($module, $layer, $_name) = explode('/', $_name);
+            $layer = 'logic\\' . $layer;
+        } elseif (count(explode('/', $_name)) == 2) {
+            list($module, $_name) = explode('/', $_name);
+            $layer = 'logic';
+        } else {
+            $module = request()->module();
+            $layer = 'logic';
+        }
     }
 
-    if ($_layer !== 'logic') {
-        // 支持业务
-        $_layer = 'logic\\' . $_layer;
-    }
-
-    return app()->controller($_name, $_layer, false);
+    return app()->controller($module . '/' . $_name, $layer, false);
 }
 
 /**
@@ -78,31 +81,31 @@ function model($_name = '')
 
 /**
  * 实例化验证器
- * @param  string $_name  [模块名/]验证器名[.场景]
+ * @param  string $_name  [模块名/][业务名/]验证器名[.场景]
  * @param  array  $_data  验证数据
- * @param  string $_layer 业务层名
  * @return mixed
  */
-function validate($_name, $_data, $_layer = 'validate')
+function validate($_name, $_data)
 {
     if (strpos($_name, '/') !== false) {
-        // 支持模块
-        list($module, $_name) = explode('/', $_name);
-    } else {
-        $module = request()->module();
+        if (count(explode('/', $_name)) == 3) {
+            list($module, $layer, $_name) = explode('/', $_name);
+            $layer = 'validate\\' . $layer;
+        } elseif (count(explode('/', $_name)) == 2) {
+            list($module, $_name) = explode('/', $_name);
+            $layer = 'validate';
+        } else {
+            $module = request()->module();
+            $layer = 'validate';
+        }
     }
 
-    if ($_layer !== 'validate') {
-        // 支持业务
-        $_layer = 'validate\\' . $_layer;
-    }
-
+    // 支持场景
     if (strpos($_name, '.') !== false) {
-        // 支持场景
         list($_name, $scene) = explode('.', $_name);
     }
 
-    $v = app()->validate($_name, $_layer, false, $module);
+    $v = app()->validate($_name, $layer, false, $module);
     if (!empty($scene)) {
         $v->scene($scene);
     }

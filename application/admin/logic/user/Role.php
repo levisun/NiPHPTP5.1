@@ -109,7 +109,7 @@ class Role
             '__token__' => input('post.__token__'),
         ];
 
-        $result = validate('admin/role.added', input('post.'), 'user');
+        $result = validate('admin/user/role.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -268,7 +268,7 @@ class Role
             '__token__' => input('post.__token__'),
         ];
 
-        $result = validate('admin/role.editor', input('post.'), 'user');
+        $result = validate('admin/user/role.editor', input('post.'));
         if (true !== $result) {
             return $result;
         }

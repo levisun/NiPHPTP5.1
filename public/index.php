@@ -36,10 +36,6 @@ if (!APP_DEBUG && function_exists('ob_gzhandler')) {
     ob_start('ob_gzhandler');
 }*/
 
-
-
-
-
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 

@@ -22,10 +22,11 @@ class Login
      */
     public function login()
     {
-        $receive_data = request()->only(
+        $receive_data =
+        request()->only(
             ['username', 'password', 'captcha', '__token__'], 'post'
         );
-        $result = validate('admin/login', $receive_data, 'account');
+        $result = validate('admin/account/login', $receive_data);
         if (true !== $result) {
             return $result;
         }

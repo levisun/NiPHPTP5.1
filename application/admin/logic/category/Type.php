@@ -101,7 +101,7 @@ class Type
             '__token__'   => input('post.__token__'),
         ];
 
-        $result = validate('admin/type.added', input('post.'), 'category');
+        $result = validate('admin/category/type.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -173,7 +173,7 @@ class Type
             '__token__'   => input('post.__token__'),
         ];
 
-        $result = validate('admin/type.editor', input('post.'), 'category');
+        $result = validate('admin/category/type.editor', input('post.'));
 
         if (true !== $result) {
             return $result;

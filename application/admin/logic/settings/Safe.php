@@ -64,7 +64,7 @@ class Safe
         ];
 
         // 验证请求数据
-        $result = validate('admin/safe', $receive_data, 'settings');
+        $result = validate('admin/settings/safe', $receive_data);
         if (true !== $result) {
             return $result;
         }
@@ -85,8 +85,8 @@ class Safe
             ->update($data);
         }
 
-        $lang = lang('_menu');
-        create_action_log($lang['settings_safe'], 'config_editor');
+        $lang = lang('__nav');
+        create_action_log($lang['settings']['child']['safe'], 'config_editor');
 
         return true;
     }

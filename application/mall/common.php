@@ -41,5 +41,5 @@ function order_no()
 {
     list($micro, $time) = explode(' ', microtime());
     $micro = str_pad($micro * 1000000, 6, 0, STR_PAD_LEFT);
-    return substr($time, 0, 5) . date('YmdHis') . $micro . mt_rand(1111111, 9999999);
+    return substr($time, 0, 7) . date('YmdHis') . $micro . mt_rand(11111, 99999);
 }

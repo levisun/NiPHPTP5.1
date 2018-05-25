@@ -186,7 +186,8 @@ class Auth
         ];
 
         $result =
-        model('common/Category')->field(['id','pid','name'])
+        model('common/Category')
+        ->field(['id','pid','name'])
         ->where($map)
         ->find();
 

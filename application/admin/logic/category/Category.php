@@ -184,7 +184,7 @@ class Category
             '__token__'       => input('post.__token__'),
         ];
 
-        $result = validate('admin/category.added', input('post.'), 'category');
+        $result = validate('admin/category/category.added', input('post.'));
         if (true !== $result) {
             return $result;
         }
@@ -287,7 +287,7 @@ class Category
             '__token__'       => input('post.__token__'),
         ];
 
-        $result = validate('admin/category.editor', input('post.'), 'category');
+        $result = validate('admin/category/category.editor', input('post.'));
         if (true !== $result) {
             return $result;
         }

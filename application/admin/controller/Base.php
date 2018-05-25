@@ -50,7 +50,7 @@ class Base extends Controller
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
             // 审核用户权限
-            if (!logic('admin/Rbac', 'account')->checkAuth(session(config('user_auth_key')))) {
+            if (!logic('admin/account/Rbac')->checkAuth(session(config('user_auth_key')))) {
                 $this->error('no permission', 'settings/info');
             }
             // 登录页重定向
@@ -61,7 +61,7 @@ class Base extends Controller
             $this->assign('ADMIN_DATA', session('admin_data'));
 
             // 权限菜单
-            $auth_menu = logic('admin/auth', 'account')->getMenu();
+            $auth_menu = logic('admin/account/auth')->getMenu();
             $this->assign('AUTH_MENU', json_encode($auth_menu));
 
             // 搜索按钮状态
@@ -71,7 +71,7 @@ class Base extends Controller
         }
 
         // 网站标题与面包屑
-        $tit_bre = logic('admin/auth', 'account')->getTitBre();
+        $tit_bre = logic('admin/account/auth')->getTitBre();
         $this->assign('TITLE', $tit_bre['title']);
         $this->assign('BREADCRUMB', $tit_bre['breadcrumb']);
         $this->assign('SUB_TITLE', $tit_bre['sub_title']);

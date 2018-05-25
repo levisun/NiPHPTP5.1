@@ -77,7 +77,7 @@ class Image
         ];
 
         // 验证请求数据
-        $result = validate('admin/image', $receive_data, 'settings');
+        $result = validate('admin/settings/image', $receive_data);
         if (true !== $result) {
             return $result;
         }
@@ -98,8 +98,8 @@ class Image
             ->update($data);
         }
 
-        $lang = lang('_menu');
-        create_action_log($lang['settings_image'], 'config_editor');
+        $lang = lang('__nav');
+        create_action_log($lang['settings']['child']['image'], 'config_editor');
 
         return true;
     }
