@@ -32,7 +32,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "log.query.expand"
+        method: "expand.log.query"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -60,7 +60,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "log.query.expand",
+            method: "expand.log.query",
             p: page
         }
     }, function(result){

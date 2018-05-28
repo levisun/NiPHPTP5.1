@@ -48,7 +48,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "keyword.query.wechat",
+        method: "wechat.keyword.query",
         type: "{$type}"
     }
 }, function(result){
@@ -82,7 +82,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "keyword.query.wechat",
+            method: "wechat.keyword.query",
             p: page
         }
     }, function(result){
@@ -114,7 +114,7 @@ $(document).on("click", "#paging a", function(){
 });
 
 $("form").submit(function(){
-    var form_data = "method=keyword.remove.wechat";
+    var form_data = "method=wechat.keyword.remove";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
@@ -132,7 +132,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            method: "keyword.remove.wechat",
+            method: "wechat.keyword.remove",
             id: id
         },
     }, function(result){

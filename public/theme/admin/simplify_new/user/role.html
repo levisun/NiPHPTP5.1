@@ -35,7 +35,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "role.query.user",
+        method: "user.role.query",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -71,7 +71,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "role.query.user",
+            method: "user.role.query",
             p: page
         }
     }, function(result){

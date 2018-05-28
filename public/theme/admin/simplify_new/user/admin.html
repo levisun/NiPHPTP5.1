@@ -36,7 +36,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "admin.query.user",
+        method: "user.admin.query",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -73,7 +73,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "admin.query.user",
+            method: "user.admin.query",
             p: page
         }
     }, function(result){
@@ -114,7 +114,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            method: "admin.remove.user",
+            method: "user.admin.remove",
             id: id
         },
     }, function(result){

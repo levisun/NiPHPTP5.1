@@ -140,7 +140,7 @@ $("._handle_logout").click(function(){
     $.loading({
         url: request.api.settle,
         data: {
-            method: "logout.logout.account"
+            method: "account.logout.logout"
         }
     }, function(result){
         handle(result, "admin/account/login.shtml");

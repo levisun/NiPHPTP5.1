@@ -81,7 +81,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        method: "keyword.find.wechat",
+        method: "wechat.keyword.find",
         id: "{$Request.param.id}"
     }
 }, function(result) {
@@ -112,7 +112,7 @@ $(".upload-btn").click(function(){
 });
 
 $("form").submit(function(){
-    var form_data = "method=keyword.editor.wechat";
+    var form_data = "method=wechat.keyword.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

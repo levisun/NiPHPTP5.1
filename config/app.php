@@ -46,18 +46,25 @@ return [
     'url_domain_deploy'    => false,
 
     // 异常页面的模板文件
-    // 'exception_tmpl'       => __DIR__ . '/tpl/think_exception.tpl',
+    'exception_tmpl'       => Env::get('root_path') . 'public/theme/think_exception.tpl',
     // 错误显示信息,非调试模式有效
     'error_message'        => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'       => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'     => '',
+
+    'http_exception_template' => [
+        400 => __DIR__ . '/public/theme/index.html'
+    ],
+
     // 请求缓存
     'request_cache'        => false,
-    'request_cache_expire' => null,
-    'request_cache_except' => [],
+    'request_cache_expire' => 1140,
+    'request_cache_except' => [
+        // '/NiPHPTP5.1/public/admin/settings/basic',
+    ],
 
-    'route_check_cache'     => false,
+    'route_check_cache'     => !APP_DEBUG,
     'route_check_cache_key' => '',
 ];

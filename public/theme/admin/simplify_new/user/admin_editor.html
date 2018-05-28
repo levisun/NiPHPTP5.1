@@ -56,7 +56,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        method: "admin.find.user",
+        method: "user.admin.find",
         id: "{$Request.param.id}"
     }
 }, function(result){
@@ -70,7 +70,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "admin.role.user",
+        method: "user.admin.role",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -81,7 +81,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=admin.editor.user";
+    var form_data = "method=user.admin.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

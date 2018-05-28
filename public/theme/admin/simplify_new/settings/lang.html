@@ -60,7 +60,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "lang.query.settings"
+        method: "settings.lang.query"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -94,7 +94,7 @@ $.loading({
 });
 
 $(".submit").click(function(){
-    var form_data = "method=lang.editor.settings";
+    var form_data = "method=settings.lang.editor";
     form_data += "&"+$("form").serialize();
 
     $.loading({

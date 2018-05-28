@@ -57,7 +57,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "email.query.settings"
+        method: "settings.email.query"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -68,7 +68,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=email.editor.settings";
+    var form_data = "method=settings.email.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

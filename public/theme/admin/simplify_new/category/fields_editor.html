@@ -75,7 +75,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        method: "fields.find.category",
+        method: "category.fields.find",
         id: "{$Request.param.id}"
     }
 }, function(result) {
@@ -94,7 +94,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "fields.type.category"
+        method: "category.fields.type"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -106,7 +106,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "fields.category.category"
+        method: "category.fields.category"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -116,7 +116,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=fields.editor.category";
+    var form_data = "method=category.fields.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

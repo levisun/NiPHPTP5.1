@@ -50,7 +50,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "category.query.category",
+        method: "category.category.query",
         pid: "{$Request.param.pid}"
     }
 }, function(result){
@@ -92,7 +92,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=category.sort.category";
+    var form_data = "method=category.category.sort";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
@@ -110,7 +110,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            method: "category.remove.category",
+            method: "category.category.remove",
             id: id
         },
     }, function(result){

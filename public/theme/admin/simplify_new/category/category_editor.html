@@ -143,7 +143,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        method: "category.find.category",
+        method: "category.category.find",
         id: "{$Request.param.id}"
     }
 }, function(result) {
@@ -162,7 +162,7 @@ $.loading({
 $.loading({
     url: request.api.query,
     data: {
-        method: "category.type.category"
+        method: "category.category.type"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -174,7 +174,7 @@ $.loading({
 $.loading({
     url: request.api.query,
     data: {
-        method: "category.models.category"
+        method: "category.category.models"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -186,7 +186,7 @@ $.loading({
 $.loading({
     url: request.api.query,
     data: {
-        method: "category.level.category"
+        method: "category.category.level"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -215,7 +215,7 @@ $(".upload-btn").click(function(){
 });
 
 $("form").submit(function(){
-    var form_data = "method=category.editor.category";
+    var form_data = "method=category.category.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

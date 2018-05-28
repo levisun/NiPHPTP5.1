@@ -85,7 +85,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        method: "node.find.user",
+        method: "user.node.find",
         id: "{$Request.param.id}"
     }
 }, function(result){
@@ -99,7 +99,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "node.query.user",
+        method: "user.node.query",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -110,7 +110,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=node.editor.user";
+    var form_data = "method=user.node.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

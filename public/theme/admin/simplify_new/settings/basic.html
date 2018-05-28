@@ -58,7 +58,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "basic.query.settings"
+        method: "settings.basic.query"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -68,7 +68,7 @@ $.loading({
     }
 });
 $("form").submit(function(){
-    var form_data = "method=basic.editor.settings";
+    var form_data = "method=settings.basic.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

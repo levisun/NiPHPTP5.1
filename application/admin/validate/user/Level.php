@@ -14,7 +14,7 @@ namespace app\admin\validate\user;
 
 use think\Validate;
 
-class UserLevel extends Validate
+class Level extends Validate
 {
     protected $rule = [
         'id'       => ['require', 'number'],

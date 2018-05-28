@@ -53,7 +53,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "config.query.wechat",
+        method: "wechat.config.query",
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -62,7 +62,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=config.editor.wechat";
+    var form_data = "method=wechat.config.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

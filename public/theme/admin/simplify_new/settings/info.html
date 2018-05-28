@@ -127,7 +127,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "info.sysinfo.settings"
+        method: "settings.info.sysinfo"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -145,7 +145,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "info.make.settings"
+        method: "settings.info.make"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -169,7 +169,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "info.visit.settings"
+        method: "settings.info.visit"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {

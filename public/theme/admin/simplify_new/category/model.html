@@ -34,7 +34,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "model.query.category"
+        method: "category.model.query"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -61,7 +61,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "model.query.category",
+            method: "category.model.query",
             p: page
         }
     }, function(result){

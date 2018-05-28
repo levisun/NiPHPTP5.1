@@ -82,7 +82,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "node.query.user",
+        method: "user.node.query",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -93,7 +93,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=node.added.user";
+    var form_data = "method=user.node.added";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

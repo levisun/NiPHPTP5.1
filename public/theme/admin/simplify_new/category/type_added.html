@@ -41,7 +41,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "type.category.category"
+        method: "category.type.category"
     }
 }, function(result){
     if (result.code === "SUCCESS") {
@@ -51,7 +51,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=type.added.category";
+    var form_data = "method=category.type.added";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

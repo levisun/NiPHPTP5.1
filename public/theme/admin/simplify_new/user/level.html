@@ -35,7 +35,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "level.query.user",
+        method: "user.level.query",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -71,7 +71,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "level.query.user",
+            method: "user.level.query",
             p: page
         }
     }, function(result){
@@ -111,7 +111,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            method: "level.remove.user",
+            method: "user.level.remove",
             id: id
         },
     }, function(result){

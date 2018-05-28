@@ -37,7 +37,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "fields.query.category"
+        method: "category.fields.query"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -70,7 +70,7 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "fields.query.category",
+            method: "category.fields.query",
             p: page
         }
     }, function(result){
@@ -107,7 +107,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            method: "fields.remove.category",
+            method: "category.fields.remove",
             id: id
         },
     }, function(result){

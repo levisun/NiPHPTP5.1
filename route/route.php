@@ -13,9 +13,11 @@
     // 'cid' => '\d+',
     // 'id'  => '\d+',
 // ]);
+//
 
 // Route::name('admin')->cache('__URL__', 600);
-// Route::rule('admin/account/login', 'admin/login')->cache(3600);
+// Route::get('admin/settings/basic', 'admin/settings/basic')->cache(3600);
+// Route::rule('admin/settings/basic', 'admin/settings/basic')->cache(3600);
 // Route::rule('admin/settings/info', 'admin/settings/info')->cache(3600);
 
 return [
@@ -30,6 +32,11 @@ return [
         'admin' => 'admin',
         'my'    => 'member',
     ],
+
+    // 'admin/settings/basic' => [
+    //     'admin/settings/basic',
+    //     ['cache' => 30],
+    // ],
 
     '/' => 'index',
 ];

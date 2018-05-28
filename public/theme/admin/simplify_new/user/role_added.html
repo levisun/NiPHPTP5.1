@@ -65,7 +65,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        method: "role.node.user",
+        method: "user.role.node",
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -103,7 +103,7 @@ $.loading({
 });
 
 $("form").submit(function(){
-    var form_data = "method=role.added.user";
+    var form_data = "method=user.role.added";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

@@ -38,10 +38,23 @@ class Api
 
         $this->method = input('post.method');
 
-        $method = explode('.', $this->method);
-        $this->logic  = $method[0];
-        $this->action = !empty($method[1]) ? $method[1] : 'index';
-        $this->layer  = !empty($method[2]) ? $method[2] : 'logic';
+        $count = count(explode('.', $this->method));
+
+        if ($count == 3) {
+            list($this->layer, $this->logic, $this->action) =
+            explode('.', $this->method, 3);
+        } elseif ($count == 2) {
+            list($this->logic, $this->action) =
+            explode('.', $this->method, 2);
+            $this->layer = 'logic';
+        } elseif ($count == 1) {
+            list($this->logic) =
+            explode('.', $this->method, 1);
+            $this->layer  = 'logic';
+            $this->action = 'index';
+        } else {
+            abort(400, '错误请求,非法参数!');
+        }
 
         // 加载语言包
         lang(':load');

@@ -47,11 +47,12 @@ function view_filter($_content)
 function logic($_name)
 {
     if (strpos($_name, '/') !== false) {
-        if (count(explode('/', $_name)) == 3) {
-            list($module, $layer, $_name) = explode('/', $_name);
+        $count = count(explode('/', $_name));
+        if ($count == 3) {
+            list($module, $layer, $_name) = explode('/', $_name, 3);
             $layer = 'logic\\' . $layer;
-        } elseif (count(explode('/', $_name)) == 2) {
-            list($module, $_name) = explode('/', $_name);
+        } elseif ($count == 2) {
+            list($module, $_name) = explode('/', $_name, 2);
             $layer = 'logic';
         } else {
             $module = request()->module();
@@ -71,7 +72,7 @@ function model($_name = '')
 {
     if (strpos($_name, '/') !== false) {
         // 支持模块
-        list($module, $_name) = explode('/', $_name);
+        list($module, $_name) = explode('/', $_name, 2);
     } else {
         $module = request()->module();
     }
@@ -88,11 +89,12 @@ function model($_name = '')
 function validate($_name, $_data)
 {
     if (strpos($_name, '/') !== false) {
-        if (count(explode('/', $_name)) == 3) {
-            list($module, $layer, $_name) = explode('/', $_name);
+        $count = count(explode('/', $_name));
+        if ($count == 3) {
+            list($module, $layer, $_name) = explode('/', $_name, 3);
             $layer = 'validate\\' . $layer;
-        } elseif (count(explode('/', $_name)) == 2) {
-            list($module, $_name) = explode('/', $_name);
+        } elseif ($count == 2) {
+            list($module, $_name) = explode('/', $_name, 2);
             $layer = 'validate';
         } else {
             $module = request()->module();
@@ -102,7 +104,7 @@ function validate($_name, $_data)
 
     // 支持场景
     if (strpos($_name, '.') !== false) {
-        list($_name, $scene) = explode('.', $_name);
+        list($_name, $scene) = explode('.', $_name, 2);
     }
 
     $v = app()->validate($_name, $layer, false, $module);
