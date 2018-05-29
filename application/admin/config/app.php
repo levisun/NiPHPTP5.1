@@ -11,15 +11,10 @@
  * @since     2017/12
  */
 return [
-    // 模板
-    'default_theme'           => 'simplify_new',
-    // 默认语言
-    'default_lang'            => 'zh-cn',
-    // 是否开启多语言
-    'lang_switch_on'          => true,
+
 
     // icon
-    'icon'                    => [
+    'icon' => [
         'settings' => 'cogs',
         'theme'    => 'dashboard',
         'category' => 'reorder',
@@ -30,6 +25,13 @@ return [
         'book'     => 'book',
         'expand'   => 'wrench',
     ],
+
+    // 模板
+    'default_theme'           => 'simplify',
+    // 默认语言
+    'default_lang'            => 'zh-cn',
+    // 是否开启多语言
+    'lang_switch_on'          => true,
 
     // 默认控制器名
     'default_controller'      => 'account',

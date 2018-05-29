@@ -51,7 +51,5 @@ class Level extends Validate
             'status',
             'remark'
         ],
-        'illegal' => ['id'],
-        'remove' => ['id'],
     ];
 }

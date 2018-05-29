@@ -60,8 +60,7 @@ class PayWechat
         $this->params['mch_appid']        = $this->config['appid'];
         $this->params['mchid']            = $this->config['mch_id'];
         $this->params['nonce_str']        = $this->getNonceStr(32);
-        // $this->params['partner_trade_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
-        $this->params['partner_trade_no'] = $this->orderNo($this->config['mch_id']);
+        $this->params['partner_trade_no'] = $this->orderNo();
         $this->params['spbill_create_ip'] = $_SERVER['REMOTE_ADDR'];
         $this->params['sign']             = $this->getSign($this->params);
 
@@ -81,8 +80,7 @@ class PayWechat
         $this->params = $_params;
 
         $this->params['nonce_str']  = $this->getNonceStr(32);
-        // $this->params['mch_billno'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
-        $this->params['mch_billno'] = $this->orderNo($this->config['mch_id']);
+        $this->params['mch_billno'] = $this->orderNo();
         $this->params['mch_id']     = $this->config['mch_id'];
         $this->params['wxappid']    = $this->config['appid'];
         $this->params['client_ip']  = $_SERVER['REMOTE_ADDR'];
@@ -233,8 +231,7 @@ class PayWechat
         $this->params['appid']         = $this->config['appid'];
         $this->params['mch_id']        = $this->config['mch_id'];
         $this->params['nonce_str']     = $this->getNonceStr(32);
-        // $this->params['out_refund_no'] = $this->config['mch_id'] . date('YmdHis') . mt_rand(111, 999);
-        $this->params['out_refund_no'] = $this->orderNo($this->config['mch_id']);
+        $this->params['out_refund_no'] = $this->orderNo();
         $this->params['op_user_id']    = $this->config['mch_id'];
         $this->params['sign']          = $this->getSign($this->params);
 
@@ -459,14 +456,13 @@ class PayWechat
     /**
      * 生成订单号
      * @access private
-     * @param  string $other
+     * @param
      * @return string
      */
-    private function orderNo($other = '')
+    private function orderNo()
     {
         list($micro, $time) = explode(' ', microtime());
         $micro = str_pad($micro * 1000000, 6, 0, STR_PAD_LEFT);
-
-        return $time . $micro . mt_rand(111, 999) . $other;
+        return substr($time, 0, 7) . date('YmdHis') . $micro . mt_rand(11111, 99999);
     }
 }

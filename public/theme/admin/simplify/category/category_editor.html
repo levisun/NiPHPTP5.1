@@ -1,6 +1,6 @@
 <div class="smart-widget">
     <div class="smart-widget-header">
-        __SUB_TITLE__
+        {$SUB_TITLE}
     </div>
     <div class="smart-widget-inner">
         <div class="smart-widget-body">
@@ -137,42 +137,94 @@
     </div>
 </div>
 <script type="text/javascript">
-var json_data = {$json_data|raw};
-jQuery(function(){
-    jQuery("#id").val(json_data["data"]["id"]);
-    jQuery("#name").val(json_data["data"]["name"]);
-    jQuery("#aliases").val(json_data["data"]["aliases"]);
-    jQuery("#pid").val(json_data["data"]["pid"]);
-    if (json_data["data"]["parent_name"]) {
-        jQuery("#parent").val(json_data["data"]["parent_name"]);
-    } else {
-        jQuery("#parent").val("{:lang('empty')}");
+var editor_data = {};
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        method: "category.category.find",
+        id: "{$Request.param.id}"
     }
+}, function(result) {
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
+        eachToInput(editor_data);
 
-    jQuery("#url").val(json_data["data"]["url"]);
-    jQuery("#image").val(json_data["data"]["image"]);
-    jQuery("#img-image").attr("src", json_data["data"]["image"]);
-    if (json_data["data"]["image"]) {
-        jQuery("#img-image").show();
+        if (editor_data.parent_name) {
+            $("#parent").val(editor_data.parent_name);
+        } else {
+            $("#parent").val("{:lang('empty')}");
+        }
     }
-    jQuery("#seo_title").val(json_data["data"]["seo_title"]);
-    jQuery("#seo_keywords").val(json_data["data"]["seo_keywords"]);
-    jQuery("#seo_description").val(json_data["data"]["seo_description"]);
+});
 
-    jQuery("#is_show"+json_data["data"]["is_show"]).attr("checked", "checked");
-    jQuery(".is_show"+json_data["data"]["is_show"]).addClass("checked");
+$.loading({
+    url: request.api.query,
+    data: {
+        method: "category.category.type"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
+        $("#type_id").html(type_option);
+    }
+});
 
-    jQuery("#is_channel"+json_data["data"]["is_channel"]).attr("checked", "checked");
-    jQuery(".is_channel"+json_data["data"]["is_channel"]).addClass("checked");
+$.loading({
+    url: request.api.query,
+    data: {
+        method: "category.category.models"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var models_option = eachToOption(result.data, "id", "model_name", editor_data.model_id);
+        $("#model_id").html(models_option);
+    }
+});
 
-    var option = Layout.eachToOption(json_data["type"], "id", "name", json_data["data"]["type_id"]);
-    jQuery("#type_id").html(option);
+$.loading({
+    url: request.api.query,
+    data: {
+        method: "category.category.level"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var level_option = eachToOption(result.data, "id", "name", editor_data.access_id);
+        $("#access_id").append(level_option);
+    }
+});
 
-    option = Layout.eachToOption(json_data["models"], "id", "model_name", json_data["data"]["model_id"]);
-    jQuery("#model_id").html(option);
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
 
-    option = Layout.eachToOption(json_data["level"], "id", "name", json_data["data"]["access_id"]);
-    jQuery("#access_id").html(option);
+$(".upload-btn").click(function(){
+    $.upload({
+        url: request.api.upload+"?type=category",
+        file: $("#uploadForm")[0],
+    }, function(result){
+        var dir = result.data.save_dir + result.data.file_name;
+        $("#image").val(dir);
+        $("#img-image").attr("src",  result.data.domain + dir);
+        $.uiPopup({}, "hide");
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=category.category.editor";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result, "admin/category/category.shtml");
+    });
+    return false;
 });
 
 </script>

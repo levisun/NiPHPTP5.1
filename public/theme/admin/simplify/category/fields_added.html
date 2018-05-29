@@ -1,6 +1,6 @@
 <div class="smart-widget">
     <div class="smart-widget-header">
-        __SUB_TITLE__
+        {$SUB_TITLE}
     </div>
     <div class="smart-widget-inner">
         <div class="smart-widget-body">
@@ -68,31 +68,41 @@
     </div>
 </div>
 <script type="text/javascript">
-var json_data = {$json_data|raw};
-jQuery(function(){
-    var fields_type_option = "";
-    for (key in json_data["fields_type"]) {
-        fields_type_option += "<option value='"+json_data["fields_type"][key]["id"]+"'";
-        fields_type_option += ">"+json_data["fields_type"][key]["field_name"]+"</option>";
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "category.fields.type"
     }
-    jQuery("#type_id").html(fields_type_option);
-
-    var fields_category_option = "";
-    var category_list = json_data["category_list"];
-    for (key in category_list) {
-        fields_category_option += "<option value='"+category_list[key]["id"]+"'";
-        fields_category_option += ">"+category_list[key]["name"]+"</option>";
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name");
+        $("#type_id").append(type_option);
     }
-    var fields_category_option = toOption(json_data["category_list"], "");
-    jQuery("#category_id").html(fields_category_option);
+});
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "category.fields.category"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var category_option = eachToOption(result.data, "id", "name");
+        $("#category_id").append(category_option);
+    }
 });
 
-function toOption(data, rep) {
-    var option = "";
-    for (key in data) {
-        option += "<option value='"+data[key]["id"]+"'>"+rep+data[key]['name']+"</option>";
-        option += toOption(data[key]['child'], "--");
-    }
-    return option;
-}
+$("form").submit(function(){
+    var form_data = "method=category.fields.added";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result, "admin/category/fields.shtml");
+    });
+    return false;
+});
 </script>

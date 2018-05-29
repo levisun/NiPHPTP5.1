@@ -1,6 +1,6 @@
 <div class="smart-widget">
     <div class="smart-widget-header">
-        __SUB_TITLE__
+        {$SUB_TITLE}
 
         <span class="smart-widget-option">
             <a href="{:url('', array('operate' => 'added'))}" class="btn btn-default btn-xs">
@@ -46,39 +46,79 @@
     </div>
 </div>
 <script type="text/javascript">
-var json_data = {$json_data|raw};
-jQuery(function(){
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "category.category.query",
+        pid: "{$Request.param.pid}"
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return false;
+    }
+
     var list = "";
-    for (key in json_data) {
+    for (var index in result.data) {
         list = list + "<tr>";
-        list = list + "<td><input type='text' name='sort["+json_data[key]["id"]+"]' class='form-control mini' value='"+json_data[key]["sort"]+"'></td>";
-        list = list + "<td>"+json_data[key]["id"]+"</td><td>"+json_data[key]["name"]+"</td>";
-        list = list + "<td>"+json_data[key]["type_name"]+"</td>";
-        list = list + "<td>"+json_data[key]["model_name"]+"</td>";
-        list = list + "<td>"+json_data[key]["show"]+"</td>";
-        list = list + "<td>"+json_data[key]["channel"]+"</td>";
+        list = list + "<td><input type='text' name='sort["+result.data[index].id+"]' class='form-control mini' value='"+result.data[index].sort+"'></td>";
+        list = list + "<td>"+result.data[index]["id"]+"</td><td>"+result.data[index]["name"]+"</td>";
+        list = list + "<td>"+result.data[index].type_name+"</td>";
+        list = list + "<td>"+result.data[index].model_name+"</td>";
+        list = list + "<td>"+result.data[index].show+"</td>";
+        list = list + "<td>"+result.data[index].channel+"</td>";
 
         list = list + "<td>";
-        if (json_data[key]["url"]["back"]) {
-            list = list + "<a href='"+json_data[key]["url"]["back"]+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
+        if (result.data[index].url.back) {
+            list = list + "<a href='"+result.data[index].url.back+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
         }
-        if (json_data[key]["url"]["child"]) {
-            list = list + "<a href='"+json_data[key]["url"]["child"]+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
+        if (result.data[index].url.child) {
+            list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
         }
-        if (json_data[key]["url"]["add_child"]) {
-            list = list + "<a href='"+json_data[key]["url"]["add_child"]+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
+        if (result.data[index].url.add_child) {
+            list = list + "<a href='"+result.data[index].url.add_child+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
         }
-        if (json_data[key]["url"]["editor"]) {
-            list = list + "<a href='"+json_data[key]["url"]["editor"]+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        if (result.data[index].url.editor) {
+            list = list + "<a href='"+result.data[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         }
-        if (json_data[key]["url"]["remove"]) {
-            list = list + "<a href='"+json_data[key]["url"]["remove"]+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        if (result.data[index].url.remove) {
+            list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
         }
         list = list + "</td>";
 
         list = list + "</tr>";
     }
-    jQuery("#dataTable tbody").prepend(list);
+    $("#dataTable tbody").prepend(list);
+});
 
+$("form").submit(function(){
+    var form_data = "method=category.category.sort";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
+    return false;
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "category.category.remove",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
 });
 </script>

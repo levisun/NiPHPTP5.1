@@ -6,7 +6,7 @@
                     Main Menu
                 </li>
                 <li class="bg-palette1 active">
-                    <a href="{:url('/')}" target="_blank">
+                    <a href="{:url('settings/info')}">
                         <span class="menu-content block">
                             <span class="menu-icon"><i class="block fa fa-home fa-lg"></i></span>
                             <span class="text m-left-sm">{:lang('website home')}</span>
@@ -31,35 +31,36 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="{:url('user/admin', array('method' => 'editor', 'id' => $__ADMIN_DATA__['id']))}">
+                        <a href="{:url('user/admin', array('method' => 'editor', 'id' => $ADMIN_DATA.id))}">
                             {:lang('update admin')}
                         </a>
                     </li>
                 </ul>
             </div>
-            <a href="{:url('account/logout')}" class="pull-right font-18"><i class="ion-log-out"></i></a>
+            <a class="pull-right font-18 _handle_logout"><i class="ion-log-out"></i></a>
         </div>
     </div>
 </aside>
+
 <script type="text/javascript">
-var auth_menu = {$auth_menu|raw};
+var json_data = {$AUTH_MENU|raw};
 var sidebar = "";
-for (key in auth_menu) {
+for (var index in json_data) {
     var opens = "";
-    if (key == request_param["controller"]) {
+    if (index == request.controller) {
         opens = "open";
     }
-    sidebar = sidebar + "<li class='openable bg-palette4 "+opens+"'><a href='#'><span class='menu-content block'><span class='menu-icon'><i class='block fa fa-"+auth_menu[key]["icon"]+" fa-lg'></i></span><span class='text m-left-sm'>"+auth_menu[key]["name"]+"</span><span class='submenu-icon'></span></span><span class='menu-content-hover block'>"+auth_menu[key]["name"]+"</span></a><ul class='submenu bg-palette4'>";
+    sidebar = sidebar + "<li class='openable bg-palette4 "+opens+"'><a href='#'><span class='menu-content block'><span class='menu-icon'><i class='block fa fa-"+json_data[index]["icon"]+" fa-lg'></i></span><span class='text m-left-sm'>"+json_data[index]["name"]+"</span><span class='submenu-icon'></span></span><span class='menu-content-hover block'>"+json_data[index]["name"]+"</span></a><ul class='submenu bg-palette4'>";
 
-    for (k in auth_menu[key]["menu"]) {
+    for (var i in json_data[index]["menu"]) {
         var active = "";
-        if (auth_menu[key]["menu"][k]["action"] == request_param["action"]) {
+        if (json_data[index]["menu"][i]["action"] == request.action) {
             active = "class='active'";
         }
-        sidebar = sidebar + "<li "+active+"><a href='"+auth_menu[key]["menu"][k]["url"]+"'><span class='submenu-label'>"+auth_menu[key]["menu"][k]["lang"]+"</span></a></li>";
+        sidebar = sidebar + "<li "+active+"><a href='"+json_data[index]["menu"][i]["url"]+"'><span class='submenu-label'>"+json_data[index]["menu"][i]["lang"]+"</span></a></li>";
     }
 
     sidebar = sidebar + "</ul></li>";
 }
-jQuery(".main-menu ul").append(sidebar);
+$(".main-menu ul").append(sidebar);
 </script>

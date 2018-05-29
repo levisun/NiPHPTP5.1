@@ -167,25 +167,48 @@ class Upload
     /**
      * 上传需要参数
      * @access private
-     * @param  string  $_type  上传类型
-     * @param  string  $_model 模型
+     * @param  string  $_type 上传类型
      * @return array
      */
     private function params($_type)
     {
+        // 缩略图尺寸
+        $thumb_size = [
+            'module' => [
+                'article',  // 文章模型
+                'ask',      // 问答模型
+                'download', // 下载模型
+                'job',      // 招聘模型
+                'link',     // 友链模型
+                'page',     // 单页模型
+                'picture',  // 图片模型
+                'product'   // 产品模型
+            ],
+            'other' => [
+                'image',
+                'images',
+                'ckeditor',
+            ],
+        ];
+
+        $dir = '';
+
         // 安上传类型生成上传目录
-        if (in_array($_type, ['image', 'images', 'ckeditor'])) {
+        if (in_array($_type, $thumb_size['other'])) {
             $dir = 'images/';
         } else {
             $dir = $_type . '/';
         }
-        $dir .= date('Y') . '/' . date('Ym') . '/';
+
+        // 按年,月生成保存目录,适用于多图片
+        $dir .= date('Y') . '/' . date('m') . '/';
 
         $thumb_width = $thumb_height = 0;
 
-        if (in_array($_type, ['article', 'ask', 'download', 'job', 'link', 'page', 'picture', 'product'])) {
+        // 获取模块设置的缩略图尺寸
+        if (in_array($_type, $thumb_size['module'])) {
             $map = [
-                ['name', 'in', $_model . '_module_width,' . $_model . '_module_height'],
+                ['name', 'in', $_type . '_module_width,' . $_type . '_module_height'],
                 ['lang', '=', lang(':detect')],
             ];
 
@@ -194,11 +217,10 @@ class Upload
             ->column('name, value');
 
             if (!empty($result)) {
-                $thumb_width  = $result[$_model . '_module_width'];
-                $thumb_height = $result[$_model . '_module_height'];
+                $thumb_width  = $result[$_type . '_module_width'];
+                $thumb_height = $result[$_type . '_module_height'];
             }
         }
-
 
         return [
             'dir'          => $dir,

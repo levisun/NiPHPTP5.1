@@ -1,6 +1,6 @@
 <div class="smart-widget">
     <div class="smart-widget-header">
-        __SUB_TITLE__
+        {$SUB_TITLE}
     </div>
     <div class="smart-widget-inner">
         <div class="smart-widget-body">
@@ -267,7 +267,7 @@
                     <label for="water_image" class="col-lg-2 control-label">{:lang('water image')}</label>
                     <div class="col-lg-10">
                         <input type="text" name="water_image" id="water_image" class="form-control" value="">
-                        <button type="button" class="btn btn-success marginTB-xs" id="upload" data-type="water" data-id="water_image" data-model="common">{:lang('button upload')}</button>
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload" >{:lang('button upload')}</button>
                         <img src="" id="img-water_image" width="100">
                     </div>
                 </div>
@@ -285,24 +285,63 @@
 </div>
 
 <script type="text/javascript">
-var json_data = {$json_data|raw};
-jQuery(function(){
-    for (key in json_data) {
-        if (key == 'auto_image' && json_data[key]) {
-            jQuery(".auto_image").addClass("checked");
-            jQuery("#auto_image").attr("checked", "checked");
-        } else if (key == "add_water") {
-            jQuery(".add_water"+json_data[key]).addClass("checked");
-            jQuery("#add_water"+json_data[key]).attr("checked", "checked");
-        } else if (key == "water_type") {
-            jQuery(".water_type"+json_data[key]).addClass("checked");
-            jQuery("#water_type"+json_data[key]).attr("checked", "checked");
-        } else if (key == "water_location") {
-            jQuery(".water_location"+json_data[key]).addClass("checked");
-            jQuery("#water_location"+json_data[key]).attr("checked", "checked");
-        } else {
-            jQuery("#"+key).val(Layout.htmlDecode(json_data[key]));
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "settings.image.query"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        for (index in result.data) {
+            if (index == 'auto_image' && result.data[index]) {
+                $(".auto_image").addClass("checked");
+                $("#auto_image").attr("checked", "checked");
+            } else if (index == "add_water") {
+                $(".add_water"+result.data[index]).addClass("checked");
+                $("#add_water"+result.data[index]).attr("checked", "checked");
+            } else if (index == "water_type") {
+                $(".water_type"+result.data[index]).addClass("checked");
+                $("#water_type"+result.data[index]).attr("checked", "checked");
+            } else if (index == "water_location") {
+                $(".water_location"+result.data[index]).addClass("checked");
+                $("#water_location"+result.data[index]).attr("checked", "checked");
+            } else {
+                $("#"+index).val($.htmlDecode(result.data[index]));
+            }
         }
     }
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    $.upload({
+        url: request.api.upload+"?type=water",
+        file: $("#uploadForm")[0],
+    }, function(result){
+        var dir = result.data.save_dir + result.data.file_name;
+        $("#water_image").val(dir);
+        $("#img-water_image").attr("src",  result.data.domain + dir);
+        $.uiPopup({}, "hide");
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=settings.image.editor";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
+    });
+    return false;
 });
 </script>

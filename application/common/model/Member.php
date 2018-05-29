@@ -101,4 +101,21 @@ class Member extends Model
 
         return !!$result;
     }
+
+    /**
+     * 获取器
+     * 节点状态
+     * @access protected
+     * @param  int    $value
+     * @return string
+     */
+    protected function getStatusNameAttr($_value, $_data)
+    {
+        $status = [
+            0 => lang('status no'),
+            1 => lang('status yes'),
+        ];
+
+        return $status[$_data['status']];
+    }
 }

@@ -68,6 +68,11 @@ class Level
         if (true !== $result) {
             return $result;
         }
+
+        create_action_log($receive_data['name'], 'level_added');
+
+        return !!model('common/level')
+        ->added($receive_data);
     }
 
     /**
@@ -77,7 +82,24 @@ class Level
      *　@return mixed
      */
     public function remove()
-    {}
+    {
+        $map  = [
+            ['id', '=', input('post.id/f')],
+        ];
+
+        $result =
+        model('common/level')->field(true)
+        ->where($map)
+        ->find();
+
+        create_action_log($result['name'], 'level_remove');
+
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
+        return model('common/level')
+        ->remove($receive_data);
+    }
 
     /**
      * 查询要修改的数据

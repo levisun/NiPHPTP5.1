@@ -14,6 +14,7 @@ namespace app\admin\logic\user;
 
 class Admin
 {
+
     /**
      * 查询
      * @access public

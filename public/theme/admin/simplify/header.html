@@ -16,7 +16,7 @@
                             <!-- <img src="__IMG__profile/profile1.jpg" alt="" class="img-circle"> -->
                             <i class="fa fa-user fa-5x pull-left" aria-hidden="true"></i>
                             <div class="user-content">
-                                <h5 class="no-m-bottom">{$__ADMIN_DATA__.username}</h5>
+                                <h5 class="no-m-bottom">{$ADMIN_DATA.id.username}</h5>
                             </div>
                         </li>
                         <li>
@@ -26,14 +26,14 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{:url('user/admin', array('method' => 'editor', 'id' => $__ADMIN_DATA__['id']))}">
+                            <a href="{:url('user/admin', array('method' => 'editor', 'id' => $ADMIN_DATA.id))}">
                                 <i class="fa fa-edit fa-lg"></i>
                                 <span class="m-left-xs">{:lang('update admin')}</span>
                             </a>
                         </li>
                         <li class="divider"></li>
-                        <li>
-                            <a href="{:url('account/logout')}">
+                        <li class="_handle_logout">
+                            <a >
                                 <i class="fa fa-power-off fa-lg"></i>
                                 <span class="m-left-xs">{:lang('logout')}</span>
                             </a>
@@ -42,7 +42,7 @@
                 </li>
             </ul>
 
-            <a href="{:url('/')}" class="brand">
+            <a href="{:url('settings/info')}" class="brand">
                 <strong class="text-danger">NiPHP</strong> Admin
             </a>
         </div>
@@ -60,7 +60,7 @@
                         <div class="search-input">
                             <form action="" method="get" id="search-form">
                                 <input type="text" name="q" class="form-control input-sm inline-block">
-                                <a href="#" class="input-icon text-normal search-submit">
+                                <a class="input-icon text-normal search-submit">
                                     <i class="ion-ios7-search-strong"></i>
                                 </a>
                             </form>
@@ -76,7 +76,7 @@
                         <!-- <img src="__IMG__profile/profile1.jpg" alt="" class="img-circle inline-block user-profile-pic"> -->
                         <i class="fa fa-user fa-lg" aria-hidden="true"></i>
                         <div class="user-detail inline-block">
-                            {$__ADMIN_DATA__.username}
+                            {$ADMIN_DATA.id.username}
                             <i class="fa fa-angle-down"></i>
                         </div>
                     </a>
@@ -90,13 +90,13 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{:url('user/admin', array('method' => 'editor', 'id' => $__ADMIN_DATA__['id']))}">
+                                    <a href="{:url('user/admin', array('method' => 'editor', 'id' => $ADMIN_DATA.id))}">
                                         <i class="fa fa-edit fa-lg"></i>
                                         <span class="m-left-xs">{:lang('update admin')}</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="{:url('account/logout')}">
+                                <li class="_handle_logout">
+                                    <a >
                                         <i class="fa fa-power-off fa-lg"></i>
                                         <span class="m-left-xs">{:lang('logout')}</span>
                                     </a>

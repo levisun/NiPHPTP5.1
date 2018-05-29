@@ -123,41 +123,68 @@
     </div>
 </div>
 <script type="text/javascript">
-var json_data  = {$json_data|raw};
-var sys_info   = json_data["sys_info"],
-    sys_make   = json_data["sys_make"],
-    visit_info = json_data["visit_info"];
-
-jQuery(function(){
-    var h = "";
-    for (var i = 0; i < sys_info.length; i++) {
-        h = h + "<tr><th>"+sys_info[i]["name"]+"</th><td>"+sys_info[i]["value"]+"</td></tr>";
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "settings.info.sysinfo"
     }
-    jQuery(".no-margin tbody").append(h);
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return ;
+    }
 
-    jQuery(".bg-danger .statistic-title").text(sys_make["member"]["name"]);
-    jQuery(".bg-danger .statistic-value").text(sys_make["member"]["value"][0]["name"]+":"+sys_make["member"]["value"][0]["value"]);
-    jQuery(".bg-danger .m-top-md").text(sys_make["member"]["value"][1]["name"]+":"+sys_make["member"]["value"][1]["value"]);
+    var html = "";
+    for (var index in result.data) {
+        html += "<tr><th>"+result.data[index].name+"</th><td>"+result.data[index].value+"</td></tr>";
+    }
+    $(".no-margin tbody").append(html);
+});
 
-    jQuery(".bg-info .statistic-title").text(sys_make["feed_msg"]["name"]);
-    jQuery(".bg-info .statistic-value").text(sys_make["feed_msg"]["value"][0]["name"]+":"+sys_make["feed_msg"]["value"][0]["value"]);
-    jQuery(".bg-info .m-top-md").text(sys_make["feed_msg"]["value"][1]["name"]+":"+sys_make["feed_msg"]["value"][1]["value"]);
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "settings.info.make"
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return ;
+    }
 
-    jQuery(".bg-purple .statistic-title").text(sys_make["ads_link"]["name"]);
-    jQuery(".bg-purple .statistic-value").text(sys_make["ads_link"]["value"][0]["name"]+":"+sys_make["ads_link"]["value"][0]["value"]);
-    jQuery(".bg-purple .m-top-md").text(sys_make["ads_link"]["value"][1]["name"]+":"+sys_make["ads_link"]["value"][1]["value"]);
+    $(".bg-danger .statistic-title").text(result.data["member"]["name"]);
+    $(".bg-danger .statistic-value").text(result.data["member"]["value"][0]["name"]+":"+result.data["member"]["value"][0]["value"]);
+    $(".bg-danger .m-top-md").text(result.data["member"]["value"][1]["name"]+":"+result.data["member"]["value"][1]["value"]);
 
+    $(".bg-info .statistic-title").text(result.data["feed_msg"]["name"]);
+    $(".bg-info .statistic-value").text(result.data["feed_msg"]["value"][0]["name"]+":"+result.data["feed_msg"]["value"][0]["value"]);
+    $(".bg-info .m-top-md").text(result.data["feed_msg"]["value"][1]["name"]+":"+result.data["feed_msg"]["value"][1]["value"]);
 
+    $(".bg-purple .statistic-title").text(result.data["ads_link"]["name"]);
+    $(".bg-purple .statistic-value").text(result.data["ads_link"]["value"][0]["name"]+":"+result.data["ads_link"]["value"][0]["value"]);
+    $(".bg-purple .m-top-md").text(result.data["ads_link"]["value"][1]["name"]+":"+result.data["ads_link"]["value"][1]["value"]);
+});
+
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "settings.info.visit"
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return ;
+    }
 
     //Flot Chart (Total Sales)
     var d1 = [];
     for (var i = 0; i <= 10; i += 1) {
         //d1.push([i, parseInt(Math.random() * 30)]);
-        d1 = [visit_info["value"]];
+        d1 = [result.data.value];
     }
 
     function plotWithOptions() {
-        jQuery.plot("#placeholder", [d1], {
+        $.plot("#placeholder", [d1], {
             series: {
                 lines: {
                     show: true,
@@ -181,7 +208,7 @@ jQuery(function(){
         });
     }
 
-    jQuery("<div id='tooltip'></div>").css({
+    $("<div id='tooltip'></div>").css({
         position: "absolute",
         display: "none",
         border: "1px solid #222",
@@ -192,16 +219,16 @@ jQuery(function(){
         opacity: 0.90
     }).appendTo("body");
 
-    jQuery("#placeholder").bind("plothover", function (event, pos, item) {
+    $("#placeholder").bind("plothover", function (event, pos, item) {
 
         var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
-        jQuery("#hoverdata").text(str);
+        $("#hoverdata").text(str);
 
         if (item) {
             var x = item.datapoint[0],
                 y = item.datapoint[1];
 
-                jQuery("#tooltip").html("Total Sales : " + y)
+                $("#tooltip").html("Total Sales : " + y)
                 .css({top: item.pageY+5, left: item.pageX+5})
                 .fadeIn(200);
         } else {
@@ -211,4 +238,5 @@ jQuery(function(){
 
     plotWithOptions();
 });
+
 </script>
