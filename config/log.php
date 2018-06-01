@@ -18,6 +18,7 @@ return [
     'path'  => '',
     // 日志记录级别
     'level' => [],
+    // 'json'  => true,
     'apart_level' => [
         'error',
         'notice',

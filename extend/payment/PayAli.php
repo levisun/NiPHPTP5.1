@@ -26,54 +26,47 @@ class PayAli
 
     protected $params = [];
 
-    function __construct($config)
+    function __construct($_config)
     {
         $this->config = [
-            'app_id'      => !empty($config['app_id']) ? $config['app_id'] : '',
-            'method'      => !empty($config['method']) ? $config['method'] : '',
-            'format'      => !empty($config['format']) ? $config['format'] : 'JSON',
-            'charset'     => !empty($config['charset']) ? $config['charset'] : 'UTF-8',
-            'sign_type'   => !empty($config['sign_type']) ? $config['sign_type'] : 'RSA2',
-            'version'     => !empty($config['version']) ? $config['version'] : '1.0',
-            'biz_content' => !empty($config['biz_content']) ? $config['biz_content'] : '',
+            'app_id'        => $_config['app_id'],
+            'format'        => !empty($_config['format']) ? $_config['format'] : 'JSON',
+            'charset'       => !empty($_config['charset']) ? $_config['charset'] : 'UTF-8',
+            'sign_type'     => !empty($_config['sign_type']) ? $_config['sign_type'] : 'RSA2',
+            'version'       => !empty($_config['version']) ? $_config['version'] : '1.0',
+            'rsa_file_path' => $_config['rsa_file_path'],
         ];
     }
 
-    public function wapPay($params)
+    public function wapPay($_params)
     {
-        $this->params = $params;
+        $_params['product_code'] = 'QUICK_WAP_WAY';
+
+        $return_url = $_params['return_url'];
+        $notify_url = $_params['notify_url'];
+        unset($_params['return_url'], $_params['notify_url']);
+
+        $this->params = $_params;
+        $this->params['biz_content']  = json_encode($_params);
+
         $this->params['method']       = 'alipay.trade.wap.pay';
-        $this->params['product_code'] = 'QUICK_WAP_WAY';
         $this->params['timestamp']    = date('Y-m-d H:i:s');
         $this->params['app_id']       = $this->config['app_id'];
         $this->params['format']       = $this->config['format'];
         $this->params['charset']      = $this->config['charset'];
         $this->params['sign_type']    = $this->config['sign_type'];
         $this->params['version']      = $this->config['version'];
-        $this->params['biz_content']  = $this->config['biz_content'];
+
+        $this->params['return_url']   = $this->config['return_url'];
+        $this->params['notify_url']   = $this->config['notify_url'];
+
         $this->params['sign']         = $this->getSign($this->params);
 
-        return $this->buildRequestForm();
-    }
+        $url = 'https://openapi.alipay.com/gateway.do';
+        $result = $this->postCurl($this->toString(), $url);
 
-    /**
-     * 建立请求，以表单HTML形式构造（默认）
-     * @access private
-     * @param
-     * @return 提交表单HTML文本
-     */
-    protected function buildRequestForm()
-    {
-        $form = '<form id="alipaysubmit" name="alipaysubmit" action="' . $this->gatewayUrl . '?charset=' . $this->config['charset'] . '" method="POST">';
-        foreach ($this->params as $key => $value) {
-            if (!empty($value)) {
-                $form .= '<input type="hidden" name="' . $key . '" value="' . str_replace('\'', '&apos;', $value) . '">';
-            }
-        }
-        $form .= '<input type="submit" value="ok" style="display:none;">';
-        $form .= '</form>';
-        $form .= '<script>document.forms["alipaysubmit"].submit();</script>'
-        return $form;
+
+        // return $this->buildRequestForm();
     }
 
     /**
@@ -82,47 +75,41 @@ class PayAli
      * @param
      * @return array
      */
-    private function toJSON()
+    private function toString()
     {
-        $json = '';
+        $str = '';
         foreach ($this->params as $key => $value) {
-            if ($value != '' && !is_array($value)) {
-                $json .= $key . '=' . urlencode($value) . '&';;
+            if ($value != '') {
+                $str .= $key . '=' . urlencode($value) . '&';
             }
         }
-        $json = trim($json, '&');
-
-        return $json;
+        return trim($str, '&');
     }
 
     /**
      * 以post方式提交xml到对应的接口url
      * @access private
      * @param  string  $json   需要post的json数据
-     * @param  string  $url    url
+     * @param  string  $_url    url
      * @return mixed
      */
-    private function postXmlCurl($json, $url)
+    private function postCurl($_params, $_url)
     {
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_URL, $_url);
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $_params);
         $headers = ['content-type: application/x-www-form-urlencoded;charset=' . $this->config['charset']];
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $data = curl_exec($curl);
+        $result = curl_exec($curl);
 
-        if ($data) {
-            /*$http_status_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            if (200 !== $http_status_code) {
-                return $data, $http_status_code;
-            }*/
+        if ($result) {
             curl_close($curl);
-            return $data;
+            return $result;
         } else {
             $error = curl_errno($curl);
             curl_close($curl);
@@ -133,15 +120,15 @@ class PayAli
     /**
      * 生成签名
      * @access private
-     * @param  array $params
+     * @param  array $_params
      * @return 加密签名
      */
-    private function getSign($params)
+    private function getSign($_params)
     {
-        ksort($params);
+        ksort($_params);
 
         $to_be_signed = '';
-        foreach ($params as $key => $value) {
+        foreach ($_params as $key => $value) {
             if (!in_array($key, ['sign', 'sign_type']) && !is_array($value) && $value != '') {
                 $to_be_signed .= $key . '=' . $value . '&';
             }
@@ -149,10 +136,14 @@ class PayAli
         $to_be_signed = trim($to_be_signed, '&');
 
         $pri_key = file_get_contents($this->config['rsa_file_path']);
+
+        $pri_key = "-----BEGIN RSA PRIVATE KEY-----\n" .
+                wordwrap($pri_key, 64, "\n", true) .
+                "\n-----END RSA PRIVATE KEY-----";
         $res = openssl_get_privatekey($pri_key);
 
         if (!$res) {
-            halt('您使用的私钥格式错误，请检查RSA私钥配置');
+            die('您使用的私钥格式错误，请检查RSA私钥配置');
         }
 
         if ($this->config['sign_type'] == 'RSA2') {

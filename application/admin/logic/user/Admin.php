@@ -23,6 +23,13 @@ class Admin
      */
     public function query()
     {
+        $map = [
+            ['a.id', '<>', 1]
+        ];
+        if ($q = input('get.q')) {
+            $map[] = ['a.usernmae', 'like', '%' . $q . '%'];
+        }
+
         $field = [
             'id',
             'username',
@@ -38,6 +45,7 @@ class Admin
         ->view('admin a', $field)
         ->view('role_admin ra', [], 'ra.user_id=a.id')
         ->view('role r', ['name' => 'role_name'], 'r.id=ra.role_id')
+        ->where($map)
         ->order('a.update_time DESC, a.id DESC')
         ->paginate(null, null, [
             'path' => url('user/admin'),

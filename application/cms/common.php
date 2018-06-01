@@ -11,25 +11,4 @@
  * @since     2017/12
  */
 
-/**
- * 并发压力释放
- * @param
- * @return void
- */
-function concurrent_error()
-{
-    if (rand(0, 999) === 0) {
-        abort(502, '并发压力');
-    }
-}
 
-/**
- * 是否微信请求
- * @param
- * @return boolean
- */
-function is_wechat_request()
-{
-    $agent = request()->header('user-agent');
-    return !!strpos($agent, 'MicroMessenger');
-}

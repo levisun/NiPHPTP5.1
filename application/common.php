@@ -15,6 +15,29 @@ use think\facade\Debug;
 use think\facade\Lang;
 
 /**
+ * 缓解并发压力
+ * @param
+ * @return void
+ */
+function concurrent_error()
+{
+    if (request()->isGet() && rand(0, 999) === 0) {
+        abort(500, '并发压力');
+    }
+}
+
+/**
+ * 是否微信请求
+ * @param
+ * @return boolean
+ */
+function is_wechat_request()
+{
+    $agent = request()->header('user-agent');
+    return strpos($agent, 'MicroMessenger') !== false ? true : false;
+}
+
+/**
  * 模板过滤
  * @param  string $_content
  * @return string

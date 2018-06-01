@@ -23,6 +23,8 @@ class Base extends Controller
 
     protected function initialize()
     {
+        concurrent_error();
+
         // 清除运行垃圾文件
         remove_rundata();
 

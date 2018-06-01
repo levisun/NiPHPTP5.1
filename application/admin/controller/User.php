@@ -25,6 +25,7 @@ class User extends Base
      */
     public function member($operate = '')
     {
+        $this->assign('button_search', 1);
         $tpl = $operate ? 'member_' . $operate : '';
         return $this->fetch($tpl);
     }
@@ -49,6 +50,7 @@ class User extends Base
      */
     public function admin($operate = '')
     {
+        $this->assign('button_search', 1);
         $tpl = $operate ? 'admin_' . $operate : '';
         return $this->fetch($tpl);
     }
