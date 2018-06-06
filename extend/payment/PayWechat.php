@@ -100,6 +100,30 @@ class PayWechat
     }
 
     /**
+     * H5支付
+     * @param  array $params
+     * @return mixed
+     */
+    public function H5Pay($params)
+    {
+        // 同步通知回调地址
+        $respond_url = $params['respond_url'];
+        unset($params['respond_url']);
+
+        $this->params = $params;
+        $this->params['trade_type']  = 'MWEB';  // 交易类型
+        $this->params['device_info'] = 'WEB';
+
+        $result = $this->unifiedOrder();
+
+        if ($result['return_code'] === 'FAIL') {
+            return $result['return_msg'];
+        } else {
+            return $result['mweb_url'] . '&redirect_url=' . urlencode($respond_url);
+        }
+    }
+
+    /**
      * 统一下单
      * @access public
      * @param  array  $_params 支付参数

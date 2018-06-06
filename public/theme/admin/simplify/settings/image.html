@@ -325,9 +325,9 @@ $(".upload-btn").click(function(){
         url: request.api.upload+"?type=water",
         file: $("#uploadForm")[0],
     }, function(result){
-        var dir = result.data.save_dir + result.data.file_name;
+        var dir = result.save_dir + result.file_name;
         $("#water_image").val(dir);
-        $("#img-water_image").attr("src",  result.data.domain + dir);
+        $("#img-water_image").attr("src",  result.domain + dir);
         $.uiPopup({}, "hide");
     });
 });

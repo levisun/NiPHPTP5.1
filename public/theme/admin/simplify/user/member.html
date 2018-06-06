@@ -21,6 +21,8 @@
                             <th>{:lang('phone')}</th>
                             <th>{:lang('memberlevel')}</th>
                             <th>{:lang('status')}</th>
+                            <th>{:lang('user login ip')}</th>
+                            <th>{:lang('user login time')}</th>
                             <th>{:lang('operation')}</th>
                         </tr>
                     </thead>
@@ -44,6 +46,34 @@ $.loading({
     if (result.code !== "SUCCESS") {
         return false;
     }
+
+    var list = "";
+    for (var index in result.data.list) {
+        list = list + "<tr>";
+        list = list + "<td>"+result.data.list[index].username+"</td>";
+        list = list + "<td>"+result.data.list[index].realname+"</td>";
+        list = list + "<td>"+result.data.list[index].nickname+"</td>";
+        list = list + "<td>"+result.data.list[index].email+"</td>";
+        list = list + "<td>"+result.data.list[index].phone+"</td>";
+        list = list + "<td>"+result.data.list[index].level_name+"</td>";
+        list = list + "<td>"+result.data.list[index].status_name+"</td>";
+        list = list + "<td>["+result.data.list[index].last_login_ip+"]"+result.data.list[index].last_login_ip_attr+"</td>";
+        list = list + "<td>"+result.data.list[index].last_login_time+"</td>";
+
+        list = list + "<td>";
+        if (result.data.list[index].url.editor) {
+            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        }
+        if (result.data.list[index].url.remove) {
+            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        }
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+    $("#paging").prepend(result.data.page);
+    pagingToAjax();
 });
 
 </script>

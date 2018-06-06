@@ -121,9 +121,9 @@ class Api
     }
 
     /**
-     * 返回错误信息
+     * 返回信息
      * @param  string  $_msg         提示信息
-     * @param  integer $_code        错误代码
+     * @param  integer $_code        代码
      * @param  array   $_data        返回数据
      * @param  array   $_extend_data 附加数据
      * @return json
@@ -221,19 +221,19 @@ class Api
         if (!has_illegal_ajax_sign() || !$this->hasAuth()) {
             $output = $this->outputError(
                 'ILLEGAL',
-                40001,
+                40001,  // 非法操作
                 input('param.')
             );
         } elseif (!$this->hasLogic()) {
             $output = $this->outputError(
                 $this->logic . ' undefined',
-                40002,
+                40002,  // 未找到业务层
                 input('param.')
             );
         } elseif (!$this->hasAction()) {
             $output = $this->outputError(
                 $this->logic . '->' . $this->action . ' undefined',
-                40003,
+                40003,  // 未找到操作方法
                 input('param.')
             );
         } else {
@@ -246,7 +246,7 @@ class Api
             if ($result === false) {
                 $output = $this->outputError(
                     'data error',
-                    40004,
+                    40004,  // 操作未知错误
                     input('param.')
                 );
             } else {
@@ -258,10 +258,9 @@ class Api
                         input('param.')
                     );
                 } else {
-                    $output = $this->outputData(
+                    $output = $this->outputError(
                         $result,
-                        'ERROR',
-                        [],
+                        40005,  // 操作错误
                         input('param.')
                     );
                 }
@@ -279,11 +278,6 @@ class Api
      */
     public function upload()
     {
-        $json = [];
-        $result = false;
-
-        $json['form data']   = input('param.');
-
         if (!has_illegal_ajax_sign() || !$this->hasAuth(true)) {
             $output = $this->outputError(
                 'ILLEGAL',
@@ -295,16 +289,21 @@ class Api
             $json['msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
             if (is_string($result)) {
-                $json['code']   = 'ERROR';
-                $json['msg']    = $result;
-                $json['result'] = '';
+                $output = $this->outputError(
+                    $result,
+                    'ERROR',
+                    input('param.')
+                );
             } else {
-                $json['code']   = 'SUCCESS';
-                $json['msg']    = '';
-                $json['result'] = $result;
+                $output = $this->outputData(
+                    lang('upload success'),
+                    'SUCCESS',
+                    $result,
+                    input('param.')
+                );
             }
         }
 
-        return json($json);
+        return $output;
     }
 }

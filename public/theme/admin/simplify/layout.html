@@ -82,12 +82,17 @@
             } else {
 
             }
+            var rule = /^[a-z0-9]+$/;
+            if (rule.test(_data[index])) {
+                console.log(_data[index]);
 
-            var type = $("#"+index+_data[index]).attr("type");
-            if (type == "radio") {
-                $("#"+index+_data[index]).attr("checked", "checked");
-                $("."+index+_data[index]).addClass("checked");
+                var type = $("#"+index+_data[index]).attr("type");
+                if (type == "radio") {
+                    $("#"+index+_data[index]).attr("checked", "checked");
+                    $("."+index+_data[index]).addClass("checked");
+                }
             }
+
         }
     }
     function pagingToAjax() {

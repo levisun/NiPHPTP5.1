@@ -34,7 +34,7 @@ class Upload
      */
     private function init($_params)
     {
-        $this->uploadParams = $this->params($_params['type']);
+        $this->uploadParams = $this->codeParams($_params['type']);
         $this->savePath     = env('root_path') . basename(request()->root());
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
@@ -53,21 +53,22 @@ class Upload
         // 初始化
         $this->init($_params);
 
-        $upload = $_params['upload'];
+        $file = $_params['upload'];
 
-        $result =
-        $upload->validate($this->validate)
+        $upload =
+        $file->validate($this->validate)
+        ->rule('md5')
         ->move($this->savePath);
 
-        if (!$result) {
+        if (!$upload) {
             return $upload->getError();
         }
 
         // 上传文件后缀
-        $this->uploadFileExt  = $result->getExtension();
+        $this->uploadFileExt  = $upload->getExtension();
 
         // 上传文件保存名
-        $this->uploadFileName = $result->getSaveName();
+        $this->uploadFileName = $upload->getSaveName();
 
         // 生成水印
         $this->createWater($this->uploadFileName);
@@ -170,7 +171,7 @@ class Upload
      * @param  string  $_type 上传类型
      * @return array
      */
-    private function params($_type)
+    private function codeParams($_type)
     {
         // 缩略图尺寸
         $thumb_size = [
@@ -191,19 +192,17 @@ class Upload
             ],
         ];
 
-        $dir = '';
+        // 按年,月生成保存目录,适用于多图片
+        $dir = date('Ym') . '/';
+
+        $thumb_width = $thumb_height = 0;
 
         // 安上传类型生成上传目录
         if (in_array($_type, $thumb_size['other'])) {
-            $dir = 'images/';
+            $dir = 'images/' . $dir;
         } else {
-            $dir = $_type . '/';
+            $dir = $_type . '/' . $dir;
         }
-
-        // 按年,月生成保存目录,适用于多图片
-        $dir .= date('Y') . '/' . date('m') . '/';
-
-        $thumb_width = $thumb_height = 0;
 
         // 获取模块设置的缩略图尺寸
         if (in_array($_type, $thumb_size['module'])) {
@@ -220,6 +219,10 @@ class Upload
                 $thumb_width  = $result[$_type . '_module_width'];
                 $thumb_height = $result[$_type . '_module_height'];
             }
+        }
+        // 会员头像
+        elseif ($_type == 'portrait') {
+            $thumb_width = $thumb_height = 200;
         }
 
         return [

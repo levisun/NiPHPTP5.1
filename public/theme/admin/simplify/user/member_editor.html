@@ -161,6 +161,38 @@ $(function(){
     });
 });
 
+var editor_data = {};
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        method: "user.member.find",
+        id: "{$Request.param.id}"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
+        eachToInput(editor_data);
+    }
+});
+
+function formatDateTime(inputTime) {
+    var date = new Date(inputTime);
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second = second < 10 ? ('0' + second) : second;
+    return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+};
+
 $.loading({
     url: request.api.query,
     animation: true,
@@ -244,7 +276,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/user/member.shtml");
+        // handle(result, "admin/user/member.shtml");
     });
     return false;
 });

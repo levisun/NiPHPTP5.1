@@ -77,9 +77,11 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
 
 DROP TABLE IF EXISTS `np_level_member`;
 CREATE TABLE IF NOT EXISTS `np_level_member` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL COMMENT '会员ID',
   `level_id` smallint(6) unsigned DEFAULT NULL COMMENT '组ID',
-  PRIMARY KEY (`user_id`),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
   KEY `level_id` (`level_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '会员组关系表';
 
