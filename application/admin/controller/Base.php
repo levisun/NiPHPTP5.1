@@ -24,10 +24,10 @@ class Base extends Controller
     protected function initialize()
     {
         // 清除运行垃圾文件
-        if (APP_DEBUG) remove_rundata();
+        remove_rundata();
 
-        // AJAX请求加密签名
-        ajax_sign();
+        // 异步请求加密签名
+        logic('common/async')->createSign();
 
         // 请求参数
         $this->requestParam = [

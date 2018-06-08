@@ -19,8 +19,9 @@ class LevelMember extends Model
     protected $name = 'level_member';
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
-    protected $pk = 'user_id';
+    protected $pk = 'id';
     protected $field = [
+        'id',
         'user_id',
         'level_id',
     ];
@@ -51,7 +52,7 @@ class LevelMember extends Model
     public function remove($_receive_data)
     {
         $map  = [
-            ['id', '=', $_receive_data['id']],
+            ['user_id', '=', $_receive_data['user_id']],
         ];
 
         $result =
@@ -70,10 +71,10 @@ class LevelMember extends Model
     public function editor($_receive_data)
     {
         $map  = [
-            ['id', '=', $_receive_data['id']],
+            ['user_id', '=', $_receive_data['user_id']],
         ];
 
-        unset($_receive_data['id'], $_receive_data['__token__']);
+        unset($_receive_data['user_id'], $_receive_data['__token__']);
 
         $result =
         $this->allowField(true)

@@ -149,10 +149,10 @@ return [
         'expand' => [
             'name'  => '扩展',
             'child' => [
-                'app'      => '应用中心',
-                'upgrade'  => '在线升级',
-                'databack' => '数据备份',
+                // 'app'      => '应用中心',
                 'log'      => '系统日志',
+                'databack' => '数据备份',
+                'upgrade'  => '在线升级',
                 'elog'     => '错误日志',
                 'visit'    => '访问统计',
             ],

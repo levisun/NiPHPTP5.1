@@ -28,9 +28,6 @@ class Base extends Controller
         // 清除运行垃圾文件
         remove_rundata();
 
-        // AJAX请求加密签名
-        ajax_sign();
-
         // 请求参数
         $this->requestParam = [
             // 请求模块

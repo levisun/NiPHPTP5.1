@@ -143,6 +143,7 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -177,22 +178,6 @@ $.loading({
     }
 });
 
-function formatDateTime(inputTime) {
-    var date = new Date(inputTime);
-    var y = date.getFullYear();
-    var m = date.getMonth() + 1;
-    m = m < 10 ? ('0' + m) : m;
-    var d = date.getDate();
-    d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
-    h = h < 10 ? ('0' + h) : h;
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    minute = minute < 10 ? ('0' + minute) : minute;
-    second = second < 10 ? ('0' + second) : second;
-    return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
-};
-
 $.loading({
     url: request.api.query,
     animation: true,
@@ -203,7 +188,7 @@ $.loading({
     if (result.code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.data, "id", "name");
+    var option = eachToOption(result.data, "id", "name", editor_data["level_id"]);
     $("#level").append(option);
 });
 
@@ -217,8 +202,36 @@ $.loading({
     if (result.code !== "SUCCESS") {
         return false;
     }
-    var option = eachToOption(result.data, "id", "name");
+    var option = eachToOption(result.data, "id", "name", editor_data["province"]);
     $("#province").append(option);
+});
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "user.member.region",
+        region_id: editor_data["province"],
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return false;
+    }
+    var option = eachToOption(result.data, "id", "name", editor_data["city"]);
+    $("#city").append(option);
+});
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "user.member.region",
+        region_id: editor_data["city"],
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return false;
+    }
+    var option = eachToOption(result.data, "id", "name", editor_data["area"]);
+    $("#area").append(option);
 });
 $(".region").change(function(){
     var id = $(this).val();
@@ -269,7 +282,7 @@ $(".upload-btn").click(function(){
 });
 
 $("form").submit(function(){
-    var form_data = "method=user.member.added";
+    var form_data = "method=user.member.editor";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

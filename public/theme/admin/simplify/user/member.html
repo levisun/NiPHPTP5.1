@@ -76,4 +76,21 @@ $.loading({
     pagingToAjax();
 });
 
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "user.member.remove",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
+});
 </script>

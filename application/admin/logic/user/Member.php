@@ -84,6 +84,8 @@ class Member
         $result =
         model('common/region')->field(['id', 'pid', 'name'])
         ->where($map)
+        ->order('id ASC')
+        ->cache(true)
         ->select();
 
         return $result;
@@ -186,7 +188,35 @@ class Member
      *　@return mixed
      */
     public function remove()
-    {}
+    {
+        $map  = [
+            ['id', '=', input('post.id/f')],
+        ];
+
+        $result =
+        model('common/member')->field(true)
+        ->where($map)
+        ->find();
+
+        create_action_log($result['username'], 'member_remove');
+
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
+        $result =
+        model('common/member')
+        ->remove($receive_data);
+
+        if ($result) {
+            $receive_data = [
+                'user_id' => input('post.id/f'),
+            ];
+            model('common/LevelMember')
+            ->remove($receive_data);
+        }
+
+        return $result;
+    }
 
     /**
      * 查询要修改的数据
@@ -220,7 +250,7 @@ class Member
         $result =
         model('common/member')
         ->view('member m', $field)
-        ->view('level_member lm', 'user_id', 'lm.user_id=m.id')
+        ->view('level_member lm', 'level_id', 'lm.user_id=m.id')
         ->where($map)
         ->find();
 
@@ -234,6 +264,84 @@ class Member
      * @return mixed
      */
     public function editor()
-    {}
+    {
+        $receive_data = [
+            'id'           => input('post.id/f'),
+            'username'     => input('post.username'),
+            'password'     => input('post.password'),
+            'not_password' => input('post.not_password'),
+            'email'        => input('post.email'),
+            'realname'     => input('post.realname'),
+            'nickname'     => input('post.nickname'),
+            'portrait'     => input('post.portrait'),
+            'gender'       => input('post.gender/f'),
+            'birthday'     => input('post.birthday'),
+            'province'     => input('post.province/f'),
+            'city'         => input('post.city/f'),
+            'area'         => input('post.area/f'),
+            'address'      => input('post.address'),
+            'phone'        => input('post.phone'),
+            'level'        => input('post.level/f'),
+            'status'       => input('post.status/f'),
+            'salt'         => rand(111111, 999999),
+            '__token__'    => input('post.__token__'),
+        ];
+
+        if ($receive_data['password']) {
+            $result = validate('admin/user/member.editor', input('post.'));
+            $member_data = [
+                'id'       => $receive_data['id'],
+                'username' => $receive_data['username'],
+                'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                'email'    => $receive_data['email'],
+                'realname' => $receive_data['realname'],
+                'nickname' => $receive_data['nickname'],
+                'portrait' => $receive_data['portrait'],
+                'gender'   => $receive_data['gender'],
+                'birthday' => strtotime($receive_data['birthday']),
+                'province' => $receive_data['province'],
+                'city'     => $receive_data['city'],
+                'area'     => $receive_data['area'],
+                'address'  => $receive_data['address'],
+                'phone'    => $receive_data['phone'],
+                'status'   => $receive_data['status'],
+                'salt'     => $receive_data['salt'],
+            ];
+        } else {
+            $result = validate('admin/user/member.editorNoPwd', input('post.'));
+            $member_data = [
+                'id'       => $receive_data['id'],
+                'username' => $receive_data['username'],
+                'email'    => $receive_data['email'],
+                'realname' => $receive_data['realname'],
+                'nickname' => $receive_data['nickname'],
+                'portrait' => $receive_data['portrait'],
+                'gender'   => $receive_data['gender'],
+                'birthday' => strtotime($receive_data['birthday']),
+                'province' => $receive_data['province'],
+                'city'     => $receive_data['city'],
+                'area'     => $receive_data['area'],
+                'address'  => $receive_data['address'],
+                'phone'    => $receive_data['phone'],
+                'status'   => $receive_data['status'],
+            ];
+        }
+
+        if (true !== $result) {
+            return $result;
+        }
+
+        $result = model('common/member')->editor($member_data);
+
+        $level_data = [
+            'user_id'  => $receive_data['id'],
+            'level_id' => $receive_data['level'],
+        ];
+        model('common/LevelMember')->editor($level_data);
+
+        create_action_log($receive_data['username'], 'member_editor');
+
+        return !!$result;
+    }
 
 }

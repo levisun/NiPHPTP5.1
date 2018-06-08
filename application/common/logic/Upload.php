@@ -57,7 +57,7 @@ class Upload
 
         $upload =
         $file->validate($this->validate)
-        ->rule('md5')
+        ->rule('date')
         ->move($this->savePath);
 
         if (!$upload) {
@@ -193,7 +193,7 @@ class Upload
         ];
 
         // 按年,月生成保存目录,适用于多图片
-        $dir = date('Ym') . '/';
+        $dir = date('Y') . '/';
 
         $thumb_width = $thumb_height = 0;
 

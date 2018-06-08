@@ -73,7 +73,9 @@ function logic($_name)
         $count = count(explode('/', $_name));
         if ($count == 3) {
             list($module, $layer, $_name) = explode('/', $_name, 3);
-            $layer = 'logic\\' . $layer;
+            if ($layer !== 'logic') {
+                $layer = 'logic\\' . $layer;
+            }
         } elseif ($count == 2) {
             list($module, $_name) = explode('/', $_name, 2);
             $layer = 'logic';
@@ -115,7 +117,9 @@ function validate($_name, $_data)
         $count = count(explode('/', $_name));
         if ($count == 3) {
             list($module, $layer, $_name) = explode('/', $_name, 3);
-            $layer = 'validate\\' . $layer;
+            if ($layer !== 'validate') {
+                $layer = 'validate\\' . $layer;
+            }
         } elseif ($count == 2) {
             list($module, $_name) = explode('/', $_name, 2);
             $layer = 'validate';
@@ -175,49 +179,6 @@ function lang($_name, $_vars = [], $_lang = '')
         $return = Lang::get($_name, $_vars, $_lang);
     }
     return $return;
-}
-
-
-/**
- * AJAX请求签名
- * @return
- */
-function ajax_sign()
-{
-    cookie('__sign', md5(
-        time() . 'sign'
-    ));
-
-    session('__sign', sha1(
-        md5(date('Y-m-d')) .
-        md5(request()->domain() .
-            escape_xss(request()->url(true)))
-    ));
-}
-
-/**
- * 校验AJAX请求签名合法性
- * @return boolean
- */
-function has_illegal_ajax_sign()
-{
-    if (session('?__sign')) {
-        $http_referer = sha1(
-            md5(date('Y-m-d')) .
-            md5(request()->domain() .
-                request()->server('http_referer'))
-        );
-
-        if (session('__sign') === $http_referer) {
-            $result = true;
-        } else {
-            $result = false;
-        }
-    } else {
-        $result = false;
-    }
-
-    return $result;
 }
 
 /**
@@ -521,22 +482,22 @@ function escape_xss($_data)
             '\\' => '&#92;',
             '~'  => '&#126;',
             '‚'  => '&sbquo;',
-            ','  => '&#44;',
+            // ','  => '&#44;',
             // '.'  => '&#46;',
             '^'  => '&#94;',
 
             // HTML中的JS无法执行
-            '\'' => '&#039;',
-            '%'  => '&#37;',
-            '!'  => '&#33;',
-            '@'  => '&#64;',
+            // '\'' => '&#039;',
+            // '%'  => '&#37;',
+            // '!'  => '&#33;',
+            // '@'  => '&#64;',
             // '-'  => '&ndash;',
-            '?'  => '&#129;',
-            '+'  => '&#43;',
-            ':'  => '&#58;',
-            '='  => '&#61;',
-            '('  => '&#40;',
-            ')'  => '&#41;',
+            // '?'  => '&#129;',
+            // '+'  => '&#43;',
+            // ':'  => '&#58;',
+            // '='  => '&#61;',
+            // '('  => '&#40;',
+            // ')'  => '&#41;',
         ];
 
         $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);

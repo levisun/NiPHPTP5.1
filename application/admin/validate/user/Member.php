@@ -98,5 +98,21 @@ class Member extends Validate
             'status',
             'level',
         ],
+        'editorNoPwd' => [
+            'id',
+            'username',
+            'email',
+            'realname',
+            'nickname',
+            'portrait',
+            'gender',
+            'birthday',
+            'province',
+            'city',
+            'area',
+            'phone',
+            'status',
+            'level',
+        ],
     ];
 }

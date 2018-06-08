@@ -34,7 +34,7 @@ class Info
             // 系统与框架版本
             [
                 'name'  => lang('sys version'),
-                'value' => 'NC' . NP_VERSION . ' TP' . App()->version(),
+                'value' => 'NP' . NP_VERSION . ' TP' . App()->version(),
             ],
             // 操作系统
             [
