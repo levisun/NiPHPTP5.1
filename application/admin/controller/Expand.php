@@ -26,6 +26,12 @@ class Expand extends Base
         return $this->fetch();
     }
 
+    public function databack($operate = '')
+    {
+        $tpl = $operate ? 'databack_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
     /**
      * 错误日志
      * @access public

@@ -1,0 +1,73 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+
+        <span class="smart-widget-option">
+            <a href="{:url('', array('operate' => 'backup'))}" class="btn btn-default btn-xs">
+                <span class="fa fa-plus"></span>{:lang('button backup')}
+            </a>
+        </span>
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <table class="table table-striped" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>{:lang('backname')}</th>
+                            <th>{:lang('backtime')}</th>
+                            <th>{:lang('backsize')}</th>
+                            <th>{:lang('operation')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "expand.databack.query"
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return false;
+    }
+
+    var list = "";
+    for (var index in result.data) {
+        list = list + "<tr>";
+        list = list + "<td>"+result.data[index].name+"</td>";
+        list = list + "<td>"+result.data[index].time+"</td>";
+        list = list + "<td>"+result.data[index].size+"</td>";
+
+        list = list + "<td>";
+        list = list + "<a class='np-btn-reduction' data-id='"+result.data[index].id+"'><i class='fa fa-retweet'></i>{:lang('button reduction')}</a>"
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+});
+
+$(document).on("click", ".np-btn-reduction", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "expand.databack.reduction",
+            id: id
+        },
+    }, function(result){
+        // handle(result, false, false);
+    });
+    return false;
+});
+</script>

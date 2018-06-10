@@ -23,7 +23,7 @@ class Elog
      */
     public function query()
     {
-        $dir  = env('root_path') . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . '*';
+        $dir  = env('runtime_path') . 'log' . DIRECTORY_SEPARATOR . '*';
         $file = (array) glob($dir);
         rsort($file);
 
@@ -33,21 +33,11 @@ class Elog
             rsort($temp);
 
             foreach ($temp as $path) {
-                $size = filesize($path);
-
-                $a   = ['B', 'KB', 'MB', 'GB', 'TB'];
-                $pos = 0;
-                while ($size >= 1024) {
-                    $size /= 1024;
-                    $pos++;
-                }
-
                 $date = substr($value, -6);
                 $name = basename($path);
                 $file_dir[$date . $name] = [
-                    // 'path' => $path,
                     'time' => filectime($path),
-                    'size' => round($size, 2) . ' ' . $a[$pos],
+                    'size' => file_size($path),
                     'show' => url('expand/elog', ['operate' => 'show', 'id' => encrypt($date . DIRECTORY_SEPARATOR . $name)]),
                 ];
             }
@@ -67,7 +57,7 @@ class Elog
         $name = input('post.id');
         $name = decrypt($name);
 
-        $path  = env('root_path') . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . $name;
+        $path  = env('runtime_path') . 'log' . DIRECTORY_SEPARATOR . $name;
         $result = '';
         if (is_file($path)) {
             $result = file_get_contents($path);
