@@ -16,6 +16,9 @@ class Index extends Base
 {
     public function index()
     {
-        return $this->fetch('index');
+
+        echo mb_internal_encoding();
+        //
+        return '';
     }
 }

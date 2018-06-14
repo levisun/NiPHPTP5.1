@@ -120,65 +120,69 @@ class Member
      */
     public function added()
     {
-        $receive_data = [
-            'username'     => input('post.username'),
-            'password'     => input('post.password'),
-            'not_password' => input('post.not_password'),
-            'email'        => input('post.email'),
-            'realname'     => input('post.realname'),
-            'nickname'     => input('post.nickname'),
-            'portrait'     => input('post.portrait'),
-            'gender'       => input('post.gender/f'),
-            'birthday'     => input('post.birthday'),
-            'province'     => input('post.province/f'),
-            'city'         => input('post.city/f'),
-            'area'         => input('post.area/f'),
-            'address'      => input('post.address'),
-            'phone'        => input('post.phone'),
-            'level'        => input('post.level/f'),
-            'status'       => input('post.status/f'),
-            'salt'         => rand(111111, 999999),
-            '__token__'    => input('post.__token__'),
-        ];
+        $result = model('common/member')->transaction(function(){
+            $receive_data = [
+                'username'     => input('post.username'),
+                'password'     => input('post.password'),
+                'not_password' => input('post.not_password'),
+                'email'        => input('post.email'),
+                'realname'     => input('post.realname'),
+                'nickname'     => input('post.nickname'),
+                'portrait'     => input('post.portrait'),
+                'gender'       => input('post.gender/f'),
+                'birthday'     => input('post.birthday'),
+                'province'     => input('post.province/f'),
+                'city'         => input('post.city/f'),
+                'area'         => input('post.area/f'),
+                'address'      => input('post.address'),
+                'phone'        => input('post.phone'),
+                'level'        => input('post.level/f'),
+                'status'       => input('post.status/f'),
+                'salt'         => rand(111111, 999999),
+                '__token__'    => input('post.__token__'),
+            ];
 
-        $result = validate('admin/user/member.added', input('post.'));
-        if (true !== $result) {
-            return $result;
-        }
+            $result = validate('admin/user/member.added', input('post.'));
+            if (true !== $result) {
+                return $result;
+            }
 
-        unset($receive_data['__token__']);
+            unset($receive_data['__token__']);
 
-        $member_data = [
-            'username' => $receive_data['username'],
-            'password' => md5_password($receive_data['password'], $receive_data['salt']),
-            'email'    => $receive_data['email'],
-            'realname' => $receive_data['realname'],
-            'nickname' => $receive_data['nickname'],
-            'portrait' => $receive_data['portrait'],
-            'gender'   => $receive_data['gender'],
-            'birthday' => strtotime($receive_data['birthday']),
-            'province' => $receive_data['province'],
-            'city'     => $receive_data['city'],
-            'area'     => $receive_data['area'],
-            'address'  => $receive_data['address'],
-            'phone'    => $receive_data['phone'],
-            'status'   => $receive_data['status'],
-            'salt'     => $receive_data['salt'],
-        ];
+            $member_data = [
+                'username' => $receive_data['username'],
+                'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                'email'    => $receive_data['email'],
+                'realname' => $receive_data['realname'],
+                'nickname' => $receive_data['nickname'],
+                'portrait' => $receive_data['portrait'],
+                'gender'   => $receive_data['gender'],
+                'birthday' => strtotime($receive_data['birthday']),
+                'province' => $receive_data['province'],
+                'city'     => $receive_data['city'],
+                'area'     => $receive_data['area'],
+                'address'  => $receive_data['address'],
+                'phone'    => $receive_data['phone'],
+                'status'   => $receive_data['status'],
+                'salt'     => $receive_data['salt'],
+            ];
 
-        $member_id = model('common/member')
-        ->added($member_data);
+            $member_id = model('common/member')
+            ->added($member_data);
 
-        $level_data = [
-            'user_id' => $member_id,
-            'level_id' => $receive_data['level']
-        ];
-        $result = model('common/LevelMember')
-        ->added($level_data);
+            $level_data = [
+                'user_id' => $member_id,
+                'level_id' => $receive_data['level']
+            ];
+            model('common/LevelMember')
+            ->added($level_data);
 
-        create_action_log($receive_data['username'], 'member_added');
+            create_action_log($receive_data['username'], 'member_added');
 
-        return !!$result;
+            return !!$member_id;
+        });
+
+        return $result;
     }
 
     /**
@@ -189,31 +193,35 @@ class Member
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
-        $result =
-        model('common/member')->field(true)
-        ->where($map)
-        ->find();
-
-        create_action_log($result['username'], 'member_remove');
-
-        $receive_data = [
-            'id' => input('post.id/f'),
-        ];
-        $result =
-        model('common/member')
-        ->remove($receive_data);
-
-        if ($result) {
-            $receive_data = [
-                'user_id' => input('post.id/f'),
+        $result = model('common/member')->transaction(function(){
+            $map  = [
+                ['id', '=', input('post.id/f')],
             ];
-            model('common/LevelMember')
+
+            $result =
+            model('common/member')->field(true)
+            ->where($map)
+            ->find();
+
+            create_action_log($result['username'], 'member_remove');
+
+            $receive_data = [
+                'id' => input('post.id/f'),
+            ];
+            $result =
+            model('common/member')
             ->remove($receive_data);
-        }
+
+            if ($result) {
+                $receive_data = [
+                    'user_id' => input('post.id/f'),
+                ];
+                model('common/LevelMember')
+                ->remove($receive_data);
+            }
+
+            return true;
+        });
 
         return $result;
     }
@@ -265,83 +273,87 @@ class Member
      */
     public function editor()
     {
-        $receive_data = [
-            'id'           => input('post.id/f'),
-            'username'     => input('post.username'),
-            'password'     => input('post.password'),
-            'not_password' => input('post.not_password'),
-            'email'        => input('post.email'),
-            'realname'     => input('post.realname'),
-            'nickname'     => input('post.nickname'),
-            'portrait'     => input('post.portrait'),
-            'gender'       => input('post.gender/f'),
-            'birthday'     => input('post.birthday'),
-            'province'     => input('post.province/f'),
-            'city'         => input('post.city/f'),
-            'area'         => input('post.area/f'),
-            'address'      => input('post.address'),
-            'phone'        => input('post.phone'),
-            'level'        => input('post.level/f'),
-            'status'       => input('post.status/f'),
-            'salt'         => rand(111111, 999999),
-            '__token__'    => input('post.__token__'),
-        ];
-
-        if ($receive_data['password']) {
-            $result = validate('admin/user/member.editor', input('post.'));
-            $member_data = [
-                'id'       => $receive_data['id'],
-                'username' => $receive_data['username'],
-                'password' => md5_password($receive_data['password'], $receive_data['salt']),
-                'email'    => $receive_data['email'],
-                'realname' => $receive_data['realname'],
-                'nickname' => $receive_data['nickname'],
-                'portrait' => $receive_data['portrait'],
-                'gender'   => $receive_data['gender'],
-                'birthday' => strtotime($receive_data['birthday']),
-                'province' => $receive_data['province'],
-                'city'     => $receive_data['city'],
-                'area'     => $receive_data['area'],
-                'address'  => $receive_data['address'],
-                'phone'    => $receive_data['phone'],
-                'status'   => $receive_data['status'],
-                'salt'     => $receive_data['salt'],
+        $result = model('common/member')->transaction(function(){
+            $receive_data = [
+                'id'           => input('post.id/f'),
+                'username'     => input('post.username'),
+                'password'     => input('post.password'),
+                'not_password' => input('post.not_password'),
+                'email'        => input('post.email'),
+                'realname'     => input('post.realname'),
+                'nickname'     => input('post.nickname'),
+                'portrait'     => input('post.portrait'),
+                'gender'       => input('post.gender/f'),
+                'birthday'     => input('post.birthday'),
+                'province'     => input('post.province/f'),
+                'city'         => input('post.city/f'),
+                'area'         => input('post.area/f'),
+                'address'      => input('post.address'),
+                'phone'        => input('post.phone'),
+                'level'        => input('post.level/f'),
+                'status'       => input('post.status/f'),
+                'salt'         => rand(111111, 999999),
+                '__token__'    => input('post.__token__'),
             ];
-        } else {
-            $result = validate('admin/user/member.editorNoPwd', input('post.'));
-            $member_data = [
-                'id'       => $receive_data['id'],
-                'username' => $receive_data['username'],
-                'email'    => $receive_data['email'],
-                'realname' => $receive_data['realname'],
-                'nickname' => $receive_data['nickname'],
-                'portrait' => $receive_data['portrait'],
-                'gender'   => $receive_data['gender'],
-                'birthday' => strtotime($receive_data['birthday']),
-                'province' => $receive_data['province'],
-                'city'     => $receive_data['city'],
-                'area'     => $receive_data['area'],
-                'address'  => $receive_data['address'],
-                'phone'    => $receive_data['phone'],
-                'status'   => $receive_data['status'],
+
+            if ($receive_data['password']) {
+                $result = validate('admin/user/member.editor', input('post.'));
+                $member_data = [
+                    'id'       => $receive_data['id'],
+                    'username' => $receive_data['username'],
+                    'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                    'email'    => $receive_data['email'],
+                    'realname' => $receive_data['realname'],
+                    'nickname' => $receive_data['nickname'],
+                    'portrait' => $receive_data['portrait'],
+                    'gender'   => $receive_data['gender'],
+                    'birthday' => strtotime($receive_data['birthday']),
+                    'province' => $receive_data['province'],
+                    'city'     => $receive_data['city'],
+                    'area'     => $receive_data['area'],
+                    'address'  => $receive_data['address'],
+                    'phone'    => $receive_data['phone'],
+                    'status'   => $receive_data['status'],
+                    'salt'     => $receive_data['salt'],
+                ];
+            } else {
+                $result = validate('admin/user/member.editorNoPwd', input('post.'));
+                $member_data = [
+                    'id'       => $receive_data['id'],
+                    'username' => $receive_data['username'],
+                    'email'    => $receive_data['email'],
+                    'realname' => $receive_data['realname'],
+                    'nickname' => $receive_data['nickname'],
+                    'portrait' => $receive_data['portrait'],
+                    'gender'   => $receive_data['gender'],
+                    'birthday' => strtotime($receive_data['birthday']),
+                    'province' => $receive_data['province'],
+                    'city'     => $receive_data['city'],
+                    'area'     => $receive_data['area'],
+                    'address'  => $receive_data['address'],
+                    'phone'    => $receive_data['phone'],
+                    'status'   => $receive_data['status'],
+                ];
+            }
+
+            if (true !== $result) {
+                return $result;
+            }
+
+            $result = model('common/member')->editor($member_data);
+
+            $level_data = [
+                'user_id'  => $receive_data['id'],
+                'level_id' => $receive_data['level'],
             ];
-        }
+            model('common/LevelMember')->editor($level_data);
 
-        if (true !== $result) {
-            return $result;
-        }
+            create_action_log($receive_data['username'], 'member_editor');
 
-        $result = model('common/member')->editor($member_data);
+            return true;
+        });
 
-        $level_data = [
-            'user_id'  => $receive_data['id'],
-            'level_id' => $receive_data['level'],
-        ];
-        model('common/LevelMember')->editor($level_data);
-
-        create_action_log($receive_data['username'], 'member_editor');
-
-        return !!$result;
+        return $result;
     }
 
 }

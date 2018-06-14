@@ -111,25 +111,29 @@ class Admin
 
         unset($receive_data['__token__']);
 
-        $admin_data = [
-            'username' => $receive_data['username'],
-            'password' => md5_password($receive_data['password'], $receive_data['salt']),
-            'email'    => $receive_data['email'],
-            'salt'     => $receive_data['salt'],
-        ];
-        $admin_id = model('common/admin')
-        ->added($admin_data);
+        $result = model('common/admin')->transaction(function(){
+            $admin_data = [
+                'username' => $receive_data['username'],
+                'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                'email'    => $receive_data['email'],
+                'salt'     => $receive_data['salt'],
+            ];
+            $admin_id = model('common/admin')
+            ->added($admin_data);
 
-        $role_data = [
-            'user_id' => $admin_id,
-            'role_id' => $receive_data['role']
-        ];
-        $result = model('common/RoleAdmin')
-        ->added($role_data);
+            $role_data = [
+                'user_id' => $admin_id,
+                'role_id' => $receive_data['role']
+            ];
+            $result = model('common/RoleAdmin')
+            ->added($role_data);
 
-        create_action_log($receive_data['username'], 'admin_added');
+            create_action_log($receive_data['username'], 'admin_added');
 
-        return !!$result;
+            return true;
+        });
+
+        return $result;
     }
 
     /**
@@ -140,30 +144,34 @@ class Admin
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
-        $result =
-        model('common/admin')->field(true)
-        ->where($map)
-        ->find();
-
-        create_action_log($result['username'], 'admin_remove');
-
-        $receive_data = [
-            'id' => input('post.id/f'),
-        ];
-        $result = model('common/admin')
-        ->remove($receive_data);
-
-        if ($result) {
-            $receive_data = [
-                'user_id' => input('post.id/f'),
+        $result = model('common/admin')->transaction(function(){
+            $map  = [
+                ['id', '=', input('post.id/f')],
             ];
-            model('common/RoleAdmin')
+
+            $result =
+            model('common/admin')->field(true)
+            ->where($map)
+            ->find();
+
+            create_action_log($result['username'], 'admin_remove');
+
+            $receive_data = [
+                'id' => input('post.id/f'),
+            ];
+            $result = model('common/admin')
             ->remove($receive_data);
-        }
+
+            if ($result) {
+                $receive_data = [
+                    'user_id' => input('post.id/f'),
+                ];
+                model('common/RoleAdmin')
+                ->remove($receive_data);
+            }
+
+            return true;
+        });
 
         return $result;
     }
@@ -207,49 +215,53 @@ class Admin
      */
     public function editor()
     {
-        $receive_data = [
-            'id'           => input('post.id/f'),
-            'username'     => input('post.username'),
-            'password'     => input('post.password'),
-            'not_password' => input('post.not_password'),
-            'email'        => input('post.email'),
-            'role'         => input('post.role/f'),
-            'salt'         => rand(111111, 999999),
-            '__token__'    => input('post.__token__'),
-        ];
-
-        if ($receive_data['password']) {
-            $result = validate('admin/user/admin.editor', input('post.'));
-            $admin_data = [
-                'id'       => $receive_data['id'],
-                'username' => $receive_data['username'],
-                'password' => md5_password($receive_data['password'], $receive_data['salt']),
-                'email'    => $receive_data['email'],
-                'salt'     => $receive_data['salt'],
+        $result = model('common/admin')->transaction(function(){
+            $receive_data = [
+                'id'           => input('post.id/f'),
+                'username'     => input('post.username'),
+                'password'     => input('post.password'),
+                'not_password' => input('post.not_password'),
+                'email'        => input('post.email'),
+                'role'         => input('post.role/f'),
+                'salt'         => rand(111111, 999999),
+                '__token__'    => input('post.__token__'),
             ];
-        } else {
-            $result = validate('admin/user/admin.editorNoPwd', input('post.'));
-            $admin_data = [
-                'id'       => $receive_data['id'],
-                'username' => $receive_data['username'],
-                'email'    => $receive_data['email'],
+
+            if ($receive_data['password']) {
+                $result = validate('admin/user/admin.editor', input('post.'));
+                $admin_data = [
+                    'id'       => $receive_data['id'],
+                    'username' => $receive_data['username'],
+                    'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                    'email'    => $receive_data['email'],
+                    'salt'     => $receive_data['salt'],
+                ];
+            } else {
+                $result = validate('admin/user/admin.editorNoPwd', input('post.'));
+                $admin_data = [
+                    'id'       => $receive_data['id'],
+                    'username' => $receive_data['username'],
+                    'email'    => $receive_data['email'],
+                ];
+            }
+
+            if (true !== $result) {
+                return $result;
+            }
+
+            $result = model('common/admin')->editor($admin_data);
+
+            $role_data = [
+                'user_id' => $receive_data['id'],
+                'role_id' => $receive_data['role'],
             ];
-        }
+            model('common/RoleAdmin')->editor($role_data);
 
-        if (true !== $result) {
-            return $result;
-        }
+            create_action_log($receive_data['username'], 'admin_editor');
 
-        $result = model('common/admin')->editor($admin_data);
+            return true;
+        });
 
-        $role_data = [
-            'user_id' => $receive_data['id'],
-            'role_id' => $receive_data['role'],
-        ];
-        model('common/RoleAdmin')->editor($role_data);
-
-        create_action_log($receive_data['username'], 'admin_editor');
-
-        return !!$result;
+        return $result;
     }
 }

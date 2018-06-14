@@ -65,6 +65,6 @@ return [
         // '/NiPHPTP5.1/public/admin/settings/basic',
     ],
 
-    'route_check_cache'     => !APP_DEBUG,
+    'route_check_cache'     => false,
     'route_check_cache_key' => '',
 ];

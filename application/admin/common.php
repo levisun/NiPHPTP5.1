@@ -12,28 +12,6 @@
  */
 
 /**
- * 文件大小
- * @param  string $_size_or_path 文件大小或文件路径
- * @return string
- */
-function file_size($_size_or_path)
-{
-    if (strpos($_size_or_path, '.') !== false && is_file($_size_or_path)) {
-        $_size_or_path = filesize($_size_or_path);
-    }
-
-    $unit = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-    $pos = 0;
-    while ($_size_or_path >= 1024) {
-        $_size_or_path /= 1024;
-        $pos++;
-    }
-
-    return round($_size_or_path, 2) . ' ' . $unit[$pos];
-}
-
-/**
  * 节点格式化
  * @param  array $_result
  * @param  int   $_pid

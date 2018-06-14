@@ -22,6 +22,7 @@ class Link extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $deleteTime = 'delete_time';
+    protected $defaultSoftDelete = 0;
     protected $pk = 'id';
     protected $field = [
         'id',

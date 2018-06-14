@@ -214,8 +214,11 @@ class Role
             ];
             model('common/role_admin')
             ->remove($receive_data);
+
+            return true;
         });
 
+        return $result;
     }
 
     /**

@@ -29,8 +29,6 @@ class Databack extends Model
         $file = (array) glob($dir);
         rsort($file);
 
-        $unit   = ['B', 'KB', 'MB', 'GB', 'TB'];
-
         $file_dir = [];
         foreach ($file as $key => $value) {
             $name = basename($value);
@@ -82,7 +80,17 @@ class Databack extends Model
         $file = (array) glob($TEMP_DIR . '*');
         sort($file);
 
-        print_r($file);die();
+        foreach ($file as $key => $path) {
+            if (is_file($path)) {
+                $sql = file_get_contents($path);
+                $sql = json_decode($sql);
+                $bol = parent::batchQuery($sql);
+                unlink($path);
+            }
+        }
+        rmdir($TEMP_DIR);
+
+        return true;
     }
 
     /**
@@ -116,8 +124,12 @@ class Databack extends Model
             if (empty($tableRes[0]['Create Table'])) {
                 continue;
             }
-            $TABLES_SQL = "DROP TABLE IF EXISTS `{$table_name}`;\r\n";
-            $TABLES_SQL .= $tableRes[0]['Create Table'] . ";\r\n";
+            $TABLES_SQL = [
+                'DROP TABLE IF EXISTS `' . $table_name . '`;',
+                $tableRes[0]['Create Table'] . ';',
+            ];
+
+            file_put_contents($TEMP_DIR . $table_name . '_1000000.sql', json_encode($TABLES_SQL));
 
             $table_field = parent::query('SHOW COLUMNS FROM `' . $table_name . '`');
 
@@ -153,7 +165,7 @@ class Databack extends Model
                         } elseif (is_null($val) || $val == 'null' || $val == 'NULL') {
                             $VALUES .= 'NULL,';
                         } else {
-                            $VALUES .= '\'' . $val . '\',';
+                            $VALUES .= '\'' . addslashes($val) . '\',';
                         }
                     }
                     $VALUES = trim($VALUES, ',');
@@ -162,12 +174,8 @@ class Databack extends Model
                 $VALUES = trim($VALUES, ',');
                 $VALUES .= ';';
 
-                $num = 1000000 + $i;
-                if ($i === 0) {
-                    file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', $TABLES_SQL . $INSERT_SQL . $VALUES);
-                } else {
-                    file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', $INSERT_SQL . $VALUES);
-                }
+                $num = 1000001 + $i;
+                file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', json_encode([$INSERT_SQL . $VALUES]));
             }
         }
 

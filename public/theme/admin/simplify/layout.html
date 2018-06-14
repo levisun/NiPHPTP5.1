@@ -33,22 +33,20 @@
     function handle(_result, _url, _reload) {
         if (_result.msg === "ILLEGAL") {
             $.reload();
-        } else if (_result.msg === "SUCCESS") {
-            if (_result.code === "SUCCESS") {
-                $.uiToast(_result.msg);
-                if (typeof(_url) != "undefined" && _url) {
-                    $.redirect(request.domain+_url);
-                    return false;
-                }
-            } else {
-                $.uiToast(_result.msg);
-            }
+            return false;
+        }
 
-            if (typeof(_reload) == "undefined" && _reload) {
-                $.reload();
+        if (_result.code === "SUCCESS") {
+            $.uiToast(_result.msg);
+            if (typeof(_url) != "undefined" && _url) {
+                $.redirect(request.domain+_url);
+                return false;
             }
         } else {
             $.uiToast(_result.msg);
+        }
+
+        if (typeof(_reload) == "undefined" && _reload) {
             $.reload();
         }
     }

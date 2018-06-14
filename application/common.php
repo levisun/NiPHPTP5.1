@@ -15,6 +15,43 @@ use think\facade\Debug;
 use think\facade\Lang;
 
 /**
+ * 随机码  邀请码  兑换码
+ * @param
+ * @return string
+ */
+function random_code()
+{
+    $code = sprintf('%x', crc32(microtime()));
+    if (strlen($code) < 8) {
+        return random_code();
+    } else {
+        return $code;
+    }
+}
+
+/**
+ * 文件大小
+ * @param  string $_size_or_path 文件大小或文件路径
+ * @return string
+ */
+function file_size($_size_or_path)
+{
+    if (strpos($_size_or_path, '.') !== false && is_file($_size_or_path)) {
+        $_size_or_path = filesize($_size_or_path);
+    }
+
+    $unit = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+    $pos = 0;
+    while ($_size_or_path >= 1024) {
+        $_size_or_path /= 1024;
+        $pos++;
+    }
+
+    return round($_size_or_path, 2) . ' ' . $unit[$pos];
+}
+
+/**
  * 缓解并发压力
  * @param
  * @return void
@@ -49,15 +86,14 @@ function view_filter($_content)
         '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
         '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
         '/( ){2,}/si'                     => '',    // 空格
+        '/(\r|\n|\f)/si'                  => '',    // 回车
     ];
-
-    if (!APP_DEBUG) {
-        $pattern['/(\r|\n|\f)/si'] = '';
-    }
 
     $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
 
-    // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
+    if (!APP_DEBUG) {
+        Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
+    }
 
     return $_content;
 }
