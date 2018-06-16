@@ -16,6 +16,7 @@ use think\Model;
 
 class Databack extends Model
 {
+    protected $connection = 'db_config1';
 
     /**
      * 查询
@@ -54,9 +55,7 @@ class Databack extends Model
      */
     public function reduction()
     {
-        // 设置超时时间
         set_time_limit(0);
-        // 设置运行内存
         ini_set('memory_limit', '128M');
 
         $receive_data = [
@@ -99,12 +98,11 @@ class Databack extends Model
      * @param  integer $_limit
      * @return void
      */
-    public function backup($_limit = 1000)
+    public function backup($_limit = 5000)
     {
-        // 设置超时时间
         set_time_limit(0);
-        // 设置运行内存
         ini_set('memory_limit', '128M');
+        ini_set('memory_limit', -1);
 
         $TEMP_DIR = $this->createDir();
 
@@ -128,8 +126,6 @@ class Databack extends Model
                 'DROP TABLE IF EXISTS `' . $table_name . '`;',
                 $tableRes[0]['Create Table'] . ';',
             ];
-
-            file_put_contents($TEMP_DIR . $table_name . '_1000000.sql', json_encode($TABLES_SQL));
 
             $table_field = parent::query('SHOW COLUMNS FROM `' . $table_name . '`');
 
@@ -174,8 +170,14 @@ class Databack extends Model
                 $VALUES = trim($VALUES, ',');
                 $VALUES .= ';';
 
-                $num = 1000001 + $i;
-                file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', json_encode([$INSERT_SQL . $VALUES]));
+                $num = 1000000 + $i;
+                if ($i == 0) {
+                    $TABLES_SQL[] = $INSERT_SQL . $VALUES;
+                    file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', json_encode($TABLES_SQL));
+                    unset($TABLES_SQL);
+                } else {
+                    file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', json_encode([$INSERT_SQL . $VALUES]));
+                }
             }
         }
 
@@ -249,6 +251,8 @@ class Databack extends Model
     public function getTablesName()
     {
         $result = parent::query('SHOW TABLES FROM ' . config('database.database'));
+        $result = parent::query('SHOW TABLES FROM shangcheng');
+
         $tables = array();
         foreach ($result as $key => $value) {
             $tables[] = current($value);

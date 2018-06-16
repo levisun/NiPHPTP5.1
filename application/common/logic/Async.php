@@ -30,7 +30,7 @@ class Async
 
     function __construct()
     {
-        # code...
+        lang(':load');
     }
 
     /**
@@ -41,14 +41,6 @@ class Async
      */
     public function exec()
     {
-        lang(':load');
-
-        $result = $this->analysis();
-
-        if ($result !== true) {
-            return $result;
-        }
-
         $object = $this->object;
         $action = $this->action;
 
@@ -62,7 +54,7 @@ class Async
      * @param
      * @return void
      */
-    private function analysis()
+    public function analysis()
     {
         $this->module = strtolower(request()->module());
 
@@ -86,8 +78,7 @@ class Async
         } else {
             return $this->outputError(
                 'PARAMETER ERROR',
-                40001,
-                input('param.')
+                'ERROR'
             );
         }
 
@@ -104,8 +95,7 @@ class Async
         if (!is_file($this->file_path)) {
             return $this->outputError(
                 'METHOD NOT FOUND',
-                40002,
-                input('param.')
+                'ERROR'
             );
         }
 
@@ -114,8 +104,7 @@ class Async
         if (!method_exists($this->object, $this->action)) {
             return $this->outputError(
                 'ACTION UNDEFINED',
-                40003,
-                input('param.')
+                'ERROR'
             );
         }
 
@@ -137,7 +126,7 @@ class Async
             'code' => $_code,
             'msg'  => $_msg,
             'data' => $_data,
-            'oth'  => $_extend_data,
+            'oth'  => !empty($_extend_data) ? $_extend_data : input('param.'),
         ];
 
         return json($return);
@@ -151,12 +140,12 @@ class Async
      * @param  array   $_extend_data 附加数据
      * @return json
      */
-    public function outputError($_msg = 'ERROR', $_code = 40001, $_extend_data = [])
+    public function outputError($_msg = 'ERROR', $_code = 'ERROR', $_extend_data = [])
     {
         $return = [
             'code' => $_code,
             'msg'  => $_msg,
-            'oth'  => $_extend_data,
+            'oth'  => !empty($_extend_data) ? $_extend_data : input('param.'),
         ];
 
         return json($return);

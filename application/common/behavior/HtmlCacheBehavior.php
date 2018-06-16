@@ -87,15 +87,16 @@ class HtmlCacheBehavior
      */
     private function htmlPath()
     {
-        $url     = request()->url();
-        $user_id = session('?' . config('user_auth_key')) ? 'session=' . session(config('user_auth_key')) : '';
+        $user_id  = session('?' . config('user_auth_key')) ? 'session=' . session(config('user_auth_key')) : '';
         $user_id .= cookie('?' . config('user_auth_key')) ? 'cookie=' . cookie(config('user_auth_key')) : '';
-        $md5     = md5($url . $user_id);
+
+        $url = request()->url();
+        $md5 = md5($url . $user_id);
 
         $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
         $html_path .= request()->module() . DIRECTORY_SEPARATOR;
         $html_path .= substr($md5, 0, 2) . DIRECTORY_SEPARATOR;
-        $html_path .= $md5 . '.html';
+        $html_path .= substr($md5, 2) . '.html';
 
         return $html_path;
     }

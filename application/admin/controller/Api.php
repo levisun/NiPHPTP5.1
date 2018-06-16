@@ -12,7 +12,9 @@
  */
 namespace app\admin\controller;
 
-class Api
+use app\common\logic\Async;
+
+class Api extends Async
 {
 
     /**
@@ -23,28 +25,18 @@ class Api
      */
     public function query()
     {
-        $async = logic('common/async');
-
-        $result = $async->exec();
-
-        remove_old_upload_file(false);
-
-        if ($result === false) {
-            $output = $async->outputError(
-                'request error',
-                40004,
-                input('param.')
-            );
-        } else {
-            $output = $async->outputData(
-                'request success',
-                'SUCCESS',
-                $result,
-                input('param.')
-            );
+        $result = $this->analysis();
+        if ($result !== true) {
+            return $result;
         }
 
-        return $output;
+        $result = $this->exec();
+
+        return $this->outputData(
+            lang('query success'),
+            'SUCCESS',
+            $result
+        );
     }
 
     /**
@@ -55,31 +47,31 @@ class Api
      */
     public function settle()
     {
-        $async = logic('common/async');
+        $result = $this->analysis();
+        if ($result !== true) {
+            return $result;
+        }
 
-        $result = $async->exec();
+        $result = $this->exec();
 
         remove_old_upload_file();
 
         if ($result === false) {
-            $output = $async->outputError(
+            $output = $this->outputError(
                 'data error',
-                41001,  // 操作未知错误
-                input('param.')
+                41001
             );
         } else {
             if ($result === true) {
-                $output = $async->outputData(
+                $output = $this->outputData(
                     lang('save success'),
                     'SUCCESS',
-                    $result,
-                    input('param.')
+                    $result
                 );
             } else {
-                $output = $async->outputError(
+                $output = $this->outputError(
                     $result,
-                    41002,  // 操作错误
-                    input('param.')
+                    41002
                 );
             }
         }
@@ -97,24 +89,25 @@ class Api
     {
         $_POST['method'] = 'upload.file';
 
-        $async = logic('common/async');
+        $result = $this->analysis();
+        if ($result !== true) {
+            return $result;
+        }
 
-        $result = $async->exec();
+        $result = $this->exec();
 
         $json['msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
 
         if (is_string($result)) {
-            $output = $async->outputError(
+            $output = $this->outputError(
                 $result,
-                'ERROR',
-                input('param.')
+                'ERROR'
             );
         } else {
-            $output = $async->outputData(
+            $output = $this->outputData(
                 lang('upload success'),
                 'SUCCESS',
-                $result,
-                input('param.')
+                $result
             );
         }
 

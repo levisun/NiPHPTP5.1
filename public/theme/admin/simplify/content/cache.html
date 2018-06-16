@@ -27,6 +27,24 @@ $(".compile").click(function(){
         if (result.code !== "SUCCESS") {
             return false;
         }
+
+        handle(result, false, false);
+    });
+});
+
+$(".cache").click(function(){
+    $.loading({
+        url: request.api.settle,
+        animation: true,
+        data: {
+            method: "content.cache.cache",
+        }
+    }, function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+
+        handle(result, false, false);
     });
 });
 </script>

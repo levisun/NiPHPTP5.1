@@ -12,14 +12,69 @@
  */
 namespace app\admin\logic\content;
 
+use think\facade\Cache as DataCache;
+
 class Cache
 {
 
+    /**
+     * 编译与HTML静态缓存文件
+     * @access public
+     * @param
+     * @return boolean
+     */
     public function compile()
     {
-        die();
+        // 编译缓存
+        $file_path = (array) glob(env('runtime_path') . 'temp' . DIRECTORY_SEPARATOR . '*');
+        foreach ($file_path as $path) {
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+
+        // HTML静态缓存
+        $file_path = (array) glob(env('runtime_path') . 'html' . DIRECTORY_SEPARATOR . '*');
+        foreach ($file_path as $path) {
+            $_path = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+
+            foreach ($_path as $pa) {
+                $_pa = (array) glob($pa . DIRECTORY_SEPARATOR . '*');
+
+                foreach ($_pa as $file) {
+                    if (is_file($file)) {
+                        unlink($file);
+                    }
+                }
+                rmdir($pa);
+            }
+            rmdir($path);
+        }
+
+        return true;
     }
 
+    /**
+     * 数据缓存的文件
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function cache()
+    {
+        DataCache::clear();
+
+        $this->command();
+
+        return true;
+    }
+
+    /**
+     * 命令行生成缓存的文件
+     * @access public
+     * @param
+     * @return void
+     */
     public function command()
     {
         $file_path = [];
@@ -33,7 +88,7 @@ class Cache
         $file_path[] = env('runtime_path') . 'wechat' . DIRECTORY_SEPARATOR . 'init.php';
 
         // 数据表字段缓存
-        $file_path[] = (array) glob(env('runtime_path') . 'schema' . DIRECTORY_SEPARATOR . '*');
+        // $file_path[] = (array) glob(env('runtime_path') . 'schema' . DIRECTORY_SEPARATOR . '*');
 
         // 路由映射缓存
         $file_path[] = env('runtime_path') . 'route.php';

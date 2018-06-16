@@ -16,6 +16,18 @@ class Content extends Base
 {
 
     /**
+     * 幻灯片
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function banner($operate = '')
+    {
+        $tpl = $operate ? 'category_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
      * 更新缓存与静态
      * @access public
      * @param
