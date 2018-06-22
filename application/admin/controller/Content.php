@@ -23,7 +23,7 @@ class Content extends Base
      */
     public function banner($operate = '')
     {
-        $tpl = $operate ? 'category_' . $operate : '';
+        $tpl = $operate ? 'banner_' . $operate : '';
         return $this->fetch($tpl);
     }
 

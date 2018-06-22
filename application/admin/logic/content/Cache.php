@@ -92,5 +92,11 @@ class Cache
 
         // 路由映射缓存
         $file_path[] = env('runtime_path') . 'route.php';
+
+        foreach ($file_path as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
     }
 }

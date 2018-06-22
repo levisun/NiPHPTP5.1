@@ -5,7 +5,7 @@ function vicword($_string)
 
     define('_VIC_WORD_DICT_PATH_', __DIR__ . 'extend/vicword/data/dict.igb');
     $fc = new \vicword\VicWord('igb');
-    $result = $fc->getAutoWord($_string);
+    $result = $fc->getWord($_string);
     $tag = array();
     foreach ($result as $key => $value) {
         $len = mb_strlen($value[0], 'utf8');

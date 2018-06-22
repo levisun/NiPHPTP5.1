@@ -15,4 +15,116 @@ namespace app\admin\logic\content;
 class Banner
 {
 
+    /**
+     * 查询
+     * @access public
+     * @param
+     * @return array
+     */
+    public function query()
+    {
+        $map = [
+            ['pid', '=', input('param.pid/f', 0)],
+            ['lang', '=', lang(':detect')],
+        ];
+
+        $result =
+        model('common/banner')
+        ->where($map)
+        ->order('id DESC')
+        ->paginate(null, null, [
+            'path' => url('content/banner'),
+        ]);
+
+        foreach ($result as $key => $value) {
+            $result[$key]->url = [
+                'editor' => url('content/banner', ['operate' => 'editor', 'id' => $value['id']]),
+                'remove' => url('content/banner', ['operate' => 'remove', 'id' => $value['id']]),
+            ];
+        }
+
+        $page = $result->render();
+        $list = $result->toArray();
+
+        return [
+            'list' => $list['data'],
+            'page' => $page
+        ];
+    }
+
+    /**
+     * 新增
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function added()
+    {
+        $receive_data = [
+            'name'      => input('post.name', ''),
+            'pid'       => input('post.pid/f', 0),
+            'title'     => input('post.title', ''),
+            'width'     => input('post.width/f'),
+            'height'    => input('post.height/f'),
+            'image'     => input('post.image', ''),
+            'url'       => input('post.url', ''),
+            'lang'      => lang(':detect'),
+            '__token__' => input('post.__token__'),
+        ];
+
+        if ($receive_data['pid']) {
+            $result = validate('admin/content/banner.added', input('post.'));
+        } else {
+            $result = validate('admin/content/banner.added_main', input('post.'));
+        }
+
+        if (true !== $result) {
+            return $result;
+        }
+
+        unset($receive_data['__token__']);
+
+        $result = model('common/banner')
+        ->added($receive_data);
+
+        create_action_log($receive_data['name'], 'banner_added');
+
+        return !!$result;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function remove()
+    {}
+
+    /**
+     * 查询要修改的数据
+     * @access public
+     * @param
+     * @return array
+     */
+    public function find()
+    {}
+
+    /**
+     * 编辑
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function editor()
+    {}
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort()
+    {}
 }

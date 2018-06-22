@@ -54,5 +54,25 @@ $.loading({
     if (result.code !== "SUCCESS") {
         return false;
     }
+
+    var list = "";
+    for (var index in result.data.list) {
+        list = list + "<tr>";
+        list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
+        list = list + "<td>"+result.data.list[index].id+"</td>";
+        list = list + "<td>"+result.data.list[index].name+"</td>";
+        list = list + "<td>"+result.data.list[index].width+"</td>";
+        list = list + "<td>"+result.data.list[index].height+"</td>";
+
+        list = list + "<td>";
+        list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+    $("#paging").prepend(result.data.page);
+    pagingToAjax();
 });
 </script>

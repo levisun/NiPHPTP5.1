@@ -14,6 +14,14 @@
 use think\facade\Debug;
 use think\facade\Lang;
 
+function rl()
+{
+    $res = get_browser(null, true);
+
+    // mb_internal_encoding();
+    print_r($res);
+}
+
 /**
  * 随机码  邀请码  兑换码
  * @param

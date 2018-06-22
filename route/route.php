@@ -9,11 +9,10 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-// Route::pattern([
-    // 'cid' => '\d+',
-    // 'id'  => '\d+',
-// ]);
-//
+Route::pattern([
+    'cid' => '\d+',
+    'id'  => '\d+',
+]);
 
 // Route::name('admin')->cache('__URL__', 600);
 // Route::get('admin/settings/basic', 'admin/settings/basic')->cache(3600);
