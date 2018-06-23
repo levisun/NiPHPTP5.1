@@ -17,12 +17,13 @@
  */
 namespace think;
 
+// 调试开关
+define('APP_DEBUG', false);
+
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=')
 or die('require PHP >= 5.6.0 !');
 
-// 调试开关
-define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.7 CB 2311');
 define('TP_VERSION', '5.1.17');
 

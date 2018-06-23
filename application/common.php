@@ -98,10 +98,7 @@ function view_filter($_content)
     ];
 
     $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
-
-    if (!APP_DEBUG) {
-        Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
-    }
+    Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;
 }

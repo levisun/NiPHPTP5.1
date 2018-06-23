@@ -42,6 +42,7 @@ class HtmlCacheBehavior
                 logic('common/async')->createSign();
 
                 $html = file_get_contents($path);
+                $html = decrypt($html, request()->module());
 
                 // 替换新的表单令牌
                 $html = preg_replace('/(<input type="hidden" name="__token__" value=").*?(" \/>)/si', token(), $html);
@@ -66,14 +67,16 @@ class HtmlCacheBehavior
         !request()->isPjax() &&
         !request()->isPost();
 
-        if (!APP_DEBUG && $request) {
+        if ($request) {
             $path = $this->htmlPath();
 
-            if (is_file($path) && filectime($path) >= strtotime('-30 days')) {
+            if (!APP_DEBUG && is_file($path) && filectime($path) >= strtotime('-30 days')) {
                 return true;
             }
 
             $storage = new \think\template\driver\File;
+
+            $_content = encrypt($_content, request()->module());
             $storage->write($this->htmlPath(), $_content);
         }
     }
@@ -94,7 +97,7 @@ class HtmlCacheBehavior
         $md5 = md5($url . $user_id);
 
         $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
-        $html_path .= request()->module() . DIRECTORY_SEPARATOR;
+        // $html_path .= request()->module() . DIRECTORY_SEPARATOR;
         $html_path .= substr($md5, 0, 2) . DIRECTORY_SEPARATOR;
         $html_path .= substr($md5, 2) . '.html';
 
