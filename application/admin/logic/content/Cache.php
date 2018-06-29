@@ -33,23 +33,7 @@ class Cache
             }
         }
 
-        // HTML静态缓存
-        $file_path = (array) glob(env('runtime_path') . 'html' . DIRECTORY_SEPARATOR . '*');
-        foreach ($file_path as $path) {
-            $_path = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-
-            foreach ($_path as $pa) {
-                $_pa = (array) glob($pa . DIRECTORY_SEPARATOR . '*');
-
-                foreach ($_pa as $file) {
-                    if (is_file($file)) {
-                        unlink($file);
-                    }
-                }
-                rmdir($pa);
-            }
-            rmdir($path);
-        }
+        $this->removeHtml();
 
         return true;
     }
@@ -64,18 +48,40 @@ class Cache
     {
         DataCache::clear();
 
-        $this->command();
+        $this->removeCommand();
+        $this->removeHtml();
 
         return true;
     }
 
     /**
-     * 命令行生成缓存的文件
-     * @access public
+     * HTML静态文件
+     * @access private
      * @param
      * @return void
      */
-    public function command()
+    private function removeHtml()
+    {
+        // HTML静态缓存
+        $file_path = (array) glob(env('runtime_path') . 'html' . DIRECTORY_SEPARATOR . '*');
+        foreach ($file_path as $path) {
+            $_path = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+            foreach ($_path as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
+            rmdir($path);
+        }
+    }
+
+    /**
+     * 命令行生成缓存的文件
+     * @access private
+     * @param
+     * @return void
+     */
+    private function removeCommand()
     {
         $file_path = [];
 

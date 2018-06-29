@@ -18,7 +18,7 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=')
@@ -43,3 +43,6 @@ or die('ThinkPHP version = ' . TP_VERSION . ' !');
 
 // 执行应用并响应
 Container::get('app')->run()->send();
+
+// 清除运行垃圾文件
+remove_rundata();

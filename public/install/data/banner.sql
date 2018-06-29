@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `np_banner` (
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `lang` varchar(20) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
+  KEY `name` (`name`),
   KEY `pid` (`pid`),
   KEY `title` (`title`),
   KEY `sort` (`sort`),

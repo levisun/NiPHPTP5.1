@@ -14,7 +14,6 @@
                 <table class="table table-striped" id="dataTable">
                     <thead>
                         <tr>
-                            <th>{:lang('sort')}</th>
                             <th>{:lang('id')}</th>
                             <th>{:lang('banner name')}</th>
                             <th>{:lang('width')}</th>
@@ -24,22 +23,12 @@
                     </thead>
                     <tbody>
 
-                        <tr>
-                            <td>
-                                <input type="hidden" name="operate" value="sort">
-                                <input type="submit" value="{:lang('button sort')}" class="btn btn-primary">
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
                     </tbody>
                 </table>
             </form>
+            <div id="paging">
+
+            </div>
         </div>
     </div>
 </div>
@@ -58,13 +47,13 @@ $.loading({
     var list = "";
     for (var index in result.data.list) {
         list = list + "<tr>";
-        list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
         list = list + "<td>"+result.data.list[index].id+"</td>";
         list = list + "<td>"+result.data.list[index].name+"</td>";
         list = list + "<td>"+result.data.list[index].width+"</td>";
         list = list + "<td>"+result.data.list[index].height+"</td>";
 
         list = list + "<td>";
+        list = list + "<a href='"+result.data.list[index].url.manage+"'><span class='fa fa-eye'></span>{:lang('manage image')}</a>";
         list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
         list = list + "</td>";
@@ -74,5 +63,60 @@ $.loading({
     $("#dataTable tbody").prepend(list);
     $("#paging").prepend(result.data.page);
     pagingToAjax();
+});
+
+$(document).on("click", "#paging a", function(){
+    var page = $.urlParam("p", "", $(this).attr("url"));
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            method: "content.banner.query",
+            pid: "{$Request.param.pid}",
+            p: page
+        }
+    }, function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+        var list = "";
+        for (var index in result.data.list) {
+            list = list + "<tr>";
+            list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
+            list = list + "<td>"+result.data.list[index].id+"</td>";
+            list = list + "<td>"+result.data.list[index].title+"</td>";
+
+            list = list + "<td>";
+            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "</td>";
+
+            list = list + "</tr>";
+        }
+        $("#dataTable tbody").prepend(list);
+        $("#paging").prepend(result.data.page);
+        pagingToAjax();
+    });
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "content.banner.remove",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
 });
 </script>

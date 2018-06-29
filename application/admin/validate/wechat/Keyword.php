@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 微信关键词回复 - 验证
+ * 微信关键词回复 - 微信 - 验证
  *
  * @package   NiPHPCMS
  * @category  application\admin\validate\wechat

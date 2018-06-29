@@ -25,6 +25,7 @@
                     </div>
                 </div>
                 {else/}
+                <input type="hidden" name="pid" value="{$Request.param.pid}">
                 <div class="form-group">
                     <label for="title" class="col-lg-2 control-label">{:lang('banner title')}</label>
                     <div class="col-lg-10">
@@ -70,5 +71,24 @@ $("form").submit(function(){
         handle(result, "admin/content/banner.shtml");
     });
     return false;
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    $.upload({
+        url: request.api.upload+"?method=content.upload.file&type=banner",
+        file: $("#uploadForm")[0],
+    }, function(result){
+        var dir = result.data.save_dir + result.data.file_name;
+        $("#image").val(dir);
+        $("#img-image").attr("src",  result.data.domain + dir);
+        $.uiPopup({}, "hide");
+    });
 });
 </script>

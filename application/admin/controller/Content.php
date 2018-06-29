@@ -28,6 +28,30 @@ class Content extends Base
     }
 
     /**
+     * 广告
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function ads($operate = '')
+    {
+        $tpl = $operate ? 'ads_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
+     * 评论
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function comment($operate = '')
+    {
+        $tpl = $operate ? 'comment_' . $operate : '';
+        return $this->fetch($tpl);
+    }
+
+    /**
      * 更新缓存与静态
      * @access public
      * @param

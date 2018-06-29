@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 会员组 - 验证
+ * 会员组 - 用户 - 验证
  *
  * @package   NiPHPCMS
  * @category  application\admin\validate\user

@@ -264,14 +264,13 @@ function use_time_memory($_start = false)
 
 /**
  * 清除运行垃圾文件
- * 开发模式不自动清除
  * @param
  * @return void
  */
 function remove_rundata()
 {
-    if (rand(0, 29) !== 0) {
-        return false;
+    if (request()->isGet() && rand(0, 29) !== 0) {
+        // return false;
     }
 
     $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
@@ -280,35 +279,45 @@ function remove_rundata()
     $files = [
         'cache' => (array) glob($dir . 'cache' . DIRECTORY_SEPARATOR . '*'),
         'log'   => (array) glob($dir . 'log' . DIRECTORY_SEPARATOR . '*'),
-        'tmep'  => (array) glob($dir . 'temp' .  DIRECTORY_SEPARATOR . '*'),
+        'html'  => (array) glob($dir . 'html' . DIRECTORY_SEPARATOR . '*'),
+        'temp'  => (array) glob($dir . 'temp' .  DIRECTORY_SEPARATOR . '*'),
         // 'backup' => (array) glob($dir . 'public' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . '*'),
     ];
 
     $child = [];
-    foreach ($files as $dir_name) {
-        $child = [];
-        foreach ($dir_name as $path) {
-            $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-            if ($arr) {
-                $child = array_merge($child, $arr);
-            } else {
-                $child[] = $path;
+    foreach ($files as $key => $dir_name) {
+        if ($key !== 'temp') {
+            $child = [];
+            foreach ($dir_name as $path) {
+                $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+                if ($arr) {
+                    $child = array_merge($child, $arr);
+                } else {
+                    $child[] = $path;
+                }
             }
+            $all_files = array_merge($all_files, $child);
+
+            // 目录中没有文件时将目录加入到待清理数据中
+            if (empty($child)) {
+                $all_files = array_merge($all_files, $dir_name);
+            }
+        } else {
+            $all_files = array_merge($all_files, $dir_name);
         }
-        $all_files = array_merge($all_files, $child);
     }
 
     shuffle($all_files);
     $all_files = array_slice($all_files, 0, 1000);
 
-    $days = APP_DEBUG ? '-7 days' : '-30 days';
+    $days = APP_DEBUG ? strtotime('-7 days') : strtotime('-30 days');
     foreach ($all_files as $path) {
-        if (filectime($path) <= strtotime($days)) {
-            if (is_dir($path)) {
-                @rmdir($path);
-            } else {
+        if (is_file($path)) {
+            if (filectime($path) <= $days) {
                 @unlink($path);
             }
+        } elseif (is_dir($path)) {
+            @rmdir($path);
         }
     }
 }

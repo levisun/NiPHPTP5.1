@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 幻灯片 - 验证
+ * 幻灯片 - 内容 - 验证
  *
  * @package   NiPHPCMS
  * @category  application\admin\validate\content

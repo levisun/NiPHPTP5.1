@@ -25,8 +25,8 @@ class Upload
     {
         if (request()->isPost()) {
             $receive_data = [
-                'upload'   => input('file.upload'),
-                'type'     => input('param.type')
+                'upload' => input('file.upload'),
+                'type'   => input('param.type')
             ];
 
             // 验证请求数据

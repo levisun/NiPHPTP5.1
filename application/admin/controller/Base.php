@@ -23,9 +23,6 @@ class Base extends Controller
 
     protected function initialize()
     {
-        // 清除运行垃圾文件
-        remove_rundata();
-
         // 异步请求加密签名
         logic('common/async')->createSign();
 

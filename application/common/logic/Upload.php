@@ -34,7 +34,7 @@ class Upload
      */
     private function init($_params)
     {
-        $this->uploadParams = $this->codeParams($_params['type']);
+        $this->uploadParams = $this->createParams($_params['type']);
         $this->savePath     = env('root_path') . basename(request()->root());
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
@@ -53,11 +53,11 @@ class Upload
         // 初始化
         $this->init($_params);
 
-        $file = $_params['upload'];
+        $file = request()->file('upload');
 
         $upload =
         $file->validate($this->validate)
-        ->rule('date')
+        ->rule('uniqid')
         ->move($this->savePath);
 
         if (!$upload) {
@@ -171,7 +171,7 @@ class Upload
      * @param  string  $_type 上传类型
      * @return array
      */
-    private function codeParams($_type)
+    private function createParams($_type)
     {
         // 缩略图尺寸
         $thumb_size = [
@@ -193,7 +193,7 @@ class Upload
         ];
 
         // 按年,月生成保存目录,适用于多图片
-        $dir = date('Y') . '/';
+        $dir = date('Ym') . '/';
 
         $thumb_width = $thumb_height = 0;
 

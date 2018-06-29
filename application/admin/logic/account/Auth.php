@@ -31,7 +31,7 @@ class Auth
         $auth_menu = [];
         if (session('?_access_list')) {
             $auth = session('_access_list');
-            $auth = $auth[strtoupper(request()->module())];
+            $auth = $auth['ADMIN'];
 
             $nav = lang('__nav');
 
@@ -153,7 +153,8 @@ class Auth
         }
 
         if (request()->param('cid')) {
-            $bread = $this->getBreadcrumbParent(request()->param('cid'));
+            halt('内容ヽ(●-`Д´-)ノ');
+            // $bread = $this->getBreadcrumbParent(request()->param('cid'));
         } elseif (request()->param('pid')) {
             $bread = $this->getBreadcrumbParent(request()->param('pid'));
         }
@@ -186,7 +187,7 @@ class Auth
         ];
 
         $result =
-        model('common/Category')
+        model('common/' . request()->action())
         ->field(['id','pid','name'])
         ->where($map)
         ->find();

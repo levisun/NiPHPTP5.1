@@ -25,9 +25,6 @@ class Base extends Controller
     {
         concurrent_error();
 
-        // 清除运行垃圾文件
-        remove_rundata();
-
         // 请求参数
         $this->requestParam = [
             // 请求模块

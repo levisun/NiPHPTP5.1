@@ -25,7 +25,7 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->analysis();
+        $result = $this->examine();
         if ($result !== true) {
             return $result;
         }
@@ -47,7 +47,7 @@ class Api extends Async
      */
     public function settle()
     {
-        $result = $this->analysis();
+        $result = $this->examine();
         if ($result !== true) {
             return $result;
         }
@@ -87,9 +87,7 @@ class Api extends Async
      */
     public function upload()
     {
-        $_POST['method'] = 'upload.file';
-
-        $result = $this->analysis();
+        $result = $this->examine();
         if ($result !== true) {
             return $result;
         }
@@ -112,5 +110,53 @@ class Api extends Async
         }
 
         return $output;
+    }
+
+    protected function examine()
+    {
+        $result = $this->analysis();
+        if ($result !== true) {
+            return $result;
+        }
+
+        // 权限验证
+        if ($this->action != 'login') {
+            // 是否登录
+            if (!session('?' . config('user_auth_key'))) {
+                return $this->outputError(
+                    'ILLEGAL REQUEST ',
+                    'ERROR'
+                );
+            }
+
+            // 登录权限信息
+            if (!session('?_access_list')) {
+                return $this->outputError(
+                    'ILLEGAL REQUEST  ',
+                    'ERROR'
+                );
+            }
+
+            // 是否有访问操作等权限
+            $access_list = session('_access_list');
+            $access_list = $access_list['ADMIN'];
+            if (empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
+                return $this->outputError(
+                    'ILLEGAL REQUEST   ',
+                    'ERROR'
+                );
+            }
+        }
+
+        if ($this->class == 'upload') {
+            $this->layer = 'logic';
+        }
+
+        $result = parent::examine();
+        if ($result !== true) {
+            return $result;
+        }
+
+        return true;
     }
 }

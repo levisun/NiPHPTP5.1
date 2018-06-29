@@ -37,10 +37,17 @@ class Banner
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->url = [
-                'editor' => url('content/banner', ['operate' => 'editor', 'id' => $value['id']]),
+            $url = [
+                'manage' => url('content/banner', ['operate' => 'manage', 'pid' => $value['id']]),
                 'remove' => url('content/banner', ['operate' => 'remove', 'id' => $value['id']]),
             ];
+            if ($pid = input('param.pid/f', 0)) {
+                $url['editor'] = url('content/banner', ['operate' => 'editor', 'pid' => $pid, 'id' => $value['id']]);
+            } else {
+                $url['editor'] = url('content/banner', ['operate' => 'editor', 'id' => $value['id']]);
+            }
+
+            $result[$key]->url = $url;
         }
 
         $page = $result->render();
@@ -64,8 +71,8 @@ class Banner
             'name'      => input('post.name', ''),
             'pid'       => input('post.pid/f', 0),
             'title'     => input('post.title', ''),
-            'width'     => input('post.width/f'),
-            'height'    => input('post.height/f'),
+            'width'     => input('post.width/f', 0),
+            'height'    => input('post.height/f', 0),
             'image'     => input('post.image', ''),
             'url'       => input('post.url', ''),
             'lang'      => lang(':detect'),
@@ -87,7 +94,11 @@ class Banner
         $result = model('common/banner')
         ->added($receive_data);
 
-        create_action_log($receive_data['name'], 'banner_added');
+        if ($receive_data['pid']) {
+            create_action_log($receive_data['title'], 'banner_image_added');
+        } else {
+            create_action_log($receive_data['name'], 'banner_added');
+        }
 
         return !!$result;
     }
@@ -99,7 +110,28 @@ class Banner
      * @return mixed
      */
     public function remove()
-    {}
+    {
+        $map  = [
+            ['id', '=', input('post.id/f')],
+        ];
+
+        $result =
+        model('common/banner')->field(true)
+        ->where($map)
+        ->find();
+
+        if ($result['pid']) {
+            create_action_log($result['title'], 'banner_image_remove');
+        } else {
+            create_action_log($result['name'], 'banner_remove');
+        }
+
+        $receive_data = [
+            'id' => input('post.id/f'),
+        ];
+        return model('common/banner')
+        ->remove($receive_data);
+    }
 
     /**
      * 查询要修改的数据
@@ -108,7 +140,15 @@ class Banner
      * @return array
      */
     public function find()
-    {}
+    {
+        $map = [
+            ['id', '=', input('post.id/f')]
+        ];
+
+        return model('common/banner')->field(true)
+        ->where($map)
+        ->find();
+    }
 
     /**
      * 编辑
@@ -117,7 +157,43 @@ class Banner
      * @return mixed
      */
     public function editor()
-    {}
+    {
+        $receive_data = [
+            'id'        => input('post.id/f'),
+            'name'      => input('post.name', ''),
+            'pid'       => input('post.pid/f', 0),
+            'title'     => input('post.title', ''),
+            'width'     => input('post.width/f', 0),
+            'height'    => input('post.height/f', 0),
+            'image'     => input('post.image', ''),
+            'url'       => input('post.url', ''),
+            'lang'      => lang(':detect'),
+            '__token__' => input('post.__token__'),
+        ];
+
+        if ($receive_data['pid']) {
+            $result = validate('admin/content/banner.editor', input('post.'));
+        } else {
+            $result = validate('admin/content/banner.editor_main', input('post.'));
+        }
+
+        if (true !== $result) {
+            return $result;
+        }
+
+        unset($receive_data['__token__']);
+
+        $result = model('common/banner')
+        ->editor($receive_data);
+
+        if ($receive_data['pid']) {
+            create_action_log($receive_data['title'], 'banner_image_editor');
+        } else {
+            create_action_log($receive_data['name'], 'banner_editor');
+        }
+
+        return !!$result;
+    }
 
     /**
      * 排序
@@ -126,5 +202,14 @@ class Banner
      * @return boolean
      */
     public function sort()
-    {}
+    {
+        $receive_data = [
+            'id' => input('post.sort/a'),
+        ];
+
+        create_action_log('', 'banner_sort');
+
+        return model('common/banner')
+        ->sort($receive_data);
+    }
 }

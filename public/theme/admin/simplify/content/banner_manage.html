@@ -3,7 +3,7 @@
         {$SUB_TITLE}
 
         <span class="smart-widget-option">
-            <a href="{:url('', array('operate' => 'added'))}" class="btn btn-default btn-xs">
+            <a href="{:url('', array('operate' => 'added', 'pid' => $Request.param.pid))}" class="btn btn-default btn-xs">
                 <span class="fa fa-plus"></span>{:lang('button add')}
             </a>
         </span>
@@ -15,15 +15,12 @@
                     <thead>
                         <tr>
                             <th>{:lang('sort')}</th>
-                            <th>{:lang('keyword')}</th>
-                            <th>{:lang('title')}</th>
-                            <th>{:lang('reply')}</th>
-                            <th>{:lang('image')}</th>
-                            <th>{:lang('status')}</th>
+                            <th>{:lang('banner name')}</th>
                             <th>{:lang('operation')}</th>
                         </tr>
                     </thead>
                     <tbody>
+
                     </tbody>
                     <tfoot>
                         <tr>
@@ -33,15 +30,12 @@
                             </td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
             </form>
             <div id="paging">
+
             </div>
         </div>
     </div>
@@ -51,8 +45,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "wechat.keyword.query",
-        type: "{$type}"
+        method: "content.banner.query",
+        pid: "{$Request.param.pid}"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -63,15 +57,13 @@ $.loading({
     for (var index in result.data.list) {
         list = list + "<tr>";
         list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
-        list = list + "<td>"+result.data.list[index].keyword+"</td>";
         list = list + "<td>"+result.data.list[index].title+"</td>";
-        list = list + "<td>"+result.data.list[index].content+"</td>";
-        list = list + "<td><img src='"+result.data.list[index].image+"' width='100' /></td>";
-        list = list + "<td>"+result.data.list[index].status+"</td>";
+
         list = list + "<td>";
         list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
         list = list + "</td>";
+
         list = list + "</tr>";
     }
     $("#dataTable tbody").prepend(list);
@@ -85,7 +77,8 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            method: "wechat.keyword.query",
+            method: "content.banner.query",
+            pid: "{$Request.param.pid}",
             p: page
         }
     }, function(result){
@@ -99,15 +92,14 @@ $(document).on("click", "#paging a", function(){
         for (var index in result.data.list) {
             list = list + "<tr>";
             list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
-            list = list + "<td>"+result.data.list[index].keyword+"</td>";
+            list = list + "<td>"+result.data.list[index].id+"</td>";
             list = list + "<td>"+result.data.list[index].title+"</td>";
-            list = list + "<td>"+result.data.list[index].content+"</td>";
-            list = list + "<td><img src='"+result.data.list[index].image+"' width='100' /></td>";
-            list = list + "<td>"+result.data.list[index].status+"</td>";
+
             list = list + "<td>";
             list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
             list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
             list = list + "</td>";
+
             list = list + "</tr>";
         }
         $("#dataTable tbody").prepend(list);
@@ -116,26 +108,13 @@ $(document).on("click", "#paging a", function(){
     });
 });
 
-$("form").submit(function(){
-    var form_data = "method=wechat.keyword.sort";
-    form_data += "&"+$(this).serialize();
-    $.loading({
-        url: request.api.settle,
-        async: false,
-        data: form_data,
-    }, function(result){
-        handle(result);
-    });
-    return false;
-});
-
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.loading({
         url: request.api.settle,
         async: false,
         data: {
-            method: "wechat.keyword.remove",
+            method: "content.banner.remove",
             id: id
         },
     }, function(result){
@@ -143,6 +122,19 @@ $(document).on("click", ".np-btn-remove", function(){
         if (result.code === "SUCCESS") {
             $.reload();
         }
+    });
+    return false;
+});
+
+$("form").submit(function(){
+    var form_data = "method=content.banner.sort";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result);
     });
     return false;
 });

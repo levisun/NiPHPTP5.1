@@ -12,9 +12,9 @@
     var request = {
         domain:     "__DOMAIN__",
         api: {
-            query:  "__DOMAIN__admin/api/query.shtml",
-            settle: "__DOMAIN__admin/api/settle.shtml",
-            upload: "__DOMAIN__admin/api/upload.shtml",
+            query:  "{:url('admin/api/query', '', true, true)}",
+            settle: "{:url('admin/api/settle', '', true, true)}",
+            upload: "{:url('admin/api/upload', '', true, true)}",
         },
         static:     "__STATIC__",
         css:        "__CSS__",
@@ -31,8 +31,8 @@
      * return
      */
     function handle(_result, _url, _reload) {
-        if (_result.msg === "ILLEGAL") {
-            $.reload();
+        if (_result.msg === "ILLEGAL REQUEST") {
+            $.redirect(request.domain);
             return false;
         }
 

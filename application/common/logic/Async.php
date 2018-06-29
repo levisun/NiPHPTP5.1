@@ -14,19 +14,19 @@ namespace app\common\logic;
 
 class Async
 {
-    private $module = 'common';    // 模块
-    private $layer  = 'logic';     // 业务类所在层
-    private $class  = 'index';     // 业务逻辑类名
-    private $action = 'index';     // 业务类方法
+    protected $module = 'common';    // 模块
+    protected $layer  = 'logic';     // 业务类所在层
+    protected $class  = 'index';     // 业务逻辑类名
+    protected $action = 'index';     // 业务类方法
 
-    private $method;    // 接收method值
+    protected $method;    // 接收method值
 
 
 
-    private $file_path; // 文件路径
-    private $sign;      // 加密签名
+    protected $file_path; // 文件路径
+    protected $sign;      // 加密签名
 
-    private $object;    // 业务逻辑类实例化
+    protected $object;    // 业务逻辑类实例化
 
     function __construct()
     {
@@ -35,11 +35,11 @@ class Async
 
     /**
      * 执行
-     * @access public
+     * @access protected
      * @param
      * @return mixed [boolean|json|array]
      */
-    public function exec()
+    protected function exec()
     {
         $object = $this->object;
         $action = $this->action;
@@ -48,36 +48,16 @@ class Async
     }
 
     /**
-     * 解析请求参数
      * 校验参数合法性
-     * @access public
+     * @access protected
      * @param
      * @return void
      */
-    public function analysis()
+    protected function examine()
     {
-        $this->module = strtolower(request()->module());
-
-        if (request()->isPost()) {
-            $this->method = input('post.method');
-        } else {
-            $this->method = input('get.method');
-        }
-
-        $count = count(explode('.', $this->method));
-
-        if ($count == 3) {
-            list($this->layer, $this->class, $this->action) =
-            explode('.', $this->method, 3);
-        } elseif ($count == 2) {
-            list($this->class, $this->action) =
-            explode('.', $this->method, 2);
-        } elseif ($count == 1) {
-            list($this->class) =
-            explode('.', $this->method, 1);
-        } else {
+        if (!$this->verifySign()) {
             return $this->outputError(
-                'PARAMETER ERROR',
+                'ILLEGAL REQUEST SIGN',
                 'ERROR'
             );
         }
@@ -101,9 +81,52 @@ class Async
 
         // 检查方法是否存在
         $this->object = logic($this->module . '/' . $this->layer . '/' . $this->class);
+
         if (!method_exists($this->object, $this->action)) {
             return $this->outputError(
                 'ACTION UNDEFINED',
+                'ERROR'
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * 解析请求参数
+     * @access protected
+     * @param
+     * @return void
+     */
+    protected function analysis()
+    {
+        $this->module = strtolower(request()->module());
+
+        if (request()->isPost()) {
+            $this->method = input('post.method');
+
+            // 参数GET,POST分别传送
+            if (empty($this->method)) {
+                $this->method = input('get.method');
+            }
+        } else {
+            $this->method = input('get.method');
+        }
+
+        $count = count(explode('.', $this->method));
+
+        if ($count == 3) {
+            list($this->layer, $this->class, $this->action) =
+            explode('.', $this->method, 3);
+        } elseif ($count == 2) {
+            list($this->class, $this->action) =
+            explode('.', $this->method, 2);
+        } elseif ($count == 1) {
+            list($this->class) =
+            explode('.', $this->method, 1);
+        } else {
+            return $this->outputError(
+                'PARAMETER ERROR',
                 'ERROR'
             );
         }
@@ -161,9 +184,10 @@ class Async
     {
         if (cookie('?__a-c')) {
             $http_referer = sha1(
-                md5(date('Y-m-d')) .
-                md5(request()->domain() .
-                    request()->server('http_referer'))
+                sha1(env('root_path')) .
+                sha1(date('Y-m-d')) .
+                sha1(request()->domain() .
+                     request()->server('http_referer'))
             );
 
             return cookie('__a-c') === $http_referer;
@@ -189,9 +213,10 @@ class Async
 
         // 真正签名
         cookie('__a-c', sha1(
-            md5(date('Y-m-d')) .
-            md5(request()->domain() .
-                request()->url(true))
+            sha1(env('root_path')) .
+            sha1(date('Y-m-d')) .
+            sha1(request()->domain() .
+                 request()->url(true))
         ));
     }
 }
