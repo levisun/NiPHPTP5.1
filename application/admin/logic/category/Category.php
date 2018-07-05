@@ -70,7 +70,7 @@ class Category
 
         }
 
-        return $result;
+        return $result->toArray();
     }
 
     /**

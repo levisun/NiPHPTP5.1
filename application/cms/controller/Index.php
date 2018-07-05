@@ -16,6 +16,6 @@ class Index extends Base
 {
     public function index()
     {
-        return '';
+        return $this->fetch('index.html');
     }
 }

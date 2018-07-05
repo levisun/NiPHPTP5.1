@@ -98,11 +98,10 @@ class Databack extends Model
      * @param  integer $_limit
      * @return void
      */
-    public function backup($_limit = 5000)
+    public function backup($_limit = 1000)
     {
         set_time_limit(0);
         ini_set('memory_limit', '128M');
-        ini_set('memory_limit', -1);
 
         $TEMP_DIR = $this->createDir();
 

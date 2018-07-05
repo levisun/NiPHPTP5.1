@@ -19,7 +19,8 @@ return [
     'app_begin'    => [],
     // 模块初始化
     'module_init'  => [
-        'app\\common\\behavior\\HtmlCacheBehavior'
+        'app\\common\\behavior\\HtmlCacheBehavior',
+
     ],
     // 操作开始执行
     'action_begin' => [],

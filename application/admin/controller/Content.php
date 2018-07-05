@@ -16,6 +16,18 @@ class Content extends Base
 {
 
     /**
+     * 内容
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function content($operate = '')
+    {
+        $tpl = $operate ? 'content_' . $operate : 'content_category';
+        return $this->fetch($tpl);
+    }
+
+    /**
      * 幻灯片
      * @access public
      * @param

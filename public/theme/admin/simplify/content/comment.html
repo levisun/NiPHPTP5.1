@@ -1,0 +1,54 @@
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "content.comment.query"
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return false;
+    }
+
+
+});
+
+$(document).on("click", "#paging a", function(){
+    var page = $.urlParam("p", "", $(this).attr("url"));
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            method: "content.comment.query",
+            pid: "{$Request.param.pid}",
+            p: page
+        }
+    }, function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+
+    });
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "content.comment.remove",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
+});
+</script>

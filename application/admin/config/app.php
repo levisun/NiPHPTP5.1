@@ -38,7 +38,7 @@ return [
     // 默认操作名
     'default_action'          => 'login',
     // URL伪静态后缀
-    'url_html_suffix'         => 'htm',
+    'url_html_suffix'         => 'do',
 
     // 认证key
     'user_auth_key'           => 'auth_id',

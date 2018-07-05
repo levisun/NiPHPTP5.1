@@ -124,7 +124,7 @@ class Api extends Async
             // 是否登录
             if (!session('?' . config('user_auth_key'))) {
                 return $this->outputError(
-                    'ILLEGAL REQUEST ',
+                    'ILLEGAL REQUEST',
                     'ERROR'
                 );
             }
@@ -132,7 +132,7 @@ class Api extends Async
             // 登录权限信息
             if (!session('?_access_list')) {
                 return $this->outputError(
-                    'ILLEGAL REQUEST  ',
+                    'ILLEGAL REQUEST',
                     'ERROR'
                 );
             }
@@ -142,7 +142,7 @@ class Api extends Async
             $access_list = $access_list['ADMIN'];
             if (empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
                 return $this->outputError(
-                    'ILLEGAL REQUEST   ',
+                    'ILLEGAL REQUEST',
                     'ERROR'
                 );
             }

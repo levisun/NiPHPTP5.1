@@ -22,7 +22,7 @@ define('APP_DEBUG', true);
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=')
-or die('require PHP >= 5.6.0 !');
+or die('PHP version >= 5.6.0!');
 
 define('NP_VERSION', '2.0.7 CB 2311');
 define('TP_VERSION', '5.1.17');
@@ -37,12 +37,9 @@ require __DIR__ . '/../thinkphp/base.php';
 
 // thinkphp版本支持
 version_compare(Container::get('app')->version(), TP_VERSION, '=')
-or die('ThinkPHP version = ' . TP_VERSION . ' !');
+or die('ThinkPHP version = ' . TP_VERSION . '!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 
 // 执行应用并响应
 Container::get('app')->run()->send();
-
-// 清除运行垃圾文件
-remove_rundata();

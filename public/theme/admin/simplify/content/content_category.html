@@ -1,0 +1,61 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+
+        <span class="smart-widget-option">
+            <a href="{:url('', array('operate' => 'added'))}" class="btn btn-default btn-xs">
+                <span class="fa fa-plus"></span>{:lang('button add')}
+            </a>
+        </span>
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <table class="table table-striped" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>{:lang('id')}</th>
+                            <th>{:lang('category name')}</th>
+                            <th>{:lang('type')}</th>
+                            <th>{:lang('model')}</th>
+                            <th>{:lang('isshow')}</th>
+                            <th>{:lang('ischannel')}</th>
+                            <th>{:lang('operate')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "content.content.category"
+    }
+}, function(result){
+    if (result.code !== "SUCCESS") {
+        return false;
+    }
+
+    var list = "";
+    for (var index in result.data) {
+        list = list + "<tr>";
+        list = list + "<td>"+result.data[index].id+"</td>";
+        list = list + "<td>"+result.data[index].name+"</td>";
+        list = list + "<td>"+result.data[index].type_name+"</td>";
+        list = list + "<td>"+result.data[index].model_name+"</td>";
+        list = list + "<td>"+result.data[index].show+"</td>";
+        list = list + "<td>"+result.data[index].channel+"</td>";
+        list = list + "<td>"+""+"</td>";
+        list = list + "<tr>";
+    }
+    $("#dataTable tbody").prepend(list);
+});
+</script>

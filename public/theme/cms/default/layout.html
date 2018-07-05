@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script type="text/javascript">
+    var request = {
+        domain:     "__DOMAIN__",
+        api: {
+            query:  "{:url('api/query', '', true, true)}",
+            settle: "{:url('api/settle', '', true, true)}",
+            upload: "{:url('api/upload', '', true, true)}",
+        },
+        static:     "__STATIC__",
+        css:        "__CSS__",
+        js:         "__JS__",
+        img:        "__IMG__",
+        controller: "{$Request.controller|lower}",
+        action:     "{$Request.action}",
+    };
+    </script>
+</head>
+
+<body class="overflow-hidden">
 {__CONTENT__}
+</body>
+</html>

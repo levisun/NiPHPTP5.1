@@ -108,7 +108,7 @@ class Base extends Controller
         config('template.view_path', $view_path);
         config('template.tpl_replace_string', $replace);
 
-        $this->view->engine($template);
-        $this->view->filter('view_filter');
+        $this->engine($template);
+        $this->filter('view_filter');
     }
 }

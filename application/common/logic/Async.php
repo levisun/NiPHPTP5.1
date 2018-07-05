@@ -184,10 +184,10 @@ class Async
     {
         if (cookie('?__a-c')) {
             $http_referer = sha1(
-                sha1(env('root_path')) .
-                sha1(date('Y-m-d')) .
-                sha1(request()->domain() .
-                     request()->server('http_referer'))
+                env('root_path') .
+                cookie('__sign') .
+                request()->domain() .
+                request()->server('http_referer')
             );
 
             return cookie('__a-c') === $http_referer;
@@ -204,7 +204,8 @@ class Async
      */
     public function createSign()
     {
-        // 伪装签名
+        // 签名
+        // 记录请求时间
         cookie('__sign', md5(
             md5(date('Y-m-d')) .
             time() .
@@ -212,11 +213,12 @@ class Async
         ));
 
         // 真正签名
+        // 应用根目录+请求时间+域名+访问地址
         cookie('__a-c', sha1(
-            sha1(env('root_path')) .
-            sha1(date('Y-m-d')) .
-            sha1(request()->domain() .
-                 request()->url(true))
+            env('root_path') .
+            cookie('__sign') .
+            request()->domain() .
+            request()->url(true)
         ));
     }
 }

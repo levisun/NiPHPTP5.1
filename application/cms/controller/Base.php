@@ -95,7 +95,23 @@ class Base extends Controller
         config('template.tpl_replace_string', $replace);
         config('template.view_depr', '_');
 
-        $this->view->engine($template);
-        $this->view->filter('view_filter');
+        $this->engine($template);
+        $this->filter('view_filter');
+    }
+
+    /**
+     * 加载模板输出
+     * @access protected
+     * @param  string $template 模板文件名
+     * @param  array  $vars     模板输出变量
+     * @param  array  $config   模板参数
+     * @return mixed
+     */
+    protected function fetch($template = '', $vars = [], $config = [])
+    {
+        if ($template) {
+            $template = config('template.view_path') . $template;
+        }
+        return parent::fetch($template, $vars, $config);
     }
 }

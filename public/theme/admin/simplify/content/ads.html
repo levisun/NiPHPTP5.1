@@ -18,7 +18,7 @@
                             <th>{:lang('ads name')}</th>
                             <th>{:lang('size')}</th>
                             <th>{:lang('time')}</th>
-                            <th>{:lang('operation')}</th>
+                            <th>{:lang('operate')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,5 +62,61 @@ $.loading({
     $("#dataTable tbody").prepend(list);
     $("#paging").prepend(result.data.page);
     pagingToAjax();
+});
+
+$(document).on("click", "#paging a", function(){
+    var page = $.urlParam("p", "", $(this).attr("url"));
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            method: "content.ads.query",
+            pid: "{$Request.param.pid}",
+            p: page
+        }
+    }, function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+        var list = "";
+        for (var index in result.data.list) {
+            list = list + "<tr>";
+            list = list + "<td>"+result.data.list[index].id+"</td>";
+            list = list + "<td>"+result.data.list[index].name+"</td>";
+            list = list + "<td>"+result.data.list[index].width+" X "+result.data.list[index].height+"</td>";
+            list = list + "<td>"+result.data.list[index].start_time+" - "+result.data.list[index].end_time+"</td>";
+
+            list = list + "<td>";
+            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "</td>";
+
+            list = list + "</tr>";
+        }
+        $("#dataTable tbody").prepend(list);
+        $("#paging").prepend(result.data.page);
+        pagingToAjax();
+    });
+});
+
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            method: "content.ads.remove",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.code === "SUCCESS") {
+            $.reload();
+        }
+    });
+    return false;
 });
 </script>

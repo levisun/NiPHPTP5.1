@@ -37,7 +37,7 @@ class Node
             ];
         }
 
-        return node_format($result);
+        return node_format($result->toArray());
     }
 
     /**
