@@ -143,16 +143,14 @@ class Async
      * @param  array   $_extend_data 附加数据
      * @return json
      */
-    public function outputData($_msg = '', $_code = 'SUCCESS', $_data, $_extend_data = [])
+    public function outputData($_msg = '', $_data, $_code = 'SUCCESS', $_extend_data = [])
     {
-        $return = [
+        return json([
             'code' => $_code,
             'msg'  => $_msg,
             'data' => $_data,
             'oth'  => !empty($_extend_data) ? $_extend_data : input('param.'),
-        ];
-
-        return json($return);
+        ]);
     }
 
     /**
@@ -165,13 +163,11 @@ class Async
      */
     public function outputError($_msg = 'ERROR', $_code = 'ERROR', $_extend_data = [])
     {
-        $return = [
+        return json([
             'code' => $_code,
             'msg'  => $_msg,
             'oth'  => !empty($_extend_data) ? $_extend_data : input('param.'),
-        ];
-
-        return json($return);
+        ]);
     }
 
     /**

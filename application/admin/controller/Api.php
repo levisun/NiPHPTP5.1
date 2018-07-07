@@ -34,7 +34,6 @@ class Api extends Async
 
         return $this->outputData(
             lang('query success'),
-            'SUCCESS',
             $result
         );
     }
@@ -65,7 +64,6 @@ class Api extends Async
             if ($result === true) {
                 $output = $this->outputData(
                     lang('save success'),
-                    'SUCCESS',
                     $result
                 );
             } else {
@@ -104,7 +102,6 @@ class Api extends Async
         } else {
             $output = $this->outputData(
                 lang('upload success'),
-                'SUCCESS',
                 $result
             );
         }

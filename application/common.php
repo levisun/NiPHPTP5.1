@@ -312,7 +312,7 @@ function remove_rundata()
     shuffle($all_files);
     $all_files = array_slice($all_files, 0, 100);
 
-    $days = APP_DEBUG ? strtotime('-2 hour') : strtotime('-90 days');
+    $days = APP_DEBUG ? strtotime('-4 hour') : strtotime('-90 days');
     foreach ($all_files as $path) {
         if (is_file($path)) {
             if (filectime($path) <= $days) {
@@ -354,13 +354,6 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
     }
     return $coded;
 }
-
-/**
- * XML外部实体注入漏洞
- * XML External Entity Injection
- * XXE漏洞
- */
-libxml_disable_entity_loader(true);
 
 /**
  * 过滤XSS
