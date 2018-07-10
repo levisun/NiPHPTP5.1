@@ -245,21 +245,19 @@ use_time_memory(true);
 function use_time_memory($_start = false)
 {
     if (!APP_DEBUG) {
-        return ;
+        return '';
     }
 
     if ($_start) {
         Debug::remark('memory_start');
     } else {
         return
-        lang('run time') .
-        Debug::getRangeTime('memory_start', 'end', 4) . ' S/' .
-        lang('run memory') .
-        Debug::getMemPeak('memory_start', 'end', 4);
-
-        /* . ' ' .
-        lang('run file load') .
-        count(get_included_files())*/
+        'T ' .
+        Debug::getRangeTime('memory_start', 'end', 2) .
+        ' s | M ' .
+        Debug::getMemPeak('memory_start', 'end', 2) .
+        ' | L ' .
+        count(get_included_files());
     }
 }
 
@@ -312,7 +310,7 @@ function remove_rundata()
     shuffle($all_files);
     $all_files = array_slice($all_files, 0, 100);
 
-    $days = APP_DEBUG ? strtotime('-4 hour') : strtotime('-90 days');
+    $days = APP_DEBUG ? strtotime('-8 hour') : strtotime('-90 days');
     foreach ($all_files as $path) {
         if (is_file($path)) {
             if (filectime($path) <= $days) {

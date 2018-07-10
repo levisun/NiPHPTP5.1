@@ -14,19 +14,17 @@ namespace app\common\logic;
 
 class Async
 {
-    protected $module = 'common';    // 模块
-    protected $layer  = 'logic';     // 业务类所在层
-    protected $class  = 'index';     // 业务逻辑类名
-    protected $action = 'index';     // 业务类方法
+    protected $module = 'common';       // 模块
+    protected $layer  = 'logic';        // 业务类所在层
+    protected $class  = 'index';        // 业务逻辑类名
+    protected $action = 'index';        // 业务类方法
 
-    protected $method;    // 接收method值
+    protected $method;                  // 接收method值
 
+    protected $file_path;               // 文件路径
+    protected $sign;                    // 加密签名
 
-
-    protected $file_path; // 文件路径
-    protected $sign;      // 加密签名
-
-    protected $object;    // 业务逻辑类实例化
+    protected $object;                  // 业务逻辑类实例化
 
     function __construct()
     {
@@ -34,10 +32,64 @@ class Async
     }
 
     /**
-     * 执行
+     * 处理数据
      * @access protected
      * @param
-     * @return mixed [boolean|json|array]
+     * @return json
+     */
+    protected function settle()
+    {
+        $result = $this->examine();
+        if ($result !== true) {
+            return $result;
+        }
+
+        $result = $this->exec();
+
+        if ($result === true) {
+            return $this->outputData(
+                lang('exec success'),
+                $result
+            );
+        } elseif ($result === false) {
+            return $this->outputError(
+                'data error',
+                41001
+            );
+        } else {
+            return $this->outputError(
+                $result,
+                41002
+            );
+        }
+    }
+
+    /**
+     * 查询
+     * @access protected
+     * @param
+     * @return json
+     */
+    protected function query()
+    {
+        $result = $this->examine();
+        if ($result !== true) {
+            return $result;
+        }
+
+        $result = $this->exec();
+
+        return $this->outputData(
+            lang('query success'),
+            $result
+        );
+    }
+
+    /**
+     * 执行方法
+     * @access protected
+     * @param
+     * @return mixed [boolean|array]
      */
     protected function exec()
     {
@@ -51,13 +103,22 @@ class Async
      * 校验参数合法性
      * @access protected
      * @param
-     * @return void
+     * @return mixed
      */
     protected function examine()
     {
+        // 验证异步请求签名合法性
         if (!$this->verifySign()) {
             return $this->outputError(
                 'ILLEGAL REQUEST SIGN',
+                'ERROR'
+            );
+        }
+
+        // 验证异步请求参数合法性
+        if (!$this->analysis()) {
+            return $this->outputError(
+                'PARAMETER ERROR',
                 'ERROR'
             );
         }
@@ -125,10 +186,7 @@ class Async
             list($this->class) =
             explode('.', $this->method, 1);
         } else {
-            return $this->outputError(
-                'PARAMETER ERROR',
-                'ERROR'
-            );
+            return false;
         }
 
         return true;
@@ -149,7 +207,7 @@ class Async
             'code' => $_code,
             'msg'  => $_msg,
             'data' => $_data,
-            'oth'  => !empty($_extend_data) ? $_extend_data : input('param.'),
+            'oth'  => !empty($_extend_data) ? $_extend_data : use_time_memory(),
         ]);
     }
 
@@ -166,7 +224,7 @@ class Async
         return json([
             'code' => $_code,
             'msg'  => $_msg,
-            'oth'  => !empty($_extend_data) ? $_extend_data : input('param.'),
+            'oth'  => !empty($_extend_data) ? $_extend_data : use_time_memory(),
         ]);
     }
 

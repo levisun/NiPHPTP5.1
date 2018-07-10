@@ -37,19 +37,17 @@ class HtmlCacheBehavior
 
             $path = $this->htmlPath();
 
-            if (is_file($path)) {
+            if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
                 // 异步请求加密签名
                 logic('common/async')->createSign();
 
                 $html = file_get_contents($path);
                 $html = substr($html, 39);
-                // $html = decrypt($html, request()->module());
 
                 // 替换新的表单令牌
                 $html = preg_replace('/(<input type="hidden" name="__token__" value=").*?(" \/>)/si', token(), $html);
 
                 echo $html;
-
                 exit();
             }
         }
@@ -71,14 +69,17 @@ class HtmlCacheBehavior
         if ($request) {
             $path = $this->htmlPath();
 
-            if (!APP_DEBUG && is_file($path) && filectime($path) >= strtotime('-30 days')) {
+            if (!APP_DEBUG && is_file($path) && filectime($path) >= time() - config('cache.expire')) {
                 return true;
             }
 
             $storage = new \think\template\driver\File;
 
-            // $_content = encrypt($_content, request()->module());
-            $storage->write($this->htmlPath(), '<?php /*' . date('Y-m-d H:i:s') . '*/ exit();?>' . $_content);
+            $_content = '<?php /*' . date('Y-m-d H:i:s') . '*/ exit();?>' .
+                        '<!-- html cache ' . date('Y-m-d H:i:s') . ' -->' .
+                        $_content;
+
+            $storage->write($path, $_content);
         }
     }
 

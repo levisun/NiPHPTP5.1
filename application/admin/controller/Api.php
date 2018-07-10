@@ -25,17 +25,7 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->examine();
-        if ($result !== true) {
-            return $result;
-        }
-
-        $result = $this->exec();
-
-        return $this->outputData(
-            lang('query success'),
-            $result
-        );
+        return parent::query();
     }
 
     /**
@@ -46,35 +36,9 @@ class Api extends Async
      */
     public function settle()
     {
-        $result = $this->examine();
-        if ($result !== true) {
-            return $result;
-        }
-
-        $result = $this->exec();
-
         remove_old_upload_file();
 
-        if ($result === false) {
-            $output = $this->outputError(
-                'data error',
-                41001
-            );
-        } else {
-            if ($result === true) {
-                $output = $this->outputData(
-                    lang('save success'),
-                    $result
-                );
-            } else {
-                $output = $this->outputError(
-                    $result,
-                    41002
-                );
-            }
-        }
-
-        return $output;
+        return parent::settle();
     }
 
     /**
@@ -92,7 +56,7 @@ class Api extends Async
 
         $result = $this->exec();
 
-        $json['msg']   = $result === false ? 'EMPTY' : 'SUCCESS';
+        $json['msg'] = $result === false ? 'EMPTY' : 'SUCCESS';
 
         if (is_string($result)) {
             $output = $this->outputError(
@@ -111,9 +75,8 @@ class Api extends Async
 
     protected function examine()
     {
-        $result = $this->analysis();
-        if ($result !== true) {
-            return $result;
+        if (!$error = parent::examine()) {
+            return $error;
         }
 
         // 权限验证
@@ -147,11 +110,6 @@ class Api extends Async
 
         if ($this->class == 'upload') {
             $this->layer = 'logic';
-        }
-
-        $result = parent::examine();
-        if ($result !== true) {
-            return $result;
         }
 
         return true;
