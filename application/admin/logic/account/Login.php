@@ -133,5 +133,7 @@ class Login
         session('admin_data', $_user_data);
         // 生成认证ID
         session(config('user_auth_key'), $_user_data['id']);
+        // 生成认证权限
+        logic('common/Rbac')->checkAuth(session(config('user_auth_key')));
     }
 }

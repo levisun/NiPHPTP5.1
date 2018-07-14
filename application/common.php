@@ -203,24 +203,18 @@ function lang($_name, $_vars = [], $_lang = '')
         // 允许的语言
         Lang::setAllowLangList(config('lang_list'));
 
+        // 加载对应语言包
         $lang_path  = env('app_path') . request()->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-        $lang_path .= Lang::detect() . DIRECTORY_SEPARATOR;
+        $lang_path .= Lang::detect() . '.php';
+        Lang::load($lang_path);
 
-        // 加载全局语言包
-        Lang::load($lang_path . Lang::detect() . '.php');
-
-        // 加载对应语言包
-        $lang_name  = strtolower(request()->controller()) . DIRECTORY_SEPARATOR;
-        $lang_name .= strtolower(request()->action());
-        Lang::load($lang_path . $lang_name . '.php');
-        $return = true;
+        return true;
     } elseif ($_name == ':detect') {
-        $return = Lang::detect();
+        return Lang::detect();
     } else {
-        $return = Lang::get($_name, $_vars, $_lang);
+        return Lang::get($_name, $_vars, $_lang);
     }
-    return $return;
 }
 
 /**
@@ -244,10 +238,6 @@ function md5_password($_password, $_salt)
 use_time_memory(true);
 function use_time_memory($_start = false)
 {
-    if (!APP_DEBUG) {
-        return '';
-    }
-
     if ($_start) {
         Debug::remark('memory_start');
     } else {
@@ -256,7 +246,7 @@ function use_time_memory($_start = false)
         Debug::getRangeTime('memory_start', 'end', 2) .
         ' s | M ' .
         Debug::getMemPeak('memory_start', 'end', 2) .
-        ' | L ' .
+        ' | F ' .
         count(get_included_files());
     }
 }

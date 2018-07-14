@@ -44,8 +44,10 @@ class Content
             $result[$key]->channel   = $value->channel;
 
             $url = [];
-                // 'manage' => url('content/content', array('operate' => 'manage', 'cat_id' => $value->id)),
-            // ];
+
+            if ($value->child) {
+                $url['child'] = url('content/content', array('operate' => 'child', 'cat_id' => $value->id));
+            }
 
             if ($value->model_id == 4) {
                 $url['manage'] = url('content/content', array('operate' => 'page', 'cat_id' => $value->id));

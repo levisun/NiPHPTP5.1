@@ -26,10 +26,8 @@ class Async
 
     protected $object;                  // 业务逻辑类实例化
 
-    function __construct()
-    {
-        lang(':load');
-    }
+    public function __construct()
+    {}
 
     /**
      * 处理数据
@@ -80,7 +78,7 @@ class Async
         $result = $this->exec();
 
         return $this->outputData(
-            lang('query success'),
+            'QUERY SUCCESS',
             $result
         );
     }

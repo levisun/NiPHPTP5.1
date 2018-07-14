@@ -42,12 +42,11 @@ class Base extends Controller
         $this->domain = $this->request->domain() . $this->request->root() . '/';
 
         $this->setTemplate();
-        lang(':load');
 
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
             // 审核用户权限
-            if (!logic('admin/account/Rbac')->checkAuth(session(config('user_auth_key')))) {
+            if (!logic('common/Rbac')->checkAuth(session(config('user_auth_key')))) {
                 $this->error('no permission', 'settings/info');
             }
             // 登录页重定向

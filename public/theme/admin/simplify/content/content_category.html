@@ -47,7 +47,13 @@ $.loading({
         list = list + "<td>"+result.data[index].model_name+"</td>";
         list = list + "<td>"+result.data[index].show+"</td>";
         list = list + "<td>"+result.data[index].channel+"</td>";
-        list = list + "<td>"+""+"</td>";
+        list = list + "<td>";
+        if (result.data[index].url.child) {
+            list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-edit'></span>{:lang('button child')}</a>";
+        }
+
+        list = list + "<a href='"+result.data[index].url.manage+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        list = list + "</td>";
         list = list + "<tr>";
     }
     $("#dataTable tbody").prepend(list);

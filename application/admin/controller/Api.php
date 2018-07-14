@@ -59,18 +59,16 @@ class Api extends Async
         $json['msg'] = $result === false ? 'EMPTY' : 'SUCCESS';
 
         if (is_string($result)) {
-            $output = $this->outputError(
+            return $this->outputError(
                 $result,
                 'ERROR'
             );
         } else {
-            $output = $this->outputData(
+            return $this->outputData(
                 lang('upload success'),
                 $result
             );
         }
-
-        return $output;
     }
 
     protected function examine()
@@ -84,7 +82,7 @@ class Api extends Async
             // 是否登录
             if (!session('?' . config('user_auth_key'))) {
                 return $this->outputError(
-                    'ILLEGAL REQUEST',
+                    'ILLEGAL REQUEST1',
                     'ERROR'
                 );
             }
@@ -100,7 +98,7 @@ class Api extends Async
             // 是否有访问操作等权限
             $access_list = session('_access_list');
             $access_list = $access_list['ADMIN'];
-            if (empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
+            if (!in_array($this->class, ['login', 'logout']) && empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
                 return $this->outputError(
                     'ILLEGAL REQUEST',
                     'ERROR'

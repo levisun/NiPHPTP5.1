@@ -24,12 +24,7 @@ class HtmlCacheBehavior
      */
     public function run()
     {
-        $request =
-        !request()->isAjax() &&
-        !request()->isPjax() &&
-        !request()->isPost();
-
-        if (!APP_DEBUG && $request) {
+        if (!APP_DEBUG && !request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
             if (request()->module() == 'admin' && request()->action() != 'login' && !session('?' . config('user_auth_key'))) {
                 header('Location:' . url('/admin'));
                 exit();
@@ -42,12 +37,12 @@ class HtmlCacheBehavior
                 logic('common/async')->createSign();
 
                 $html = file_get_contents($path);
-                $html = substr($html, 39);
+                $html = preg_replace('/<\?php(.*?)\?>/si', '', $html);
 
                 // 替换新的表单令牌
                 $html = preg_replace('/(<input type="hidden" name="__token__" value=").*?(" \/>)/si', token(), $html);
 
-                echo $html;
+                echo $html . '<script type="text/javascript">console.log("' . use_time_memory() . '")</script>';
                 exit();
             }
         }
@@ -61,23 +56,26 @@ class HtmlCacheBehavior
      */
     public function write($_content)
     {
-        $request =
-        !request()->isAjax() &&
-        !request()->isPjax() &&
-        !request()->isPost();
-
-        if ($request) {
+        if (!APP_DEBUG && !request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
             $path = $this->htmlPath();
 
             if (!APP_DEBUG && is_file($path) && filectime($path) >= time() - config('cache.expire')) {
+                unlink($path);
                 return true;
             }
 
             $storage = new \think\template\driver\File;
 
-            $_content = '<?php /*' . date('Y-m-d H:i:s') . '*/ exit();?>' .
-                        '<!-- html cache ' . date('Y-m-d H:i:s') . ' -->' .
-                        $_content;
+            if (is_wechat_request()) {
+                $request_type = 'wechat';
+            } elseif (request()->isMobile()) {
+                $request_type = 'mobile';
+            } else {
+                $request_type = 'pc';
+            }
+
+            $_content = "<?php\r/*\r" . date('Y-m-d H:i:s') . "\rrequest " . $request_type . "\r" . request()->url(true) . "\r*/\rexit();\r?>\r" . $_content;
+            $_content .= '<script type="text/javascript">console.log("HTML CACHE ' . $request_type . ' ' . date('Y-m-d H:i:s') . '")</script>';
 
             $storage->write($path, $_content);
         }
@@ -95,13 +93,21 @@ class HtmlCacheBehavior
         $user_id  = session('?' . config('user_auth_key')) ? 'session=' . session(config('user_auth_key')) : '';
         $user_id .= cookie('?' . config('user_auth_key')) ? 'cookie=' . cookie(config('user_auth_key')) : '';
 
-        $url = request()->url();
-        $md5 = md5($url . $user_id);
+        $file_name = request()->url(true) . $user_id;
+
+        if (is_wechat_request()) {
+            $file_name .= 'wechat';
+        } elseif (request()->isMobile()) {
+            $file_name .= 'mobile';
+        } else {
+            $file_name .= 'pc';
+        }
+
+        $file_name = md5($file_name);
 
         $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
-        // $html_path .= request()->module() . DIRECTORY_SEPARATOR;
-        $html_path .= substr($md5, 0, 2) . DIRECTORY_SEPARATOR;
-        $html_path .= substr($md5, 2) . '.php';
+        $html_path .= substr($file_name, 0, 2) . DIRECTORY_SEPARATOR;
+        $html_path .= substr($file_name, 2) . '.php';
 
         return $html_path;
     }

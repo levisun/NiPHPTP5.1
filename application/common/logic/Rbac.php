@@ -11,7 +11,7 @@
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-namespace app\admin\logic\account;
+namespace app\common\logic;
 
 class Rbac
 {

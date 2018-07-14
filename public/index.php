@@ -18,7 +18,7 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 define('NP_VERSION', '2.0.7 CB 2311');
 // define('TP_VERSION', '5.1.18');

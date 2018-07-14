@@ -1,5 +1,21 @@
 <?php
 return [
+    'member'               => '会员',
+    'member count'         => '会员人数',
+    'member reg'           => '注册人数',
+    'feedback and message' => '反馈与留言',
+    'feedback'             => '反馈',
+    'message'              => '留言',
+    'tg'                   => '推广',
+    'ads'                  => '广告',
+    'link'                 => '友情链接',
+    'sys info'             => '系统信息',
+    'sys version'          => '版本',
+    'sys os'               => 'sys os',
+
+    // 异步请求
+
+    // 核心
     'website home'          => '首页',
     'button save'           => '保存',
     'delete cache'          => '清除缓存',
@@ -10,7 +26,6 @@ return [
     'status'                => '状态',
     'status no'             => '未启用',
     'status yes'            => '启用',
-
 
     'illegal operation'     => '无效操作！',
     'no permission'         => '无效操作！',
