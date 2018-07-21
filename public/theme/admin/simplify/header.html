@@ -20,13 +20,13 @@
                             </div>
                         </li>
                         <li>
-                            <a href="{:url('content/cache', array('method' => 'remove', 'type' => 'cache'))}">
+                            <a href="{:url('content/cache', array('operate' => 'remove', 'type' => 'cache'))}">
                                 <i class="fa fa-refresh fa-lg"></i>
                                 <span class="m-left-xs">{:lang('delete cache')}</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{:url('user/admin', array('method' => 'editor', 'id' => $ADMIN_DATA.id))}">
+                            <a href="{:url('user/admin', array('operate' => 'editor', 'id' => $ADMIN_DATA.id))}">
                                 <i class="fa fa-edit fa-lg"></i>
                                 <span class="m-left-xs">{:lang('update admin')}</span>
                             </a>
@@ -84,13 +84,13 @@
                         <div class="panel-body paddingTB-sm">
                             <ul>
                                 <li>
-                                    <a href="{:url('content/cache', array('method' => 'remove', 'type' => 'cache'))}">
+                                    <a href="{:url('content/cache', array('operate' => 'remove', 'type' => 'cache'))}">
                                         <i class="fa fa-refresh fa-lg"></i>
                                         <span class="m-left-xs">{:lang('delete cache')}</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{:url('user/admin', array('method' => 'editor', 'id' => $ADMIN_DATA.id))}">
+                                    <a href="{:url('user/admin', array('operate' => 'editor', 'id' => $ADMIN_DATA.id))}">
                                         <i class="fa fa-edit fa-lg"></i>
                                         <span class="m-left-xs">{:lang('update admin')}</span>
                                     </a>

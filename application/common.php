@@ -11,9 +11,7 @@
  * @since     2017/12
  */
 
-use think\facade\Debug;
 use think\facade\Lang;
-use think\Request;
 
 function rl()
 {
@@ -235,20 +233,17 @@ function md5_password($_password, $_salt)
  * @param  boolean $_start
  * @return mixed
  */
-use_time_memory(true);
-function use_time_memory($_start = false)
+function use_time_memory()
 {
-    if ($_start) {
-        Debug::remark('memory_start');
-    } else {
-        return
-        'T ' .
-        Debug::getRangeTime('memory_start', 'end', 2) .
-        ' s | M ' .
-        Debug::getMemPeak('memory_start', 'end', 2) .
-        ' | F ' .
-        count(get_included_files());
-    }
+    $runtime = number_format(microtime(true) - app()->getBeginTime(), 10);
+    $reqs    = $runtime > 0 ? number_format(1 / $runtime, 2) : '∞';
+    $mem     = number_format((memory_get_usage() - app()->getBeginMem()) / 1024, 2);
+
+    return [
+        '运行时间：' . number_format($runtime, 6) . 's 吞吐率：' . $reqs . 'req/s 内存消耗：' . $mem . 'kb 文件加载：' . count(get_included_files()),
+        '查询信息：' . Db::$queryTimes . ' queries ' . Db::$executeTimes . ' writes',
+        '缓存信息：' . app('cache')->getReadTimes() . ' reads ' . app('cache')->getWriteTimes() . ' writes',
+    ];
 }
 
 /**

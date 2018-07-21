@@ -16,7 +16,6 @@ use app\common\logic\Async;
 
 class Api extends Async
 {
-
     /**
      * 查询请求
      * @access public
@@ -25,20 +24,17 @@ class Api extends Async
      */
     public function query()
     {
-        return parent::query();
-    }
+        $result = $this->init();
+        if ($result !== true) {
+            return $result;
+        }
 
-    /**
-     * 执行请求
-     * @access public
-     * @param
-     * @return json
-     */
-    public function settle()
-    {
-        remove_old_upload_file();
+        $result = $this->exec();
 
-        return parent::settle();
+        return $this->outputData(
+            'QUERY SUCCESS',
+            $result
+        );
     }
 
     /**
@@ -49,7 +45,7 @@ class Api extends Async
      */
     public function upload()
     {
-        $result = $this->examine();
+        $result = $this->init();
         if ($result !== true) {
             return $result;
         }
@@ -59,10 +55,7 @@ class Api extends Async
         $json['msg'] = $result === false ? 'EMPTY' : 'SUCCESS';
 
         if (is_string($result)) {
-            return $this->outputError(
-                $result,
-                'ERROR'
-            );
+            return $this->outputError($result);
         } else {
             return $this->outputData(
                 lang('upload success'),
@@ -71,38 +64,58 @@ class Api extends Async
         }
     }
 
-    protected function examine()
+    /**
+     * 执行请求
+     * @access public
+     * @param
+     * @return json
+     */
+    public function settle()
     {
-        if (!$error = parent::examine()) {
-            return $error;
+        $result = $this->init();
+        if ($result !== true) {
+            return $result;
         }
 
+        $result = $this->exec();
+
+        if ($result === true) {
+            return $this->outputData(
+                lang('exec success'),
+                $result
+            );
+        } elseif ($result === false) {
+            return $this->outputError('data error');
+        } else {
+            return $this->outputError($result);
+        }
+    }
+
+    /**
+     * 验证Auth
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkAuth()
+    {
         // 权限验证
         if ($this->action != 'login') {
             // 是否登录
             if (!session('?' . config('user_auth_key'))) {
-                return $this->outputError(
-                    'ILLEGAL REQUEST1',
-                    'ERROR'
-                );
+                return $this->outputError('ILLEGAL REQUEST1');
             }
 
             // 登录权限信息
             if (!session('?_access_list')) {
-                return $this->outputError(
-                    'ILLEGAL REQUEST',
-                    'ERROR'
-                );
+                return $this->outputError('ILLEGAL REQUEST');
             }
 
             // 是否有访问操作等权限
             $access_list = session('_access_list');
             $access_list = $access_list['ADMIN'];
             if (!in_array($this->class, ['login', 'logout']) && empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
-                return $this->outputError(
-                    'ILLEGAL REQUEST',
-                    'ERROR'
-                );
+                return $this->outputError('ILLEGAL REQUEST');
             }
         }
 
@@ -110,6 +123,17 @@ class Api extends Async
             $this->layer = 'logic';
         }
 
+        return true;
+    }
+
+    /**
+     * 验证异步加密签名
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkSign()
+    {
         return true;
     }
 }

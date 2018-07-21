@@ -23,8 +23,8 @@ class Base extends Controller
 
     protected function initialize()
     {
-        // 异步请求加密签名
-        logic('common/async')->createSign();
+        // 异步请求
+        logic('common/Async')->createRequest();
 
         // 请求参数
         $this->requestParam = [

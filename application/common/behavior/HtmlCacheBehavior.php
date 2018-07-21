@@ -33,8 +33,8 @@ class HtmlCacheBehavior
             $path = $this->htmlPath();
 
             if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
-                // 异步请求加密签名
-                logic('common/async')->createSign();
+                // 异步请求
+                logic('common/async')->createRequest();
 
                 $html = file_get_contents($path);
                 $html = preg_replace('/<\?php(.*?)\?>/si', '', $html);
@@ -42,7 +42,8 @@ class HtmlCacheBehavior
                 // 替换新的表单令牌
                 $html = preg_replace('/(<input type="hidden" name="__token__" value=").*?(" \/>)/si', token(), $html);
 
-                echo $html . '<script type="text/javascript">console.log("' . use_time_memory() . '")</script>';
+                echo $html;
+                echo '<script type="text/javascript">console.log("本页面由 NIPHP 负责开发，你可以通过 http://niphp.com 了解我们。\r\n' . implode(use_time_memory(), '\r\n') . '")</script>';
                 exit();
             }
         }
@@ -67,15 +68,15 @@ class HtmlCacheBehavior
             $storage = new \think\template\driver\File;
 
             if (is_wechat_request()) {
-                $request_type = 'wechat';
+                $request_type = 'WECHAT';
             } elseif (request()->isMobile()) {
-                $request_type = 'mobile';
+                $request_type = 'MOBILE';
             } else {
-                $request_type = 'pc';
+                $request_type = 'PC';
             }
 
             $_content = "<?php\r/*\r" . date('Y-m-d H:i:s') . "\rrequest " . $request_type . "\r" . request()->url(true) . "\r*/\rexit();\r?>\r" . $_content;
-            $_content .= '<script type="text/javascript">console.log("HTML CACHE ' . $request_type . ' ' . date('Y-m-d H:i:s') . '")</script>';
+            $_content .= '<script type="text/javascript">console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '")</script>';
 
             $storage->write($path, $_content);
         }
