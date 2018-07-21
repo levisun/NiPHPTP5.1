@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2017/12
- *https://m.qidian.com/book/1004995908/349213007
+ *
  * CB|Alpha 内测版
  * RC|Beta  正式候选版
  * Demo     演示版
@@ -20,10 +20,8 @@ namespace think;
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
 
 // 调试开关
-define('APP_DEBUG', true);
+define('APP_DEBUG', false);
 define('NP_VERSION', '2.0.7 CB 2311');
-// define('TP_VERSION', '5.1.18');
-define('NP_APPKEY', '198612120');
 set_time_limit(300);
 ini_set('memory_limit', '32M');
 if (function_exists('header_remove')) header_remove('X-Powered-By'); else header('X-Powered-By: X');
@@ -34,7 +32,7 @@ libxml_disable_entity_loader(true);
 require __DIR__ . '/../thinkphp/base.php';
 
 // thinkphp版本支持
-// version_compare(Container::get('app')->version(), TP_VERSION, '=') or die('ThinkPHP version = ' . TP_VERSION . '!');
+version_compare(Container::get('app')->version(), '5.1.18', '=') or die('ThinkPHP version = 5.1.18!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 

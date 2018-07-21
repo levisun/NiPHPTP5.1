@@ -15,12 +15,12 @@ namespace app\common\logic;
 class Async
 {
     protected $appkey;              //
-    protected $token;               //
+    protected $token;               // 令牌
     protected $sign;                // 签名
     protected $timestamp;           // 请求时间
     protected $format = 'json';     // 返回数据类型[json|pjson|xml]
 
-    protected $method;              //
+    protected $method;              // 方法
     protected $params =[];          // 请求参数
 
     protected $object;              // 实例化的方法
@@ -33,11 +33,6 @@ class Async
 
     public function __construct()
     {
-        // 验证请求方式
-        if (!request()->isGet() && !request()->isPost()) {
-            $this->outputError('request mode error');
-        }
-
         // 公共参数赋值
         $this->appkey    = input('param.appkey');
         $this->token     = input('param.token');
@@ -75,13 +70,18 @@ class Async
      */
     protected function init()
     {
+        // 验证请求方式
+        if (!request()->isGet() && !request()->isPost()) {
+            $this->outputError('request mode error');
+        }
+
         // 验证参数
         if (!$this->method) {
             return $this->outputError('[METHOD] parameter error');
         }
 
-        // 验证请求来源
-        $request = $this->checkRequest();
+        // 验证需求令牌
+        $request = $this->checkRequireToken();
         if ($request !== true) {
             return $this->outputError($request);
         }
@@ -209,12 +209,12 @@ class Async
     }
 
     /**
-     * 生成请求来源
+     * 生成需求令牌
      * @access public
      * @param
      * @return void
      */
-    public function createRequest()
+    public function createRequireToken()
     {
         $http_referer = md5(
             env('root_path') .
@@ -225,12 +225,12 @@ class Async
     }
 
     /**
-     * 验证请求来源是否合法
-     * @access protected
+     * 验证需求令牌是否合法
+     * @access private
      * @param
      * @return mixed
      */
-    protected function checkRequest()
+    private function checkRequireToken()
     {
         if (session('?_cr')) {
             $http_referer = md5(

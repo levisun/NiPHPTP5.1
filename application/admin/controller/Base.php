@@ -24,7 +24,7 @@ class Base extends Controller
     protected function initialize()
     {
         // 异步请求
-        logic('common/Async')->createRequest();
+        logic('common/Async')->createRequireToken();
 
         // 请求参数
         $this->requestParam = [

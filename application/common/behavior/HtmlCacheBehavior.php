@@ -34,7 +34,7 @@ class HtmlCacheBehavior
 
             if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
                 // 异步请求
-                logic('common/async')->createRequest();
+                logic('common/async')->createRequireToken();
 
                 $html = file_get_contents($path);
                 $html = preg_replace('/<\?php(.*?)\?>/si', '', $html);
