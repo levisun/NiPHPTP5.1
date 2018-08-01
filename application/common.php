@@ -13,6 +13,8 @@
 
 use think\facade\Lang;
 
+defined('APP_DEBUG') or define('APP_DEBUG', false);
+
 function rl()
 {
     $res = get_browser(null, true);
@@ -254,7 +256,7 @@ function use_time_memory()
 remove_rundata();
 function remove_rundata()
 {
-    if (APP_DEBUG === false && rand(0, 29) !== 0) {
+    if (APP_DEBUG === false && rand(0, 100) !== 0) {
         return false;
     }
 
@@ -292,15 +294,32 @@ function remove_rundata()
         }
     }
 
+    // 过滤未过期文件与目录
+    $days = APP_DEBUG ? strtotime('-8 hour') : strtotime('-7 days');
+    foreach ($all_files as $key => $path) {
+        if (is_file($path)) {
+            if (filectime($path) >= $days) {
+                unset($all_files[$key]);
+            }
+        } elseif (is_dir($path)) {
+            if (filectime($path) >= $days) {
+                unset($all_files[$key]);
+            }
+        }
+    }
+
+    // 为空
+    if (empty($all_files)) {
+        return false;
+    }
+
+    // 随机抽取100条信息
     shuffle($all_files);
     $all_files = array_slice($all_files, 0, 100);
 
-    $days = APP_DEBUG ? strtotime('-8 hour') : strtotime('-90 days');
     foreach ($all_files as $path) {
         if (is_file($path)) {
-            if (filectime($path) <= $days) {
-                @unlink($path);
-            }
+            @unlink($path);
         } elseif (is_dir($path)) {
             @rmdir($path);
         }

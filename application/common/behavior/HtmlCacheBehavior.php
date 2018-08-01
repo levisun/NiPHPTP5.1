@@ -43,8 +43,10 @@ class HtmlCacheBehavior
                 $html = preg_replace('/(<input type="hidden" name="__token__" value=").*?(" \/>)/si', token(), $html);
 
                 echo $html;
-                echo '<script type="text/javascript">console.log("本页面由 NIPHP 负责开发，你可以通过 http://niphp.com 了解我们。\r\n' . implode(use_time_memory(), '\r\n') . '")</script>';
+
                 exit();
+            } elseif (is_file($path)) {
+                unlink($path);
             }
         }
     }
@@ -76,7 +78,7 @@ class HtmlCacheBehavior
             }
 
             $_content = "<?php\r/*\r" . date('Y-m-d H:i:s') . "\rrequest " . $request_type . "\r" . request()->url(true) . "\r*/\rexit();\r?>\r" . $_content;
-            $_content .= '<script type="text/javascript">console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '")</script>';
+            $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' 失眠小枕头 http://niphp.com");console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
 
             $storage->write($path, $_content);
         }

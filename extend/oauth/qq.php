@@ -8,18 +8,18 @@
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2016/12
  */
 namespace oauth;
 
-use oauth\OAuth;
-use oauth\Http as OAuthHttp;
+use oauth\Base;
+use oauth\OAuthHttp;
 
-class qq extends OAuth
+class QQ extends Base
 {
-    protected $AuthorizeURL = 'https://graph.qq.com/oauth2.0/authorize';
+    protected $AuthorizeURL   = 'https://graph.qq.com/oauth2.0/authorize';
     protected $AccessTokenURL = 'https://graph.qq.com/oauth2.0/token';
-    protected $ApiBase = 'https://graph.qq.com/';
+    protected $ApiBase        = 'https://graph.qq.com/';
 
     public function getAuthorizeURL()
     {

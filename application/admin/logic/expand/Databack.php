@@ -16,7 +16,7 @@ use think\Model;
 
 class Databack extends Model
 {
-    protected $connection = 'db_config1';
+    // protected $connection = 'db_config1';
 
     /**
      * 查询
@@ -111,7 +111,7 @@ class Databack extends Model
             '__token__'   => input('post.__token__'),
         ];
 
-        if ($receive_data['backup_type'] === 1) {
+        if ($receive_data['backup_type'] == 1) {
             $receive_data['table_name'] = $this->getTablesName();
         }
 
@@ -250,7 +250,6 @@ class Databack extends Model
     public function getTablesName()
     {
         $result = parent::query('SHOW TABLES FROM ' . config('database.database'));
-        $result = parent::query('SHOW TABLES FROM shangcheng');
 
         $tables = array();
         foreach ($result as $key => $value) {

@@ -7,7 +7,7 @@
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2018/7
  *
  * CB|Alpha 内测版
  * RC|Beta  正式候选版
@@ -32,7 +32,7 @@ libxml_disable_entity_loader(true);
 require __DIR__ . '/../thinkphp/base.php';
 
 // thinkphp版本支持
-version_compare(Container::get('app')->version(), '5.1.18', '=') or die('ThinkPHP version = 5.1.18!');
+version_compare(Container::get('app')->version(), '5.1.20', '=') or die('ThinkPHP version = 5.1.20!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 

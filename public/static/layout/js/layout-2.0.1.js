@@ -254,7 +254,7 @@
 
         jQuery(window).scroll(function(){
             var is = jQuery("body").attr("Layout-loading-bool");
-            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) / 1.05) {
+            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) - 10) {
 
                 var page_num = jQuery("body").attr("Layout-loading-page");
                     page_num++;
@@ -318,6 +318,16 @@
     }
 
     /**
+     * 滚动到指定位置
+     */
+    jQuery.scrollElement = function (_element, _time = 0.5) {
+        jQuery("html,body").animate({
+            scrollTop: jQuery(_element).offset().top
+        }, _time * 1000);
+        return false;
+    }
+
+    /**
      * 回到顶部
      */
     jQuery.scrollTop = function (_element) {
@@ -332,7 +342,9 @@
 
         // 点击回到顶部
         jQuery(_element).click(function(){
-            jQuery("body,html").animate({scrollTop: 0}, 300);
+            jQuery("html,body").animate({
+                scrollTop: 0
+            }, 300);
         });
     }
 

@@ -14,66 +14,31 @@ $config = [
 ];
 */
 
-use \oauth\qq;
-use \oauth\weibo;
-use \oauth\weixin;
-use \oauth\wxqrcode;
+use \oauth\QQ;
+use \oauth\Weibo;
+use \oauth\Weixin;
+use \oauth\Wxqrcode;
 
-class OAuth
+function oauth($_config, $_type, $_mobile = false)
 {
-    private $config = [];
+    $display = $_mobile ? 'mobile' : 'default';
 
-    public function __construct($_config)
-    {
-        $this->config = [
-            'app_key'    => $_config['app_key'],
-            'app_secret' => $_config['app_secret'],
-            'scope'      => !empty($_config['scope']) ? $_config['scope'] : 'get_user_info',
-            'callback'   => $_config['callback'],
-        ];
-    }
+    $class = $_type;
 
-    /**
-     * 请求回调
-     * @access private
-     * @param
-     * @return array
-     */
-    private function callback($_type, $_is_mobile = false)
-    {
-        if ($_is_mobile) {
-            $display = 'mobile';
-        } else {
-            $display = 'default';
-        }
+    $oauth = new $class($t_config, $display);
+    return $oauth->getAuthorizeURL();
+}
 
-        $class = $_type;
+function oauth_callback($_config, $_type, $_mobile = false)
+{
+    $display = $_mobile ? 'mobile' : 'default';
 
-        $oauth = new $class($this->config, $display);
-        $oauth->getAccessToken();
-        $user_info = $oauth->userinfo();
-        if (!$user_info) {
-            halt($oauth->error);
-        }
-    }
+    $class = $_type;
 
-    /**
-     * 请求Authorize访问地址
-     * @access private
-     * @param
-     * @return array
-     */
-    private function authorizeURL($_type, $_is_mobile = false)
-    {
-        if ($_is_mobile) {
-            $display = 'mobile';
-        } else {
-            $display = 'default';
-        }
-
-        $class = $_type;
-
-        $oauth = new $class($this->config, $display);
-        return $oauth->getAuthorizeURL();
+    $oauth = new $class($_config, $display);
+    $oauth->getAccessToken();
+    $user_info = $oauth->userinfo();
+    if (!$user_info) {
+        halt($oauth->error);
     }
 }

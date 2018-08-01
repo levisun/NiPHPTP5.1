@@ -86,6 +86,7 @@ $(document).on("click", "#paging a", function(){
         animation: true,
         data: {
             method: "wechat.keyword.query",
+            type: "{$type}",
             p: page
         }
     }, function(result){

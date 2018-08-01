@@ -8,18 +8,18 @@
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2016/12
  */
 namespace oauth;
 
-use oauth\OAuth;
-use oauth\Http as OAuthHttp;
+use oauth\Base;
+use oauth\OAuthHttp;
 
-class weixin extends OAuth
+class Weixin extends Base
 {
-    protected $AuthorizeURL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
+    protected $AuthorizeURL   = 'https://open.weixin.qq.com/connect/oauth2/authorize';
     protected $AccessTokenURL = 'https://api.weixin.qq.com/sns/oauth2/access_token';
-    protected $ApiBase = 'https://api.weixin.qq.com/sns/';
+    protected $ApiBase        = 'https://api.weixin.qq.com/sns/';
 
     public function getAuthorizeURL()
     {

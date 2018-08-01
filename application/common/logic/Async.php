@@ -21,7 +21,7 @@ class Async
     protected $format = 'json';     // 返回数据类型[json|pjson|xml]
 
     protected $method;              // 方法
-    protected $params =[];          // 请求参数
+    protected $params = [];          // 请求参数
 
     protected $object;              // 实例化的方法
     protected $module;              // 模块
@@ -217,10 +217,11 @@ class Async
     public function createRequireToken()
     {
         $http_referer = md5(
-            env('root_path') .
-            request()->url(true) .
+            env('app_path') .
+            // request()->url(true) .
             date('Ymd')
         );
+
         session('_cr', $http_referer);
     }
 
@@ -234,15 +235,16 @@ class Async
     {
         if (session('?_cr')) {
             $http_referer = md5(
-                env('root_path') .
-                request()->server('http_referer') .
+                env('app_path') .
+                // request()->server('http_referer') .
                 date('Ymd')
             );
+
             if (session('_cr') !== $http_referer) {
-                return 'request error';
+                return 'request token error';
             }
         } else {
-            return 'request error';
+            return 'request token un';
         }
 
         return true;
@@ -263,9 +265,7 @@ class Async
             'msg'  => $_msg,
             'data' => $_data,
         ];
-        if ($this->apiDebug) {
-            $data['debug'] = use_time_memory();
-        }
+
         return $this->outputResult($data);
     }
 
@@ -282,12 +282,6 @@ class Async
             'code' => $_code,
             'msg'  => $_msg,
         ];
-        if ($this->apiDebug) {
-            $data['debug'] = [
-                'data' => $this->params,
-                'run'  => use_time_memory(),
-            ];
-        }
 
         return $this->outputResult($data);
     }
@@ -300,6 +294,11 @@ class Async
      */
     protected function outputResult($_params)
     {
+        if ($this->apiDebug) {
+            $_params['DEBUG'] = use_time_memory();
+            $_params['RP']    = $this->params;
+        }
+
         switch ($this->format) {
             case 'xml':
                 return xml($_params);
