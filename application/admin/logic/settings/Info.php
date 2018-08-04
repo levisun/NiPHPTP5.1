@@ -23,51 +23,55 @@ class Info
      */
     public function sysinfo()
     {
-        $gd_info = gd_info();
-        $gd  = strtr($gd_info['GD Version'], ['bundled (' => '', ' compatible)' => '']) . '(';
-        $gd .= $gd_info['GIF Read Support'] ? ' GIF' : '';
-        $gd .= $gd_info['JPEG Support'] ? ' JPEG' : '';
-        $gd .= $gd_info['PNG Support'] ? ' PNG' : '';
-        $gd .= ')';
+        if (!$result = cache('_SYSINFO')) {
+            $gd_info = gd_info();
+            $gd  = strtr($gd_info['GD Version'], ['bundled (' => '', ' compatible)' => '']) . '(';
+            $gd .= $gd_info['GIF Read Support'] ? ' GIF' : '';
+            $gd .= $gd_info['JPEG Support'] ? ' JPEG' : '';
+            $gd .= $gd_info['PNG Support'] ? ' PNG' : '';
+            $gd .= ')';
 
-        $result = [
-            // 系统与框架版本
-            [
-                'name'  => lang('sys version'),
-                'value' => 'NP' . NP_VERSION . ' TP' . App()->version(),
-            ],
-            // 操作系统
-            [
-                'name'  => lang('sys os'),
-                'value' => PHP_OS,
-            ],
-            // 运行环境
-            [
-                'name'  => lang('sys env'),
-                'value' => request()->server('SERVER_SOFTWARE'),
-            ],
-            // 数据库类型与版本
-            [
-                'name'  => lang('sys db'),
-                'value' => config('database.type') . $this->dbVersion(),
-            ],
-            [
-                'name'  => 'GD',
-                'value' => $gd,
-            ],
-            [
-                'name'  => lang('sys timezone'),
-                'value' => config('default_timezone'),
-            ],
-            [
-                'name'  => lang('sys copy'),
-                'value' => '失眠小枕头 [levisun.mail@gmail.com]',
-            ],
-            [
-                'name'  => lang('sys upgrade'),
-                'value' => '',
-            ]
-        ];
+            $result = [
+                // 系统与框架版本
+                [
+                    'name'  => lang('sys version'),
+                    'value' => 'NP' . NP_VERSION . ' TP' . App()->version(),
+                ],
+                // 操作系统
+                [
+                    'name'  => lang('sys os'),
+                    'value' => PHP_OS,
+                ],
+                // 运行环境
+                [
+                    'name'  => lang('sys env'),
+                    'value' => request()->server('SERVER_SOFTWARE'),
+                ],
+                // 数据库类型与版本
+                [
+                    'name'  => lang('sys db'),
+                    'value' => config('database.type') . $this->dbVersion(),
+                ],
+                [
+                    'name'  => 'GD',
+                    'value' => $gd,
+                ],
+                [
+                    'name'  => lang('sys timezone'),
+                    'value' => config('default_timezone'),
+                ],
+                [
+                    'name'  => lang('sys copy'),
+                    'value' => '失眠小枕头 [levisun.mail@gmail.com]',
+                ],
+                [
+                    'name'  => lang('sys upgrade'),
+                    'value' => '',
+                ]
+            ];
+
+            cache('_SYSINFO', $result);
+        }
 
         return $result;
     }
@@ -80,52 +84,56 @@ class Info
      */
     public function make()
     {
-        $member = $this->member();
+        if (!$result = cache('_MAKE')) {
+            $member = $this->member();
 
-        $result = [
-            // 会员统计
-            'member' => [
-                'name'  => lang('member'),
-                'value' => [
-                    [
-                        'name'  => lang('member count'),
-                        'value' => $member['count'],
-                    ],
-                    [
-                        'name'  => lang('member reg'),
-                        'value' => $member['reg'],
+            $result = [
+                // 会员统计
+                'member' => [
+                    'name'  => lang('member'),
+                    'value' => [
+                        [
+                            'name'  => lang('member count'),
+                            'value' => $member['count'],
+                        ],
+                        [
+                            'name'  => lang('member reg'),
+                            'value' => $member['reg'],
+                        ]
+                    ]
+                ],
+                // 反馈与留言统计
+                'feed_msg' => [
+                    'name'  => lang('feedback and message'),
+                    'value' => [
+                        [
+                            'name'  => lang('feedback'),
+                            'value' => $this->feedback(),
+                        ],
+                        [
+                            'name'  => lang('message'),
+                            'value' => $this->message(),
+                        ]
+                    ]
+                ],
+                // 广告与友情链接统计
+                'ads_link' => [
+                    'name'  => lang('tg'),
+                    'value' => [
+                        [
+                            'name'  => lang('ads'),
+                            'value' => $this->ads(),
+                        ],
+                        [
+                            'name'  => lang('link'),
+                            'value' => $this->link(),
+                        ]
                     ]
                 ]
-            ],
-            // 反馈与留言统计
-            'feed_msg' => [
-                'name'  => lang('feedback and message'),
-                'value' => [
-                    [
-                        'name'  => lang('feedback'),
-                        'value' => $this->feedback(),
-                    ],
-                    [
-                        'name'  => lang('message'),
-                        'value' => $this->message(),
-                    ]
-                ]
-            ],
-            // 广告与友情链接统计
-            'ads_link' => [
-                'name'  => lang('tg'),
-                'value' => [
-                    [
-                        'name'  => lang('ads'),
-                        'value' => $this->ads(),
-                    ],
-                    [
-                        'name'  => lang('link'),
-                        'value' => $this->link(),
-                    ]
-                ]
-            ]
-        ];
+            ];
+
+            cache('_MAKE', $result, 60);
+        }
 
         return $result;
     }

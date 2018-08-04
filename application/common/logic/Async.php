@@ -42,24 +42,22 @@ class Async
         $this->format    = input('param.format');
 
         // 获取外部参数
-        $this->params = input('param.', 'trim');
+        $this->params    = input('param.', 'trim');
 
         // 调试
-        $this->apiDebug = APP_DEBUG;
+        $this->apiDebug  = APP_DEBUG;
     }
 
     /**
      * 执行
+     * 此执行操作为业务层方法
      * @access protected
      * @param
      * @return mixed
      */
     protected function exec()
     {
-        $object = $this->object;
-        $action = $this->action;
-
-        return $object->$action();
+        return call_user_func_array([$this->object, $this->action], []);
     }
 
     /**
@@ -71,16 +69,17 @@ class Async
     protected function init()
     {
         // 验证请求方式
-        if (!request()->isGet() && !request()->isPost()) {
-            $this->outputError('request mode error');
+        // 异步只允许 Ajax Pjax Post 请求类型
+        if (!request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
+            return $this->outputError('request mode error');
         }
 
-        // 验证参数
+        // 验证参数 缺少请求执行方法参数
         if (!$this->method) {
             return $this->outputError('[METHOD] parameter error');
         }
 
-        // 验证需求令牌
+        // 验证需求令牌 此令牌程序生成[createRequireToken()]
         $request = $this->checkRequireToken();
         if ($request !== true) {
             return $this->outputError($request);
@@ -98,13 +97,13 @@ class Async
             return $this->outputError($sign);
         }
 
-        // 查找模型方法
+        // 自动查找业务层方法
         $method = $this->autoFindMethod();
         if ($method !== true) {
             return $this->outputError($method);
         }
 
-        // 验证Auth
+        // 验证Auth权限
         $auth = $this->checkAuth();
         if ($auth !== true) {
             return $this->outputError($auth);
@@ -114,7 +113,7 @@ class Async
     }
 
     /**
-     * 根据method命名规范查找模型方法
+     * 根据METHOD命名规范查找业务层方法
      * @access private
      * @param
      * @return mixed
@@ -123,6 +122,9 @@ class Async
     {
         $this->module = strtolower(request()->module());
 
+        // 参数[业务分层名.类名.方法名]
+        // 参数[logic.类名.方法名] 业务分层名默认logic
+        // 参数[logic.类名.index] 业务分层名默认logic 方法名默认index
         $count = count(explode('.', $this->method));
         if ($count == 3) {
             list($this->layer, $this->class, $this->action) = explode('.', $this->method, 3);
@@ -132,24 +134,20 @@ class Async
             list($this->class) = explode('.', $this->method, 1);
         }
 
-        // 检查文件是否存在
-        $file_path  = env('app_path');
-        $file_path .= $this->module . DIRECTORY_SEPARATOR;
+        // 检查业务分层文件是否存在
+        $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR;
         $file_path .= 'logic' . DIRECTORY_SEPARATOR;
-
         if ($this->layer !== 'logic') {
             $file_path .= $this->layer . DIRECTORY_SEPARATOR;
         }
-
         $file_path .= $this->class . '.php';
         if (!is_file($file_path)) {
             return $this->class . ' model doesn\'t exist';
         }
 
         // 检查方法是否存在
-        $this->object  = logic($this->module . '/' . $this->layer . '/' . $this->class);
-
-        if (method_exists($this->object, $this->action)) {
+        $this->object = logic($this->module . '/' . $this->layer . '/' . $this->class);
+        if (is_object($this->object) && method_exists($this->object, $this->action)) {
             return true;
         } else {
             return $class . '->' . $action . ' method doesn\'t exist';
@@ -216,13 +214,12 @@ class Async
      */
     public function createRequireToken()
     {
-        $http_referer = md5(
-            env('app_path') .
+        if (!session('?_ASYNCTOKEN')) {
+            $http_referer = env('app_path') . date('Ymd');
             // request()->url(true) .
-            date('Ymd')
-        );
 
-        session('_cr', $http_referer);
+            session('_ASYNCTOKEN', md5($http_referer));
+        }
     }
 
     /**
@@ -233,14 +230,10 @@ class Async
      */
     private function checkRequireToken()
     {
-        if (session('?_cr')) {
-            $http_referer = md5(
-                env('app_path') .
-                // request()->server('http_referer') .
-                date('Ymd')
-            );
+        if (session('?_ASYNCTOKEN')) {
+            $http_referer = env('app_path') . date('Ymd');
 
-            if (session('_cr') !== $http_referer) {
+            if (session('_ASYNCTOKEN') !== md5($http_referer)) {
                 return 'request token error';
             }
         } else {
@@ -295,8 +288,8 @@ class Async
     protected function outputResult($_params)
     {
         if ($this->apiDebug) {
-            $_params['DEBUG'] = use_time_memory();
-            $_params['RP']    = $this->params;
+            $_params['RD'] = use_time_memory();
+            $_params['RP'] = $this->params;
         }
 
         switch ($this->format) {

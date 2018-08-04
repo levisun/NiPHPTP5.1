@@ -23,19 +23,15 @@ class Base extends Controller
 
     protected function initialize()
     {
-        // 异步请求
+        // 生成异步请求令牌
         logic('common/Async')->createRequireToken();
 
         // 请求参数
         $this->requestParam = [
-            // 请求模块
-            'module'     => strtolower($this->request->module()),
-            // 请求控制器
-            'controller' => strtolower($this->request->controller()),
-            // 请求方法
-            'action'     => strtolower($this->request->action()),
-            // 语言
-            'lang'       => lang(':detect'),
+            'module'     => strtolower($this->request->module()),               // 请求模块
+            'controller' => strtolower($this->request->controller()),           // 请求控制器
+            'action'     => strtolower($this->request->action()),               // 请求方法
+            'lang'       => lang(':detect'),                                    // 语言
         ];
 
         // 域名

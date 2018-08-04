@@ -412,7 +412,7 @@
     <div class="copyright">
         <a title="官方网站" href="http://www.niphp.com">NiPHP</a>
         <span>V<?php echo NP_VERSION; ?></span>
-        <span>{ 十年磨一剑- }</span>
+        <span>Copyright © 2013-<?php echo date('Y')?> 失眠小枕头</span>
     </div>
     <?php if(\think\facade\App::isDebug()) { ?>
     <script>

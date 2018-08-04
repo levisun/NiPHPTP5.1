@@ -1,17 +1,27 @@
 <?php
 return [
+    'ads'                  => '广告',
+
+    'feedback'             => '反馈',
+    'feedback and message' => '反馈与留言',
+
+    'ischannel' => '频道页',
+    'isshow'    => '显示',
+
+    'link'                 => '友情链接',
+
     'member'               => '会员',
     'member count'         => '会员人数',
     'member reg'           => '注册人数',
-    'feedback and message' => '反馈与留言',
-    'feedback'             => '反馈',
     'message'              => '留言',
-    'tg'                   => '推广',
-    'ads'                  => '广告',
-    'link'                 => '友情链接',
+    'model' => '模型',
+
     'sys info'             => '系统信息',
     'sys version'          => '版本',
     'sys os'               => 'sys os',
+
+    'tg'                   => '推广',
+
 
     // 异步请求
 

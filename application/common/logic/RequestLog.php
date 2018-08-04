@@ -12,8 +12,6 @@
  */
 namespace app\common\logic;
 
-use app\common\model\RequestLog as ModelRequestLog;
-
 class RequestLog
 {
 
@@ -26,9 +24,6 @@ class RequestLog
      */
     public function lockIp($_login_ip, $_module)
     {
-        // 实例化请求日志表模型
-        $model_request_log = new ModelRequestLog;
-
         // 日志是否存在
         $map = [
             ['ip', '=', $_login_ip],
@@ -36,7 +31,8 @@ class RequestLog
         ];
 
         $count =
-        $model_request_log->where($map)
+        model('common/RequestLog')
+        ->where($map)
         ->value('count');
 
         if (!$count) {
@@ -46,10 +42,12 @@ class RequestLog
                 'module' => $_module,
                 'count'  => 1,
             ];
-            $model_request_log->create($data);
+            model('common/RequestLog')
+            ->create($data);
         } elseif ($count && $count < 3) {
             $data = ['count' => ['exp', 'count+1']];
-            $model_request_log->where($map)
+            model('common/RequestLog')
+            ->where($map)
             ->update($data);
         }
     }
@@ -71,11 +69,9 @@ class RequestLog
             ['update_time', '>=', strtotime('-3 hours')],
         ];
 
-        // 实例化请求日志表模型
-        $model_request_log = new ModelRequestLog;
-
         $result =
-        $model_request_log->where($map)
+        model('common/RequestLog')
+        ->where($map)
         ->value('count');
 
         return $result ? true : false;
@@ -90,21 +86,20 @@ class RequestLog
      */
     public function removeLockIp($_login_ip, $_module)
     {
-        // 实例化请求日志表模型
-        $model_request_log = new ModelRequestLog;
-
         $map = [
             ['ip', '=', $_login_ip],
             ['module', '=', $_module],
         ];
-        $model_request_log->where($map)
+        model('common/RequestLog')
+        ->where($map)
         ->delete();
 
         // 删除过期的日志(保留一个月)
         $map = [
             ['create_time', '<=', strtotime('-30 days')],
         ];
-        $model_request_log->where($map)
+        model('common/RequestLog')
+        ->where($map)
         ->delete();
     }
 }
