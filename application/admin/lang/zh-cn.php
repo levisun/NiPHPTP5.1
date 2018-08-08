@@ -1,12 +1,17 @@
 <?php
 return [
+    'admin login' => '管理员登录',
     'ads'                  => '广告',
+
+    'category name'        => '栏目名',
+
+    'exec success' => '执行成功',
 
     'feedback'             => '反馈',
     'feedback and message' => '反馈与留言',
 
-    'ischannel' => '频道页',
-    'isshow'    => '显示',
+    'ischannel'            => '频道页',
+    'isshow'               => '显示',
 
     'link'                 => '友情链接',
 
@@ -14,13 +19,31 @@ return [
     'member count'         => '会员人数',
     'member reg'           => '注册人数',
     'message'              => '留言',
-    'model' => '模型',
+    'model'                => '模型',
 
     'sys info'             => '系统信息',
     'sys version'          => '版本',
-    'sys os'               => 'sys os',
+    'sys os'               => '服务器操作系统',
+    'sys env'              => 'PHP/解译引擎',
+    'sys db'               => '数据库',
+    'GD'                   => 'GD库版本',
+    'sys timezone'         => '系统时区',
+    'sys copy'             => '版权',
+    'sys upgrade'          => '在线升级',
+    'support html'         => '支持HTML',
 
     'tg'                   => '推广',
+    'type main'            => '主导航',
+    'type top'             => '顶导航',
+
+    'visit'                => '浏览统计',
+
+    'website name' => '网站名称',
+    'website keywords' => '网站关键词',
+    'website description' => '网站描述',
+    'bottom message' => '底部信息',
+    'copyright' => '版权信息',
+    'script' => 'java script脚本',
 
 
     // 异步请求

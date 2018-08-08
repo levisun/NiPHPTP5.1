@@ -18,4 +18,9 @@ class Index extends Base
     {
         return $this->fetch('index.html');
     }
+
+    public function entry()
+    {
+        return $this->fetch('list.html');
+    }
 }

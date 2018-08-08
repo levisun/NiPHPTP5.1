@@ -291,7 +291,7 @@
             ajax_url         = jQuery.isSet(_params.url, "?ajax_url=undefined"),
             ajax_data        = jQuery.isSet(_params.data, {}),
             ajax_async       = jQuery.isSet(_params.async, true),
-            ajax_cache       = jQuery.isSet(_params.cache, false),
+            ajax_cache       = jQuery.isSet(_params.cache, true),
             ajax_dataType    = jQuery.isSet(_params.dataType, ""),
             ajax_processData = jQuery.isSet(_params.processData, true);
 

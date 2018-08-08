@@ -28,8 +28,10 @@ return [
     ],
 
     '__domain__' => [
-        'admin' => 'admin',
-        'my'    => 'member',
+        'admin'  => 'admin',
+        'my'     => 'user',
+        'mall'   => 'mall',
+        'wechat' => 'wechat',
     ],
 
     // 'admin/settings/basic' => [
@@ -37,5 +39,7 @@ return [
     //     ['cache' => 30],
     // ],
 
-    '/' => 'index',
+    // '/' => 'index',
+
+    'list/:cid'           => 'index/entry',
 ];

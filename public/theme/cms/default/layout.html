@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    {css href="__STATIC__layout/css/layout-2.0.1.css,__STATIC__library/layui/css/layui.css" /}
+    {js href="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js,__STATIC__layout/js/layout-2.0.1.js"}
     <script type="text/javascript">
     var request = {
         domain:     "__DOMAIN__",
@@ -26,6 +27,33 @@
 </head>
 
 <body class="overflow-hidden">
+
+<nav id="nav"></nav>
+<menu id="bread"></menu>
+<menu id="menu"></menu>
+{label:nav type="2"}
+for(var index in data) {
+    var res = data[index];
+    $("#nav").append("<a href='"+res.url+"'>"+res.name+"</a>");
+}
+{/label:nav}
+
+{label:bread}
+for(var index in data) {
+    var res = data[index];
+    $("#bread").append("<a href='"+res.url+"'>"+res.name+"</a>");
+}
+{/label:bread}
+
+{label:menu}
+$("#menu").append("<h1>"+data.name+"</h1>");
+for(var index in data.child) {
+    var res = data.child[index];
+    $("#menu").append("<a href='"+res.url+"'>"+res.name+"</a>");
+}
+{/label:menu}
+
+
 {__CONTENT__}
 </body>
 </html>

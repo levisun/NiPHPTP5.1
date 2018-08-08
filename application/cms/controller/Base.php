@@ -25,23 +25,21 @@ class Base extends Controller
     {
         concurrent_error();
 
+        // 生成异步请求令牌
+        logic('common/Async')->createRequireToken();
+
         // 请求参数
         $this->requestParam = [
-            // 请求模块
-            'module'     => strtolower($this->request->module()),
-            // 请求控制器
-            'controller' => strtolower($this->request->controller()),
-            // 请求方法
-            'action'     => strtolower($this->request->action()),
-            // 语言
-            'lang'       => lang(':detect'),
+            'module'     => strtolower($this->request->module()),               // 请求模块
+            'controller' => strtolower($this->request->controller()),           // 请求控制器
+            'action'     => strtolower($this->request->action()),               // 请求方法
+            'lang'       => lang(':detect'),                                    // 语言
         ];
 
         // 域名
         $this->domain = $this->request->domain() . $this->request->root() . '/';
 
         $this->setTemplate();
-        lang(':load');
     }
 
     /**
@@ -62,21 +60,6 @@ class Base extends Controller
         $default_theme  = $this->domain . 'theme/cms/';
         $default_theme .= config('default_theme') . '/';
 
-        if (is_wechat_request()) {
-            if (is_dir($view_path . 'wechat' . DIRECTORY_SEPARATOR)) {
-                $view_path     .= 'wechat' . DIRECTORY_SEPARATOR;
-                $default_theme .= 'wechat/';
-            } elseif (is_dir($view_path . 'mobile' . DIRECTORY_SEPARATOR)) {
-                $view_path     .= 'mobile' . DIRECTORY_SEPARATOR;
-                $default_theme .= 'mobile/';
-            }
-        } elseif (request()->isMobile()) {
-            if (is_dir($view_path . 'mobile' . DIRECTORY_SEPARATOR)) {
-                $view_path     .= 'mobile' . DIRECTORY_SEPARATOR;
-                $default_theme .= 'mobile/';
-            }
-        }
-
         $replace = [
             '__DOMAIN__'   => $this->domain,
             '__PHP_SELF__' => basename($this->request->baseFile()),
@@ -90,10 +73,9 @@ class Base extends Controller
         $template = config('template.');
         $template['view_path'] = $view_path;
         $template['tpl_replace_string'] = $replace;
-        $template['view_depr'] = '_';
+        $template['taglib_pre_load'] = 'app\cms\taglib\Label';
         config('template.view_path', $view_path);
         config('template.tpl_replace_string', $replace);
-        config('template.view_depr', '_');
 
         $this->engine($template);
         $this->filter('view_filter');

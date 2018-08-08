@@ -29,7 +29,7 @@ class Async
     protected $class  = 'index';    // 业务逻辑类名
     protected $action = 'index';    // 业务类方法
 
-    protected $apiDebug = false;    // 调试信息
+    protected $apiDebug = true;    // 调试信息
 
     public function __construct()
     {
@@ -150,7 +150,7 @@ class Async
         if (is_object($this->object) && method_exists($this->object, $this->action)) {
             return true;
         } else {
-            return $class . '->' . $action . ' method doesn\'t exist';
+            return '$' . $this->class . '->' . $this->action . '() method doesn\'t exist';
         }
     }
 
@@ -177,7 +177,7 @@ class Async
      */
     protected function checkAuth()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -214,8 +214,8 @@ class Async
      */
     public function createRequireToken()
     {
-        if (!session('?_ASYNCTOKEN')) {
-            $http_referer = env('app_path') . date('Ymd');
+        if (!session('?_ASYNCTOKEN') && APP_DEBUG) {
+            $http_referer = app()->version() . env('app_path') . date('Ymd');
             // request()->url(true) .
 
             session('_ASYNCTOKEN', md5($http_referer));
@@ -231,7 +231,7 @@ class Async
     private function checkRequireToken()
     {
         if (session('?_ASYNCTOKEN')) {
-            $http_referer = env('app_path') . date('Ymd');
+            $http_referer = app()->version() . env('app_path') . date('Ymd');
 
             if (session('_ASYNCTOKEN') !== md5($http_referer)) {
                 return 'request token error';
@@ -292,6 +292,12 @@ class Async
             $_params['RP'] = $this->params;
         }
 
+        $header = [
+            'cache-control' => 'max-age=3600,must-revalidate',
+            'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
+            'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+        ];
+
         switch ($this->format) {
             case 'xml':
                 return xml($_params);
@@ -302,7 +308,7 @@ class Async
                 break;
 
             default:
-                return json($_params);
+                return json($_params, 200, $header);
                 break;
         }
     }
