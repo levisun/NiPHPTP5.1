@@ -14,13 +14,62 @@ namespace app\cms\controller;
 
 class Index extends Base
 {
+    /**
+     * 首页
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function index()
     {
         return $this->fetch('index.html');
     }
 
-    public function entry()
+    /**
+     * 列表页
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function entry($operate = '')
     {
-        return $this->fetch('list.html');
+        $tpl = $operate ? $operate : '';
+        return $this->fetch($operate . '.html');
+    }
+
+    /**
+     * 频道页
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function channel()
+    {
+        halt('channel');
+        return $this->fetch('channel.html');
+    }
+
+    /**
+     * 反馈
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function feedback()
+    {
+        halt('feedback');
+        return $this->fetch('feedback.html');
+    }
+
+    /**
+     * 留言
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function message()
+    {
+        halt('message');
+        return $this->fetch('message.html');
     }
 }

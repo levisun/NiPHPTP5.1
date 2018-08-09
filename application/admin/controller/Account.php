@@ -17,6 +17,12 @@ use app\admin\controller\Base;
 class Account extends Base
 {
 
+    /**
+     * 登录
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function login()
     {
         return $this->fetch();

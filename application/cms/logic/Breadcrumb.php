@@ -47,13 +47,13 @@ class Breadcrumb
 
         $result =
         model('common/category')
-        ->field('id,name,pid')
+        ->field('id,name,pid,is_channel,model_id')
         ->where($map)
         ->cache(!APP_DEBUG)
         ->find();
 
         $result = $result->toArray();
-        $result['url'] = url('/list/' . $result['id']);
+        $result['url'] = logic('cms/nav')->getUrl($result['model_id'], $result['is_channel'], $result['id']);
 
         $parent = [];
         if (!empty($result['pid'])) {

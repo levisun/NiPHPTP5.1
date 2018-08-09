@@ -34,7 +34,7 @@ class Nav
 
         $result =
         model('common/category')
-        ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url')
+        ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
         ->where($map)
         ->order('sort ASC, id DESC')
         ->cache(!APP_DEBUG)
@@ -61,13 +61,14 @@ class Nav
 
         foreach ($_data as $key => $value) {
             $nav[$key] = $value;
-            $nav[$key]['url'] = url('/list/' . $value['id']);
 
-            $map[] = ['pid', '=', $value['id']];
+            $nav[$key]['url'] = $this->getUrl($value['model_id'], $value['is_channel'], $value['id']);
+
+            $map[1] = ['pid', '=', $value['id']];
 
             $result =
             model('common/category')
-            ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url')
+            ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
             ->where($map)
             ->order('sort ASC, id DESC')
             ->cache(!APP_DEBUG)
@@ -83,5 +84,61 @@ class Nav
         }
 
         return $nav;
+    }
+
+    /**
+     * 获得导航指向地址
+     * Breadcrumb.php Sidebar.php 调用
+     * @access public
+     * @param  int    $_model_id   模型ID
+     * @param  int    $_is_channel 是否频道页
+     * @param  int    $_cat_id     导航ID
+     * @return string
+     */
+    public function getUrl($_model_id, $_is_channel, $_cat_id)
+    {
+        if ($_is_channel) {
+            $url = url('/channel/' . $_cat_id, [], 'html', true);
+        } else {
+            switch ($_model_id) {
+                case 1:
+                    $url = url('/article/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 2:
+                    $url = url('/picture/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 3:
+                    $url = url('/download/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 4:
+                    $url = url('/page/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 5:
+                    $url = url('/feedback/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 6:
+                    $url = url('/message/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 7:
+                    $url = url('/product/' . $_cat_id, [], 'html', true);
+                    break;
+
+                case 8:
+                    $url = url('/link/' . $_cat_id, [], 'html', true);
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        return $url;
     }
 }

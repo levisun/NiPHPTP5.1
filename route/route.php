@@ -10,36 +10,25 @@
 // +----------------------------------------------------------------------
 
 Route::pattern([
-    'cid' => '\d+',
-    'id'  => '\d+',
+    'operate' => '\w+',
+    'cid'     => '\d+',
+    'pid'     => '\d+',
+    'id'      => '\d+',
 ]);
 
-// Route::name('admin')->cache('__URL__', 600);
-// Route::get('admin/settings/basic', 'admin/settings/basic')->cache(3600);
-// Route::rule('admin/settings/basic', 'admin/settings/basic')->cache(3600);
-// Route::rule('admin/settings/info', 'admin/settings/info')->cache(3600);
+Route::domain('admin', [
+])->bind('admin')->ext('do');
+
+Route::domain('www', [
+    'channel/:cid$'  => 'index/channel',
+    'feedback/:cid$' => 'index/feedback',
+    'message/:cid$'  => 'index/message',
+    ':operate/:cid$' => 'index/entry'
+])->bind('cms')->ext('html')->cache(3600);
+
+
+Route::domain('my', [
+])->bind('cms')->ext('shtml');
 
 return [
-    // 全局变量规则定义
-    '__pattern__' => [
-        'method' => '\w+',
-        'cid'    => '\d+',
-        'id'     => '\d+',
-    ],
-
-    '__domain__' => [
-        'admin'  => 'admin',
-        'my'     => 'user',
-        'mall'   => 'mall',
-        'wechat' => 'wechat',
-    ],
-
-    // 'admin/settings/basic' => [
-    //     'admin/settings/basic',
-    //     ['cache' => 30],
-    // ],
-
-    // '/' => 'index',
-
-    'list/:cid'           => 'index/entry',
 ];

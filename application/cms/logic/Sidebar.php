@@ -36,7 +36,7 @@ class Sidebar
 
         $result =
         model('common/category')
-        ->field('id,name,pid,aliases,image,url')
+        ->field('id,name,pid,aliases,image,url,is_channel,model_id')
         ->where($map)
         ->order('sort ASC, id DESC')
         ->cache(!APP_DEBUG)
@@ -65,13 +65,14 @@ class Sidebar
 
         foreach ($_data as $key => $value) {
             $nav[$key] = $value;
-            $nav[$key]['url'] = url('/list/' . $value['id']);
+            // $nav[$key]['url'] = url('/list/' . $value['id']);
+            $nav[$key]['url'] = logic('cms/nav')->getUrl($value['model_id'], $value['is_channel'], $value['id']);
 
-            $map[] = ['pid', '=', $value['id']];
+            $map[1] = ['pid', '=', $value['id']];
 
             $result =
             model('common/category')
-            ->field('id,name,pid,aliases,image,url')
+            ->field('id,name,pid,aliases,image,url,is_channel,model_id')
             ->where($map)
             ->order('sort ASC, id DESC')
             ->cache(!APP_DEBUG)

@@ -29,7 +29,7 @@ return [
     // 默认模块名
     'default_module'       => 'cms',
     // 禁止访问模块
-    'deny_module_list'     => ['common'],
+    'deny_module_list'     => ['common', 'admin'],
     // 默认控制器名
     'default_controller'   => 'Index',
     // 默认操作名
@@ -57,14 +57,4 @@ return [
     'http_exception_template' => [
         400 => __DIR__ . '/public/theme/index.html'
     ],
-
-    // 请求缓存
-    'request_cache'        => false,
-    'request_cache_expire' => 1140,
-    'request_cache_except' => [
-        // '/NiPHPTP5.1/public/admin/settings/basic',
-    ],
-
-    'route_check_cache'     => false,
-    'route_check_cache_key' => '',
 ];
