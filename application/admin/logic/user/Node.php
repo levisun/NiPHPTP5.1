@@ -24,7 +24,8 @@ class Node
     public function query()
     {
         $result =
-        model('common/node')->field(true)
+        model('common/node')
+        ->field(true)
         ->order('sort ASC, id ASC')
         ->select();
 
@@ -65,7 +66,8 @@ class Node
 
         unset($receive_data['__token__']);
 
-        $result = model('common/node')
+        $result =
+        model('common/node')
         ->added($receive_data);
 
         create_action_log($receive_data['name'], 'node_added');
@@ -81,22 +83,21 @@ class Node
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
         $result =
-        model('common/node')->field(true)
-        ->where($map)
+        model('common/node')
+        ->field(true)
+        ->where([
+            ['id', '=', input('post.id/f')],
+        ])
         ->find();
 
         create_action_log($result['name'], 'node_remove');
 
-        $receive_data = [
+        return
+        model('common/node')
+        ->remove([
             'id' => input('post.id/f'),
-        ];
-        return model('common/node')
-        ->remove($receive_data);
+        ]);
     }
 
     /**
@@ -107,12 +108,12 @@ class Node
      */
     public function find()
     {
-        $map = [
+        return
+        model('common/node')
+        ->field(true)
+        ->where([
             ['id', '=', input('post.id/f')]
-        ];
-
-        return model('common/node')->field(true)
-        ->where($map)
+        ])
         ->find();
     }
 
@@ -143,7 +144,8 @@ class Node
 
         create_action_log($receive_data['name'], 'node_editor');
 
-        return model('common/node')
+        return
+        model('common/node')
         ->editor($receive_data);
     }
 
@@ -155,13 +157,12 @@ class Node
      */
     public function sort()
     {
-        $receive_data = [
-            'id' => input('post.sort/a'),
-        ];
-
         create_action_log('', 'node_sort');
 
-        return model('common/node')
-        ->sort($receive_data);
+        return
+        model('common/node')
+        ->sort([
+            'id' => input('post.sort/a'),
+        ]);
     }
 }

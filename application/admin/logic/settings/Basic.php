@@ -23,15 +23,13 @@ class Basic
      */
     public function query()
     {
-        $map = [
-            ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script'],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/config')
         ->field(true)
-        ->where($map)
+        ->where([
+            ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script'],
+            ['lang', '=', lang(':detect')],
+        ])
         ->select();
 
         $data = [];
@@ -73,15 +71,14 @@ class Basic
 
         $map = $data = [];
         foreach ($receive_data as $key => $value) {
-            $map  = [
-                ['name', '=', $key],
-            ];
-            $data = ['value' => $value];
-
             $model_config
             ->allowField(true)
-            ->where($map)
-            ->update($data);
+            ->where([
+                ['name', '=', $key],
+            ])
+            ->update([
+                'value' => $value
+            ]);
         }
 
         $lang = lang('__nav');

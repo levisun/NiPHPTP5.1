@@ -84,14 +84,14 @@ class Category
         if (!input('post.pid/f', 0)) {
             return ;
         }
-        $map = [
-            ['id', '=', input('post.pid/f', 0)],
-            ['lang', '=', lang(':detect')],
-        ];
 
         $result =
-        model('common/category')->field(true)
-        ->where($map)
+        model('common/category')
+        ->field(true)
+        ->where([
+            ['id', '=', input('post.pid/f', 0)],
+            ['lang', '=', lang(':detect')],
+        ])
         ->find();
 
         return $result;
@@ -121,13 +121,12 @@ class Category
      */
     public function models()
     {
-        $map = [
-            ['status', '=', 1],
-        ];
-
         $result =
-        model('common/models')->field(['id', 'name'])
-        ->where($map)
+        model('common/models')
+        ->field(['id', 'name'])
+        ->where([
+            ['status', '=', 1],
+        ])
         ->select();
 
         foreach ($result as $key => $value) {
@@ -145,13 +144,12 @@ class Category
      */
     public function level()
     {
-        $map = [
-            ['status', '=', 1],
-        ];
-
         $result =
-        model('common/level')->field(['id', 'name'])
-        ->where($map)
+        model('common/level')
+        ->field(['id', 'name'])
+        ->where([
+            ['status', '=', 1],
+        ])
         ->select();
 
         return $result;
@@ -189,7 +187,8 @@ class Category
 
         unset($receive_data['__token__']);
 
-        $result = model('common/category')
+        $result =
+        model('common/category')
         ->added($receive_data);
 
         create_action_log($receive_data['name'], 'category_added');
@@ -208,39 +207,38 @@ class Category
         $_id = $_id ? $_id : input('post.id/f');
 
         // 查询子栏目
-        $map  = [
-            ['pid', '=', $_id],
-        ];
-
         $result =
-        model('common/category')->field(true)
-        ->where($map)
+        model('common/category')
+        ->field(true)
+        ->where([
+            ['pid', '=', $_id],
+        ])
         ->find();
 
         create_action_log($result['name'], 'category_remove');
 
         // 子栏目存在 递归删除子栏目
         if ($result) {
-            $params = [
-                'id' => $result['id'],
-            ];
-
-            $this->remove($params);
+            $this->remove($result['id']);
         }
 
         // 查询当前分类信息
-        $map  = [
-            ['id', '=', $_id],
-        ];
         $result =
-        model('common/category')->field(true)
-        ->where($map)
+        model('common/category')
+        ->field(true)
+        ->where([
+            ['id', '=', $_id],
+        ])
         ->find();
+
         // 删除图片
         \File::remove(env('root_path') . basename(request()->root()) . $result['image']);
 
-        return model('common/category')
-        ->remove(['id' => $_id]);
+        return
+        model('common/category')
+        ->remove([
+            'id' => $_id
+        ]);
     }
 
     /**
@@ -251,12 +249,12 @@ class Category
      */
     public function find()
     {
-        $map = [
+        return
+        model('common/category')
+        ->field(true)
+        ->where([
             ['id', '=', input('post.id/f')]
-        ];
-
-        return model('common/category')->field(true)
-        ->where($map)
+        ])
         ->find();
     }
 
@@ -292,7 +290,8 @@ class Category
 
         create_action_log($receive_data['name'], 'category_editor');
 
-        return model('common/category')
+        return
+        model('common/category')
         ->editor($receive_data);
     }
 
@@ -304,13 +303,12 @@ class Category
      */
     public function sort()
     {
-        $receive_data = [
-            'id' => input('post.sort/a'),
-        ];
-
         create_action_log('', 'category_sort');
 
-        return model('common/category')
-        ->sort($receive_data);
+        return
+        model('common/category')
+        ->sort([
+            'id' => input('post.sort/a'),
+        ]);
     }
 }

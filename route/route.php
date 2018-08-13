@@ -14,6 +14,7 @@ Route::pattern([
     'cid'     => '\d+',
     'pid'     => '\d+',
     'id'      => '\d+',
+    'p'       => '\d+',
 ]);
 
 Route::domain('admin', [
@@ -23,8 +24,9 @@ Route::domain('www', [
     'channel/:cid$'  => 'index/channel',
     'feedback/:cid$' => 'index/feedback',
     'message/:cid$'  => 'index/message',
+    'search/[:q]$'      => 'index/search',
     ':operate/:cid$' => 'index/entry'
-])->bind('cms')->ext('html')->cache(3600);
+])->bind('cms')->ext('html')->cache(APP_DEBUG ? false : 28800);
 
 
 Route::domain('my', [

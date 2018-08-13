@@ -181,15 +181,13 @@ class Auth
      */
     private function getBreadcrumbParent($_parent_id)
     {
-        $map = [
-            ['id', '=', $_parent_id],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/' . request()->action())
         ->field(['id','pid','name'])
-        ->where($map)
+        ->where([
+            ['id', '=', $_parent_id],
+            ['lang', '=', lang(':detect')],
+        ])
         ->find();
 
         $cate_data = !empty($result) ? $result : null;

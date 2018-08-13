@@ -23,12 +23,11 @@ class Role
      */
     public function query()
     {
-        $map = [
-            ['id', '<>', 1],
-        ];
         $result =
         model('common/role')
-        ->where($map)
+        ->where([
+            ['id', '<>', 1],
+        ])
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url('user/role'),
@@ -117,24 +116,22 @@ class Role
         unset($receive_data['__token__']);
 
         $result = model('common/role')->transaction(function(){
-            $role_data = [
+            $role_id =
+            model('common/role')
+            ->added([
                 'name'   => input('post.name'),
                 'status' => input('post.status/f'),
                 'remark' => input('post.remark/f'),
-            ];
-            $role_id = model('common/role')
-            ->added($role_data);
+            ]);
 
             if ($role_id == false) {
                 return false;
             }
 
-
-            $map = [
-                ['role_id', '=', $role_id],
-            ];
             model('common/access')
-            ->where($map)
+            ->where([
+                ['role_id', '=', $role_id],
+            ])
             ->delete();
 
             $node = input('post.node/a');
@@ -173,47 +170,41 @@ class Role
     public function remove()
     {
         $result = model('common/role')->transaction(function(){
-            $map  = [
-                ['id', '=', input('post.id/f')],
-            ];
-
             $result =
             model('common/role')->field(true)
-            ->where($map)
+            ->where([
+                ['id', '=', input('post.id/f')],
+            ])
             ->find();
 
             create_action_log($result['name'], 'node_remove');
 
-            $receive_data = [
-                'id' => input('post.id/f'),
-            ];
             model('common/role')
-            ->remove($receive_data);
+            ->remove([
+                'id' => input('post.id/f'),
+            ]);
 
-            $map = [
-                ['role_admin', '=', input('post.id/f')]
-            ];
             $role_admin =
             model('common/RoleAdmin')
-            ->where($map)
+            ->where([
+                ['role_admin', '=', input('post.id/f')]
+            ])
             ->select();
             $admin_id = [];
             foreach ($role_admin as $key => $value) {
                 $admin_id[] = $value['user_id'];
             }
 
-            $map = [
-                ['id', 'in', implode(',', $role_admin)]
-            ];
             model('common/admin')
-            ->where($map)
+            ->where([
+                ['id', 'in', implode(',', $role_admin)]
+            ])
             ->delete();
 
-            $receive_data = [
-                'role_id' => input('post.id/f'),
-            ];
             model('common/role_admin')
-            ->remove($receive_data);
+            ->remove([
+                'role_id' => input('post.id/f'),
+            ]);
 
             return true;
         });
@@ -229,21 +220,20 @@ class Role
      */
     public function find()
     {
-        $map = [
-            ['id', '=', input('post.id/f')]
-        ];
-
         $role_data = model('common/role')->field(true)
-        ->where($map)
+        ->where([
+            ['id', '=', input('post.id/f')]
+        ])
         ->find();
 
-        $map = [
-            ['role_id', '=', $role_data['id']],
-        ];
-        $result = model('common/access')
+        $result =
+        model('common/access')
         ->field('node_id')
-        ->where($map)
+        ->where([
+            ['role_id', '=', $role_data['id']],
+        ])
         ->select();
+
         $access = [];
         foreach ($result as $key => $value) {
             $access[] = $value['node_id'];
@@ -279,25 +269,23 @@ class Role
         unset($receive_data['__token__']);
 
         $result = model('common/role')->transaction(function(){
-            $role_data = [
+            $res =
+            model('common/role')
+            ->editor([
                 'id'     => input('post.id/f'),
                 'name'   => input('post.name'),
                 'status' => input('post.status/f'),
                 'remark' => input('post.remark/f'),
-            ];
-            $res = model('common/role')
-            ->editor($role_data);
+            ]);
 
             if ($res === false) {
                 return false;
             }
 
-
-            $map = [
-                ['role_id', '=', input('post.id/f')],
-            ];
             model('common/access')
-            ->where($map)
+            ->where([
+                ['role_id', '=', input('post.id/f')],
+            ])
             ->delete();
 
             $node = input('post.node/a');

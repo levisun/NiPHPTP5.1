@@ -77,13 +77,12 @@ class Member
      */
     public function region()
     {
-        $map  = [
-            ['pid', '=', input('post.region_id/f', 1)],
-        ];
-
         $result =
-        model('common/region')->field(['id', 'pid', 'name'])
-        ->where($map)
+        model('common/region')
+        ->field(['id', 'pid', 'name'])
+        ->where([
+            ['pid', '=', input('post.region_id/f', 1)],
+        ])
         ->order('id ASC')
         ->cache(true)
         ->select();
@@ -99,13 +98,12 @@ class Member
      */
     public function level()
     {
-        $map = [
-            ['status', '=', 1]
-        ];
-
         $result =
-        model('common/level')->field(true)
-        ->where($map)
+        model('common/level')
+        ->field(true)
+        ->where([
+            ['status', '=', 1]
+        ])
         ->order('id DESC')
         ->select();
 
@@ -149,7 +147,9 @@ class Member
 
             unset($receive_data['__token__']);
 
-            $member_data = [
+            $member_id =
+            model('common/member')
+            ->added([
                 'username' => $receive_data['username'],
                 'password' => md5_password($receive_data['password'], $receive_data['salt']),
                 'email'    => $receive_data['email'],
@@ -165,17 +165,13 @@ class Member
                 'phone'    => $receive_data['phone'],
                 'status'   => $receive_data['status'],
                 'salt'     => $receive_data['salt'],
-            ];
+            ]);
 
-            $member_id = model('common/member')
-            ->added($member_data);
-
-            $level_data = [
-                'user_id' => $member_id,
-                'level_id' => $receive_data['level']
-            ];
             model('common/LevelMember')
-            ->added($level_data);
+            ->added([
+                'user_id'  => $member_id,
+                'level_id' => $receive_data['level']
+            ]);
 
             create_action_log($receive_data['username'], 'member_added');
 
@@ -194,30 +190,27 @@ class Member
     public function remove()
     {
         $result = model('common/member')->transaction(function(){
-            $map  = [
-                ['id', '=', input('post.id/f')],
-            ];
-
             $result =
-            model('common/member')->field(true)
-            ->where($map)
+            model('common/member')
+            ->field(true)
+            ->where([
+                ['id', '=', input('post.id/f')],
+            ])
             ->find();
 
             create_action_log($result['username'], 'member_remove');
 
-            $receive_data = [
-                'id' => input('post.id/f'),
-            ];
             $result =
             model('common/member')
-            ->remove($receive_data);
+            ->remove([
+                'id' => input('post.id/f'),
+            ]);
 
             if ($result) {
-                $receive_data = [
-                    'user_id' => input('post.id/f'),
-                ];
                 model('common/LevelMember')
-                ->remove($receive_data);
+                ->remove([
+                    'user_id' => input('post.id/f'),
+                ]);
             }
 
             return true;
@@ -234,7 +227,9 @@ class Member
      */
     public function find()
     {
-        $field = [
+        $result =
+        model('common/member')
+        ->view('member m', [
             'id',
             'username',
             'email',
@@ -248,18 +243,12 @@ class Member
             'area',
             'address',
             'phone',
-            'status',
-        ];
-
-        $map = [
-            ['m.id', '=', input('post.id/f')]
-        ];
-
-        $result =
-        model('common/member')
-        ->view('member m', $field)
+            'status'
+        ])
         ->view('level_member lm', 'level_id', 'lm.user_id=m.id')
-        ->where($map)
+        ->where([
+            ['m.id', '=', input('post.id/f')]
+        ])
         ->find();
 
         return $result;
@@ -340,13 +329,15 @@ class Member
                 return $result;
             }
 
-            $result = model('common/member')->editor($member_data);
+            $result =
+            model('common/member')
+            ->editor($member_data);
 
-            $level_data = [
+            model('common/LevelMember')
+            ->editor([
                 'user_id'  => $receive_data['id'],
                 'level_id' => $receive_data['level'],
-            ];
-            model('common/LevelMember')->editor($level_data);
+            ]);
 
             create_action_log($receive_data['username'], 'member_editor');
 

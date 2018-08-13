@@ -23,13 +23,12 @@ class Ads
      */
     public function query()
     {
-        $map = [
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/ads')
-        ->where($map)
+        ->field(true)
+        ->where([
+            ['lang', '=', lang(':detect')],
+        ])
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url('content/ads'),
@@ -80,7 +79,8 @@ class Ads
 
         unset($receive_data['__token__']);
 
-        $result = model('common/ads')
+        $result =
+        model('common/ads')
         ->added($receive_data);
 
         create_action_log($receive_data['name'], 'ads_added');
@@ -96,22 +96,21 @@ class Ads
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
         $result =
-        model('common/ads')->field(true)
-        ->where($map)
+        model('common/ads')
+        ->field(true)
+        ->where([
+            ['id', '=', input('post.id/f')],
+        ])
         ->find();
 
         create_action_log($result['name'], 'ads_remove');
 
-        $receive_data = [
+        return
+        model('common/ads')
+        ->remove([
             'id' => input('post.id/f'),
-        ];
-        return model('common/ads')
-        ->remove($receive_data);
+        ]);
     }
 
     /**
@@ -122,12 +121,12 @@ class Ads
      */
     public function find()
     {
-        $map = [
+        $result =
+        model('common/ads')
+        ->field(true)
+        ->where([
             ['id', '=', input('post.id/f')]
-        ];
-
-        $result = model('common/ads')->field(true)
-        ->where($map)
+        ])
         ->find();
 
         $result['start_time'] = date('Y-m-d', $result['start_time']);
@@ -164,7 +163,8 @@ class Ads
 
         unset($receive_data['__token__']);
 
-        $result = model('common/ads')
+        $result =
+        model('common/ads')
         ->editor($receive_data);
 
         create_action_log($receive_data['name'], 'ads_editor');

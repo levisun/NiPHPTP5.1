@@ -23,15 +23,13 @@ class Email
      */
     public function query()
     {
-        $map = [
-            ['name', 'in', 'smtp_host,smtp_port,smtp_username,smtp_password,smtp_from_email,smtp_from_name'],
-            ['lang', '=', 'niphp'],
-        ];
-
         $result =
         model('common/config')
         ->field(true)
-        ->where($map)
+        ->where([
+            ['name', 'in', 'smtp_host,smtp_port,smtp_username,smtp_password,smtp_from_email,smtp_from_name'],
+            ['lang', '=', 'niphp'],
+        ])
         ->select();
 
         $data = [];
@@ -73,14 +71,14 @@ class Email
 
         $map = $data = [];
         foreach ($receive_data as $key => $value) {
-            $map  = [
+            $model_config
+            ->allowField(true)
+            ->where([
                 ['name', '=', $key],
-            ];
-            $data = ['value' => $value];
-
-            $model_config->allowField(true)
-            ->where($map)
-            ->update($data);
+            ])
+            ->update(['
+                value' => $value
+            ]);
         }
 
         $lang = lang('__nav');

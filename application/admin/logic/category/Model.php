@@ -24,7 +24,8 @@ class Model
     public function query()
     {
         $result =
-        model('common/models')->field(true)
+        model('common/models')
+        ->field(true)
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url('category/model'),

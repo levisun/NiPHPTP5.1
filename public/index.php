@@ -32,7 +32,7 @@ libxml_disable_entity_loader(true);
 require __DIR__ . '/../thinkphp/base.php';
 
 // thinkphp版本支持
-version_compare(Container::get('app')->version(), '5.1.21', '=') or die('ThinkPHP version = 5.1.21!');
+version_compare(Container::get('app')->version(), '5.1.22', '=') or die('ThinkPHP version = 5.1.22!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 

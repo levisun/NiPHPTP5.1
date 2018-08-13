@@ -23,14 +23,13 @@ class Image
      */
     public function query()
     {
-        $map = [
+        $result =
+        model('common/config')
+        ->field(true)
+        ->where([
             ['name', 'in', 'auto_image,add_water,water_type,water_location,water_text,water_image,article_module_width,article_module_height,ask_module_width,ask_module_height,download_module_width,download_module_height,job_module_width,job_module_height,link_module_width,link_module_height,page_module_width,page_module_height,picture_module_width,picture_module_height,product_module_width,product_module_height'],
             ['lang', '=', lang(':detect')],
-        ];
-
-        $result =
-        model('common/config')->field(true)
-        ->where($map)
+        ])
         ->select();
 
         $data = [];
@@ -88,14 +87,14 @@ class Image
 
         $map = $data = [];
         foreach ($receive_data as $key => $value) {
-            $map  = [
+            $model_config
+            ->allowField(true)
+            ->where([
                 ['name', '=', $key],
-            ];
-            $data = ['value' => $value];
-
-            $model_config->allowField(true)
-            ->where($map)
-            ->update($data);
+            ])
+            ->update([
+                'value' => $value
+            ]);
         }
 
         $lang = lang('__nav');

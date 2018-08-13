@@ -22,13 +22,11 @@ class Comment
      */
     public function query()
     {
-        $map = [
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/comment')
-        ->where($map)
+        ->where([
+            ['lang', '=', lang(':detect')],
+        ])
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url('content/comment'),

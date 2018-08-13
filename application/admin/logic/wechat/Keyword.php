@@ -45,7 +45,9 @@ class Keyword
         }
 
         $result =
-        model('common/reply')->field(true)
+        model('common/reply')
+        ->field(true)
+        ->where($map)
         ->order('id DESC')
         ->paginate(null, null, [
             'path' => url($url),
@@ -95,7 +97,8 @@ class Keyword
 
         unset($receive_data['__token__']);
 
-        $result = model('common/reply')
+        $result =
+        model('common/reply')
         ->added($receive_data);
 
         create_action_log($receive_data['keyword'], 'wechat_keyword_added');
@@ -125,7 +128,8 @@ class Keyword
         $receive_data = [
             'id' => input('post.id/f'),
         ];
-        return model('common/reply')
+        return
+        model('common/reply')
         ->remove($receive_data);
     }
 
@@ -141,7 +145,9 @@ class Keyword
             ['id', '=', input('post.id/f')]
         ];
 
-        return model('common/reply')->field(true)
+        return
+        model('common/reply')
+        ->field(true)
         ->where($map)
         ->find();
     }
@@ -174,7 +180,8 @@ class Keyword
 
         create_action_log($receive_data['keyword'], 'wechat_keyword_editor');
 
-        return model('common/reply')
+        return
+        model('common/reply')
         ->editor($receive_data);
     }
 
@@ -192,7 +199,8 @@ class Keyword
 
         create_action_log('', 'wechat_keyword_sort');
 
-        return model('common/reply')
+        return
+        model('common/reply')
         ->sort($receive_data);
     }
 }

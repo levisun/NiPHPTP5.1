@@ -91,7 +91,8 @@ class Banner
 
         unset($receive_data['__token__']);
 
-        $result = model('common/banner')
+        $result =
+        model('common/banner')
         ->added($receive_data);
 
         if ($receive_data['pid']) {
@@ -111,13 +112,12 @@ class Banner
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
         $result =
-        model('common/banner')->field(true)
-        ->where($map)
+        model('common/banner')
+        ->field(true)
+        ->where([
+            ['id', '=', input('post.id/f')],
+        ])
         ->find();
 
         if ($result['pid']) {
@@ -126,11 +126,11 @@ class Banner
             create_action_log($result['name'], 'banner_remove');
         }
 
-        $receive_data = [
+        return
+        model('common/banner')
+        ->remove([
             'id' => input('post.id/f'),
-        ];
-        return model('common/banner')
-        ->remove($receive_data);
+        ]);
     }
 
     /**
@@ -141,12 +141,12 @@ class Banner
      */
     public function find()
     {
-        $map = [
+        return
+        model('common/banner')
+        ->field(true)
+        ->where([
             ['id', '=', input('post.id/f')]
-        ];
-
-        return model('common/banner')->field(true)
-        ->where($map)
+        ])
         ->find();
     }
 
@@ -183,7 +183,8 @@ class Banner
 
         unset($receive_data['__token__']);
 
-        $result = model('common/banner')
+        $result =
+        model('common/banner')
         ->editor($receive_data);
 
         if ($receive_data['pid']) {
@@ -203,13 +204,12 @@ class Banner
      */
     public function sort()
     {
-        $receive_data = [
-            'id' => input('post.sort/a'),
-        ];
-
         create_action_log('', 'banner_sort');
 
-        return model('common/banner')
-        ->sort($receive_data);
+        return
+        model('common/banner')
+        ->sort([
+            'id' => input('post.sort/a'),
+        ]);
     }
 }

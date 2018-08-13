@@ -66,15 +66,14 @@ class Type
      */
     public function category($_pid = 0)
     {
-        $map = [
+        $result =
+        model('common/category')
+        ->field(['id', 'name'])
+        ->where([
             ['pid', '=', $_pid],
             ['model_id', 'not in', '8,9'],
             ['lang', '=', lang(':detect')],
-        ];
-
-        $result =
-        model('common/category')->field(['id', 'name'])
-        ->where($map)
+        ])
         ->order('sort DESC, id DESC')
         ->select();
 
@@ -106,7 +105,8 @@ class Type
             return $result;
         }
 
-        $result = model('common/type')
+        $result =
+        model('common/type')
         ->added($receive_data);
 
         create_action_log($receive_data['name'], 'type_added');
@@ -122,22 +122,21 @@ class Type
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
         $result =
-        model('common/type')->field(true)
-        ->where($map)
+        model('common/type')
+        ->field(true)
+        ->where([
+            ['id', '=', input('post.id/f')],
+        ])
         ->find();
 
         create_action_log($result['name'], 'type_remove');
 
-        $receive_data = [
+        return
+        model('common/type')
+        ->remove([
             'id' => input('post.id/f'),
-        ];
-        return model('common/type')
-        ->remove($receive_data);
+        ]);
     }
 
     /**
@@ -148,12 +147,12 @@ class Type
      */
     public function find()
     {
-        $map = [
+        return
+        model('common/type')
+        ->field(true)
+        ->where([
             ['id', '=', input('post.id/f')]
-        ];
-
-        return model('common/type')->field(true)
-        ->where($map)
+        ])
         ->find();
     }
 
@@ -181,7 +180,8 @@ class Type
 
         create_action_log($receive_data['name'], 'type_editor');
 
-        return model('common/type')
+        return
+        model('common/type')
         ->editor($receive_data);
     }
 }

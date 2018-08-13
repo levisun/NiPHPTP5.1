@@ -73,15 +73,14 @@ class Fields
      */
     public function category($_pid = 0)
     {
-        $map = [
+        $result =
+        model('common/category')
+        ->field(['id', 'name'])
+        ->where([
             ['pid', '=', $_pid],
             ['model_id', 'not in', '8,9'],
             ['lang', '=', lang(':detect')],
-        ];
-
-        $result =
-        model('common/category')->field(['id', 'name'])
-        ->where($map)
+        ])
         ->order('sort DESC, id DESC')
         ->select();
 
@@ -102,7 +101,8 @@ class Fields
     public function type()
     {
         $result =
-        model('common/FieldsType')->field(['id', 'name'])
+        model('common/FieldsType')
+        ->field(['id', 'name'])
         ->order('id ASC')
         ->select();
 
@@ -135,7 +135,8 @@ class Fields
             return $result;
         }
 
-        $result = model('common/fields')
+        $result =
+        model('common/fields')
         ->added($receive_data);
 
         create_action_log($receive_data['name'], 'fields_added');
@@ -151,22 +152,21 @@ class Fields
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
         $result =
-        model('common/fields')->field(true)
-        ->where($map)
+        model('common/fields')
+        ->field(true)
+        ->where([
+            ['id', '=', input('post.id/f')],
+        ])
         ->find();
 
         create_action_log($result['name'], 'fields_remove');
 
-        $receive_data = [
+        return
+        model('common/fields')
+        ->remove([
             'id' => input('post.id/f'),
-        ];
-        return model('common/fields')
-        ->remove($receive_data);
+        ]);
     }
 
     /**
@@ -177,12 +177,12 @@ class Fields
      */
     public function find()
     {
-        $map = [
+        return
+        model('common/fields')
+        ->field(true)
+        ->where([
             ['id', '=', input('post.id/f')]
-        ];
-
-        return model('common/fields')->field(true)
-        ->where($map)
+        ])
         ->find();
     }
 
@@ -212,7 +212,8 @@ class Fields
 
         create_action_log($receive_data['name'], 'fields_editor');
 
-        return model('common/fields')
+        return
+        model('common/fields')
         ->editor($receive_data);
     }
 }

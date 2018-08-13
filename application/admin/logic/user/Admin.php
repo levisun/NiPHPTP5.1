@@ -75,13 +75,12 @@ class Admin
      */
     public function role()
     {
-        $map = array(
+        return
+        model('common/role')
+        ->where([
             ['status', '=', 1],
             ['id', '<>', 1],
-        );
-
-        return model('common/role')
-        ->where($map)
+        ])
         ->order('id DESC')
         ->select();
     }
@@ -112,21 +111,21 @@ class Admin
         unset($receive_data['__token__']);
 
         $result = model('common/admin')->transaction(function(){
-            $admin_data = [
+            $admin_id =
+            model('common/admin')
+            ->added([
                 'username' => $receive_data['username'],
                 'password' => md5_password($receive_data['password'], $receive_data['salt']),
                 'email'    => $receive_data['email'],
                 'salt'     => $receive_data['salt'],
-            ];
-            $admin_id = model('common/admin')
-            ->added($admin_data);
+            ]);
 
-            $role_data = [
+            $result =
+            model('common/RoleAdmin')
+            ->added([
                 'user_id' => $admin_id,
                 'role_id' => $receive_data['role']
-            ];
-            $result = model('common/RoleAdmin')
-            ->added($role_data);
+            ]);
 
             create_action_log($receive_data['username'], 'admin_added');
 
@@ -145,29 +144,27 @@ class Admin
     public function remove()
     {
         $result = model('common/admin')->transaction(function(){
-            $map  = [
-                ['id', '=', input('post.id/f')],
-            ];
-
             $result =
-            model('common/admin')->field(true)
-            ->where($map)
+            model('common/admin')
+            ->field(true)
+            ->where([
+                ['id', '=', input('post.id/f')],
+            ])
             ->find();
 
             create_action_log($result['username'], 'admin_remove');
 
-            $receive_data = [
+            $result =
+            model('common/admin')
+            ->remove([
                 'id' => input('post.id/f'),
-            ];
-            $result = model('common/admin')
-            ->remove($receive_data);
+            ]);
 
             if ($result) {
-                $receive_data = [
-                    'user_id' => input('post.id/f'),
-                ];
                 model('common/RoleAdmin')
-                ->remove($receive_data);
+                ->remove([
+                    'user_id' => input('post.id/f'),
+                ]);
             }
 
             return true;
@@ -195,15 +192,13 @@ class Admin
             'update_time'
         ];
 
-        $map = [
-            ['a.id', '=', input('post.id/f')]
-        ];
-
         return
         model('common/admin')
         ->view('admin a', $field)
         ->view('role_admin ra', ['role_id'], 'ra.user_id=a.id')
-        ->where($map)
+        ->where([
+            ['a.id', '=', input('post.id/f')]
+        ])
         ->find();
     }
 
@@ -249,13 +244,15 @@ class Admin
                 return $result;
             }
 
-            $result = model('common/admin')->editor($admin_data);
+            $result =
+            model('common/admin')
+            ->editor($admin_data);
 
-            $role_data = [
+            model('common/RoleAdmin')
+            ->editor([
                 'user_id' => $receive_data['id'],
                 'role_id' => $receive_data['role'],
-            ];
-            model('common/RoleAdmin')->editor($role_data);
+            ]);
 
             create_action_log($receive_data['username'], 'admin_editor');
 

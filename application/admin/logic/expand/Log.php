@@ -24,10 +24,10 @@ class Log
     public function query()
     {
         // 删除过期的日志(保留三个月)
-        $map = [
+        model('common/ActionLog')
+        ->where([
             ['create_time', '<=', strtotime('-90 days')]
-        ];
-        model('common/ActionLog')->where($map)
+        ])
         ->delete();
 
         $result =

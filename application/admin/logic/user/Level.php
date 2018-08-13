@@ -71,7 +71,8 @@ class Level
 
         create_action_log($receive_data['name'], 'level_added');
 
-        return !!model('common/level')
+        return
+        !!model('common/level')
         ->added($receive_data);
     }
 
@@ -83,22 +84,20 @@ class Level
      */
     public function remove()
     {
-        $map  = [
-            ['id', '=', input('post.id/f')],
-        ];
-
         $result =
         model('common/level')->field(true)
-        ->where($map)
+        ->where([
+            ['id', '=', input('post.id/f')],
+        ])
         ->find();
 
         create_action_log($result['name'], 'level_remove');
 
-        $receive_data = [
+        return
+        model('common/level')
+        ->remove([
             'id' => input('post.id/f'),
-        ];
-        return model('common/level')
-        ->remove($receive_data);
+        ]);
     }
 
     /**
@@ -109,13 +108,11 @@ class Level
      */
     public function find()
     {
-        $map = [
-            ['id', '=', input('post.id/f')]
-        ];
-
         return
         model('common/level')
-        ->where($map)
+        ->where([
+            ['id', '=', input('post.id/f')]
+        ])
         ->find();
     }
 
@@ -143,7 +140,8 @@ class Level
 
         create_action_log($receive_data['name'], 'level_editor');
 
-        return model('common/level')
+        return
+        model('common/level')
         ->editor($receive_data);
     }
 }

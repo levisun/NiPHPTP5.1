@@ -51,12 +51,10 @@ class LevelMember extends Model
      */
     public function remove($_receive_data)
     {
-        $map  = [
-            ['user_id', '=', $_receive_data['user_id']],
-        ];
-
         $result =
-        $this->where($map)
+        $this->where([
+            ['user_id', '=', $_receive_data['user_id']],
+        ])
         ->delete();
 
         return !!$result;
@@ -70,15 +68,13 @@ class LevelMember extends Model
      */
     public function editor($_receive_data)
     {
-        $map  = [
-            ['user_id', '=', $_receive_data['user_id']],
-        ];
-
-        unset($_receive_data['user_id'], $_receive_data['__token__']);
+        unset($_receive_data['__token__']);
 
         $result =
         $this->allowField(true)
-        ->where($map)
+        ->where([
+            ['user_id', '=', $_receive_data['user_id']],
+        ])
         ->update($_receive_data);
 
         return !!$result;

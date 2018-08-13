@@ -75,16 +75,15 @@ class Login
      */
     private function getUserData($_username)
     {
-        $map = [
-            ['a.username', '=', $_username],
-        ];
         $result =
         model('common/Admin')->view('admin a', 'id,username,password,email,salt')
         // 管理员组关系表
         ->view('role_admin ra', 'user_id', 'a.id=ra.user_id')
         // 组表
         ->view('role r', ['id'=>'role_id', 'name'=>'role_name'], 'r.id=ra.role_id')
-        ->where($map)
+        ->where([
+            ['a.username', '=', $_username],
+        ])
         ->find();
 
         return !empty($result) ? $result : false;
@@ -116,7 +115,9 @@ class Login
             'id'                 => $_user_id,
         ];
 
-        return model('common/Admin')->update($update_data);
+        return
+        model('common/Admin')
+        ->update($update_data);
     }
 
     /**

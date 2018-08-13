@@ -73,12 +73,10 @@ class MallGoods extends Model
      */
     protected function remove($_receive_data)
     {
-        $map  = [
-            ['id', '=', $_receive_data['id']],
-        ];
-
         $result =
-        $this->where($map)
+        $this->where([
+            ['id', '=', $_receive_data['id']],
+        ])
         ->delete();
 
         return !!$result;
@@ -92,15 +90,13 @@ class MallGoods extends Model
      */
     protected function editor($_receive_data)
     {
-        $map  = [
-            ['id', '=', $_receive_data['id']],
-        ];
-
-        unset($_receive_data['id'], $_receive_data['__token__']);
+        unset($_receive_data['__token__']);
 
         $result =
         $this->allowField(true)
-        ->where($map)
+        ->where([
+            ['id', '=', $_receive_data['id']],
+        ])
         ->update($_receive_data);
 
         return !!$result;

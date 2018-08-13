@@ -23,14 +23,13 @@ class Config
      */
     public function query()
     {
-        $map = [
+        $result =
+        model('common/config')
+        ->field(true)
+        ->where([
             ['name', 'in', 'wechat_token,wechat_encodingaeskey,wechat_appid,wechat_appsecret'],
             ['lang', '=', 'niphp'],
-        ];
-
-        $result =
-        model('common/config')->field(true)
-        ->where($map)
+        ])
         ->select();
 
         $data = [];
@@ -70,14 +69,14 @@ class Config
 
         $map = $data = [];
         foreach ($receive_data as $key => $value) {
-            $map  = [
+            $model_config
+            ->allowField(true)
+            ->where([
                 ['name', '=', $key],
-            ];
-            $data = ['value' => $value];
-
-            $model_config->allowField(true)
-            ->where($map)
-            ->update($data);
+            ])
+            ->update([
+                'value' => $value
+            ]);
         }
 
         $lang = lang('__nav');
