@@ -17,20 +17,19 @@ Route::pattern([
     'p'       => '\d+',
 ]);
 
-Route::domain('admin', [
-])->bind('admin')->ext('do');
+Route::domain('admin')->bind('admin')->ext('do');
 
-Route::domain('www', [
+Route::domain(['www', 'm'], [
     'channel/:cid$'  => 'index/channel',
     'feedback/:cid$' => 'index/feedback',
     'message/:cid$'  => 'index/message',
-    'search/[:q]$'      => 'index/search',
+    'search/[:q]$'   => 'index/search',
     ':operate/:cid$' => 'index/entry'
-])->bind('cms')->ext('html')->cache(APP_DEBUG ? false : 28800);
+])->bind('cms')->ext('html')->cache(APP_DEBUG ? false : 2880);
 
 
 Route::domain('my', [
-])->bind('cms')->ext('shtml');
+])->bind('user')->ext('shtml');
 
 return [
 ];

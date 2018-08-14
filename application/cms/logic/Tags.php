@@ -23,14 +23,12 @@ class Tags
      */
     public function query()
     {
-        $map = [
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/tags')
         ->field('id,name,count')
-        ->where($map)
+        ->where([
+            ['lang', '=', lang(':detect')],
+        ])
         ->cache(!APP_DEBUG)
         ->select();
 

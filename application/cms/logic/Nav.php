@@ -23,19 +23,15 @@ class Nav
      */
     public function query($_type_id = 1)
     {
-        $_type_id = input('param.type_id/f', $_type_id);
-
-        $map = [
-            ['type_id', '=', $_type_id],
-            ['is_show', '=', 1],
-            ['pid', '=', 0],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/category')
         ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
-        ->where($map)
+        ->where([
+            ['type_id', '=', input('param.type_id/f', $_type_id)],
+            ['is_show', '=', 1],
+            ['pid', '=', 0],
+            ['lang', '=', lang(':detect')],
+        ])
         ->order('sort ASC, id DESC')
         ->cache(!APP_DEBUG)
         ->select();
@@ -53,10 +49,6 @@ class Nav
      */
     protected function queryChild($_data)
     {
-        $map = [
-            ['lang', '=', lang(':detect')],
-        ];
-
         $nav = [];
 
         foreach ($_data as $key => $value) {
@@ -64,12 +56,13 @@ class Nav
 
             $nav[$key]['url'] = $this->getUrl($value['model_id'], $value['is_channel'], $value['id']);
 
-            $map[1] = ['pid', '=', $value['id']];
-
             $result =
             model('common/category')
             ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
-            ->where($map)
+            ->where([
+                ['lang', '=', lang(':detect')],
+                ['pid', '=', $value['id']]
+            ])
             ->order('sort ASC, id DESC')
             ->cache(!APP_DEBUG)
             ->select();

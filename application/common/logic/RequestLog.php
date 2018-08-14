@@ -25,30 +25,31 @@ class RequestLog
     public function lockIp($_login_ip, $_module)
     {
         // 日志是否存在
-        $map = [
-            ['ip', '=', $_login_ip],
-            ['module', '=', $_module],
-        ];
-
         $count =
         model('common/RequestLog')
-        ->where($map)
+        ->where([
+            ['ip', '=', $_login_ip],
+            ['module', '=', $_module],
+        ])
         ->value('count');
 
         if (!$count) {
             // 新建请求错误记录
-            $data = [
+            model('common/RequestLog')
+            ->create([
                 'ip'     => $_login_ip,
                 'module' => $_module,
                 'count'  => 1,
-            ];
-            model('common/RequestLog')
-            ->create($data);
+            ]);
         } elseif ($count && $count < 3) {
-            $data = ['count' => ['exp', 'count+1']];
             model('common/RequestLog')
-            ->where($map)
-            ->update($data);
+            ->where([
+                ['ip', '=', $_login_ip],
+                ['module', '=', $_module],
+            ])
+            ->update([
+                'count' => ['exp', 'count+1']
+            ]);
         }
     }
 
@@ -62,16 +63,14 @@ class RequestLog
     public function isLockIp($_login_ip, $_module)
     {
         // 三小时内错误请求超过三次
-        $map = [
+        $result =
+        model('common/RequestLog')
+        ->where([
             ['ip', '=', $_login_ip],
             ['module', '=', $_module],
             ['count', '>=', 3],
             ['update_time', '>=', strtotime('-3 hours')],
-        ];
-
-        $result =
-        model('common/RequestLog')
-        ->where($map)
+        ])
         ->value('count');
 
         return $result ? true : false;
@@ -86,20 +85,18 @@ class RequestLog
      */
     public function removeLockIp($_login_ip, $_module)
     {
-        $map = [
+        model('common/RequestLog')
+        ->where([
             ['ip', '=', $_login_ip],
             ['module', '=', $_module],
-        ];
-        model('common/RequestLog')
-        ->where($map)
+        ])
         ->delete();
 
         // 删除过期的日志(保留一个月)
-        $map = [
-            ['create_time', '<=', strtotime('-30 days')],
-        ];
         model('common/RequestLog')
-        ->where($map)
+        ->where([
+            ['create_time', '<=', strtotime('-30 days')],
+        ])
         ->delete();
     }
 }

@@ -121,15 +121,14 @@ class Upload
     private function createWater($_file_name)
     {
         if ($this->uploadParams['create_water']) {
-            $map = [
-                ['name', 'in', 'add_water,water_type,water_location,water_text,water_image'],
-                ['lang', '=', lang(':detect')],
-            ];
-
             // 获得水印设置
             $result =
-            model('common/config')->field(true)
-            ->where($map)
+            model('common/config')
+            ->field(true)
+            ->where([
+                ['name', 'in', 'add_water,water_type,water_location,water_text,water_image'],
+                ['lang', '=', lang(':detect')],
+            ])
             ->select();
 
             $config_data = [];
@@ -147,6 +146,7 @@ class Upload
                 // 图片水印
                 $water_image  = env('root_path') . basename(request()->root());
                 $water_image .= $config_data['water_image'];
+
                 $image = Image::open($this->savePath . $_file_name);
                 $image->water($water_image, $config_data['water_location'], 50);
                 $image->save($this->savePath . $_file_name);
@@ -206,13 +206,12 @@ class Upload
 
         // 获取模块设置的缩略图尺寸
         if (in_array($_type, $thumb_size['module'])) {
-            $map = [
+            $result =
+            model('common/config')
+            ->where([
                 ['name', 'in', $_type . '_module_width,' . $_type . '_module_height'],
                 ['lang', '=', lang(':detect')],
-            ];
-
-            $result =
-            model('common/config')->where($map)
+            ])
             ->column('name, value');
 
             if (!empty($result)) {
@@ -242,14 +241,12 @@ class Upload
      */
     private function validate()
     {
-        $map = [
-            ['name', 'in', 'upload_file_type,upload_file_max'],
-            ['lang', '=', 'niphp'],
-        ];
-
         $result =
         model('common/config')->field(true)
-        ->where($map)
+        ->where([
+            ['name', 'in', 'upload_file_type,upload_file_max'],
+            ['lang', '=', 'niphp'],
+        ])
         ->select();
 
         $validate = [];

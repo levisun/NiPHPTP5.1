@@ -55,6 +55,6 @@ return [
     'exception_handle'     => '',
 
     'http_exception_template' => [
-        400 => __DIR__ . '/public/theme/index.html'
+        500 => __DIR__ . '/public/theme/index.html'
     ],
 ];

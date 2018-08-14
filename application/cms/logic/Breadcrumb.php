@@ -40,15 +40,13 @@ class Breadcrumb
      */
     protected function queryParent($_id)
     {
-        $map = [
-            ['id', '=', $_id],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/category')
         ->field('id,name,pid,is_channel,model_id')
-        ->where($map)
+        ->where([
+            ['id', '=', $_id],
+            ['lang', '=', lang(':detect')],
+        ])
         ->cache(!APP_DEBUG)
         ->find();
 

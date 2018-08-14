@@ -67,7 +67,7 @@ function file_size($_size_or_path)
  */
 function concurrent_error()
 {
-    if (request()->isGet() && rand(0, 999) === 0) {
+    if (!APP_DEBUG && request()->isGet() && rand(0, 999) === 0) {
         abort(500, '并发压力');
     }
 }
@@ -90,16 +90,15 @@ function is_wechat_request()
  */
 function view_filter($_content)
 {
-    $pattern = [
-        '/<\!--.*?-->/si'                 => '',    // HTML注释
-        '/(\/\*).*?(\*\/)/si'             => '',    // JS注释
-        '/(\r|\n| )+(\/\/).*?(\r|\n)+/si' => '',    // JS注释
-        '/( ){2,}/si'                     => '',    // 空格
-        '/(\r|\n|\f)/si'                  => '',    // 回车
-    ];
+    $_content = preg_replace([
+        '/<\!--.*?-->/si',                      // HTML注释
+        '/(\/\*).*?(\*\/)/si',                  // JS注释
+        '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',      // JS注释
+        '/( ){2,}/si',                          // 空格
+        '/(\r|\n|\f)/si'                        // 回车
+    ], '', $_content);
 
-    $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
-    Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
+    // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;
 }
@@ -226,8 +225,7 @@ function lang($_name, $_vars = [], $_lang = '')
 function md5_password($_password, $_salt)
 {
     $_password = md5(trim($_password));
-    $_password = md5($_password . $_salt);
-    return $_password;
+    return  md5($_password . $_salt);
 }
 
 /**
@@ -256,7 +254,7 @@ function use_time_memory()
 remove_rundata();
 function remove_rundata()
 {
-    if (APP_DEBUG === false && rand(0, 100) !== 0) {
+    if (!APP_DEBUG && rand(0, 100) !== 0) {
         return false;
     }
 
@@ -266,7 +264,7 @@ function remove_rundata()
     $files = [
         'cache' => (array) glob($dir . 'cache' . DIRECTORY_SEPARATOR . '*'),
         'log'   => (array) glob($dir . 'log' . DIRECTORY_SEPARATOR . '*'),
-        'html'  => (array) glob($dir . 'html' . DIRECTORY_SEPARATOR . '*'),
+        // 'html'  => (array) glob($dir . 'html' . DIRECTORY_SEPARATOR . '*'),
         'temp'  => (array) glob($dir . 'temp' .  DIRECTORY_SEPARATOR . '*'),
         // 'backup' => (array) glob($dir . 'public' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . '*'),
     ];
@@ -364,94 +362,80 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
  */
 function escape_xss($_data)
 {
-    if (is_array($_data)) {
-        foreach ($_data as $key => $value) {
-            $_data[$key] = escape_xss($value);
-        }
-    } else {
+    if (is_string($_data)) {
+        $_data = preg_replace([
+            // 过滤非法标签
+            '/<\?php(.*?)\?>/si',
+            '/<\?(.*?)\?>/si',
+            '/<%(.*?)%>/si',
+            '/<\?php|<\?|\?>|<%|%>/si',
+
+            // 过滤XXE注入
+            '/<(\!ENTITY.*?)>/si',
+            '/<(\!DOCTYPE.*?)>/si',
+            '/<(\!.*?)>/si',
+
+            // 过滤JS注入
+            '/on([a-zA-Z]*?)(=)["|\'](.*?)["|\']/si',
+            '/(javascript:)(.*?)(\))/si',
+            '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si',
+            '/<(\/?javascript.*?)>/si',
+            '/<(script.*?)>(.*?)<(\/script.*?)>/si',
+            '/<(\/?script.*?)>/si',
+            '/<(applet.*?)>(.*?)<(\/applet.*?)>/si',
+            '/<(\/?applet.*?)>/si',
+            '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si',
+            '/<(\/?vbscript.*?)>/si',
+            '/<(expression.*?)>(.*?)<(\/expression.*?)>/si',
+            '/<(\/?expression.*?)>/si',
+
+            // 过滤HTML嵌入
+            '/<(html.*?)>(.*?)<(\/html.*?)>/si',
+            '/<(\/?html.*?)>/si',
+            '/<(head.*?)>(.*?)<(\/head.*?)>/si',
+            '/<(\/?head.*?)>/si',
+            '/<(title.*?)>(.*?)<(\/title.*?)>/si',
+            '/<(\/?title.*?)>/si',
+            '/<(meta.*?)>(.*?)<(\/meta.*?)>/si',
+            '/<(\/?meta.*?)>/si',
+            '/<(body.*?)>(.*?)<(\/body.*?)>/si',
+            '/<(\/?body.*?)>/si',
+            '/<(style.*?)>(.*?)<(\/style.*?)>/si',
+            '/<(\/?style.*?)>/si',
+            '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si',
+            '/<(\/?iframe.*?)>/si',
+            '/<(frame.*?)>(.*?)<(\/frame.*?)>/si',
+            '/<(\/?frame.*?)>/si',
+            '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si',
+            '/<(\/?frameset.*?)>/si',
+            '/<(base.*?)>(.*?)<(\/base.*?)>/si',
+            '/<(\/?base.*?)>/si',
+
+            // 过滤HTML危害标签信息
+            '/<(object.*?)>(.*?)<(\/object.*?)>/si',
+            '/<(\/?object.*?)>/si',
+            '/<(xml.*?)>(.*?)<(\/xml.*?)>/si',
+            '/<(\/?xml.*?)>/si',
+            '/<(blink.*?)>(.*?)<(\/blink.*?)>/si',
+            '/<(\/?blink.*?)>/si',
+            '/<(link.*?)>(.*?)<(\/link.*?)>/si',
+            '/<(\/?link.*?)>/si',
+            '/<(embed.*?)>(.*?)<(\/embed.*?)>/si',
+            '/<(\/?embed.*?)>/si',
+            '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',
+            '/<(\/?ilayer.*?)>/si',
+            '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',
+            '/<(\/?layer.*?)>/si',
+            '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',
+            '/<(\/?bgsound.*?)>/si',
+
+            '/<\!--.*?-->/si',
+        ], '', $_data);
+
         $pattern = [
-            '/<\?php(.*?)\?>/si'                            => '',
-            '/<\?(.*?)\?>/si'                               => '',
-            '/<%(.*?)%>/si'                                 => '',
-            '/<\?php|<\?|\?>|<%|%>/si'                      => '',
-
-            '/on([a-zA-Z]*?)(=)["|\'](.*?)["|\']/si'        => '',
-            '/(javascript:)(.*?)(\))/si'                    => '',
-            '/<\!--.*?-->/si'                               => '',
-            '/<(\!.*?)>/si'                                 => '',
-
-            '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si' => '',
-            '/<(\/?javascript.*?)>/si'                      => '',
-
-            '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si'     => '',
-            '/<(\/?vbscript.*?)>/si'                        => '',
-
-            '/<(expression.*?)>(.*?)<(\/expression.*?)>/si' => '',
-            '/<(\/?expression.*?)>/si'                      => '',
-
-            '/<(applet.*?)>(.*?)<(\/applet.*?)>/si'         => '',
-            '/<(\/?applet.*?)>/si'                          => '',
-
-            '/<(xml.*?)>(.*?)<(\/xml.*?)>/si'               => '',
-            '/<(\/?xml.*?)>/si'                             => '',
-
-            '/<(blink.*?)>(.*?)<(\/blink.*?)>/si'           => '',
-            '/<(\/?blink.*?)>/si'                           => '',
-
-            '/<(link.*?)>(.*?)<(\/link.*?)>/si'             => '',
-            '/<(\/?link.*?)>/si'                            => '',
-
-            '/<(script.*?)>(.*?)<(\/script.*?)>/si'         => '',
-            '/<(\/?script.*?)>/si'                          => '',
-
-            '/<(embed.*?)>(.*?)<(\/embed.*?)>/si'           => '',
-            '/<(\/?embed.*?)>/si'                           => '',
-
-            '/<(object.*?)>(.*?)<(\/object.*?)>/si'         => '',
-            '/<(\/?object.*?)>/si'                          => '',
-
-            '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si'         => '',
-            '/<(\/?iframe.*?)>/si'                          => '',
-
-            '/<(frame.*?)>(.*?)<(\/frame.*?)>/si'           => '',
-            '/<(\/?frame.*?)>/si'                           => '',
-
-            '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si'     => '',
-            '/<(\/?frameset.*?)>/si'                        => '',
-
-            '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si'         => '',
-            '/<(\/?ilayer.*?)>/si'                          => '',
-
-            '/<(layer.*?)>(.*?)<(\/layer.*?)>/si'           => '',
-            '/<(\/?layer.*?)>/si'                           => '',
-
-            '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si'       => '',
-            '/<(\/?bgsound.*?)>/si'                         => '',
-
-            '/<(title.*?)>(.*?)<(\/title.*?)>/si'           => '',
-            '/<(\/?title.*?)>/si'                           => '',
-
-            '/<(base.*?)>(.*?)<(\/base.*?)>/si'             => '',
-            '/<(\/?base.*?)>/si'                            => '',
-
-            '/<(meta.*?)>(.*?)<(\/meta.*?)>/si'             => '',
-            '/<(\/?meta.*?)>/si'                            => '',
-
-            '/<(style.*?)>(.*?)<(\/style.*?)>/si'           => '',
-            '/<(\/?style.*?)>/si'                           => '',
-
-            '/<(html.*?)>(.*?)<(\/html.*?)>/si'             => '',
-            '/<(\/?html.*?)>/si'                            => '',
-
-            '/<(head.*?)>(.*?)<(\/head.*?)>/si'             => '',
-            '/<(\/?head.*?)>/si'                            => '',
-
-            '/<(body.*?)>(.*?)<(\/body.*?)>/si'             => '',
-            '/<(\/?body.*?)>/si'                            => '',
-
             // 多余回车
-            '/[\r\n\f]+</si'     => '<',
-            '/>[\r\n\f]+/si'     => '>',
+            '/[\r\n\f]+</si' => '<',
+            '/>[\r\n\f]+/si' => '>',
 
             // SQL关键字
             '/(and )/si'     => '&#97;nd ',
@@ -555,6 +539,18 @@ function escape_xss($_data)
         ];
 
         $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);
+    } elseif (is_array($_data)) {
+        foreach ($_data as $key => $value) {
+            $_data[$key] = escape_xss($value);
+        }
+    }
+
+    return $_data;
+
+
+
+
+
 
         // 过虑emoji表情 替换成*
         // $value = json_encode($_data);
@@ -564,7 +560,4 @@ function escape_xss($_data)
         // 个性字符过虑
         // $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
         // $_data = preg_replace($rule, '', $_data);
-    }
-
-    return $_data;
 }

@@ -35,7 +35,9 @@ class Upload
                 return $result;
             }
 
-            $result = logic('common/upload')->fileOne($receive_data);
+            $result =
+            logic('common/upload')
+            ->fileOne($receive_data);
 
             $msg = is_string($result) ? $result : $result['save_dir'] . $result['file_name'];
 

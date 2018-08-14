@@ -22,6 +22,7 @@ class Index extends Base
      */
     public function index()
     {
+        echo escape_xss('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE a [<!ENTITY b SYSTEM "file:///etc//passwd">]><login>&b;</login>');
         return $this->fetch('index.html');
     }
 

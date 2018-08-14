@@ -23,17 +23,13 @@ class Banner
      */
     public function query($_slide_id = 0)
     {
-        $_slide_id = input('param.slide_id/f', $_slide_id);
-
-        $map = [
-            ['id', '=', $_slide_id],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $parent =
         model('common/banner')
         ->field(true)
-        ->where($map)
+        ->where([
+            ['id', '=', input('param.slide_id/f', $_slide_id)],
+            ['lang', '=', lang(':detect')],
+        ])
         ->cache(!APP_DEBUG)
         ->find();
 
@@ -41,15 +37,13 @@ class Banner
             return null;
         }
 
-        $map = [
-            ['pid', '=', $parent['id']],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/banner')
         ->field(true)
-        ->where($map)
+        ->where([
+            ['pid', '=', $parent['id']],
+            ['lang', '=', lang(':detect')],
+        ])
         ->cache(!APP_DEBUG)
         ->select();
 

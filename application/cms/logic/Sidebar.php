@@ -57,10 +57,6 @@ class Sidebar
      */
     protected function queryChild($_data)
     {
-        $map = [
-            ['lang', '=', lang(':detect')],
-        ];
-
         $nav = [];
 
         foreach ($_data as $key => $value) {
@@ -68,12 +64,13 @@ class Sidebar
             // $nav[$key]['url'] = url('/list/' . $value['id']);
             $nav[$key]['url'] = logic('cms/nav')->getUrl($value['model_id'], $value['is_channel'], $value['id']);
 
-            $map[1] = ['pid', '=', $value['id']];
-
             $result =
             model('common/category')
             ->field('id,name,pid,aliases,image,url,is_channel,model_id')
-            ->where($map)
+            ->where([
+                ['lang', '=', lang(':detect')],
+                ['pid', '=', $value['id']]
+            ])
             ->order('sort ASC, id DESC')
             ->cache(!APP_DEBUG)
             ->select();
@@ -98,15 +95,13 @@ class Sidebar
      */
     protected function queryParent($_id)
     {
-        $map = [
-            ['id', '=', $_id],
-            ['lang', '=', lang(':detect')],
-        ];
-
         $result =
         model('common/category')
         ->field('id,pid')
-        ->where($map)
+        ->where([
+            ['id', '=', $_id],
+            ['lang', '=', lang(':detect')],
+        ])
         ->order('sort ASC, id DESC')
         ->cache(!APP_DEBUG)
         ->find();

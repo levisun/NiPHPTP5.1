@@ -131,20 +131,18 @@ class Rbac
      */
     private function getAuth($_auth_id, $_level = 1, $_pid = 0)
     {
-        $map = [
-            ['role.status', '=', 1],
-            ['node.status', '=', 1],
-            ['node.level', '=', $_level],
-            ['node.pid', '=', $_pid],
-            ['role_admin.user_id', '=', $_auth_id],
-        ];
-
         $result =
         $this->model->view('node', ['id', 'name'])
         ->view('role_admin', [], 1)
         ->view('role', [], 'role.id=role_admin.role_id')
         ->view('access', [], ['access.role_id=role.id', 'access.node_id=node.id'])
-        ->where($map)
+        ->where( [
+            ['role.status', '=', 1],
+            ['node.status', '=', 1],
+            ['node.level', '=', $_level],
+            ['node.pid', '=', $_pid],
+            ['role_admin.user_id', '=', $_auth_id],
+        ])
         ->select();
 
         return $result ? $result->toArray() : [];

@@ -253,13 +253,11 @@ class Async
      */
     public function outputData($_msg, $_data, $_code = 'SUCCESS')
     {
-        $data = [
+        return $this->outputResult([
             'code' => $_code,
             'msg'  => $_msg,
             'data' => $_data,
-        ];
-
-        return $this->outputResult($data);
+        ]);
     }
 
     /**
@@ -271,12 +269,10 @@ class Async
      */
     public function outputError($_msg, $_code = 'ERROR')
     {
-        $data = [
+        return $this->outputResult([
             'code' => $_code,
             'msg'  => $_msg,
-        ];
-
-        return $this->outputResult($data);
+        ]);
     }
 
     /**
@@ -292,12 +288,6 @@ class Async
             $_params['RP'] = $this->params;
         }
 
-        $header = [
-            'cache-control' => 'max-age=3600,must-revalidate',
-            'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
-            'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-        ];
-
         switch ($this->format) {
             case 'xml':
                 return xml($_params);
@@ -308,7 +298,11 @@ class Async
                 break;
 
             default:
-                return json($_params, 200, $header);
+                return json($_params, 200, [
+                    'cache-control' => 'max-age=3600,must-revalidate',
+                    'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
+                    'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+                ]);
                 break;
         }
     }
