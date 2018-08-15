@@ -37,13 +37,13 @@ return [
     // pathinfo分隔符
     'pathinfo_depr'        => '/',
     // URL伪静态后缀
-    'url_html_suffix'      => 'do|shtml|html|htm',
+    'url_html_suffix'      => 'do|htm|html|shtml',
     // 路由使用完整匹配
     'route_complete_match' => true,
     // 是否强制使用路由
     'url_route_must'       => false,
     // 域名部署
-    'url_domain_deploy'    => false,
+    'url_domain_deploy'    => true,
 
     // 异常页面的模板文件
     'exception_tmpl'       => Env::get('root_path') . 'public/theme/think_exception.tpl',

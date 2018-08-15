@@ -207,14 +207,14 @@ class Async
     }
 
     /**
-     * 生成需求令牌
+     * 生成请求令牌
      * @access public
      * @param
      * @return void
      */
     public function createRequireToken()
     {
-        if (!session('?_ASYNCTOKEN') && APP_DEBUG) {
+        if (!session('?_ASYNCTOKEN')) {
             $http_referer = app()->version() . env('app_path') . date('Ymd');
             // request()->url(true) .
 
@@ -223,7 +223,7 @@ class Async
     }
 
     /**
-     * 验证需求令牌是否合法
+     * 验证请求令牌是否合法
      * @access private
      * @param
      * @return mixed
@@ -237,7 +237,7 @@ class Async
                 return 'request token error';
             }
         } else {
-            return 'request token un';
+            return 'request token error';
         }
 
         return true;
@@ -284,8 +284,8 @@ class Async
     protected function outputResult($_params)
     {
         if ($this->apiDebug) {
-            $_params['RD'] = use_time_memory();
-            $_params['RP'] = $this->params;
+            $_params['DEBUG'] = use_time_memory();
+            $_params['PARAMS'] = $this->params;
         }
 
         switch ($this->format) {

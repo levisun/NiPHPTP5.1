@@ -18,7 +18,7 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
 define('NP_VERSION', '2.0.1 Alpha 8.2613');
