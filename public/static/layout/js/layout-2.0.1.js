@@ -150,7 +150,6 @@
         if (_tips === false) {
             jQuery("div.layoutUi-loadpopup").remove();
             jQuery("body").removeAttr("style");
-            clearTimeout(st);
         } else {
             var html = "";
             jQuery("body").css({"height": "100%", "overflow": "hidden"});
@@ -162,7 +161,7 @@
             html += "</div>";
             jQuery(_element).append(html);
 
-            var st = setTimeout(function(){
+            setTimeout(function(){
                 jQuery.uiLoadpopup(false);
             }, 15 * 1000);
         }
@@ -292,7 +291,7 @@
             ajax_data        = jQuery.isSet(_params.data, {}),
             ajax_async       = jQuery.isSet(_params.async, true),
             ajax_cache       = jQuery.isSet(_params.cache, true),
-            ajax_dataType    = jQuery.isSet(_params.dataType, ""),
+            ajax_dataType    = jQuery.isSet(_params.dataType, "json"),
             ajax_processData = jQuery.isSet(_params.processData, true);
 
         jQuery.ajax({

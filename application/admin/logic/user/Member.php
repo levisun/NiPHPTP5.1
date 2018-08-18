@@ -81,7 +81,7 @@ class Member
         model('common/region')
         ->field(['id', 'pid', 'name'])
         ->where([
-            ['pid', '=', input('post.region_id/f', 1)],
+            ['pid', '=', input('post.region_id/f', 100000)],
         ])
         ->order('id ASC')
         ->cache(true)

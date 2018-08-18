@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 会员表 - 数据层
+ * IP地域信息表 - 数据层
  *
  * @package   NiPHPCMS
  * @category  common\model
@@ -14,34 +14,21 @@ namespace app\common\model;
 
 use think\Model;
 
-class Member extends Model
+class IpInfo extends Model
 {
-    protected $name = 'member';
+    protected $name = 'ipinfo';
     protected $autoWriteTimestamp = true;
-    protected $updateTime = 'update_time';
+    protected $updateTime = true;
     protected $pk = 'id';
     protected $field = [
         'id',
-        'username',
-        'password',
-        'email',
-        'realname',
-        'nickname',
-        'portrait',
-        'gender',
-        'birthday',
+        'ip',
+        'country_id',
         'province_id',
         'city_id',
         'area_id',
-        'address',
-        'phone',
-        'status',
-        'salt',
-        'last_login_ip',
-        'last_login_ip_attr',
-        'last_login_time',
-        'create_time',
         'update_time',
+        'create_time'
     ];
 
     /**
@@ -96,22 +83,5 @@ class Member extends Model
         ->update($_receive_data);
 
         return !!$result;
-    }
-
-    /**
-     * 获取器
-     * 节点状态
-     * @access protected
-     * @param  int    $value
-     * @return string
-     */
-    protected function getStatusNameAttr($_value, $_data)
-    {
-        $status = [
-            0 => lang('status no'),
-            1 => lang('status yes'),
-        ];
-
-        return $status[$_data['status']];
     }
 }

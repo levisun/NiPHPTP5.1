@@ -22,8 +22,22 @@ class Index extends Base
      */
     public function index()
     {
+
+        // $d = json_decode($d);
+        // print_r($d);halt($d);
+        logic('common/IpInfo');
+
         echo escape_xss('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE a [<!ENTITY b SYSTEM "file:///etc//passwd">]><login>&b;</login>');
         return $this->fetch('index.html');
+    }
+
+    public function re($_data)
+    {
+        foreach ($_data as $key => $value) {
+            if (is_array($value)) {
+                # code...
+            }
+        }
     }
 
     /**

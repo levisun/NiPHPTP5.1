@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS `np_member` (
   `portrait` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
   `gender` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '性别',
   `birthday` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '生日',
-  `province` smallint(5) NOT NULL DEFAULT '0' COMMENT '省',
-  `city` smallint(5) NOT NULL DEFAULT '0' COMMENT '市',
-  `area` smallint(5) NOT NULL DEFAULT '0' COMMENT '区',
+  `province_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '省',
+  `city_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '市',
+  `area_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '区',
   `address` varchar(255) NOT NULL DEFAULT '' COMMENT '地址',
   `phone` varchar(11) NOT NULL DEFAULT '' COMMENT '电话',
   `salt` char(6) NOT NULL COMMENT '佐料',
@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS `np_member` (
   KEY `password` (`password`),
   KEY `gender` (`gender`),
   KEY `birthday` (`birthday`),
-  KEY `province` (`province`),
-  KEY `city` (`city`),
-  KEY `area` (`area`)
+  KEY `province_id` (`province_id`),
+  KEY `city_id` (`city_id`),
+  KEY `area_id` (`area_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '会员';
 
 DROP TABLE IF EXISTS `np_member_oauth`;

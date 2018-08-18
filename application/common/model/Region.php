@@ -23,7 +23,6 @@ class Region extends Model
     protected $field = [
         'id',
         'pid',
-        'name',
-        'type'
+        'name'
     ];
 }
