@@ -17,82 +17,154 @@ class IpInfo
 {
 
     public function __construct()
-    {
-        $this->autoUpdate();
-    }
+    {}
 
-    public function eachIpInfo()
-    {
-        set_time_limit(0);
-        ini_set('memory_limit', '512M');
-        $request_url = 'http://ip.taobao.com/service/getIpInfo.php?ip=';
-        for ($i=255; $i >= 1; $i--) {
-            for ($j=255; $j >= 1; $j--) {
-                $insert_all = [];
-                for ($k=255; $k >= 1; $k--) {
-                    for ($l=255; $l >= 1; $l--) {
-
-                        $ip = $i . '.' . $j . '.' . $k . '.' . $l;
-                        $insert_all[] = [
-                            'ip' => $ip,
-                            'update_time' => time(),
-                            'create_time' => time(),
-                        ];
-
-                        // $request_url .= $ip;
-                        // $result = file_get_contents($request_url);
-                        // if (!is_null($result)) {
-                        //     $ip = json_decode($result, true);
-                        //     if (is_array($ip)) {
-                        //         $this->added($ip['data']);
-                        //     }
-                        // }
-                    }
-                }
-                echo count($insert_all);die();
-                db('ipinfo')
-                ->insertAll($insert_all);
-            }
-        }
-    }
-
-    public function added($_data)
+    /**
+     * 查询IP地址信息
+     * @access public
+     * @param
+     * @return array
+     */
+    public function getInfo()
     {
         $result =
-        db('ipinfo')
-        ->field(true)
-        ->where('id', $_data['ip'])
+        model('common/IpInfo')
+        ->view('ipinfo i', ['id', 'ip', 'update_time'])
+        ->view('region country', ['name' => 'country'], 'country.id=i.country_id', 'LEFT')
+        ->view('region region', ['name' => 'region'], 'region.id=i.province_id', 'LEFT')
+        ->view('region city', ['name' => 'city'], 'city.id=i.city_id', 'LEFT')
+        ->view('region area', ['name' => 'area'], 'area.id=i.area_id', 'LEFT')
+        ->where([
+            ['i.ip', '=', request()->ip()]
+        ])
         ->find();
-        if (!$result) {
-            db('ipinfo')
-            ->insert([
-                'ip'          => $_data['ip'],
-                // 'country'     => $_data['country'],
-                // 'region'      => $_data['region'],
-                // 'city'        => $_data['city'],
-                // 'area'        => $_data['area'],
-                // 'county'      => $_data['county'],
+
+        if ($result && $result['update_time'] <= strtotime('-1 year')) {
+            $this->update();
+        } elseif (!$result) {
+            $result = $this->added();
+        }
+
+        unset($result['id'], $result['update_time']);
+
+        if (in_array($result['ip'], ['::1', '127.0.0.1'])) {
+            $result['country'] = '保留地址或本地局域网';
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * 插入IP地址库
+     * @access private
+     * @param
+     * @return void
+     */
+    private function added()
+    {
+        $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . request()->ip());
+        if (!is_null($result) && $ip = json_decode($result, true)) {
+            $country  = $this->queryRegion($ip['data']['country']);
+            $province = $this->queryRegion($ip['data']['region']);
+            $city     = $this->queryRegion($ip['data']['city']);
+            if ($ip['data']['area']) {
+                $area = $this->queryRegion($ip['data']['area']);
+            } else {
+                $area = 0;
+            }
+
+            model('common/IpInfo')
+            ->allowField(true)
+            ->create([
+                'ip'          => request()->ip(),
+                'country_id'  => $country,
+                'province_id' => $province,
+                'city_id'     => $city,
+                'area_id'     => $area,
                 'update_time' => time(),
-                'create_time' => time(),
+                'create_time' => time()
             ]);
         }
     }
 
     /**
-     * 修改IP地址库
-     * @return [type] [description]
+     * 更新IP地址库
+     * @access private
+     * @param
+     * @return void
      */
-    private function autoUpdate()
+    private function update()
+    {
+        $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . request()->ip());
+        if (!is_null($result) && $ip = json_decode($result, true)) {
+            $country  = $this->queryRegion($ip['data']['country']);
+            $province = $this->queryRegion($ip['data']['region']);
+            $city     = $this->queryRegion($ip['data']['city']);
+            if ($ip['data']['area']) {
+                $area = $this->queryRegion($ip['data']['area']);
+            } else {
+                $area = 0;
+            }
+
+            model('common/IpInfo')
+            ->allowField(true)
+            ->where([
+                ['ip', '=', request()->ip()],
+            ])
+            ->update([
+                'country_id'  => $country,
+                'province_id' => $province,
+                'city_id'     => $city,
+                'area_id'     => $area,
+                'update_time' => time()
+            ]);
+        }
+    }
+
+    /**
+     * 查询地址ID
+     * @access private
+     * @param  string  $_name
+     * @return int
+     */
+    private function queryRegion($_name)
     {
         $result =
-        model('common/IpInfo')
+        model('common/region')
         ->where([
-            ['ip', '=', '117.22.144.218']
+            ['name', 'LIKE', $_name . '%']
         ])
-        ->value('update_time');
-        halt($result);
-        if ($result <= strtotime('-1 year')) {
-            # code...
+        ->value('id');
+
+        return $result ? $result : 0;
+    }
+
+    /**
+     * url
+     * @access private
+     * @param  string  $_url url
+     * @return mixed
+     */
+    private function curl($_url)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $_url);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $headers = ['content-type: application/x-www-form-urlencoded;charset=UTF-8'];
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $result = curl_exec($curl);
+
+        if ($result) {
+            curl_close($curl);
+            return $result;
+        } else {
+            $error = curl_errno($curl);
+            curl_close($curl);
+            return 'curl出错,错误码:' . $error;
         }
     }
 }

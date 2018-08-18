@@ -18,7 +18,8 @@ class IpInfo extends Model
 {
     protected $name = 'ipinfo';
     protected $autoWriteTimestamp = true;
-    protected $updateTime = true;
+    protected $updateTime = 'update_time';
+    protected $dateFormat = false;
     protected $pk = 'id';
     protected $field = [
         'id',

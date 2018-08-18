@@ -23,6 +23,7 @@ Route::domain('admin', [
 ->ext('do');
 
 Route::domain('www', [
+    'getipinfo'      => 'index/getipinfo',
     'channel/:cid$'  => 'index/channel',
     'feedback/:cid$' => 'index/feedback',
     'message/:cid$'  => 'index/message',
