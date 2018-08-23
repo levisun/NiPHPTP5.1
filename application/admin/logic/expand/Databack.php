@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 数据库备份 - 扩展 - 控制器
+ * 数据库备份 - 扩展 - 业务层
  *
  * @package   NiPHPCMS
  * @category  application\admin\logic\expand

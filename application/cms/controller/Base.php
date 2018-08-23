@@ -26,7 +26,9 @@ class Base extends Controller
         concurrent_error();
 
         // 生成异步请求令牌
-        logic('common/Async')->createRequireToken();
+        logic('common/async')->createRequireToken();
+        logic('common/visit')->addedVisit();
+        logic('common/visit')->addedSearchengine();
 
         // 请求参数
         $this->requestParam = [

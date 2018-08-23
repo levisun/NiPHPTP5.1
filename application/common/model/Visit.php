@@ -25,6 +25,24 @@ class Visit extends Model
         'date',
         'ip',
         'ip_attr',
+        'user_agent',
         'count',
     ];
+
+    /**
+     * 新增
+     * @access public
+     * @param  array  $_receive_data
+     * @return mixed
+     */
+    public function added($_receive_data)
+    {
+        // unset($_receive_data['id'], $_receive_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->create($_receive_data);
+
+        return $result->id;
+    }
 }

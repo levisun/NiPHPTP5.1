@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 自定义字段 - 栏目 - 控制器
+ * 自定义字段 - 栏目 - 业务层
  *
  * @package   NiPHPCMS
  * @category  application\admin\logic\category

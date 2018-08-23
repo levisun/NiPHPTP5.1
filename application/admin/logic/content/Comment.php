@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 评论 - 内容 - 控制器
+ * 评论 - 内容 - 业务层
  *
  * @package   NiPHPCMS
  * @category  application\admin\logic\content

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 幻灯片 - 内容 - 控制器
+ * 幻灯片 - 内容 - 业务层
  *
  * @package   NiPHPCMS
  * @category  application\admin\logic\content

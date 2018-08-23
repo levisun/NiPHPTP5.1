@@ -26,7 +26,7 @@ class Info
         if (!$result = cache('_SYSINFO')) {
             $gd_info = gd_info();
             $gd  = strtr($gd_info['GD Version'], ['bundled (' => '', ' compatible)' => '']) . '(';
-            $gd .= $gd_info['GIF Read Support'] ? ' GIF' : '';
+            $gd .= $gd_info['GIF Read Support'] ? 'GIF' : '';
             $gd .= $gd_info['JPEG Support'] ? ' JPEG' : '';
             $gd .= $gd_info['PNG Support'] ? ' PNG' : '';
             $gd .= ')';

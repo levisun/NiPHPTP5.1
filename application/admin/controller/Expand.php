@@ -26,6 +26,12 @@ class Expand extends Base
         return $this->fetch();
     }
 
+    /**
+     * 数据库
+     * @access public
+     * @param  string $operate
+     * @return mixed
+     */
     public function databack($operate = '')
     {
         $tpl = $operate ? 'databack_' . $operate : '';
@@ -42,5 +48,16 @@ class Expand extends Base
     {
         $tpl = $operate ? 'elog_' . $operate : '';
         return $this->fetch($tpl);
+    }
+
+    /**
+     * 统计信息
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function visit()
+    {
+        # code...
     }
 }

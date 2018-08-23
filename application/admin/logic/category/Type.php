@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 分类 - 栏目 - 控制器
+ * 分类 - 栏目 - 业务层
  *
  * @package   NiPHPCMS
  * @category  application\admin\logic\category
