@@ -75,7 +75,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/category/type.shtml");
+        handle(result, "{:url('category/type')}");
     });
     return false;
 });

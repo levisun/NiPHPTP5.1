@@ -172,10 +172,16 @@ class Databack extends Model
                 $num = 1000000 + $i;
                 if ($i == 0) {
                     $TABLES_SQL[] = $INSERT_SQL . $VALUES;
-                    file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', json_encode($TABLES_SQL));
+                    file_put_contents(
+                        $TEMP_DIR . $table_name . '_' . $num .  '.sql',
+                        json_encode($TABLES_SQL, JSON_UNESCAPED_UNICODE)
+                    );
                     unset($TABLES_SQL);
                 } else {
-                    file_put_contents($TEMP_DIR . $table_name . '_' . $num .  '.sql', json_encode([$INSERT_SQL . $VALUES]));
+                    file_put_contents(
+                        $TEMP_DIR . $table_name . '_' . $num .  '.sql',
+                        json_encode([$INSERT_SQL . $VALUES], JSON_UNESCAPED_UNICODE)
+                    );
                 }
             }
         }

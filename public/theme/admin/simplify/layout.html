@@ -40,7 +40,7 @@
         if (_result.code === "SUCCESS") {
             $.uiToast(_result.msg);
             if (typeof(_url) != "undefined" && _url) {
-                $.redirect(request.domain+_url);
+                $.redirect(_url);
                 return false;
             }
         } else {
@@ -143,7 +143,7 @@ $("._handle_logout").click(function(){
             method: "account.logout.logout"
         }
     }, function(result){
-        handle(result, "admin/account/login.shtml");
+        handle(result, "{:url('account/login')}");
     });
 });
 </script>

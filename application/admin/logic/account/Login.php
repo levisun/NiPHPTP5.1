@@ -99,12 +99,9 @@ class Login
     private function updateLogin($_user_id, $_login_ip)
     {
         $ip_attr = '';
-        $request_url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . $_login_ip;
-        $result = file_get_contents($request_url);
+        $result = logic('common/IpInfo')->getInfo();
         if (!is_null($result)) {
-            $ip = json_decode($result, true);
-            $ip_attr  = $ip['data']['region'] . $ip['data']['city'];
-            $ip_attr .= '[' . $ip['data']['isp'] . ']';
+            $ip_attr = $result['region'] . $result['city'];
         }
 
         $update_data = [

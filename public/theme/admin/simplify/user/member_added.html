@@ -244,7 +244,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/user/member.shtml");
+        handle(result, "{:url('user/member')}");
     });
     return false;
 });

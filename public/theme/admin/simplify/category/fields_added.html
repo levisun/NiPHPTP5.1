@@ -101,7 +101,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/category/fields.shtml");
+        handle(result, "{:url('category/fields')}");
     });
     return false;
 });

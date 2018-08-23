@@ -71,7 +71,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/user/admin.shtml");
+        handle(result, "{:url('user/admin')}");
     });
     return false;
 });

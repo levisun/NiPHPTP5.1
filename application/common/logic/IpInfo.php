@@ -27,6 +27,8 @@ class IpInfo
      */
     public function getInfo()
     {
+        $request_ip = input('param.ip', request()->ip());
+
         $result =
         model('common/IpInfo')
         ->view('ipinfo i', ['id', 'ip', 'update_time'])
@@ -35,14 +37,15 @@ class IpInfo
         ->view('region city', ['name' => 'city'], 'city.id=i.city_id', 'LEFT')
         ->view('region area', ['name' => 'area'], 'area.id=i.area_id', 'LEFT')
         ->where([
-            ['i.ip', '=', request()->ip()]
+            ['i.ip', '=', $request_ip]
         ])
+        ->cache(true)
         ->find();
 
         if ($result && $result['update_time'] <= strtotime('-1 year')) {
-            $this->update();
+            $this->update($request_ip);
         } elseif (!$result) {
-            $result = $this->added();
+            $result = $this->added($request_ip);
         }
 
         unset($result['id'], $result['update_time']);
@@ -61,9 +64,9 @@ class IpInfo
      * @param
      * @return void
      */
-    private function added()
+    private function added($_request_ip)
     {
-        $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . request()->ip());
+        $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . $_request_ip);
         if (!is_null($result) && $ip = json_decode($result, true)) {
             $country  = $this->queryRegion($ip['data']['country']);
             $province = $this->queryRegion($ip['data']['region']);
@@ -77,7 +80,7 @@ class IpInfo
             model('common/IpInfo')
             ->allowField(true)
             ->create([
-                'ip'          => request()->ip(),
+                'ip'          => $_request_ip,
                 'country_id'  => $country,
                 'province_id' => $province,
                 'city_id'     => $city,
@@ -94,9 +97,9 @@ class IpInfo
      * @param
      * @return void
      */
-    private function update()
+    private function update($_request_ip)
     {
-        $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . request()->ip());
+        $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . $_request_ip);
         if (!is_null($result) && $ip = json_decode($result, true)) {
             $country  = $this->queryRegion($ip['data']['country']);
             $province = $this->queryRegion($ip['data']['region']);
@@ -110,7 +113,7 @@ class IpInfo
             model('common/IpInfo')
             ->allowField(true)
             ->where([
-                ['ip', '=', request()->ip()],
+                ['ip', '=', $_request_ip],
             ])
             ->update([
                 'country_id'  => $country,

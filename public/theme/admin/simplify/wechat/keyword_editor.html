@@ -119,7 +119,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "admin/wechat/keyword.shtml");
+        handle(result, "{:url('wechat/keyword')}");
     });
     return false;
 });

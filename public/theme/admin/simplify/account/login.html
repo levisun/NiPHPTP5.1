@@ -37,7 +37,7 @@ $("form").submit(function(){
         async: false,
         data: form_data,
     }, function(result){
-        handle(result, "settings/info.shtml");
+        handle(result, "{:url('settings/info')}");
     });
     return false;
 });
