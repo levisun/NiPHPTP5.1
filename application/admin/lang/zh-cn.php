@@ -5,7 +5,7 @@ return [
 
     'category name'        => '栏目名',
 
-    'exec success' => '执行成功',
+
 
     'feedback'             => '反馈',
     'feedback and message' => '反馈与留言',
@@ -38,12 +38,17 @@ return [
 
     'visit'                => '浏览统计',
 
-    'website name' => '网站名称',
-    'website keywords' => '网站关键词',
+
+    'website name'        => '网站名称',
+    'website keywords'    => '网站关键词',
     'website description' => '网站描述',
-    'bottom message' => '底部信息',
-    'copyright' => '版权信息',
-    'script' => 'java script脚本',
+    'bottom message'      => '底部信息',
+    'copyright'           => '版权信息',
+    'script'              => 'java script脚本',
+
+    'backname' => '名称',
+    'backtime' => '备份时间',
+    'backsize' => '备份大小',
 
 
     // 异步请求
@@ -59,6 +64,8 @@ return [
     'status'                => '状态',
     'status no'             => '未启用',
     'status yes'            => '启用',
+    'operation'             => '操作',
+    'exec success'          => '执行成功',
 
     'illegal operation'     => '无效操作！',
     'no permission'         => '无效操作！',

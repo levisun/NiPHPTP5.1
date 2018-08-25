@@ -17,12 +17,13 @@ Route::pattern([
     'p'       => '\d+',
 ]);
 
-Route::domain('admin', [
+// 后台
+Route::domain(['admin'], [
 ])
 ->bind('admin')
 ->ext('do');
 
-Route::domain('www', [
+Route::domain(['www', 'm'], [
     'getipinfo'      => 'index/getipinfo',
     'channel/:cid$'  => 'index/channel',
     'feedback/:cid$' => 'index/feedback',
@@ -34,10 +35,19 @@ Route::domain('www', [
 ->ext('html')
 ->cache(APP_DEBUG ? false : 2880);
 
-
 Route::domain('my', [
 ])
-->bind('user')
+->bind('member')
+->ext('shtml');
+
+Route::domain('mall', [
+])
+->bind('mall')
+->ext('shtml');
+
+Route::domain('api.wechat', [
+])
+->bind('wechat')
 ->ext('shtml');
 
 return [

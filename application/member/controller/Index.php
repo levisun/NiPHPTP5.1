@@ -10,7 +10,7 @@
  * @link      www.NiPHP.com
  * @since     2017/09/13
  */
-namespace app\user\controller;
+namespace app\member\controller;
 
 class Index
 {
