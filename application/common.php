@@ -98,6 +98,10 @@ function view_filter($_content)
         '/(\r|\n|\f)/si'                        // 回车
     ], '', $_content);
 
+    $_content .= '<script type="text/javascript">
+    console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");
+    </script>';
+
     // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;

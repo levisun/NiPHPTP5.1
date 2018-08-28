@@ -42,8 +42,8 @@ class Image extends Validate
     ];
 
     protected $message = [
-        'auto_image.require'             => '{%error image auto image}',
-        'auto_image.number'              => '{%error image auto image}',
+        'auto_image.require'             => '{%error image auto remove image}',
+        'auto_image.number'              => '{%error image auto remove image}',
         'article_module_width.require'   => '{%error image article module}',
         'article_module_width.number'    => '{%error image article module}',
         'article_module_height.require'  => '{%error image article module}',

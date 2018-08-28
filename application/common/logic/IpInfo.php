@@ -49,6 +49,9 @@ class IpInfo
         }
 
         unset($result['id'], $result['update_time']);
+        $result['region'] = is_null($result['region']) ? '' : $result['region'];
+        $result['city']   = is_null($result['city']) ? '' : $result['city'];
+        $result['area']   = is_null($result['area']) ? '' : $result['area'];
 
         if (in_array($result['ip'], ['::1', '127.0.0.1'])) {
             $result['country'] = '保留地址或本地局域网';

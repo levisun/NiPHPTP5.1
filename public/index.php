@@ -24,7 +24,7 @@ version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
 define('NP_VERSION', '2.0.1 Alpha 8.2613');
 set_time_limit(300);
 ini_set('memory_limit', '32M');
-if (function_exists('header_remove')) header_remove('X-Powered-By'); else header('X-Powered-By: X');
+header('X-Powered-By: NiPHP ' . NP_VERSION);
 // if (function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
 libxml_disable_entity_loader(true);
 

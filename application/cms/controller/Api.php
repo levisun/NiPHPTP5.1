@@ -38,6 +38,14 @@ class Api extends Async
         );
     }
 
+    public function getipinfo()
+    {
+        return $this->outputData(
+            'ip info',
+            logic('common/IpInfo')->getInfo()
+        );
+    }
+
     /**
      * 验证异步加密签名
      * @access protected

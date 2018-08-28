@@ -298,7 +298,12 @@ class Async
                 break;
 
             default:
-                return json($_params, 200, [
+                return
+                json($_params)
+                ->code(200)
+                ->allowCache(false)
+                ->header([
+                    'pragma'        => 'cache',
                     'cache-control' => 'max-age=3600,must-revalidate',
                     'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
                     'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',

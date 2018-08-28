@@ -1,57 +1,79 @@
 <?php
 return [
     'admin login' => '管理员登录',
-    'ads'                  => '广告',
 
-    'category name'        => '栏目名',
+    // 图片设置
+    'auto remove image'             => '自动删除图片',
+    'auto remove image info'        => '开启后删除信息时将自动删除相应图片',
+    'article module'                => '文章模型',
+    'picture module'                => '图片模型',
+    'download module'               => '下载模型',
+    'page module'                   => '单页模型',
+    'product module'                => '产品模型',
+    'job module'                    => '招聘模型',
+    'link module'                   => '友链模型',
+    'ask module'                    => '问答模型',
+    'add water'                     => '添加水印',
+    'water type'                    => '水印类型',
+    'water type image'              => '图片',
+    'water type text'               => '文字',
+    'water location'                => '水印位置',
+    'water text'                    => '水印文字',
+    'water image'                   => '水印图片',
+    'error image auto remove image' => '请设置自动删除图片',
+    'error image article module'    => '请设置文章模型缩略图尺寸',
+    'error image picture module'    => '请设置图片模型缩略图尺寸',
+    'error image download module'   => '请设置下载模型缩略图尺寸',
+    'error image page module'       => '请设置单页模型缩略图尺寸',
+    'error image product module'    => '请设置产品模型缩略图尺寸',
+    'error image job module'        => '请设置招聘模型缩略图尺寸',
+    'error image link module'       => '请设置友链模型缩略图尺寸',
+    'error image ask module'        => '请设置问答模型缩略图尺寸',
+    'error image add water'         => '请选择是否添加水印',
+    'error image water type'        => '请选择水印类型',
+    'error image water location'    => '请选择水印位置',
+    'error image water text'        => '请设置文字水印内容',
+    'error image water image'       => '请上传图片水印',
 
+    // 语言设置
+    'system website name'        => '系统默认语言',
+    'website default lang'       => '网站默认语言',
+    'domain auto'                => '自动切换',
+    'error system default lang'  => '请选择系统默认语言',
+    'error website default lang' => '请选择网站默认语言',
+    'error domain auto'          => '请选择域名自动切换',
 
+    // 设置 - 基础
+    'website name'                             => '网站名称',
+    'website keywords'                         => '关键词',
+    'website description'                      => '描述',
+    'bottom message'                           => '底部信息',
+    'support html'                             => '支持HTML',
+    'copyright'                                => '版权信息',
+    'script'                                   => 'JS脚本',
+    'please enter website name'                => '请输入网站名称！',
+    'website name length shall not exceed 500' => '网站名称长度不得大于500位',
 
-    'feedback'             => '反馈',
-    'feedback and message' => '反馈与留言',
-
-    'ischannel'            => '频道页',
-    'isshow'               => '显示',
-
-    'link'                 => '友情链接',
-
+    // 系统信息
     'member'               => '会员',
-    'member count'         => '会员人数',
-    'member reg'           => '注册人数',
+    'member count'         => '总人数',
+    'member reg'           => '新注册',
+    'feedback and message' => '反馈/留言',
+    'feedback'             => '反馈',
     'message'              => '留言',
-    'model'                => '模型',
-
+    'tg'                   => '推广',
+    'ads'                  => '广告',
+    'link'                 => '友情链接',
     'sys info'             => '系统信息',
-    'sys version'          => '版本',
-    'sys os'               => '服务器操作系统',
+    'sys version'          => '系统版本',
+    'sys os'               => '操作系统',
     'sys env'              => 'PHP/解译引擎',
     'sys db'               => '数据库',
-    'GD'                   => 'GD库版本',
-    'sys timezone'         => '系统时区',
-    'sys copy'             => '版权',
-    'sys upgrade'          => '在线升级',
-    'support html'         => '支持HTML',
-
-    'tg'                   => '推广',
-    'type main'            => '主导航',
-    'type top'             => '顶导航',
-
-    'visit'                => '浏览统计',
-
-
-    'website name'        => '网站名称',
-    'website keywords'    => '网站关键词',
-    'website description' => '网站描述',
-    'bottom message'      => '底部信息',
-    'copyright'           => '版权信息',
-    'script'              => 'java script脚本',
-
-    'backname' => '名称',
-    'backtime' => '备份时间',
-    'backsize' => '备份大小',
-
-
-    // 异步请求
+    'GD'                   => 'GD库',
+    'sys timezone'         => '时区',
+    'sys copy'             => '版权所有',
+    'sys upgrade'          => '升级',
+    'visit'                => '访问统计',
 
     // 核心
     'website home'          => '首页',
@@ -69,8 +91,8 @@ return [
 
     'illegal operation'     => '无效操作！',
     'no permission'         => '无效操作！',
-    'save success'          => '操作成功！',
-    'save fail'             => '操作失败！',
+    'save success'          => '请求成功！',
+    'save fail'             => '请求失败！',
     'editor success'        => '编辑成功！',
     'editor fail'           => '编辑失败！',
     'sort success'          => '排序成功！',
