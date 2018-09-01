@@ -254,7 +254,8 @@ class Upload
             if ($value['name'] == 'upload_file_max') {
                 $validate['size'] = $value['value'] * 1024 * 1024;
             } else {
-                $validate['ext'] = str_replace('|', ',', $value['value']);
+                // $validate['ext'] = str_replace('|', ',', $value['value']);
+                $validate['ext'] = str_replace('，', ',', $value['value']);
             }
         }
 

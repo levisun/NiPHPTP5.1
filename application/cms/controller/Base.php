@@ -21,6 +21,8 @@ class Base extends Controller
 
     protected $domain = '';
 
+    protected $siteInfo = [];
+
     protected function initialize()
     {
         concurrent_error();
@@ -41,6 +43,8 @@ class Base extends Controller
         // 域名
         $this->domain = $this->request->domain() . $this->request->root() . '/';
 
+        $this->siteInfo = logic('cms/siteinfo')->query();
+
         $this->setTemplate();
     }
 
@@ -53,23 +57,38 @@ class Base extends Controller
     private function setTemplate()
     {
         // 重新定义模板目录
+        $default_theme =
+        model('common/config')
+        ->field(true)
+        ->where([
+            ['name', '=', 'cms_theme'],
+            ['lang', '=', lang(':detect')],
+        ])
+        ->value('value');
+
         $view_path  = env('root_path') . basename($this->request->root());
         $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
         $view_path .= 'cms' . DIRECTORY_SEPARATOR;
-        $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
+        $view_path .= $default_theme . DIRECTORY_SEPARATOR;
 
         // 模板地址 带域名
-        $default_theme  = $this->domain . 'theme/cms/';
-        $default_theme .= config('default_theme') . '/';
+        $default_theme  = $this->domain . 'theme/cms/' . $default_theme . '/';
 
         $replace = [
-            '__DOMAIN__'   => $this->domain,
-            '__PHP_SELF__' => basename($this->request->baseFile()),
-            '__STATIC__'   => $this->domain . 'static/',
-            '__THEME__'    => config('default_theme'),
-            '__CSS__'      => $default_theme . 'css/',
-            '__JS__'       => $default_theme . 'js/',
-            '__IMG__'      => $default_theme . 'images/',
+            '__DOMAIN__'      => $this->domain,
+            '__PHP_SELF__'    => basename($this->request->baseFile()),
+            '__STATIC__'      => $this->domain . 'static/',
+            '__THEME__'       => config('default_theme'),
+            '__CSS__'         => $default_theme . 'css/',
+            '__JS__'          => $default_theme . 'js/',
+            '__IMG__'         => $default_theme . 'images/',
+
+            '__TITLE__'       => $this->siteInfo['website_name'],
+            '__KEYWORDS__'    => $this->siteInfo['website_keywords'],
+            '__DESCRIPTION__' => $this->siteInfo['website_description'],
+            '__BOTTOM_MSG__'  => htmlspecialchars_decode($this->siteInfo['bottom_message']),
+            '__COPYRIGHT__'   => $this->siteInfo['copyright'],
+            '__SCRIPT__'      => htmlspecialchars_decode($this->siteInfo['script']),
         ];
 
         $template = config('template.');

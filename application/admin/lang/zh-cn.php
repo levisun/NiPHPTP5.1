@@ -2,6 +2,54 @@
 return [
     'admin login' => '管理员登录',
 
+    // 管理栏目
+    'show child'    => '查看子栏目',
+    'add child'     => '添加子栏目',
+    'type top'      => '顶部导航',
+    'type main'     => '主导航',
+    'type foot'     => '底部导航',
+    'type other'    => '其它导航',
+    'aliases'       => '别名',
+    'parent'        => '上级栏目',
+    'url'           => '链接地址',
+    'isshow'        => '显示',
+    'ischannel'     => '频道页',
+    'image'         => '栏目图片',
+    'title'         => '标题',
+    'keywords'      => '关键词',
+    'description'   => '描述',
+    'access'        => '权限',
+    'select access' => '请选择访问权限',
+
+    // 邮件设置
+    'emailsms smtp host'             => '邮件发送服务器',
+    'emailsms smtp port'             => '服务器端口',
+    'emailsms smtp username'         => '用户名',
+    'emailsms smtp password'         => '密码',
+    'emailsms smtp from email'       => '发送人邮箱地址',
+    'emailsms smtp from name'        => '发送人姓名',
+    'error emailsms smtp host'       => '请设置邮件发送服务器',
+    'error emailsms smtp port'       => '请设置服务器端口,必须为数字',
+    'error emailsms smtp username'   => '请设置用户名',
+    'error emailsms smtp password'   => '请设置密码',
+    'error emailsms smtp from email' => '请设置发送人邮箱地址',
+    'error emailsms smtp from name'  => '请设置发送人姓名',
+
+    // 安全与效率设置
+    'content check'                     => '发布文章审核',
+    'member login captcha'              => '会员登录验证码',
+    'website submit captcha'            => '网站提交验证码',
+    'website static'                    => '网站静态化',
+    'upload file max'                   => '文件上传最大值',
+    'upload file type'                  => '允许上传的文件格式',
+    'upload file type info'             => '多种格式请用“,”隔开',
+    'error safe content check'          => '请设置发布文章审核',
+    'error safe member login captcha'   => '请设置会员登录验证码',
+    'error safe website submit captcha' => '请设置网站提交验证码',
+    'error safe website static'         => '请设置网站静态化',
+    'error safe upload file max'        => '请设置文件上传最大值',
+    'error safe upload file type'       => '请设置允许上传的文件格式',
+
     // 图片设置
     'auto remove image'             => '自动删除图片',
     'auto remove image info'        => '开启后删除信息时将自动删除相应图片',
@@ -88,6 +136,7 @@ return [
     'status yes'            => '启用',
     'operation'             => '操作',
     'exec success'          => '执行成功',
+    'model'                 => '模型',
 
     'illegal operation'     => '无效操作！',
     'no permission'         => '无效操作！',

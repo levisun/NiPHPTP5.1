@@ -251,7 +251,7 @@ class Async
      * @param  array   $_data        返回数据
      * @return json
      */
-    public function outputData($_msg, $_data, $_code = 'SUCCESS')
+    public function outputData($_msg, $_data = [], $_code = 'SUCCESS')
     {
         return $this->outputResult([
             'code' => $_code,
@@ -300,7 +300,7 @@ class Async
             default:
                 return
                 json($_params)
-                ->code(200)
+                ->code(201)
                 ->allowCache(false)
                 ->header([
                     'pragma'        => 'cache',

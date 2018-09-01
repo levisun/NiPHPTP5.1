@@ -47,7 +47,7 @@ class Label extends TagLib
         'tags' => [
             'attr'  => '',
             'close' => 1,
-            'alias' => 'pag',
+            'alias' => 'tag',
         ],
     ];
 

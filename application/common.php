@@ -90,6 +90,12 @@ function is_wechat_request()
  */
 function view_filter($_content)
 {
+    if (!APP_DEBUG) {
+        $_content .= '<script type="text/javascript">
+        console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");
+        </script>';
+    }
+
     $_content = preg_replace([
         '/<\!--.*?-->/si',                      // HTML注释
         '/(\/\*).*?(\*\/)/si',                  // JS注释
@@ -97,10 +103,6 @@ function view_filter($_content)
         '/( ){2,}/si',                          // 空格
         '/(\r|\n|\f)/si'                        // 回车
     ], '', $_content);
-
-    $_content .= '<script type="text/javascript">
-    console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");
-    </script>';
 
     // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
@@ -530,7 +532,7 @@ function escape_xss($_data)
 
             // HTML中的JS无法执行
             // '\'' => '&#039;',
-            // '%'  => '&#37;',
+            '%'  => '&#37;',
             // '!'  => '&#33;',
             // '@'  => '&#64;',
             // '-'  => '&ndash;',

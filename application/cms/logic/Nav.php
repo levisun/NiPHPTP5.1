@@ -95,35 +95,35 @@ class Nav
         } else {
             switch ($_model_id) {
                 case 1:
-                    $url = url('/article/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/article/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 2:
-                    $url = url('/picture/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/picture/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 3:
-                    $url = url('/download/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/download/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 4:
-                    $url = url('/page/' . $_cat_id, [], 'html', true);
+                    $url = url('page/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 5:
-                    $url = url('/feedback/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/feedback/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 6:
-                    $url = url('/message/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/message/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 7:
-                    $url = url('/product/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/product/' . $_cat_id, [], 'html', true);
                     break;
 
                 case 8:
-                    $url = url('/link/' . $_cat_id, [], 'html', true);
+                    $url = url('entry/link/' . $_cat_id, [], 'html', true);
                     break;
 
                 default:

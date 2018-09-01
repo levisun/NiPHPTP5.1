@@ -28,8 +28,8 @@ class Ads
         $date = strtotime(date('Y-m-d'));
         $map = [
             ['id', '=', $_ads_id],
-            ['start_time', 'ELT', $date],
-            ['end_time', 'EGT', $date],
+            ['start_time', '>=', $date],
+            ['end_time', '<=', $date],
             ['lang', '=', lang(':detect')],
         ];
 

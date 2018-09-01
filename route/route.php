@@ -24,12 +24,30 @@ Route::domain(['admin'], [
 ->ext('do');
 
 Route::domain(['www', 'm'], [
-    'getipinfo'      => 'index/getipinfo',
-    'channel/:cid$'  => 'index/channel',
-    'feedback/:cid$' => 'index/feedback',
-    'message/:cid$'  => 'index/message',
-    'search/[:q]$'   => 'index/search',
-    ':operate/:cid$' => 'index/entry'
+    'getipinfo'            => 'index/getipinfo',
+    // 列表页[文章 图片 下载 反馈 留言 产品 友链]
+    'entry/:operate/:cid$' => 'index/entry',
+    // 频道页
+    'channel/:cid$'        => 'index/channel',
+    // 反馈页
+    'feedback/:cid$'       => 'index/feedback',
+    // 留言页
+    'message/:cid$'        => 'index/message',
+    // 搜索页
+    'search/[:q]$'         => 'index/search',
+    // 文章详情页
+    'article/:cid/:id$'    => 'index/article',
+    // 图片详情页
+    'picture/:cid/:id$'    => 'index/article',
+    // 下载详情页
+    'download/:cid/:id$'   => 'index/article',
+    // 产品详情页
+    'product/:cid/:id$'    => 'index/article',
+    // 单页详情页
+    'page/:cid'            => 'index/article',
+
+    'tags'                 => 'index/tags',
+
 ])
 ->bind('cms')
 ->ext('html')

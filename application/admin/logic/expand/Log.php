@@ -31,7 +31,8 @@ class Log
         ->delete();
 
         $result =
-        model('common/ActionLog')->view('action_log l', 'action_ip,module,remark,create_time')
+        model('common/ActionLog')
+        ->view('action_log l', 'action_ip,module,remark,create_time')
         ->view('action a', 'title', 'a.id=l.action_id')
         ->view('admin u', 'username', 'u.id=l.user_id')
         ->view('role_admin ra', 'user_id', 'ra.user_id=l.user_id')

@@ -42,7 +42,7 @@ class Breadcrumb
     {
         $result =
         model('common/category')
-        ->field('id,name,pid,is_channel,model_id')
+        ->field('id,name,pid,is_channel,model_id,seo_title,seo_keywords,seo_description')
         ->where([
             ['id', '=', $_id],
             ['lang', '=', lang(':detect')],

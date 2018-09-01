@@ -1,0 +1,60 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="row" id="theme-list">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        method: "theme.theme.query",
+        type: "cms",
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var html = "";
+        for (var index in result.data.list) {
+            html += "<div class='col-sm-2' id='set' data='"+result.data.list[index].name+"'>";
+            html += "<div class='thumbnail'>";
+            html += "<img src='"+result.data.list[index].img+"' width='100'>";
+            html += "<div class='caption align-c'>";
+            html += "<input type='radio' name='themes' ";
+            if (result.data.list[index].name === result.data.default_theme) {
+                html += "checked >";
+            } else {
+                html += ">";
+            }
+            html += result.data.list[index].name;
+            html += "</div>";
+            html += "</div>";
+            html += "</div>";
+        }
+        $("#theme-list").append(html);
+    }
+});
+$("body").on("click", "#set", function(){
+    var data = $(this).attr("data");
+    $.loading({
+        url: request.api.settle,
+        data: {
+            method: "theme.theme.editor",
+            type: "cms",
+            name: data
+        }
+    }, function(result){
+
+    });
+})
+</script>

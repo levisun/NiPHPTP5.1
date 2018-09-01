@@ -22,17 +22,7 @@ class Index extends Base
      */
     public function index()
     {
-        echo escape_xss('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE a [<!ENTITY b SYSTEM "file:///etc//passwd">]><login>&b;</login>');
         return $this->fetch('index.html');
-    }
-
-    public function re($_data)
-    {
-        foreach ($_data as $key => $value) {
-            if (is_array($value)) {
-                # code...
-            }
-        }
     }
 
     /**
@@ -83,6 +73,29 @@ class Index extends Base
         return $this->fetch('message.html');
     }
 
+    /**
+     * 标签
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function tags()
+    {
+        return $this->fetch('tags.html');
+    }
+
+    /**/
+    public function go()
+    {
+        # code...
+    }
+
+    /**
+     * IP信息
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function getipinfo()
     {
         json(logic('common/IpInfo')->getInfo());

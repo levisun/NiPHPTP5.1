@@ -13,7 +13,7 @@
 
 return [
     // cookie 名称前缀
-    'prefix'    => 'np_insomnia',
+    'prefix'    => 'np_pillow',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径

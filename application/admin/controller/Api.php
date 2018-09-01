@@ -103,19 +103,22 @@ class Api extends Async
         if ($this->action != 'login') {
             // 是否登录
             if (!session('?' . config('user_auth_key'))) {
-                return $this->outputError('ILLEGAL REQUEST1');
+                return 'ILLEGAL REQUEST';
             }
 
             // 登录权限信息
             if (!session('?_access_list')) {
-                return $this->outputError('ILLEGAL REQUEST');
+                return 'ILLEGAL REQUEST';
             }
 
             // 是否有访问操作等权限
             $access_list = session('_access_list');
             $access_list = $access_list['ADMIN'];
+            // 添加界面权限
+            $access_list['THEME']['THEME'] = true;
+
             if (!in_array($this->class, ['login', 'logout']) && empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
-                return $this->outputError('ILLEGAL REQUEST');
+                return 'ILLEGAL REQUEST';
             }
         }
 
