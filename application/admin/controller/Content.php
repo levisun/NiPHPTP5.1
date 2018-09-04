@@ -23,7 +23,12 @@ class Content extends Base
      */
     public function content($operate = '')
     {
-        $tpl = $operate ? 'content_' . $operate : 'content_category';
+        if (in_array($operate, ['', 'category', 'child'])) {
+            $tpl = 'content_category';
+        } else {
+            $tpl = 'content_' . $operate;
+        }
+
         return $this->fetch($tpl);
     }
 

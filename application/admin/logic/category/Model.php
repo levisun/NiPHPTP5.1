@@ -46,8 +46,12 @@ class Model
         $list = $result->toArray();
 
         return [
-            'list' => $list['data'],
-            'page' => $page
+            'list'         => $list['data'],
+            'total'        => $list['total'],
+            'per_page'     => $list['per_page'],
+            'current_page' => $list['current_page'],
+            'last_page'    => $list['last_page'],
+            'page'         => $page
         ];
     }
 }

@@ -215,7 +215,7 @@ class Async
     public function createRequireToken()
     {
         if (!session('?_ASYNCTOKEN')) {
-            $http_referer = app()->version() . env('app_path') . date('Ymd');
+            $http_referer = app()->version() . request()->header('user_agent') . env('app_path') . date('Ymd');
             // request()->url(true) .
 
             session('_ASYNCTOKEN', md5($http_referer));
@@ -231,7 +231,7 @@ class Async
     private function checkRequireToken()
     {
         if (session('?_ASYNCTOKEN')) {
-            $http_referer = app()->version() . env('app_path') . date('Ymd');
+            $http_referer = app()->version() . request()->header('user_agent') . env('app_path') . date('Ymd');
 
             if (session('_ASYNCTOKEN') !== md5($http_referer)) {
                 return 'request token error';
@@ -284,8 +284,11 @@ class Async
     protected function outputResult($_params)
     {
         if ($this->apiDebug) {
-            $_params['DEBUG'] = use_time_memory();
-            $_params['PARAMS'] = $this->params;
+            $_params['DEBUG']      = use_time_memory();
+            $_params['PARAMS']     = $this->params;
+            $_params['USER_AGENT'] = request()->header('user_agent');
+            $_params['REFERER']    = request()->header('referer');
+            $_params['SESSION']    = session('__token__');
         }
 
         switch ($this->format) {

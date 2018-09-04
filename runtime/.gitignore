@@ -1,2 +1,4 @@
-*
-!.gitignore
+/backup
+/cache
+/log
+/temp

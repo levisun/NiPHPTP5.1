@@ -153,8 +153,7 @@ class Auth
         }
 
         if (request()->param('cid')) {
-            halt('内容ヽ(●-`Д´-)ノ');
-            // $bread = $this->getBreadcrumbParent(request()->param('cid'));
+            $bread = $this->getBreadcrumbParent(request()->param('cid'));
         } elseif (request()->param('pid')) {
             $bread = $this->getBreadcrumbParent(request()->param('pid'));
         }
@@ -181,8 +180,15 @@ class Auth
      */
     private function getBreadcrumbParent($_parent_id)
     {
+        $action = request()->action();
+
+        // 如果是内容类请求操作指定到栏目模型
+        if ($action == 'content') {
+            $action = 'category';
+        }
+
         $result =
-        model('common/' . request()->action())
+        model('common/' . $action)
         ->field(['id','pid','name'])
         ->where([
             ['id', '=', $_parent_id],

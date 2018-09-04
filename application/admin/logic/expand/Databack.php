@@ -26,13 +26,18 @@ class Databack extends Model
      */
     public function query($value = '')
     {
-        $dir  = env('runtime_path') . 'backup' . DIRECTORY_SEPARATOR . '*';
+        $dir  = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . '*';
         $file = (array) glob($dir);
         rsort($file);
 
         $file_dir = [];
         foreach ($file as $key => $value) {
             $name = basename($value);
+
+            if ($name == 'index.html') {
+                continue;
+            }
+
             $name = substr($name, 0, -4);
 
             $file_dir[] = [
@@ -73,7 +78,7 @@ class Databack extends Model
         $TEMP_DIR = $this->createDir();
 
         $zip = new \Pclzip('');
-        $zip->zipname = env('runtime_path') . 'backup' . DIRECTORY_SEPARATOR . decrypt($receive_data['id']) . '.zip';
+        $zip->zipname = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . decrypt($receive_data['id']) . '.zip';
         $zip->extract(PCLZIP_OPT_PATH, $TEMP_DIR);
 
         $file = (array) glob($TEMP_DIR . '*');
@@ -201,7 +206,7 @@ class Databack extends Model
     private function createZip($_dir)
     {
         $zip = new \Pclzip('');
-        $zip->zipname = env('runtime_path') . 'backup' . DIRECTORY_SEPARATOR . date('YmdHis') . '.zip';
+        $zip->zipname = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . date('YmdHis') . '.zip';
         $zip->create($_dir, PCLZIP_OPT_REMOVE_PATH, $_dir);
     }
 

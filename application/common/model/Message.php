@@ -93,4 +93,28 @@ class Message extends Model
 
         return !!$result;
     }
+
+    /**
+     * 获取器
+     * 审核名称
+     * @access protected
+     * @param  string $_value
+     * @return string
+     */
+    protected function getPassNameAttr($_value)
+    {
+        return lang('pass ' . $_value);
+    }
+
+    /**
+     * 获取器
+     * 栏目模型名
+     * @access protected
+     * @param  string $_value
+     * @return string
+     */
+    protected function getModelNameAttr($_value)
+    {
+        return lang('model ' . $_value);
+    }
 }

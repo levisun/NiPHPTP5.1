@@ -31,7 +31,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        method: "content.content.category"
+        method: "content.content.category",
+        pid: "{$Request.param.pid|default='0'}"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -52,7 +53,7 @@ $.loading({
             list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-edit'></span>{:lang('button child')}</a>";
         }
 
-        list = list + "<a href='"+result.data[index].url.manage+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        list = list + "<a href='"+result.data[index].url.manage+"'><span class='fa fa-edit'></span>{:lang('button manage')}</a>";
         list = list + "</td>";
         list = list + "<tr>";
     }

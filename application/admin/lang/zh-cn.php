@@ -124,6 +124,9 @@ return [
     'visit'                => '访问统计',
 
     // 核心
+    'pass 1'                => '审核通过',
+    'pass 0'                => '未审核',
+    'pass 2'                => '审核未通过',
     'website home'          => '首页',
     'button save'           => '保存',
     'delete cache'          => '清除缓存',
@@ -137,6 +140,8 @@ return [
     'operation'             => '操作',
     'exec success'          => '执行成功',
     'model'                 => '模型',
+    'create time'           => '创建时间',
+    'update time'           => '修改时间',
 
     'illegal operation'     => '无效操作！',
     'no permission'         => '无效操作！',
@@ -170,6 +175,8 @@ return [
     'button add'            => '新增',
     'button open'           => '开启',
     'button close'          => '关闭',
+    'button manage'         => '管理',
+    'button child'          => '下级',
 
     // 模型
     'model article'         => '文章模型',
