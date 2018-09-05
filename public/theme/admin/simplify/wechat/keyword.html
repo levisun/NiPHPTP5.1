@@ -51,6 +51,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "wechat.keyword.query",
         type: "{$type}"
     }
@@ -85,6 +87,8 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "wechat.keyword.query",
             type: "{$type}",
             p: page
@@ -119,6 +123,8 @@ $(document).on("click", "#paging a", function(){
 
 $("form").submit(function(){
     var form_data = "method=wechat.keyword.sort";
+    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
+    form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
@@ -136,6 +142,8 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "wechat.keyword.remove",
             id: id
         },

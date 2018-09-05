@@ -24,43 +24,11 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->init();
-        if ($result !== true) {
-            return $result;
-        }
-
         $result = $this->exec();
-
-        return $this->outputData(
-            'QUERY SUCCESS',
-            $result
-        );
-    }
-
-    /**
-     * 上传
-     * @access public
-     * @param
-     * @return json
-     */
-    public function upload()
-    {
-        $result = $this->init();
-        if ($result !== true) {
-            return $result;
-        }
-
-        $result = $this->exec();
-
-        $json['msg'] = $result === false ? 'EMPTY' : 'SUCCESS';
-
-        if (is_string($result)) {
-            return $this->outputError($result);
+        if ($result === false) {
+            return $this->outputError($this->errorMsg);
         } else {
-            return $this->outputData(
-                lang('upload success'),
-                $result
-            );
+            return $this->outputData('QUERY SUCCESS', $result);
         }
     }
 
@@ -72,24 +40,34 @@ class Api extends Async
      */
     public function settle()
     {
-        $result = $this->init();
-        if ($result !== true) {
-            return $result;
-        }
-
         $result = $this->exec();
-
-        if ($result === true) {
-            return $this->outputData(
-                lang('exec success'),
-                $result
-            );
-        } elseif ($result === false) {
-            return $this->outputError('data error');
+        if ($result === false && $this->errorMsg) {
+            return $this->outputError($this->errorMsg);
+        } elseif ($result === true) {
+            return $this->outputData(lang('exec success'), $result);
         } else {
             return $this->outputError($result);
         }
     }
+
+    /**
+     * 上传
+     * @access public
+     * @param
+     * @return json
+     */
+    public function upload()
+    {
+        $result = $this->exec();
+        if ($result === false && $this->errorMsg) {
+            return $this->outputError($this->errorMsg);
+        } elseif (is_string($result)) {
+            return $this->outputError($result);
+        } else {
+            return $this->outputData(lang('upload success'), $result);
+        }
+    }
+
 
     /**
      * 验证Auth

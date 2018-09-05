@@ -14,14 +14,16 @@ namespace app\common\logic;
 
 class Async
 {
-    protected $appkey;              //
+    protected $appid;               //
+    protected $appsecret;           //
     protected $token;               // 令牌
+    protected $encodingaeskey;      // 加解密密钥
     protected $sign;                // 签名
     protected $timestamp;           // 请求时间
     protected $format = 'json';     // 返回数据类型[json|pjson|xml]
 
     protected $method;              // 方法
-    protected $params = [];          // 请求参数
+    protected $params = [];         // 请求参数
 
     protected $object;              // 实例化的方法
     protected $module;              // 模块
@@ -29,15 +31,16 @@ class Async
     protected $class  = 'index';    // 业务逻辑类名
     protected $action = 'index';    // 业务类方法
 
-    protected $apiDebug = true;    // 调试信息
+    protected $apiDebug = true;     // 调试信息
+
+    protected $errorMsg;            // 错误信息
 
     public function __construct()
     {
         // 公共参数赋值
-        $this->appkey    = input('param.appkey');
         $this->token     = input('param.token');
         $this->sign      = input('param.sign');
-        $this->timestamp = input('param.timestamp');
+        $this->timestamp = input('param.timestamp', 0);
         $this->method    = input('param.method');
         $this->format    = input('param.format');
 
@@ -57,59 +60,106 @@ class Async
      */
     protected function exec()
     {
-        return call_user_func_array([$this->object, $this->action], []);
+        if ($this->validate()) {
+            return call_user_func_array([$this->object, $this->action], []);
+        } else {
+            return false;
+        }
     }
 
     /**
-     * 初始化
+     * 验证数据合法性
      * @access protected
      * @param
      * @return mixed
      */
-    protected function init()
+    protected function validate()
     {
         // 验证请求方式
         // 异步只允许 Ajax Pjax Post 请求类型
         if (!request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
-            return $this->outputError('request mode error');
+            $this->errorMsg = 'request mode error';
+            return false;
+        }
+
+        // 请求时间
+        if ($this->timestamp <= strtotime('-1 minute')) {
+            $this->errorMsg = 'request timeout';
+            return false;
         }
 
         // 验证参数 缺少请求执行方法参数
-        if (!$this->method) {
-            return $this->outputError('[METHOD] parameter error');
+        // 自动查找业务层方法
+        $result = $this->autoFindMethod();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
         }
 
         // 验证需求令牌 此令牌程序生成[createRequireToken()]
-        $request = $this->checkRequireToken();
-        if ($request !== true) {
-            return $this->outputError($request);
+        $result = $this->checkRequireToken();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
         }
 
         // 验证Token
-        $token = $this->checkToken();
-        if ($token !== true) {
-            return $this->outputError($token);
+        $result = $this->checkToken();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
         }
 
         // 验证Sign
-        $sign = $this->checkSign();
-        if ($sign !== true) {
-            return $this->outputError($sign);
-        }
-
-        // 自动查找业务层方法
-        $method = $this->autoFindMethod();
-        if ($method !== true) {
-            return $this->outputError($method);
+        $result = $this->checkSign();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
         }
 
         // 验证Auth权限
-        $auth = $this->checkAuth();
-        if ($auth !== true) {
-            return $this->outputError($auth);
+        $result = $this->checkAuth();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
+        }
+
+        // 验证Logic文件是否存在
+        $result = $this->checkLogic();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * 验证Logic文件是否存在
+     * @access private
+     * @param
+     * @return mixed
+     */
+    private function checkLogic()
+    {
+        // 检查业务分层文件是否存在
+        $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR;
+        $file_path .= 'logic' . DIRECTORY_SEPARATOR;
+        if ($this->layer !== 'logic') {
+            $file_path .= $this->layer . DIRECTORY_SEPARATOR;
+        }
+        $file_path .= $this->class . '.php';
+        if (!is_file($file_path)) {
+            return '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+        }
+
+        // 检查方法是否存在
+        $this->object = logic($this->module . '/' . $this->layer . '/' . $this->class);
+        if (is_object($this->object) && method_exists($this->object, $this->action)) {
+            return true;
+        } else {
+            return '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+        }
     }
 
     /**
@@ -120,6 +170,10 @@ class Async
      */
     private function autoFindMethod()
     {
+        if (!$this->method) {
+            return '[METHOD] parameter error';
+        }
+
         $this->module = strtolower(request()->module());
 
         // 参数[业务分层名.类名.方法名]
@@ -134,36 +188,31 @@ class Async
             list($this->class) = explode('.', $this->method, 1);
         }
 
-        // 检查业务分层文件是否存在
-        $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR;
-        $file_path .= 'logic' . DIRECTORY_SEPARATOR;
-        if ($this->layer !== 'logic') {
-            $file_path .= $this->layer . DIRECTORY_SEPARATOR;
-        }
-        $file_path .= $this->class . '.php';
-        if (!is_file($file_path)) {
-            return $this->class . ' model doesn\'t exist';
-        }
-
-        // 检查方法是否存在
-        $this->object = logic($this->module . '/' . $this->layer . '/' . $this->class);
-        if (is_object($this->object) && method_exists($this->object, $this->action)) {
-            return true;
-        } else {
-            return '$' . $this->class . '->' . $this->action . '() method doesn\'t exist';
-        }
+        return true;
     }
 
     /**
      * 验证Token是否合法
-     * @access protected
+     * @access private
      * @param
      * @return mixed
      */
-    protected function checkToken()
+    private function checkToken()
     {
         if ($this->token) {
-            # TODO 查询
+            $token =
+            model('common/config')
+            ->where([
+                ['name', '=', 'ajax_token']
+            ])
+            ->cache(true)
+            ->value('value');
+
+            if ($token !== $this->token) {
+                return 'token error';
+            }
+        } else {
+            return 'token error';
         }
 
         return true;
@@ -284,11 +333,14 @@ class Async
     protected function outputResult($_params)
     {
         if ($this->apiDebug) {
-            $_params['DEBUG']      = use_time_memory();
-            $_params['PARAMS']     = $this->params;
-            $_params['USER_AGENT'] = request()->header('user_agent');
-            $_params['REFERER']    = request()->header('referer');
-            $_params['SESSION']    = session('__token__');
+            $_params['DEBUG'] = [
+                'USER_AGENT'  => request()->header('user_agent'),
+                'REFERER'     => request()->header('referer'),
+                'TIME_MEMORY' => use_time_memory(),
+                'PARAMS'      => $this->params,
+                'TOKEN'       => session('__token__'),
+                'COOKIE'      => $_COOKIE,
+            ];
         }
 
         switch ($this->format) {

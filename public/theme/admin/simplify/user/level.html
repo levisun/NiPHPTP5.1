@@ -35,6 +35,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "user.level.query",
     }
 }, function(result){
@@ -71,6 +73,8 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "user.level.query",
             p: page
         }
@@ -111,6 +115,8 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "user.level.remove",
             id: id
         },

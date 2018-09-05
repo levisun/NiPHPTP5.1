@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS `np_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '设置表';
 INSERT INTO `np_config` (`name`, `value`, `lang`) VALUES
 
+('ajax_token', 'c2630911e31549d4ddb556daba9c20d9c910d396', 'niphp'),
+
 -- 安全与效率
 ('system_portal', 'hor', 'niphp'),
 ('content_check', '1', 'niphp'),
@@ -76,7 +78,7 @@ var _hmt = _hmt || [];
 ('product_module_height', '150', 'zh-cn'),
 
 -- 模板设置
-('index_theme', 'design', 'zh-cn'),
+('cms_theme', 'design', 'zh-cn'),
 ('member_theme', 'default', 'zh-cn'),
 ('mall_theme', 'default', 'zh-cn'),
 

@@ -165,6 +165,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "user.member.level",
     }
 }, function(result){
@@ -179,6 +181,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "user.member.region",
     }
 }, function(result){
@@ -206,6 +210,8 @@ $(".region").change(function(){
         url: request.api.query,
         animation: true,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "user.member.region",
             region_id: id,
         }
@@ -226,7 +232,7 @@ $.uiPopup({
 });
 $(".upload-btn").click(function(){
     $.upload({
-        url: request.api.upload+"?method=user.upload.file&type=portrait",
+        url: request.api.upload+"?method=user.upload.file&token=c2630911e31549d4ddb556daba9c20d9c910d396&timestamp={:time()}&type=portrait",
         file: $("#uploadForm")[0],
     }, function(result){
         var dir = result.data.save_dir + result.data.file_name;
@@ -238,6 +244,8 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=user.member.added";
+    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
+    form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

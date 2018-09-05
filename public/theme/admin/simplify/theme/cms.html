@@ -19,6 +19,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "theme.theme.query",
         type: "cms",
     }
@@ -49,6 +51,8 @@ $("body").on("click", "#set", function(){
     $.loading({
         url: request.api.settle,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "theme.theme.editor",
             type: "cms",
             name: data

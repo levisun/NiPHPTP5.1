@@ -62,6 +62,8 @@
 <script type="text/javascript">
 $("form").submit(function(){
     var form_data = "method=content.banner.added";
+    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
+    form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
@@ -82,7 +84,7 @@ $.uiPopup({
 
 $(".upload-btn").click(function(){
     $.upload({
-        url: request.api.upload+"?method=content.upload.file&type=banner",
+        url: request.api.upload+"?method=content.upload.file&token=c2630911e31549d4ddb556daba9c20d9c910d396&timestamp={:time()}&type=banner",
         file: $("#uploadForm")[0],
     }, function(result){
         var dir = result.data.save_dir + result.data.file_name;

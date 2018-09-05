@@ -72,6 +72,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "category.fields.type"
     }
 }, function(result){
@@ -84,6 +86,8 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
         method: "category.fields.category"
     }
 }, function(result){
@@ -95,6 +99,8 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=category.fields.added";
+    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
+    form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
