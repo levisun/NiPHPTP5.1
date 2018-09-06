@@ -129,7 +129,7 @@ $.loading({
     data: {
         token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
-        method: "settings.info.sysinfo"
+        method: "settings.info.query"
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -137,56 +137,30 @@ $.loading({
     }
 
     var html = "";
-    for (var index in result.data) {
-        html += "<tr><th>"+result.data[index].name+"</th><td>"+result.data[index].value+"</td></tr>";
+    for (var index in result.data.sysinfo) {
+        html += "<tr><th>"+result.data.sysinfo[index].name+"</th><td>"+result.data.sysinfo[index].value+"</td></tr>";
     }
     $(".no-margin tbody").append(html);
-});
 
-$.loading({
-    url: request.api.query,
-    animation: true,
-    data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-        timestamp: "{:time()}",
-        method: "settings.info.make"
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return ;
-    }
 
-    $(".bg-danger .statistic-title").text(result.data["member"]["name"]);
-    $(".bg-danger .statistic-value").text(result.data["member"]["value"][0]["name"]+":"+result.data["member"]["value"][0]["value"]);
-    $(".bg-danger .m-top-md").text(result.data["member"]["value"][1]["name"]+":"+result.data["member"]["value"][1]["value"]);
+    $(".bg-danger .statistic-title").text(result.data.make["member"]["name"]);
+    $(".bg-danger .statistic-value").text(result.data.make["member"]["value"][0]["name"]+":"+result.data.make["member"]["value"][0]["value"]);
+    $(".bg-danger .m-top-md").text(result.data.make["member"]["value"][1]["name"]+":"+result.data.make["member"]["value"][1]["value"]);
 
-    $(".bg-info .statistic-title").text(result.data["feed_msg"]["name"]);
-    $(".bg-info .statistic-value").text(result.data["feed_msg"]["value"][0]["name"]+":"+result.data["feed_msg"]["value"][0]["value"]);
-    $(".bg-info .m-top-md").text(result.data["feed_msg"]["value"][1]["name"]+":"+result.data["feed_msg"]["value"][1]["value"]);
+    $(".bg-info .statistic-title").text(result.data.make["feed_msg"]["name"]);
+    $(".bg-info .statistic-value").text(result.data.make["feed_msg"]["value"][0]["name"]+":"+result.data.make["feed_msg"]["value"][0]["value"]);
+    $(".bg-info .m-top-md").text(result.data.make["feed_msg"]["value"][1]["name"]+":"+result.data.make["feed_msg"]["value"][1]["value"]);
 
-    $(".bg-purple .statistic-title").text(result.data["ads_link"]["name"]);
-    $(".bg-purple .statistic-value").text(result.data["ads_link"]["value"][0]["name"]+":"+result.data["ads_link"]["value"][0]["value"]);
-    $(".bg-purple .m-top-md").text(result.data["ads_link"]["value"][1]["name"]+":"+result.data["ads_link"]["value"][1]["value"]);
-});
+    $(".bg-purple .statistic-title").text(result.data.make["ads_link"]["name"]);
+    $(".bg-purple .statistic-value").text(result.data.make["ads_link"]["value"][0]["name"]+":"+result.data.make["ads_link"]["value"][0]["value"]);
+    $(".bg-purple .m-top-md").text(result.data.make["ads_link"]["value"][1]["name"]+":"+result.data.make["ads_link"]["value"][1]["value"]);
 
-$.loading({
-    url: request.api.query,
-    animation: true,
-    data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-        timestamp: "{:time()}",
-        method: "settings.info.visit"
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return ;
-    }
 
     //Flot Chart (Total Sales)
     var d1 = [];
     for (var i = 0; i <= 10; i += 1) {
         //d1.push([i, parseInt(Math.random() * 30)]);
-        d1 = [result.data.value];
+        d1 = [result.data.visit.value];
     }
 
     function plotWithOptions() {
@@ -244,5 +218,4 @@ $.loading({
 
     plotWithOptions();
 });
-
 </script>

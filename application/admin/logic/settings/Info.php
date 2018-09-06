@@ -14,14 +14,28 @@ namespace app\admin\logic\settings;
 
 class Info
 {
-
     /**
-     * 系统与框架版本
+     * 查询系统数据
      * @access public
      * @param
      * @return array
      */
-    public function sysinfo()
+    public function query()
+    {
+        return [
+            'sysinfo' => $this->sysinfo(),
+            'make'    => $this->make(),
+            'visit'   => $this->visit()
+        ];
+    }
+
+    /**
+     * 系统与框架版本
+     * @access private
+     * @param
+     * @return array
+     */
+    private function sysinfo()
     {
         if (!$result = cache('_SYSINFO')) {
             $gd_info = gd_info();
@@ -78,11 +92,11 @@ class Info
 
     /**
      * 统计信息
-     * @access public
+     * @access private
      * @param
      * @return array
      */
-    public function make()
+    private function make()
     {
         if (!$result = cache('_MAKE')) {
             $member = $this->member();
@@ -140,11 +154,11 @@ class Info
 
     /**
      * 查询访问数据
-     * @access public
+     * @access private
      * @param
      * @return array
      */
-    public function visit()
+    private function visit()
     {
         $map = [
             ['date', '>=', strtotime('-7 days')]

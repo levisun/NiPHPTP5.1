@@ -82,20 +82,6 @@ class Async
             return false;
         }
 
-        // 请求时间
-        if ($this->timestamp <= strtotime('-1 minute')) {
-            $this->errorMsg = 'request timeout';
-            return false;
-        }
-
-        // 验证参数 缺少请求执行方法参数
-        // 自动查找业务层方法
-        $result = $this->autoFindMethod();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
         // 验证需求令牌 此令牌程序生成[createRequireToken()]
         $result = $this->checkRequireToken();
         if ($result !== true) {
@@ -105,6 +91,20 @@ class Async
 
         // 验证Token
         $result = $this->checkToken();
+        if ($result !== true) {
+            $this->errorMsg = $result;
+            return false;
+        }
+
+        // 请求时间
+        if ($this->timestamp <= strtotime('-1 days')) {
+            $this->errorMsg = 'request timeout';
+            return false;
+        }
+
+        // 验证参数 缺少请求执行方法参数
+        // 自动查找业务层方法
+        $result = $this->autoFindMethod();
         if ($result !== true) {
             $this->errorMsg = $result;
             return false;
@@ -283,6 +283,7 @@ class Async
             $http_referer = app()->version() . request()->header('user_agent') . env('app_path') . date('Ymd');
 
             if (session('_ASYNCTOKEN') !== md5($http_referer)) {
+                session('_ASYNCTOKEN', null);
                 return 'request token error';
             }
         } else {

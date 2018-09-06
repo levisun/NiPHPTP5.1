@@ -15,10 +15,9 @@ namespace app\common\logic;
 
 class Rbac
 {
-    private $model;
-
     private $module;
     private $controller;
+    private $method;
     private $action;
 
     private $user_auth_on;
@@ -35,12 +34,6 @@ class Rbac
 
     public function __construct()
     {
-        $this->model = model('common/Node');
-
-        $this->module     = strtoupper(request()->module());
-        $this->controller = strtoupper(request()->controller());
-        $this->action     = strtoupper(request()->action());
-
         // 是否需要认证
         $this->user_auth_on = config('user_auth_on');
         // 验证类型
@@ -63,6 +56,27 @@ class Rbac
     }
 
     /**
+     * 审核用户操作权限
+     * @access public
+     * @param  int     $_auth_id
+     * @return boolean
+     */
+    public function checkAuth($_auth_id, $_module = '', $_controller = '', $_method = '', $_action = 'query')
+    {
+        $this->module     = strtoupper($_module);
+        $this->controller = strtoupper($_controller);
+        $this->method     = strtoupper($_method);
+        $this->action     = strtoupper($_action);
+
+        // 检查当前操作是否需要认证
+        if ($this->checkAccess()) {
+            return $this->accessDecision($_auth_id);
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * 检查当前操作是否需要认证
      * @access private
      * @param
@@ -74,51 +88,127 @@ class Rbac
             return false;
         }
 
-        $_module = [];
-        $_controller = [];
-        $_action = [];
+        $module_     = [];
+        $controller_ = [];
+        $method_     = [];
 
         if ($this->require_auth_module) {
             //需要认证的模块
-            $_module['yes'] = explode(',', $this->require_auth_module);
+            $module_['yes'] = explode(',', $this->require_auth_module);
         } else {
             //无需认证的操作
-            $_module['no'] = explode(',', $this->not_auth_module);
+            $module_['no'] = explode(',', $this->not_auth_module);
         }
 
         if ($this->require_auth_controller) {
             //需要认证的模块
-            $_controller['yes'] = explode(',', $this->require_auth_controller);
+            $controller_['yes'] = explode(',', $this->require_auth_controller);
         } else {
             //无需认证的操作
-            $_controller['no'] = explode(',', $this->not_auth_controller);
+            $controller_['no'] = explode(',', $this->not_auth_controller);
         }
 
         if ($this->require_auth_action) {
             //需要认证的模块
-            $_action['yes'] = explode(',', $this->require_auth_action);
+            $method_['yes'] = explode(',', $this->require_auth_action);
         } else {
             //无需认证的操作
-            $_action['no'] = explode(',', $this->not_auth_action);
+            $method_['no'] = explode(',', $this->not_auth_action);
         }
 
-        if (!empty($_module['no']) && in_array($this->module, $_module['no'])) {
-            if (!empty($_controller['no']) && in_array($this->controller, $_controller['no'])) {
-                if (!empty($_action['no']) && in_array($this->action, $_action['no'])) {
+        if (!empty($module_['no']) && in_array($this->module, $module_['no'])) {
+            if (!empty($controller_['no']) && in_array($this->controller, $controller_['no'])) {
+                if (!empty($method_['no']) && in_array($this->method, $method_['no'])) {
                     return false;
                 }
             }
         }
 
-        if (!empty($_module['yes']) && in_array($this->module, $_module['yes'])) {
-            if (!empty($_controller['yes']) && in_array($this->controller, $_controller['yes'])) {
-                if (!empty($_action['yes']) && in_array($this->action, $_action['yes'])) {
+        if (!empty($module_['yes']) && in_array($this->module, $module_['yes'])) {
+            if (!empty($controller_['yes']) && in_array($this->controller, $controller_['yes'])) {
+                if (!empty($method_['yes']) && in_array($this->method, $method_['yes'])) {
                     return true;
                 }
             }
         }
 
         return true;
+    }
+
+    /**
+     * 权限认证的过滤器方法
+     * @access private
+     * @param  int     $_auth_id
+     * @return array
+     */
+    private function accessDecision($_auth_id)
+    {
+        if ($this->user_auth_type == 2) {
+            // 实时校验权限
+            $access_list = $this->getAccessList($_auth_id);
+            session('_access_list', $access_list);
+        } else {
+            if (session('?_access_list')) {
+                $access_list = session('_access_list');
+            } else {
+                session('_access_list', $this->getAccessList($_auth_id));
+                $access_list = session('_access_list');
+            }
+        }
+
+        if (isset($access_list[$this->module][$this->controller][$this->method][$this->action])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 取得当前认证号的所有权限列表
+     * @access private
+     * @param  int     $_auth_id
+     * @return array
+     */
+    private function getAccessList($_auth_id)
+    {
+        $access = [];
+
+        $modules = $this->getAuth($_auth_id);
+
+        foreach ($modules as $mod) {
+            $mod['name'] = strtoupper($mod['name']);
+            $controller = $this->getAuth($_auth_id, 2, $mod['id']);
+
+            foreach ($controller as $con) {
+                $con['name'] = strtoupper($con['name']);
+                $method = $this->getAuth($_auth_id, 3, $con['id']);
+
+                foreach ($method as $met) {
+                    $met['name'] = strtoupper($met['name']);
+                    $action = $this->getAuth($_auth_id, 4, $met['id']);
+
+                    $a_ = [];
+                    foreach ($action as $act) {
+                        $a_[$act['name']] = true;
+
+                        if ($act['name'] === 'editor') {
+                            $a_['find'] = true;
+                        }
+                    }
+                    if (!empty($a_)) {
+                        $a_['query'] = true;
+                        $access[$mod['name']][$con['name']][$met['name']] = array_change_key_case($a_, CASE_UPPER);
+                    } else {
+                        $access[$mod['name']][$con['name']][$met['name']]['QUERY'] = true;
+                    }
+
+                }
+                // 添加上传权限
+                // $access[$mod['name']][$con['name']]['UPLOAD'] = true;
+            }
+        }
+
+        return $access;
     }
 
     /**
@@ -132,7 +222,8 @@ class Rbac
     private function getAuth($_auth_id, $_level = 1, $_pid = 0)
     {
         $result =
-        $this->model->view('node', ['id', 'name'])
+        model('common/Node')
+        ->view('node', ['id', 'name'])
         ->view('role_admin', [], 1)
         ->view('role', [], 'role.id=role_admin.role_id')
         ->view('access', [], ['access.role_id=role.id', 'access.node_id=node.id'])
@@ -146,79 +237,5 @@ class Rbac
         ->select();
 
         return $result ? $result->toArray() : [];
-    }
-
-    /**
-     * 取得当前认证号的所有权限列表
-     * @access private
-     * @param  int     $_auth_id
-     * @return array
-     */
-    private function getAccessList($_auth_id)
-    {
-        $access = [];
-
-        $module = $this->getAuth($_auth_id);
-
-        $controller = $action = [];
-        foreach ($module as $m) {
-            $controller = $this->getAuth($_auth_id, 2, $m['id']);
-
-            foreach ($controller as $c) {
-                $action = $this->getAuth($_auth_id, 3, $c['id']);
-                $_a = [];
-                foreach ($action as $a) {
-                    $_a[$a['name']] = $a['id'];
-                }
-                $access[strtoupper($m['name'])][strtoupper($c['name'])] = array_change_key_case($_a, CASE_UPPER);
-                // 添加上传权限
-                $access[strtoupper($m['name'])][strtoupper($c['name'])]['UPLOAD'] = true;
-            }
-        }
-
-        return $access;
-    }
-
-    /**
-     * 权限认证的过滤器方法
-     * @access private
-     * @param  int     $_auth_id
-     * @return array
-     */
-    private function accessDecision($_auth_id)
-    {
-        if ($this->user_auth_type == 2) {
-            $access_list = $this->getAccessList($_auth_id);
-            session('_access_list', $access_list);
-        } else {
-            if (session('?_access_list')) {
-                $access_list = session('_access_list');
-            } else {
-                session('_access_list', $this->getAccessList($_auth_id));
-                $access_list = session('_access_list');
-            }
-        }
-
-        if (isset($access_list[$this->module][$this->controller][$this->action])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * 审核用户操作权限
-     * @access public
-     * @param  int     $_auth_id
-     * @return boolean
-     */
-    public function checkAuth($_auth_id)
-    {
-        // 检查当前操作是否需要认证
-        if ($this->checkAccess()) {
-            return $this->accessDecision($_auth_id);
-        } else {
-            return true;
-        }
     }
 }

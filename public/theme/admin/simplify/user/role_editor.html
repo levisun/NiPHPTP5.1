@@ -100,9 +100,9 @@ $.loading({
         var value = result.data[index];
         input += "<input type='hidden' name='node["+value.level+"]["+value.name+"]' value='"+value.id+"' checked />";
 
-        for (var ind in value.child) {
-            var val = value.child[ind];
-            input += "<p>";
+        for (var inde in value.child) {
+            var val = value.child[inde];
+            input += "<div>";
             input += "<div class='custom-checkbox'>";
             input += "<input type='checkbox' name='node["+val.level+"]["+val.name+"]' id='node"+val.level+val.name+"' class='checkbox-red' value='"+val.id+"'";
             if ($.in_array(val.id, access)) {
@@ -113,19 +113,36 @@ $.loading({
 
             input += "<div class='inline-block vertical-top'>"+val.title+"</div>";
 
-            for (var i in val.child) {
-                var v = val.child[i];
+            input += "<div style='padding-left: 2rem;'>";
+            for (var ind in val.child) {
+                input += "<div>";
+                var va = val.child[ind];
                 input += "<div class='custom-checkbox'>";
-                input += "<input type='checkbox' name='node["+v.level+"]["+val.name+"_"+v.name+"]' id='node"+v.level+val.name+"_"+v.name+"' class='checkbox-red' value='"+v.id+"'";
-                if ($.in_array(v.id, access)) {
+                input += "<input type='checkbox' name='node["+va.level+"]["+val.name+"_"+va.name+"]' id='node"+va.level+val.name+"_"+va.name+"' class='checkbox-red' value='"+va.id+"'";
+                if ($.in_array(va.id, access)) {
                     input += " checked ";
                 }
-                input += " /><label for='node"+v.level+val.name+"_"+v.name+"'></label>";
+                input += " /><label for='node"+va.level+val.name+"_"+va.name+"'></label>";
                 input += "</div>";
 
-                input += "<div class='inline-block vertical-top'>"+v.title+"</div>";
+                input += "<div class='inline-block vertical-top'>"+va.title+"</div>";
+
+                input += "<div style='padding-left: 3rem;'>";
+                for (var i in va.child) {
+                    var v = va.child[i];
+                    input += "<div class='custom-checkbox'>";
+                    input += "<input type='checkbox' name='node["+v.level+"]["+va.name+"_"+v.name+"]' id='node"+v.level+va.name+"_"+v.name+"' class='checkbox-red' value='"+v.id+"' />";
+                    input += "<label for='node"+v.level+va.name+"_"+v.name+"'></label>";
+                    input += "</div>";
+
+                    input += "<div class='inline-block vertical-top'>"+v.title+"</div>";
+                }
+                input += "</div>";
+
+                input += "</div>";
             }
-            input += "</p>";
+            input += "</div>";
+            input += "</div>";
         }
     }
     $("#role_node").prepend(input);

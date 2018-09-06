@@ -45,7 +45,7 @@ return [
     // 是否需要认证
     'user_auth_on'            => true,
     // 验证类型
-    'user_auth_type'          => 1,
+    'user_auth_type'          => 2,
     // 需要认证模块
     'require_auth_module'     => '',
     // 无需认证模块

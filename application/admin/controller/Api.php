@@ -84,24 +84,30 @@ class Api extends Async
                 return 'ILLEGAL REQUEST';
             }
 
+            if (!in_array($this->action, ['added', 'reomve', 'find', 'editor', 'query', 'upload'])) {
+                return true;
+            }
+
+            $auth =
+            !logic('common/Rbac')
+            ->checkAuth(
+                session(config('user_auth_key')),
+                'admin',
+                $this->layer,
+                $this->class,
+                $this->action
+            );
+
             // 登录权限信息
-            if (!session('?_access_list')) {
+            if ($auth) {
                 return 'ILLEGAL REQUEST';
             }
 
-            // 是否有访问操作等权限
-            $access_list = session('_access_list');
-            $access_list = $access_list['ADMIN'];
-            // 添加界面权限
-            $access_list['THEME']['THEME'] = true;
-
-            if (!in_array($this->class, ['login', 'logout']) && empty($access_list[strtoupper($this->layer)][strtoupper($this->class)])) {
-                return 'ILLEGAL REQUEST';
+            if ($this->action === 'upload') {
+                $this->layer  = 'logic';
+                $this->class  = 'upload';
+                $this->action = 'file';
             }
-        }
-
-        if ($this->class == 'upload') {
-            $this->layer = 'logic';
         }
 
         return true;

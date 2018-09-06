@@ -42,13 +42,23 @@ class Base extends Controller
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
             // 审核用户权限
-            if (!logic('common/Rbac')->checkAuth(session(config('user_auth_key')))) {
+            $auth =
+            !logic('common/Rbac')
+            ->checkAuth(
+                session(config('user_auth_key')),
+                $this->requestParam['module'],
+                $this->requestParam['controller'],
+                $this->requestParam['action']
+            );
+            if ($auth) {
                 $this->error('no permission', 'settings/info');
             }
+
             // 登录页重定向
             if ($this->requestParam['action'] == 'login') {
                 $this->redirect(url('settings/info'));
             }
+
             // 用户信息
             $this->assign('ADMIN_DATA', session('admin_data'));
 

@@ -140,6 +140,8 @@ $("._handle_logout").click(function(){
     $.loading({
         url: request.api.settle,
         data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
             method: "account.logout.logout"
         }
     }, function(result){

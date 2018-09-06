@@ -18,8 +18,8 @@ class Node extends Validate
 {
     protected $rule = [
         'id'     => ['require', 'number'],
-        'name'   => ['require', 'length:2,20', 'alpha', 'unique:node', 'token'],
-        'title'  => ['require', 'length:2,50', 'unique:node'],
+        'name'   => ['require', 'length:2,20', 'alpha', 'token'],
+        'title'  => ['require', 'length:2,50'],
         'status' => ['require', 'number'],
         'remark' => ['max:250'],
         'pid'    => ['require', 'number'],

@@ -137,6 +137,7 @@ class Node extends Model
             1 => lang('module'),
             2 => lang('controller'),
             3 => lang('method'),
+            4 => lang('operation'),
         ];
 
         return $level[$_data['level']];

@@ -22,6 +22,33 @@ class Index extends Base
      */
     public function index()
     {
+        $result =
+        model('common/node')
+        ->select();
+
+        $result = $result->toArray();
+
+        $data = [];
+        foreach ($result as $key => $value) {
+            $data[] = [
+                'role_id' => 1,
+                'status'  => 1,
+                'node_id' => $value['id'],
+                'level'   => $value['level'],
+                'module'  => $value['name'],
+            ];
+
+        }
+
+        model('common/access')
+        ->insertAll($data);
+
+
+
+
+        halt(1);
+
+
         return $this->fetch('index.html');
     }
 
