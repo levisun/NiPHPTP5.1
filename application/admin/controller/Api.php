@@ -8,7 +8,7 @@
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2018/9
  */
 namespace app\admin\controller;
 
@@ -84,6 +84,7 @@ class Api extends Async
                 return 'ILLEGAL REQUEST';
             }
 
+            // 过滤基础信息查询方法权限判断
             if (!in_array($this->action, ['added', 'reomve', 'find', 'editor', 'query', 'upload'])) {
                 return true;
             }

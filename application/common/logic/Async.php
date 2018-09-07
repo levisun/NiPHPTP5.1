@@ -16,8 +16,8 @@ class Async
 {
     protected $appid;               //
     protected $appsecret;           //
-    protected $token;               // 令牌
-    protected $encodingaeskey;      // 加解密密钥
+    protected $token;               // 令牌[数据库中获取]
+
     protected $sign;                // 签名
     protected $timestamp;           // 请求时间
     protected $format = 'json';     // 返回数据类型[json|pjson|xml]
@@ -25,8 +25,13 @@ class Async
     protected $method;              // 方法
     protected $params = [];         // 请求参数
 
+    protected $encodingaeskey;      // 加解密密钥[数据库中获取]
+
+    protected $module;              // 模块[自动获取]
+
     protected $object;              // 实例化的方法
-    protected $module;              // 模块
+
+
     protected $layer  = 'logic';    // 业务类所在层
     protected $class  = 'index';    // 业务逻辑类名
     protected $action = 'index';    // 业务类方法
@@ -39,16 +44,22 @@ class Async
     {
         // 公共参数赋值
         $this->token     = input('param.token');
+
         $this->sign      = input('param.sign');
         $this->timestamp = input('param.timestamp', 0);
         $this->method    = input('param.method');
         $this->format    = input('param.format');
+
+        $this->module    = strtolower(request()->module());
 
         // 获取外部参数
         $this->params    = input('param.', 'trim');
 
         // 调试
         $this->apiDebug  = APP_DEBUG;
+
+        // IP地区信息[记录自己的IP地址库]
+        logic('common/IpInfo')->getInfo();
     }
 
     /**
@@ -102,16 +113,16 @@ class Async
             return false;
         }
 
-        // 验证参数 缺少请求执行方法参数
-        // 自动查找业务层方法
-        $result = $this->autoFindMethod();
+        // 验证Sign
+        $result = $this->checkSign();
         if ($result !== true) {
             $this->errorMsg = $result;
             return false;
         }
 
-        // 验证Sign
-        $result = $this->checkSign();
+        // 验证参数 缺少请求执行方法参数
+        // 自动查找业务层方法
+        $result = $this->autoFindMethod();
         if ($result !== true) {
             $this->errorMsg = $result;
             return false;
@@ -125,7 +136,7 @@ class Async
         }
 
         // 验证Logic文件是否存在
-        $result = $this->checkLogic();
+        $result = $this->checkLogicFile();
         if ($result !== true) {
             $this->errorMsg = $result;
             return false;
@@ -140,7 +151,7 @@ class Async
      * @param
      * @return mixed
      */
-    private function checkLogic()
+    private function checkLogicFile()
     {
         // 检查业务分层文件是否存在
         $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR;
@@ -173,8 +184,6 @@ class Async
         if (!$this->method) {
             return '[METHOD] parameter error';
         }
-
-        $this->module = strtolower(request()->module());
 
         // 参数[业务分层名.类名.方法名]
         // 参数[logic.类名.方法名] 业务分层名默认logic
@@ -341,6 +350,7 @@ class Async
                 'PARAMS'      => $this->params,
                 'TOKEN'       => session('__token__'),
                 'COOKIE'      => $_COOKIE,
+                'IP_INFO'     => logic('common/IpInfo')->getInfo(),
             ];
         }
 

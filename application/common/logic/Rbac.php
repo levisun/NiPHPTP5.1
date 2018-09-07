@@ -9,16 +9,16 @@
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2018/9
  */
 namespace app\common\logic;
 
 class Rbac
 {
-    private $module;
-    private $controller;
-    private $method;
-    private $action;
+    private $module;        // 模块名
+    private $controller;    // 控制器名[分层名]
+    private $method;        // 类名
+    private $action;        // 方法名
 
     private $user_auth_on;
     private $user_auth_type;
@@ -187,24 +187,15 @@ class Rbac
                     $met['name'] = strtoupper($met['name']);
                     $action = $this->getAuth($_auth_id, 4, $met['id']);
 
-                    $a_ = [];
+                    $a_ = [
+                        'query' => true,
+                        'find'  => true,
+                    ];
                     foreach ($action as $act) {
                         $a_[$act['name']] = true;
-
-                        if ($act['name'] === 'editor') {
-                            $a_['find'] = true;
-                        }
                     }
-                    if (!empty($a_)) {
-                        $a_['query'] = true;
-                        $access[$mod['name']][$con['name']][$met['name']] = array_change_key_case($a_, CASE_UPPER);
-                    } else {
-                        $access[$mod['name']][$con['name']][$met['name']]['QUERY'] = true;
-                    }
-
+                    $access[$mod['name']][$con['name']][$met['name']] = array_change_key_case($a_, CASE_UPPER);
                 }
-                // 添加上传权限
-                // $access[$mod['name']][$con['name']]['UPLOAD'] = true;
             }
         }
 

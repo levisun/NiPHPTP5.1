@@ -18,8 +18,7 @@ Route::pattern([
 ]);
 
 // 后台
-Route::domain(['admin'], [
-])
+Route::domain(['admin'])
 ->bind('admin')
 ->ext('do');
 

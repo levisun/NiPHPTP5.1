@@ -29,6 +29,9 @@ class Base extends Controller
 
         // 生成异步请求令牌
         logic('common/async')->createRequireToken();
+        // IP地区信息[记录自己的IP地址库]
+        logic('common/IpInfo')->getInfo();
+        // 访问记录
         logic('common/visit')->addedVisit();
         logic('common/visit')->addedSearchengine();
 

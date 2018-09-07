@@ -368,7 +368,11 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
  */
 function escape_xss($_data)
 {
-    if (is_string($_data)) {
+    if (is_array($_data)) {
+        foreach ($_data as $key => $value) {
+            $_data[$key] = escape_xss($value);
+        }
+    } elseif (is_string($_data)) {
         $_data = preg_replace([
             // 过滤非法标签
             '/<\?php(.*?)\?>/si',
@@ -545,25 +549,17 @@ function escape_xss($_data)
         ];
 
         $_data = str_replace(array_keys($pattern), array_values($pattern), $_data);
-    } elseif (is_array($_data)) {
-        foreach ($_data as $key => $value) {
-            $_data[$key] = escape_xss($value);
-        }
     }
 
     return $_data;
 
 
+    // 过虑emoji表情 替换成*
+    // $value = json_encode($_data);
+    // $value = preg_replace('/\\\u[ed][0-9a-f]{3}\\\u[ed][0-9a-f]{3}/', '&#42;', $value);
+    // $_data = json_decode($value);
 
-
-
-
-        // 过虑emoji表情 替换成*
-        // $value = json_encode($_data);
-        // $value = preg_replace('/\\\u[ed][0-9a-f]{3}\\\u[ed][0-9a-f]{3}/', '&#42;', $value);
-        // $_data = json_decode($value);
-
-        // 个性字符过虑
-        // $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
-        // $_data = preg_replace($rule, '', $_data);
+    // 个性字符过虑
+    // $rule = '/[^\x{4e00}-\x{9fa5}a-zA-Z0-9\s\_\-\(\)\[\]\{\}\|\?\/\!\@\#\$\%\^\&\+\=\:\;\'\"\<\>\,\.\，\。\《\》\\\\]+/u';
+    // $_data = preg_replace($rule, '', $_data);
 }

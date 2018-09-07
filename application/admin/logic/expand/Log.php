@@ -38,14 +38,20 @@ class Log
         ->view('role_admin ra', 'user_id', 'ra.user_id=l.user_id')
         ->view('role r', ['name'=>'role_name'], 'r.id=ra.role_id')
         ->order('l.create_time DESC')
-        ->paginate();
+        ->paginate(null, null, [
+            'path' => url('expand/log'),
+        ]);
 
         $page = $result->render();
         $list = $result->toArray();
 
         return [
-            'list' => $list['data'],
-            'page' => $page
+            'list'         => $list['data'],
+            'total'        => $list['total'],
+            'per_page'     => $list['per_page'],
+            'current_page' => $list['current_page'],
+            'last_page'    => $list['last_page'],
+            'page'         => $page
         ];
     }
 }
