@@ -20,6 +20,19 @@ class Page extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'category_id'   => 'integer',
+        'type_id'       => 'integer',
+        'is_pass'       => 'integer',
+        'is_com'        => 'integer',
+        'is_top'        => 'integer',
+        'is_hot'        => 'integer',
+        'sort'          => 'integer',
+        'hits'          => 'integer',
+        'user_id'       => 'integer',
+        'is_link'       => 'integer',
+        'comment_count' => 'integer',
+    ];
     protected $field = [
         'id',
         'title',
@@ -125,5 +138,53 @@ class Page extends Model
     protected function getModelNameAttr($_value)
     {
         return lang('model ' . $_value);
+    }
+
+    /**
+     * 获取器
+     * 推荐状态名
+     * @access protected
+     * @param  string $_value
+     * @return string
+     */
+    protected function getComNameAttr($_value)
+    {
+        return lang('article com ' . $_value);
+    }
+
+    /**
+     * 获取器
+     * 最热状态名
+     * @access protected
+     * @param  string $_value
+     * @return string
+     */
+    protected function getHotNameAttr($_value)
+    {
+        return lang('article hot ' . $_value);
+    }
+
+    /**
+     * 获取器
+     * 置顶状态名
+     * @access protected
+     * @param  string $_value
+     * @return string
+     */
+    protected function getTopNameAttr($_value)
+    {
+        return lang('article top ' . $_value);
+    }
+
+    /**
+     * 获取器
+     * 跳转状态名
+     * @access protected
+     * @param  string $_value
+     * @return string
+     */
+    protected function getLinkNameAttr($_value)
+    {
+        return lang('article link ' . $_value);
     }
 }

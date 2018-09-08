@@ -20,6 +20,12 @@ class Access extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'role_id' => 'integer',
+        'node_id' => 'integer',
+        'status'  => 'integer',
+        'level'   => 'integer',
+    ];
     protected $field = [
         'id',
         'role_id',

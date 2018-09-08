@@ -29,12 +29,14 @@ class Role
             ['id', '<>', 1],
         ])
         ->order('id DESC')
+        ->append([
+            'status_name'
+        ])
         ->paginate(null, null, [
             'path' => url('user/role'),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->status_name = $value->status_name;
             if ($value->id == 1) {
                 $result[$key]->url = [
                     'editor' => '',
@@ -42,14 +44,13 @@ class Role
                 ];
             } else {
                 $result[$key]->url = [
-                    'editor' => url('user/role', ['operate' => 'editor', 'id' => $value['id']]),
-                    'remove' => url('user/role', ['operate' => 'remove', 'id' => $value['id']]),
+                    'editor' => url('user/role', ['operate' => 'editor', 'id' => $value->id]),
+                    'remove' => url('user/role', ['operate' => 'remove', 'id' => $value->id]),
                 ];
             }
 
         }
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -58,7 +59,7 @@ class Role
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -84,12 +85,13 @@ class Role
         model('common/node')
         ->where($map)
         ->order('sort ASC')
-        ->select();
+        ->select()
+        ->toArray();
 
         foreach ($result as $key => $value) {
-            $child = $this->node($value->id);
+            $child = $this->node($value['id']);
             if (!empty($child)) {
-                $result[$key]->child = $child;
+                $result[$key]['child'] = $child;
             }
 
         }
@@ -179,7 +181,8 @@ class Role
             ->where([
                 ['id', '=', input('post.id/f')],
             ])
-            ->find();
+            ->find()
+            ->toArray();
 
             create_action_log($result['name'], 'node_remove');
 
@@ -193,7 +196,9 @@ class Role
             ->where([
                 ['role_admin', '=', input('post.id/f')]
             ])
-            ->select();
+            ->select()
+            ->toArray();
+
             $admin_id = [];
             foreach ($role_admin as $key => $value) {
                 $admin_id[] = $value['user_id'];
@@ -224,11 +229,13 @@ class Role
      */
     public function find()
     {
-        $role_data = model('common/role')->field(true)
+        $role_data =
+        model('common/role')->field(true)
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         $result =
         model('common/access')

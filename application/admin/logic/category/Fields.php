@@ -44,19 +44,20 @@ class Fields
         ->view('fields_type t', ['name'=>'type_name'], 't.id=f.type_id')
         ->where($map)
         ->order('f.id DESC')
+        ->append([
+            'require'
+        ])
         ->paginate(null, null, [
             'path' => url('category/fields'),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->require = $value->require;
-
             $result[$key]->url = [
-                'editor' => url('category/fields', ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url('category/fields', ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url('category/fields', ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url('category/fields', ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
-        $page = $result->render();
+
         $list = $result->toArray();
 
         return [
@@ -65,7 +66,7 @@ class Fields
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -86,11 +87,12 @@ class Fields
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort DESC, id DESC')
-        ->select();
+        ->select()
+        ->toArray();
 
         foreach ($result as $key => $value) {
-            $res = $this->category($value->id);
-            $result[$key]->child = $res;
+            $res = $this->category($value['id']);
+            $result[$key]['child'] = $res;
         }
 
         return $result;
@@ -108,11 +110,11 @@ class Fields
         model('common/FieldsType')
         ->field(['id', 'name'])
         ->order('id ASC')
-        ->select();
-
-        foreach ($result as $key => $value) {
-            $result[$key]->field_name = $value->fieldName;
-        }
+        ->append([
+            'field_name'
+        ])
+        ->select()
+        ->toArray();
 
         return $result;
     }
@@ -162,7 +164,8 @@ class Fields
         ->where([
             ['id', '=', input('post.id/f')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         create_action_log($result['name'], 'fields_remove');
 
@@ -187,7 +190,8 @@ class Fields
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

@@ -20,6 +20,11 @@ class MallCategory extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'is_show'    => 'integer',
+        'is_channel' => 'integer',
+        'sort'       => 'integer',
+    ];
     protected $field = [
         'id',
         'pid',

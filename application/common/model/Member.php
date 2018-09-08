@@ -20,6 +20,13 @@ class Member extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'province_id' => 'integer',
+        'city_id'     => 'integer',
+        'area_id'     => 'integer',
+        'status'      => 'integer',
+        'salt'        => 'integer',
+    ];
     protected $field = [
         'id',
         'username',

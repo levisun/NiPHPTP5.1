@@ -24,6 +24,21 @@ class MallGoods extends Model
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
     protected $pk = 'id';
+    protected $type = [
+        'type_id'       => 'integer',
+        'brand_id'      => 'integer',
+        'price'         => 'integer',
+        'market_price'  => 'integer',
+        'number'        => 'integer',
+        'is_pass'       => 'integer',
+        'is_show'       => 'integer',
+        'is_com'        => 'integer',
+        'is_top'        => 'integer',
+        'is_hot'        => 'integer',
+        'sort'          => 'integer',
+        'hits'          => 'integer',
+        'comment_count' => 'integer',
+    ];
     protected $field = [
         'id',
         'type_id',

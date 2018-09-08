@@ -20,6 +20,9 @@ class Type extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'category_id' => 'integer',
+    ];
     protected $field = [
         'id',
         'category_id',

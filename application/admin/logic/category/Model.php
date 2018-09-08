@@ -27,22 +27,23 @@ class Model
         model('common/models')
         ->field(true)
         ->order('id DESC')
+        ->append([
+            'model_status',
+            'model_name'
+        ])
         ->paginate(null, null, [
             'path' => url('category/model'),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->model_status = $value->model_status;
-            $result[$key]->model_name   = $value->model_name;
-
             if ($value->id > 9) {
                 $result[$key]->url = [
-                    'editor' => url('category/model', ['operate' => 'editor', 'id' => $value['id']]),
-                    'remove' => url('category/model', ['operate' => 'remove', 'id' => $value['id']]),
+                    'editor' => url('category/model', ['operate' => 'editor', 'id' => $value->id]),
+                    'remove' => url('category/model', ['operate' => 'remove', 'id' => $value->id]),
                 ];
             }
         }
-        $page = $result->render();
+
         $list = $result->toArray();
 
         return [
@@ -51,7 +52,7 @@ class Model
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 }

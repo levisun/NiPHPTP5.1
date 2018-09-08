@@ -48,19 +48,20 @@ class Member
         ->view('level l', ['name'=>'level_name'], 'l.id=lm.level_id')
         ->where($map)
         ->order('m.id DESC')
+        ->append([
+            'status_name'
+        ])
         ->paginate(null, null, [
             'path' => url('user/member'),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->status_name = $value->status_name;
             $result[$key]->url = [
-                'editor' => url('user/member', ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url('user/member', ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url('user/member', ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url('user/member', ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -69,7 +70,7 @@ class Member
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -89,7 +90,8 @@ class Member
         ])
         ->order('id ASC')
         ->cache(true)
-        ->select();
+        ->select()
+        ->toArray();
 
         return $result;
     }
@@ -109,7 +111,8 @@ class Member
             ['status', '=', 1]
         ])
         ->order('id DESC')
-        ->select();
+        ->select()
+        ->toArray();
 
         return $result;
     }
@@ -200,7 +203,8 @@ class Member
             ->where([
                 ['id', '=', input('post.id/f')],
             ])
-            ->find();
+            ->find()
+            ->toArray();
 
             create_action_log($result['username'], 'member_remove');
 
@@ -253,7 +257,8 @@ class Member
         ->where([
             ['m.id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         return $result;
     }
@@ -350,5 +355,4 @@ class Member
 
         return $result;
     }
-
 }

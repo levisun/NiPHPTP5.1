@@ -38,12 +38,11 @@ class Ads
             $result[$key]->start_time = date('Y/m/d', $value['start_time']);
             $result[$key]->end_time = date('Y/m/d', $value['end_time']);
             $result[$key]->url = [
-                'editor' => url('content/ads', ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url('content/ads', ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url('content/ads', ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url('content/ads', ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -52,7 +51,7 @@ class Ads
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -106,7 +105,8 @@ class Ads
         ->where([
             ['id', '=', input('post.id/f')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         create_action_log($result['name'], 'ads_remove');
 
@@ -131,7 +131,8 @@ class Ads
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         $result['start_time'] = date('Y-m-d', $result['start_time']);
         $result['end_time'] = date('Y-m-d', $result['end_time']);

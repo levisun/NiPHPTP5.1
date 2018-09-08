@@ -125,7 +125,7 @@
 <script type="text/javascript">
 $.loading({
     url: request.api.query,
-    animation: true,
+    // animation: true,
     data: {
         token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
@@ -218,4 +218,17 @@ $.loading({
 
     plotWithOptions();
 });
+
+
+// $.loading({
+//     url: request.api.settle,
+//     data: {
+//         token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+//         timestamp: "{:time()}",
+//         method: "expand.databack.backup",
+//         backup_type: 1
+//     },
+// }, function(result){
+
+// });
 </script>

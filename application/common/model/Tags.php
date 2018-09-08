@@ -20,6 +20,9 @@ class Tags extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'count' => 'integer',
+    ];
     protected $field = [
         'id',
         'name',

@@ -3,7 +3,7 @@
  * 微信支付
  *
  * @package   NiPHPCMS
- * @category  extend\util\
+ * @category  extend\payment\
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -424,7 +424,7 @@ class PayWechat
             curl_setopt($curl, CURLOPT_SSLKEY, $this->config['sslkey_path']);
         }
         curl_setopt($curl, CURLOPT_POST, true);             // post提交方式
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $_xml);       // post传输数据
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $_xml);      // post传输数据
         $result = curl_exec($curl);                         // 运行curl
 
         if ($result) {

@@ -22,6 +22,7 @@ define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.1 Alpha 8.2613');
 
 
+
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
 if (APP_DEBUG) set_time_limit(60); else set_time_limit(300);
 ini_set('memory_limit', '32M');

@@ -119,10 +119,10 @@ class IpInfo
                 ['ip', '=', $_request_ip],
             ])
             ->update([
-                'country_id'  => $country,
-                'province_id' => $province,
-                'city_id'     => $city,
-                'area_id'     => $area,
+                'country_id'  => safe_filter($country, true, true),
+                'province_id' => safe_filter($province, true, true),
+                'city_id'     => safe_filter($city, true, true),
+                'area_id'     => safe_filter($area, true, true),
                 'update_time' => time()
             ]);
         }
@@ -136,6 +136,8 @@ class IpInfo
      */
     private function queryRegion($_name)
     {
+        $_name = safe_filter($_name, true, true);
+
         $result =
         model('common/region')
         ->where([

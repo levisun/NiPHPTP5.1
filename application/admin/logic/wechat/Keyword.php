@@ -49,19 +49,21 @@ class Keyword
         ->field(true)
         ->where($map)
         ->order('id DESC')
+        ->append([
+            'type_name',
+            'status'
+        ])
         ->paginate(null, null, [
             'path' => url($url),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->type_name = $value->type_name;
-            $result[$key]->status = $value->status_name;
             $result[$key]->url = [
-                'editor' => url($url, ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url($url, ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url($url, ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url($url, ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
-        $page = $result->render();
+
         $list = $result->toArray();
 
         return [
@@ -70,7 +72,7 @@ class Keyword
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -122,7 +124,9 @@ class Keyword
             ['id', '=', input('post.id/f')],
         ];
 
-        $result = $this->find();
+        $result =
+        $this->find()
+        ->toArray();
 
         // 删除图片
         \File::remove(env('root_path') . basename(request()->root()) . $result['image']);
@@ -153,7 +157,8 @@ class Keyword
         model('common/reply')
         ->field(true)
         ->where($map)
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

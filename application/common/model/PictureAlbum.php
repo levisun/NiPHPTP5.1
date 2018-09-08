@@ -20,6 +20,9 @@ class PictureAlbum extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'main_id'   => 'integer',
+    ];
     protected $field = [
         'id',
         'main_id',

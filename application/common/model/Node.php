@@ -20,6 +20,12 @@ class Node extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'status' => 'integer',
+        'sort'   => 'integer',
+        'pid'    => 'integer',
+        'level'  => 'integer',
+    ];
     protected $field = [
         'id',
         'name',

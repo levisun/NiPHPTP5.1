@@ -67,8 +67,7 @@ $.loading({
 });
 
 $(document).on("click", "#paging a", function(){
-    var page = $.urlParam("p", "", $(this).attr("url"));
-    $.rewriteUrl($(this).attr("url"));
+    var page = $.urlParam("p", "", $(this).attr("url"));;
     $.loading({
         url: request.api.query,
         animation: true,

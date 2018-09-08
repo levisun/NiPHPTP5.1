@@ -20,6 +20,11 @@ class TagsArticle extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'tags_id'     => 'integer',
+        'category_id' => 'integer',
+        'article_id'  => 'integer',
+    ];
     protected $field = [
         'id',
         'tags_id',

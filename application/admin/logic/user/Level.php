@@ -26,19 +26,20 @@ class Level
         $result =
         model('common/level')
         ->order('id DESC')
+        ->append([
+            'status_name'
+        ])
         ->paginate(null, null, [
             'path' => url('user/level'),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->status_name = $value->status_name;
             $result[$key]->url = [
-                'editor' => url('user/level', ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url('user/level', ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url('user/level', ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url('user/level', ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -47,7 +48,7 @@ class Level
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -93,7 +94,8 @@ class Level
         ->where([
             ['id', '=', input('post.id/f')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         create_action_log($result['name'], 'level_remove');
 
@@ -117,7 +119,8 @@ class Level
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

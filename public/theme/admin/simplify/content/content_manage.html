@@ -1,6 +1,12 @@
 <div class="smart-widget">
     <div class="smart-widget-header">
         {$SUB_TITLE}
+
+        <span class="smart-widget-option">
+            <a href="{:url('', array('operate' => 'added'))}" class="btn btn-default btn-xs">
+                <span class="fa fa-plus"></span>{:lang('button add')}
+            </a>
+        </span>
     </div>
     <div class="smart-widget-inner">
         <div class="smart-widget-body">
@@ -23,6 +29,9 @@
                     </tbody>
                 </table>
             </form>
+            <div id="paging">
+
+            </div>
         </div>
     </div>
 </div>
@@ -43,5 +52,73 @@ $.loading({
         return false;
     }
 
+    var list = "";
+    for (var index in result.data.list) {
+        list = list + "<tr>";
+        list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
+        list = list + "<td>"+result.data.list[index].title+"</td>";
+        list = list + "<td>"+result.data.list[index].model_name+"</td>";
+        list = list + "<td>"+result.data.list[index].category_name+"</td>";
+        list = list + "<td>"+result.data.list[index].pass_name+"</td>";
+        list = list + "<td>"+result.data.list[index].update_time+"</td>";
+        list = list + "<td>"+result.data.list[index].create_time+"</td>";
+
+        list = list + "<td>";
+        list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+        list = list + "</td>";
+
+        list = list + "</tr>";
+    }
+
+    $("#dataTable tbody").prepend(list);
+    $("#paging").prepend(result.data.page);
+    pagingToAjax();
+});
+
+$(document).on("click", "#paging a", function(){
+    var page = $.urlParam("p", "", $(this).attr("url"));
+
+    $.loading({
+        url: request.api.query,
+        animation: true,
+        data: {
+            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+            timestamp: "{:time()}",
+            method: "content.content.query",
+            cid: "{$Request.param.cid}",
+            timestamp: "{:time()}",
+            p: page
+        }
+    }, function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataTable tbody tr").remove();
+        $("#paging ul").remove();
+
+        var list = "";
+        for (var index in result.data.list) {
+            list = list + "<tr>";
+            list = list + "<td><input type='text' name='sort["+result.data.list[index].id+"]' class='form-control mini' value='"+result.data.list[index].sort+"'></td>";
+            list = list + "<td>"+result.data.list[index].title+"</td>";
+            list = list + "<td>"+result.data.list[index].model_name+"</td>";
+            list = list + "<td>"+result.data.list[index].category_name+"</td>";
+            list = list + "<td>"+result.data.list[index].pass_name+"</td>";
+            list = list + "<td>"+result.data.list[index].update_time+"</td>";
+            list = list + "<td>"+result.data.list[index].create_time+"</td>";
+
+            list = list + "<td>";
+            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "</td>";
+
+            list = list + "</tr>";
+        }
+
+        $("#dataTable tbody").prepend(list);
+        $("#paging").prepend(result.data.page);
+        pagingToAjax();
+    });
 });
 </script>

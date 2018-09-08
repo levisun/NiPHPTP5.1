@@ -20,6 +20,13 @@ class Banner extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'pid'    => 'integer',
+        'width'  => 'integer',
+        'height' => 'integer',
+        'hits'   => 'integer',
+        'sort'   => 'integer'
+    ];
     protected $field = [
         'id',
         'pid',

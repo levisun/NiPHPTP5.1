@@ -53,12 +53,11 @@ class Admin
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [
-                'editor' => url('user/admin', ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url('user/admin', ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url('user/admin', ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url('user/admin', ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -67,7 +66,7 @@ class Admin
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -86,7 +85,8 @@ class Admin
             ['id', '<>', 1],
         ])
         ->order('id DESC')
-        ->select();
+        ->select()
+        ->toArray();
     }
 
     /**

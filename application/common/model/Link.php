@@ -24,6 +24,15 @@ class Link extends Model
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
     protected $pk = 'id';
+    protected $type = [
+        'category_id' => 'integer',
+        'type_id'     => 'integer',
+        'mebmer_id'   => 'integer',
+        'is_pass'     => 'integer',
+        'sort'        => 'integer',
+        'hits'        => 'integer',
+        'user_id'     => 'integer',
+    ];
     protected $field = [
         'id',
         'title',

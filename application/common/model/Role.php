@@ -20,6 +20,10 @@ class Role extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'pid'    => 'integer',
+        'status' => 'integer',
+    ];
     protected $field = [
         'id',
         'name',

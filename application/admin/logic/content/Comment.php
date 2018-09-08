@@ -32,7 +32,6 @@ class Comment
             'path' => url('content/comment'),
         ]);
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -41,7 +40,7 @@ class Comment
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 

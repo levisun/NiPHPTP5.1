@@ -30,11 +30,11 @@ class Basic
             ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script'],
             ['lang', '=', lang(':detect')],
         ])
-        ->select();
+        ->select()
+        ->toArray();
 
         $data = [];
         foreach ($result as $value) {
-            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

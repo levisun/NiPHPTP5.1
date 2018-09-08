@@ -23,6 +23,13 @@ class Book extends Model
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
     protected $pk = 'id';
+    protected $type = [
+        'type_id' => 'integer',
+        'user_id' => 'integer',
+        'is_show' => 'integer',
+        'sort'    => 'integer',
+        'hits'    => 'integer',
+    ];
     protected $field = [
         'id',
         'name',

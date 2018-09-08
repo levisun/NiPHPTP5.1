@@ -20,6 +20,10 @@ class Level extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'integral' => 'integer',
+        'status'   => 'integer',
+    ];
     protected $field = [
         'id',
         'name',

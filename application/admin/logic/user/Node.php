@@ -27,18 +27,21 @@ class Node
         model('common/node')
         ->field(true)
         ->order('sort ASC, id ASC')
-        ->select();
+        ->append([
+            'status_name',
+            'level_name'
+        ])
+        ->select()
+        ->toArray();
 
         foreach ($result as $key => $value) {
-            $result[$key]->status_name = $value->status_name;
-            $result[$key]->level_name = $value->level_name;
-            $result[$key]->url = [
+            $result[$key]['url'] = [
                 'editor' => url('user/node', ['operate' => 'editor', 'id' => $value['id']]),
                 'remove' => url('user/node', ['operate' => 'remove', 'id' => $value['id']]),
             ];
         }
 
-        return node_format($result->toArray());
+        return node_format($result);
     }
 
     /**
@@ -89,7 +92,8 @@ class Node
         ->where([
             ['id', '=', input('post.id/f')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         create_action_log($result['name'], 'node_remove');
 
@@ -114,7 +118,8 @@ class Node
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

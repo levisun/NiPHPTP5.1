@@ -30,12 +30,12 @@ class Safe
             ['name', 'in', 'system_portal,content_check,member_login_captcha,website_submit_captcha,upload_file_max,upload_file_type,website_static'],
             ['lang', '=', 'niphp'],
         ])
-        ->select();
+        ->select()
+        ->toArray();
 
         $admin_data = session('admin_data');
         $data = [];
         foreach ($result as $value) {
-            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

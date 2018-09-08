@@ -30,11 +30,11 @@ class Config
             ['name', 'in', 'wechat_token,wechat_encodingaeskey,wechat_appid,wechat_appsecret'],
             ['lang', '=', 'niphp'],
         ])
-        ->select();
+        ->select()
+        ->toArray();
 
         $data = [];
         foreach ($result as $value) {
-            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

@@ -45,11 +45,11 @@ class Type
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [
-                'editor' => url('category/type', ['operate' => 'editor', 'id' => $value['id']]),
-                'remove' => url('category/type', ['operate' => 'remove', 'id' => $value['id']]),
+                'editor' => url('category/type', ['operate' => 'editor', 'id' => $value->id]),
+                'remove' => url('category/type', ['operate' => 'remove', 'id' => $value->id]),
             ];
         }
-        $page = $result->render();
+
         $list = $result->toArray();
 
         return [
@@ -58,7 +58,7 @@ class Type
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -79,11 +79,12 @@ class Type
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort DESC, id DESC')
-        ->select();
+        ->select()
+        ->toArray();
 
         foreach ($result as $key => $value) {
-            $res = $this->category($value->id);
-            $result[$key]->child = $res;
+            $res = $this->category($value['id']);
+            $result[$key]['child'] = $res;
         }
 
         return $result;
@@ -132,7 +133,8 @@ class Type
         ->where([
             ['id', '=', input('post.id/f')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         create_action_log($result['name'], 'type_remove');
 
@@ -157,7 +159,8 @@ class Type
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

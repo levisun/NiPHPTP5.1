@@ -20,6 +20,10 @@ class ActionLog extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'action_id' => 'integer',
+        'user_id' => 'integer',
+    ];
     protected $field = [
         'id',
         'action_id',

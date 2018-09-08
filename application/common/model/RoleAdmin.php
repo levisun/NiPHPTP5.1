@@ -20,6 +20,10 @@ class RoleAdmin extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'user_id' => 'integer',
+        'role_id' => 'integer',
+    ];
     protected $field = [
         'id',
         'user_id',

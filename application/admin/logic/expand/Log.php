@@ -42,7 +42,6 @@ class Log
             'path' => url('expand/log'),
         ]);
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -51,7 +50,7 @@ class Log
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 }

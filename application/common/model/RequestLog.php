@@ -20,6 +20,9 @@ class RequestLog extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'count' => 'integer',
+    ];
     protected $field = [
         'id',
         'ip',

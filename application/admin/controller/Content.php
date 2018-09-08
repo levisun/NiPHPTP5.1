@@ -29,6 +29,10 @@ class Content extends Base
             $tpl = 'content_' . $operate;
         }
 
+        if (input('param.type', false)) {
+            $tpl .= '_' . input('param.type');
+        }
+
         return $this->fetch($tpl);
     }
 

@@ -86,7 +86,7 @@ class Login
         ])
         ->find();
 
-        return !empty($result) ? $result : false;
+        return !empty($result) ? $result->toArray() : false;
     }
 
     /**

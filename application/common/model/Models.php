@@ -20,6 +20,10 @@ class Models extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'status' => 'integer',
+        'sort'   => 'integer',
+    ];
     protected $field = [
         'id',
         'name',

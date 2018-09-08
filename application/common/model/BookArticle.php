@@ -20,6 +20,13 @@ class BookArticle extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'book_id'       => 'integer',
+        'is_pass'       => 'integer',
+        'sort'          => 'integer',
+        'hits'          => 'integer',
+        'comment_count' => 'integer',
+    ];
     protected $field = [
         'id',
         'title',

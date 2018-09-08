@@ -20,6 +20,10 @@ class MallGoodsPromote extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'goods_id'      => 'integer',
+        'promote_price' => 'integer',
+    ];
     protected $field = [
         'id',
         'goods_id',

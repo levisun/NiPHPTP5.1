@@ -20,6 +20,10 @@ class CommentSupport extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'comment_id' => 'integer',
+        'user_id'    => 'integer',
+    ];
     protected $field = [
         'id',
         'create_time',

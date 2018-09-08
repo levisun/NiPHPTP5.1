@@ -20,6 +20,14 @@ class Comment extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'category_id' => 'integer',
+        'content_id'  => 'integer',
+        'user_id'     => 'integer',
+        'pid'         => 'integer',
+        'is_pass'     => 'integer',
+        'is_report'   => 'integer',
+    ];
     protected $field = [
         'id',
         'category_id',

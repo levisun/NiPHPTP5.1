@@ -20,6 +20,14 @@ class Category extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'type_id'    => 'integer',
+        'model_id'   => 'integer',
+        'is_show'    => 'integer',
+        'is_channel' => 'integer',
+        'sort'       => 'integer',
+        'access_id'  => 'integer',
+    ];
     protected $field = [
         'id',
         'pid',

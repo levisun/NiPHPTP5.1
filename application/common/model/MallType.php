@@ -20,6 +20,10 @@ class MallType extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'pid'  => 'integer',
+        'sort' => 'integer',
+    ];
     protected $field = [
         'id',
         'pid',

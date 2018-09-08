@@ -362,6 +362,209 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
 }
 
 /**
+ * 安全过滤
+ * @param  mixed   $_content
+ * @param  boolean $_hs      HTML转义 默认false
+ * @param  boolean $_hxp     HTML XML PHP标签过滤 默认false
+ * @param  boolean $_script  JS脚本过滤 默认true
+ * @param  boolean $_sql     SQL关键词过滤 默认true
+ * @return mixed
+ */
+function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_sql = true)
+{
+    if (is_array($_content)) {
+        foreach ($_content as $key => $value) {
+            $_content[$key] = safe_filter($value, $_hs, $_hxp, $_script, $_sql);
+        }
+        return $_content;
+    } else {
+        // 过滤前后空格
+        $_content = trim($_content);
+
+        // 过滤非法标签
+        $_content = preg_replace([
+            '/<\?php(.*?)\?>/si',
+            '/<\?(.*?)\?>/si',
+            '/<%(.*?)%>/si',
+            '/<\?php|<\?|\?>|<%|%>/si',
+        ], '', $_content);
+
+        // 过滤SQL关键词
+        if ($_sql === true) {
+            $pattern = [
+                '/(and )/si'     => '&#97;nd ',
+                '/(between)/si'  => '&#98;etween',
+                '/(chr)/si'      => '&#99;hr',
+                '/(char)/si'     => '&#99;har',
+                '/(count )/si'   => '&#99;ount ',
+                '/(create)/si'   => '&#99;reate',
+                '/(declare)/si'  => '&#100;eclare',
+                '/(delete)/si'   => '&#100;elete',
+                '/(execute)/si'  => '&#101;xecute',
+                '/(insert)/si'   => '&#105;nsert',
+                '/(join)/si'     => '&#106;oin',
+                '/(update)/si'   => '&#117;pdate',
+                '/(master)/si'   => '&#109;aster',
+                '/(mid )/si'     => '&#109;id ',
+                '/(or )/si'      => '&#111;r ',
+                '/(select)/si'   => '&#115;elect',
+                '/(truncate)/si' => '&#116;runcate',
+                '/(where)/si'    => '&#119;here',
+            ];
+            $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
+        }
+
+        // 过滤JS脚本
+        if ($_script === true) {
+            $_content = preg_replace([
+                '/on([a-zA-Z]*?)(=)["|\'](.*?)["|\']/si',
+                '/(javascript:)(.*?)(\))/si',
+                '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si',
+                '/<(\/?javascript.*?)>/si',
+                '/<(script.*?)>(.*?)<(\/script.*?)>/si',
+                '/<(\/?script.*?)>/si',
+                '/<(applet.*?)>(.*?)<(\/applet.*?)>/si',
+                '/<(\/?applet.*?)>/si',
+                '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si',
+                '/<(\/?vbscript.*?)>/si',
+                '/<(expression.*?)>(.*?)<(\/expression.*?)>/si',
+                '/<(\/?expression.*?)>/si',
+            ], '', $_content);
+        }
+
+        // 过滤HTML XML PHP标签
+        if ($_hxp === true) {
+            $_content = strip_tags($_content);
+        } else {
+            $_content = preg_replace([
+                // 过滤HTML嵌入
+                '/<(html.*?)>(.*?)<(\/html.*?)>/si',
+                '/<(\/?html.*?)>/si',
+                '/<(head.*?)>(.*?)<(\/head.*?)>/si',
+                '/<(\/?head.*?)>/si',
+                '/<(title.*?)>(.*?)<(\/title.*?)>/si',
+                '/<(\/?title.*?)>/si',
+                '/<(meta.*?)>(.*?)<(\/meta.*?)>/si',
+                '/<(\/?meta.*?)>/si',
+                '/<(body.*?)>(.*?)<(\/body.*?)>/si',
+                '/<(\/?body.*?)>/si',
+                '/<(style.*?)>(.*?)<(\/style.*?)>/si',
+                '/<(\/?style.*?)>/si',
+                '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si',
+                '/<(\/?iframe.*?)>/si',
+                '/<(frame.*?)>(.*?)<(\/frame.*?)>/si',
+                '/<(\/?frame.*?)>/si',
+                '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si',
+                '/<(\/?frameset.*?)>/si',
+                '/<(base.*?)>(.*?)<(\/base.*?)>/si',
+                '/<(\/?base.*?)>/si',
+
+                // 过滤HTML危害标签信息
+                '/<(object.*?)>(.*?)<(\/object.*?)>/si',
+                '/<(\/?object.*?)>/si',
+                '/<(xml.*?)>(.*?)<(\/xml.*?)>/si',
+                '/<(\/?xml.*?)>/si',
+                '/<(blink.*?)>(.*?)<(\/blink.*?)>/si',
+                '/<(\/?blink.*?)>/si',
+                '/<(link.*?)>(.*?)<(\/link.*?)>/si',
+                '/<(\/?link.*?)>/si',
+                '/<(embed.*?)>(.*?)<(\/embed.*?)>/si',
+                '/<(\/?embed.*?)>/si',
+                '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',
+                '/<(\/?ilayer.*?)>/si',
+                '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',
+                '/<(\/?layer.*?)>/si',
+                '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',
+                '/<(\/?bgsound.*?)>/si',
+                '/<(form.*?)>(.*?)<(\/form.*?)>/si',
+                '/<(\/?form.*?)>/si',
+
+                '/<\!--.*?-->/si',
+            ], '', $_content);
+        }
+
+        // HTML转义
+        if ($_hs === true) {
+            $_content = htmlspecialchars($_content);
+        }
+
+        //特殊字符过滤
+        $pattern = [
+            // 全角转半角
+            '０'=>'0','１'=>'1','２'=>'2','３'=>'3','４'=>'4','５'=>'5','６'=>'6','７'=>'7','８'=>'8','９'=>'9','Ａ'=>'A','Ｂ'=>'B','Ｃ'=>'C','Ｄ'=>'D','Ｅ'=>'E','Ｆ'=>'F','Ｇ'=>'G','Ｈ'=>'H','Ｉ'=>'I','Ｊ'=>'J','Ｋ'=>'K','Ｌ'=>'L','Ｍ'=>'M','Ｎ'=>'N','Ｏ'=>'O','Ｐ'=>'P','Ｑ'=>'Q','Ｒ'=>'R','Ｓ'=>'S','Ｔ'=>'T','Ｕ'=>'U','Ｖ'=>'V','Ｗ'=>'W','Ｘ'=>'X','Ｙ'=>'Y','Ｚ'=>'Z','ａ'=>'a','ｂ'=>'b','ｃ'=>'c','ｄ'=>'d','ｅ'=>'e','ｆ'=>'f','ｇ'=>'g','ｈ'=>'h','ｉ'=>'i','ｊ'=>'j','ｋ'=>'k','ｌ'=>'l','ｍ'=>'m','ｎ'=>'n','ｏ'=>'o','ｐ'=>'p','ｑ'=>'q','ｒ'=>'r','ｓ'=>'s','ｔ'=>'t','ｕ'=>'u','ｖ'=>'v','ｗ'=>'w','ｘ'=>'x','ｙ'=>'y','ｚ'=>'z',
+            '〔'=>'[','【'=>'[','〖'=>'[','〕'=>']','】'=>']','〗'=>']',
+
+            // 多余回车
+            '/[\r\n\f]+</si' => '<',
+            '/>[\r\n\f]+/si' => '>',
+            '/[\r\n\f]+/si' => '',
+
+            '＋' => '&#43;',
+            '！' => '&#33;',
+            '｜' => '&#124;',
+            '￥' => '&yen;',
+            '〃' => '&quot;',
+            '＂' => '&quot;',
+            '－' => '&ndash;',
+            '～' => '&#126;',
+            '…' => '&#133;',
+            '（' => '&#40;',
+            '）' => '&#41;',
+            '｛' => '&#123;',
+            '｝' => '&#125;',
+            '？' => '&#129;',
+            '％' => '&#37;',
+            '：' => '&#58;',
+
+            '　' => '',
+
+            // 特殊字符
+            '‖' => '&#124;',
+            '”' => '&rdquo;',
+            '“' => '&ldquo;',
+            '’' => '&rsquo;',
+            '‘' => '&lsquo;',
+            '™' => '&trade;',
+            '®' => '&reg;',
+            '©' => '&copy;',
+            '—' => '&ndash;',
+            '×' => '&times;',
+            '÷' => '&divide;',
+            '℃' => '&#8451;',
+            '℉' => '&#8457;',
+
+            // 安全字符
+            '|'  => '&#124;',
+            '*'  => '&#42;',
+            '`'  => '&acute;',
+            '\\' => '&#92;',
+            '~'  => '&#126;',
+            '‚'  => '&sbquo;',
+            // ','  => '&#44;',
+            // '.'  => '&#46;',
+            '^'  => '&#94;',
+
+            // HTML中的JS无法执行
+            // '\'' => '&#039;',
+            '%'  => '&#37;',
+            // '!'  => '&#33;',
+            // '@'  => '&#64;',
+            // '-'  => '&ndash;',
+            // '?'  => '&#129;',
+            // '+'  => '&#43;',
+            // ':'  => '&#58;',
+            // '='  => '&#61;',
+            // '('  => '&#40;',
+            // ')'  => '&#41;',
+        ];
+
+        $_content = str_replace(array_keys($pattern), array_values($pattern), $_content);
+    }
+
+    return $_content;
+}
+
+/**
  * 过滤XSS
  * @param  string $_data
  * @return string

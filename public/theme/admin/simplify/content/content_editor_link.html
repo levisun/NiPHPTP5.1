@@ -1,0 +1,98 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+
+
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group row">
+                    <label for="title" class="col-lg-2 control-label">{:lang('title')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="title" id="title" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="description" class="col-lg-2 control-label">{:lang('description')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="description" id="description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="logo" class="col-lg-2 control-label">{:lang('logo')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="logo" id="linklogo" class="form-control" value="">
+                        <button type="button" class="btn btn-info btn-sm" id="upload" data-type="image" data-id="linklogo" data-model="">{:lang('button upload')}</button>
+                        <img src="" id="img-linklogo" width="100" style="display:none">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">{:lang('pass')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="is_pass1" name="is_pass" value="1" >
+                                <label for="is_pass1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button yes')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="is_pass2" name="is_pass" value="0" >
+                                <label for="is_pass2"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button no')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="url" class="col-lg-2 control-label">{:lang('url')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="url" id="url" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="type_id" class="col-lg-2 control-label">{:lang('type')}</label>
+                    <div class="col-lg-10">
+                        <select name="type_id" id="type_id" class="form-control">
+                            <option value="0">{:lang('select type')}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="category_id" value="">
+                        <input type="hidden" name="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var editor_data = {};
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
+        method: "content.content.find",
+        cid: "{$Request.param.cid}",
+        id: "{$Request.param.id}"
+    }
+}, function(result) {
+    if (result.code === "SUCCESS") {
+        editor_data = result.data;
+    }
+});
+</script>

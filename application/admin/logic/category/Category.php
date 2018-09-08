@@ -41,36 +41,38 @@ class Category
         ->where($map)
         ->group('c.id')
         ->order('c.sort DESC, c.id DESC')
-        ->select();
+        ->append([
+            'type_name',
+            'show',
+            'channel'
+        ])
+        ->select()
+        ->toArray();
 
         foreach ($result as $key => $value) {
-            $result[$key]->type_name = $value->type_name;
-            $result[$key]->show      = $value->show;
-            $result[$key]->channel   = $value->channel;
-
             $url = [
                 'add_child' => url('category/category', ['operate' => 'added', 'pid' => $value['id']]),
                 'editor'    => url('category/category', ['operate' => 'editor', 'id' => $value['id']]),
                 'remove'    => url('category/category', ['operate' => 'remove', 'id' => $value['id']]),
             ];
 
-            if ($value->pid) {
+            if ($value['pid']) {
                 $url['back'] = url('category/category');
             } else {
                 $url['back'] = false;
             }
 
-            if ($value->child) {
+            if ($value['child']) {
                 $url['child'] = url('category/category', ['pid' => $value['id']]);
             } else {
                 $url['child'] = false;
             }
 
-            $result[$key]->url = $url;
+            $result[$key]['url'] = $url;
 
         }
 
-        return $result->toArray();
+        return $result;
     }
 
     /**
@@ -92,7 +94,8 @@ class Category
             ['id', '=', input('post.pid/f', 0)],
             ['lang', '=', lang(':detect')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         return $result;
     }
@@ -127,11 +130,12 @@ class Category
         ->where([
             ['status', '=', 1],
         ])
-        ->select();
+        ->append([
+            'model_name'
+        ])
+        ->select()
+        ->toArray();
 
-        foreach ($result as $key => $value) {
-            $result[$key]['model_name'] = $value->model_name;
-        }
 
         return $result;
     }
@@ -150,7 +154,8 @@ class Category
         ->where([
             ['status', '=', 1],
         ])
-        ->select();
+        ->select()
+        ->toArray();
 
         return $result;
     }
@@ -213,7 +218,8 @@ class Category
         ->where([
             ['pid', '=', $_id],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         create_action_log($result['name'], 'category_remove');
 
@@ -229,7 +235,8 @@ class Category
         ->where([
             ['id', '=', $_id],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         // 删除图片
         \File::remove(env('root_path') . basename(request()->root()) . $result['image']);
@@ -255,7 +262,8 @@ class Category
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

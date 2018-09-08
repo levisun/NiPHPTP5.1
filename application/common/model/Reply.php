@@ -20,6 +20,11 @@ class Reply extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'type'   => 'integer',
+        'sort'   => 'integer',
+        'status' => 'integer',
+    ];
     protected $field = [
         'id',
         'keyword',

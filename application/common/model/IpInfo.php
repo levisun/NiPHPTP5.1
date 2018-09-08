@@ -21,6 +21,12 @@ class IpInfo extends Model
     protected $updateTime = 'update_time';
     protected $dateFormat = false;
     protected $pk = 'id';
+    protected $type = [
+        'country_id'  => 'integer',
+        'province_id' => 'integer',
+        'city_id'     => 'integer',
+        'area_id'     => 'integer'
+    ];
     protected $field = [
         'id',
         'ip',

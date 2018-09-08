@@ -20,6 +20,9 @@ class MallBrand extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'update_time';
     protected $pk = 'id';
+    protected $type = [
+        'type_id' => 'integer',
+    ];
     protected $field = [
         'id',
         'type_id',

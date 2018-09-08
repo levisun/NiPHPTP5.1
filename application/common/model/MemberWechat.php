@@ -20,6 +20,12 @@ class MemberWechat extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'sex'      => 'integer',
+        'city'     => 'integer',
+        'country'  => 'integer',
+        'province' => 'integer',
+    ];
     protected $field = [
         'id',
         'subscribe',

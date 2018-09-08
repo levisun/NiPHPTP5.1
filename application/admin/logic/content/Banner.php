@@ -38,19 +38,18 @@ class Banner
 
         foreach ($result as $key => $value) {
             $url = [
-                'manage' => url('content/banner', ['operate' => 'manage', 'pid' => $value['id']]),
-                'remove' => url('content/banner', ['operate' => 'remove', 'id' => $value['id']]),
+                'manage' => url('content/banner', ['operate' => 'manage', 'pid' => $value->id]),
+                'remove' => url('content/banner', ['operate' => 'remove', 'id' =>  $value->id]),
             ];
             if ($pid = input('param.pid/f', 0)) {
-                $url['editor'] = url('content/banner', ['operate' => 'editor', 'pid' => $pid, 'id' => $value['id']]);
+                $url['editor'] = url('content/banner', ['operate' => 'editor', 'pid' => $pid, 'id' => $value->id]);
             } else {
-                $url['editor'] = url('content/banner', ['operate' => 'editor', 'id' => $value['id']]);
+                $url['editor'] = url('content/banner', ['operate' => 'editor', 'id' => $value->id]);
             }
 
             $result[$key]->url = $url;
         }
 
-        $page = $result->render();
         $list = $result->toArray();
 
         return [
@@ -59,7 +58,7 @@ class Banner
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $page
+            'page'         => $result->render(),
         ];
     }
 
@@ -122,7 +121,8 @@ class Banner
         ->where([
             ['id', '=', input('post.id/f')],
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         if ($result['pid']) {
             create_action_log($result['title'], 'banner_image_remove');
@@ -151,7 +151,8 @@ class Banner
         ->where([
             ['id', '=', input('post.id/f')]
         ])
-        ->find();
+        ->find()
+        ->toArray();
     }
 
     /**

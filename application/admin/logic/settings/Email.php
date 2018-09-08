@@ -30,11 +30,11 @@ class Email
             ['name', 'in', 'smtp_host,smtp_port,smtp_username,smtp_password,smtp_from_email,smtp_from_name'],
             ['lang', '=', 'niphp'],
         ])
-        ->select();
+        ->select()
+        ->toArray();
 
         $data = [];
         foreach ($result as $value) {
-            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

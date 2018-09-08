@@ -20,6 +20,9 @@ class Region extends Model
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'pid' => 'integer',
+    ];
     protected $field = [
         'id',
         'pid',

@@ -20,6 +20,10 @@ class MemberOauth extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = false;
     protected $pk = 'id';
+    protected $type = [
+        'user_id' => 'integer',
+        'type'    => 'integer',
+    ];
     protected $field = [
         'id',
         'user_id',
