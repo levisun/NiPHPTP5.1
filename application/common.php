@@ -366,15 +366,16 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
  * @param  mixed   $_content
  * @param  boolean $_hs      HTML转义 默认false
  * @param  boolean $_hxp     HTML XML PHP标签过滤 默认false
+ * @param  boolean $_rn      回车换行空格过滤 默认true
  * @param  boolean $_script  JS脚本过滤 默认true
  * @param  boolean $_sql     SQL关键词过滤 默认true
  * @return mixed
  */
-function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_sql = true)
+function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_script = true, $_sql = true)
 {
     if (is_array($_content)) {
         foreach ($_content as $key => $value) {
-            $_content[$key] = safe_filter($value, $_hs, $_hxp, $_script, $_sql);
+            $_content[trim($key)] = safe_filter($value, $_hs, $_hxp, $_script, $_sql);
         }
         return $_content;
     } else {
@@ -390,7 +391,7 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_
         ], '', $_content);
 
         // 过滤SQL关键词
-        if ($_sql === true) {
+        if ($_sql === true || $_sql === 'sql') {
             $pattern = [
                 '/(and )/si'     => '&#97;nd ',
                 '/(between)/si'  => '&#98;etween',
@@ -410,12 +411,24 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_
                 '/(select)/si'   => '&#115;elect',
                 '/(truncate)/si' => '&#116;runcate',
                 '/(where)/si'    => '&#119;here',
+
+                '%'  => '&#37;', '!'  => '&#33;',
+                '='  => '&#61;', '+' => '&#43;', '-' => '&ndash;', '*'  => '&#42;',
+                ':'  => '&#58;', '('  => '&#40;', ')'  => '&#41;',
+                // '\'' => '&#039;',
+
+            //
+            // '@'  => '&#64;',
+            //
+            // '?'  => '&#129;',
+            // '+'  => '&#43;',
+            // ':'  => '&#58;',
             ];
             $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
         }
 
         // 过滤JS脚本
-        if ($_script === true) {
+        if ($_script === true || $_script === 'script' || $_script === 'js') {
             $_content = preg_replace([
                 '/on([a-zA-Z]*?)(=)["|\'](.*?)["|\']/si',
                 '/(javascript:)(.*?)(\))/si',
@@ -433,7 +446,7 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_
         }
 
         // 过滤HTML XML PHP标签
-        if ($_hxp === true) {
+        if ($_hxp === true || $_hxp === 'hxp') {
             $_content = strip_tags($_content);
         } else {
             $_content = preg_replace([
@@ -484,8 +497,18 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_
         }
 
         // HTML转义
-        if ($_hs === true) {
+        if ($_hs === true || $_hs === 'hs') {
             $_content = htmlspecialchars($_content);
+        }
+
+        // 回车换行空格
+        if ($_rn === true || $_rn === 'rn') {
+            $pattern = [
+                '/( ){2,}/si'    => '',
+                '/[\r\n\f]+</si' => '<',
+                '/>[\r\n\f]+/si' => '>',
+            ];
+            $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
         }
 
         //特殊字符过滤
@@ -493,11 +516,6 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_
             // 全角转半角
             '０'=>'0','１'=>'1','２'=>'2','３'=>'3','４'=>'4','５'=>'5','６'=>'6','７'=>'7','８'=>'8','９'=>'9','Ａ'=>'A','Ｂ'=>'B','Ｃ'=>'C','Ｄ'=>'D','Ｅ'=>'E','Ｆ'=>'F','Ｇ'=>'G','Ｈ'=>'H','Ｉ'=>'I','Ｊ'=>'J','Ｋ'=>'K','Ｌ'=>'L','Ｍ'=>'M','Ｎ'=>'N','Ｏ'=>'O','Ｐ'=>'P','Ｑ'=>'Q','Ｒ'=>'R','Ｓ'=>'S','Ｔ'=>'T','Ｕ'=>'U','Ｖ'=>'V','Ｗ'=>'W','Ｘ'=>'X','Ｙ'=>'Y','Ｚ'=>'Z','ａ'=>'a','ｂ'=>'b','ｃ'=>'c','ｄ'=>'d','ｅ'=>'e','ｆ'=>'f','ｇ'=>'g','ｈ'=>'h','ｉ'=>'i','ｊ'=>'j','ｋ'=>'k','ｌ'=>'l','ｍ'=>'m','ｎ'=>'n','ｏ'=>'o','ｐ'=>'p','ｑ'=>'q','ｒ'=>'r','ｓ'=>'s','ｔ'=>'t','ｕ'=>'u','ｖ'=>'v','ｗ'=>'w','ｘ'=>'x','ｙ'=>'y','ｚ'=>'z',
             '〔'=>'[','【'=>'[','〖'=>'[','〕'=>']','】'=>']','〗'=>']',
-
-            // 多余回车
-            '/[\r\n\f]+</si' => '<',
-            '/>[\r\n\f]+/si' => '>',
-            '/[\r\n\f]+/si' => '',
 
             '＋' => '&#43;',
             '！' => '&#33;',
@@ -516,22 +534,13 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_script = true, $_
             '％' => '&#37;',
             '：' => '&#58;',
 
-            '　' => '',
-
             // 特殊字符
+            '+' => '&#43;', '—' => '&ndash;', '×' => '&times;', '÷' => '&divide;',
             '‖' => '&#124;',
-            '”' => '&rdquo;',
-            '“' => '&ldquo;',
-            '’' => '&rsquo;',
-            '‘' => '&lsquo;',
-            '™' => '&trade;',
-            '®' => '&reg;',
-            '©' => '&copy;',
-            '—' => '&ndash;',
-            '×' => '&times;',
-            '÷' => '&divide;',
-            '℃' => '&#8451;',
-            '℉' => '&#8457;',
+            '“' => '&ldquo;', '”' => '&rdquo;',
+            '‘' => '&lsquo;', '’' => '&rsquo;',
+            '™' => '&trade;', '®' => '&reg;', '©' => '&copy;',
+            '℃' => '&#8451;', '℉' => '&#8457;',
 
             // 安全字符
             '|'  => '&#124;',

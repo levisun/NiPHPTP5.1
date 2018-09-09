@@ -22,8 +22,9 @@ class Index extends Base
      */
     public function index()
     {
-        $res = safe_filter('<div class="smart-widget">
-    <div class="smart-widget-header">
+        $res =  date('Y-m-d H:i:s');
+        $res .= safe_filter('<div class="smart-widget">
+    <div class="smart-widget-header">+
         1
 
         <span class="smart-widget-option">
