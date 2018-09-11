@@ -1,79 +1,31 @@
 <?php
 /**
  *
- * 内容 - 内容 - 业务层
+ * 内容 - 业务层
  *
  * @package   NiPHPCMS
- * @category  application\admin\logic\content
+ * @category  application\cms\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2018/7
+ * @since     2018/8
  */
-namespace app\admin\logic\content;
+namespace app\cms\logic;
 
-class Content
+class Article
 {
 
     /**
-     * 内容类别
+     * 列表
      * @access public
      * @param
      * @return array
      */
-    public function category()
+    public function query($_cid = 0)
     {
-        $map = [
-            ['c.pid', '=', input('param.pid/f', 0)],
-            ['c.model_id', '<>', '9'],
-            ['c.lang', '=', lang(':detect')],
-        ];
+        $_cid = input('param.cid/f', intval($_cid));
 
-        $result =
-        model('common/category')
-        ->view('category c', ['id', 'name', 'type_id', 'is_show', 'is_channel', 'model_id'])
-        ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
-        ->view('category cc', ['id' => 'child'], 'c.id=cc.pid', 'LEFT')
-        ->where($map)
-        ->group('c.id')
-        ->order('c.sort DESC, c.id DESC')
-        ->append([
-            'type_name',
-            'show',
-            'channel'
-        ])
-        ->select()
-        ->toArray();
-
-        foreach ($result as $key => $value) {
-            $url = [];
-
-            if ($value['child']) {
-                $url['child'] = url('content/content', array('operate' => 'child', 'pid' => $value['id']));
-            }
-
-            if ($value['model_id'] == 4) {
-                $url['manage'] = url('content/content', array('operate' => 'page', 'cid' => $value['id']));
-            } else {
-                $url['manage'] = url('content/content', array('operate' => 'manage', 'cid' => $value['id']));
-            }
-
-            $result[$key]['url'] = $url;
-        }
-
-        return $result;
-    }
-
-    /**
-     * 查询内容列表
-     * @access public
-     * @param
-     * @return [type] [description]
-     */
-    public function query()
-    {
-        // 查找栏目所属模型
-        $table_name = $this->queryTableName();
+        $table_name = $this->queryTableName($_cid);
 
         // 查询数据
         $fields = ['id', 'category_id', 'title', 'sort', 'is_pass', 'update_time', 'create_time'];
@@ -91,6 +43,7 @@ class Content
             $append[] = 'top_name';
             $append[] = 'link_name';
         }
+
         $result =
         model('common/' . $table_name)
         ->view($table_name . ' a', $fields)
@@ -98,19 +51,20 @@ class Content
         ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
         ->view('type t', ['name' => 'type_name'], 't.id=c.type_id', 'LEFT')
         ->where([
-            ['a.category_id', '=', input('param.cid/f')]
+            ['a.is_pass', '=', 1],
+            ['a.show_time', '<=', time()],
+            ['a.category_id', '=', $_cid]
         ])
-        ->order('a.id DESC')
+        ->order('a.is_top, a.is_hot, a.is_com, a.sort DESC, a.id DESC')
         ->append($append)
+        ->cache(!APP_DEBUG)
         ->paginate(null, null, [
-            'path' => url('content/content', ['operate' => 'manage', 'cid' => input('param.cid/f')]),
+            'path' => url('list/'. $_cid, [], 'html', true),
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->url = [
-                'editor' => url('content/content', ['operate' => 'editor', 'model' => $table_name, 'cid' => $value->category_id, 'id' => $value->id]),
-                'remove' => url('content/content', ['operate' => 'remove', 'model' => $table_name, 'cid' => $value->category_id, 'id' => $value->id]),
-            ];
+            $result[$key]->url = url($table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
+            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
 
             if ($table_name !== 'link') {
                 // 查询自定义字段
@@ -137,40 +91,22 @@ class Content
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => $result->render(),
+            'page'         => str_replace('/index/', '/', $result->render()),
         ];
     }
 
     /**
-     * 新增
-     * @access public
-     * @param
-     * @return mixed
-     */
-    public function added()
-    {
-        # code...
-    }
-
-    /**
-     * 删除
-     * @access public
-     * @param
-     * @return mixed
-     */
-    public function remove()
-    {}
-
-    /**
-     * 查询要修改的数据
+     * 列表
      * @access public
      * @param
      * @return array
      */
-    public function find()
+    public function find($_cid = 0, $_id = 0)
     {
-        // 查找栏目所属模型
-        $table_name = $this->queryTableName();
+        $_cid = input('param.cid/f', intval($_cid));
+        $_id  = input('param.id/f', intval($_id));
+
+        $table_name = $this->queryTableName($_cid);
 
         $result =
         model('common/' . $table_name)
@@ -182,6 +118,7 @@ class Content
             ['a.category_id', '=', input('post.cid/f')],
             ['a.id', '=', input('post.id/f')]
         ])
+        ->cache(!APP_DEBUG)
         ->find()
         ->toArray();
 
@@ -194,6 +131,7 @@ class Content
             ->where([
                 ['d.main_id', '=', $result['id']],
             ])
+            ->cache(!APP_DEBUG)
             ->select()
             ->toArray();
             foreach ($fields as $val) {
@@ -205,46 +143,22 @@ class Content
     }
 
     /**
-     * 编辑
-     * @access public
-     * @param
-     * @return mixed
-     */
-    public function editor()
-    {}
-
-     /**
-     * 排序
-     * @access public
-     * @param
-     * @return boolean
-     */
-    public function sort()
-    {
-        create_action_log('', 'category_sort');
-
-        return
-        model('common/category')
-        ->sort([
-            'id' => input('post.sort/a'),
-        ]);
-    }
-
-    /**
      * 获取对应的模型表名
-     * @access private
+     * @access public
      * @param
      * @return string
      */
-    private function queryTableName()
+    public function queryTableName($_cid = 0)
     {
+        $cid = input('param.cid/f', intval($_cid));
+
         // 查找栏目所属模型
         $result =
         model('common/category')
         ->view('category c', ['id', 'name'])
         ->view('model m', ['name' => 'model_tablename'], 'm.id=c.model_id')
         ->where([
-            ['c.id', '=', input('param.cid/f')],
+            ['c.id', '=', $cid],
         ])
         ->find();
 

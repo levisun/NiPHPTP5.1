@@ -1,0 +1,18 @@
+<ul class="list"></ul>
+
+{label:list cid="param.cid"}
+var html = "";
+for(index in result.data.list){
+    var data = result.data.list[index];
+    html += "<li>";
+    html += "<a href='"+data.url+"'>"+data.title+"</a>";
+    html += data.create_time;
+    html += "</li>";
+}
+$(".list").append(html);
+{/label:list}
+
+
+{label:list cid="param.cid" async="false"}
+    <li>{$vo.title}</li>
+{/label:list}

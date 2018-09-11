@@ -25,25 +25,17 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->init();
-        if ($result !== true) {
-            return $result;
-        }
-
         $result = $this->exec();
-
-        return $this->outputData(
-            'QUERY SUCCESS',
-            $result
-        );
+        if ($result === false) {
+            return $this->outputError($this->errorMsg);
+        } else {
+            return $this->outputData('QUERY SUCCESS', $result);
+        }
     }
 
     public function getipinfo()
     {
-        return $this->outputData(
-            'ip info',
-            logic('common/IpInfo')->getInfo()
-        );
+        return $this->outputData('IP INFO', logic('common/IpInfo')->getInfo());
     }
 
     /**

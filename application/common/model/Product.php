@@ -152,11 +152,12 @@ class Product extends Model
      * 审核名称
      * @access protected
      * @param  string $_value
+     * @param  array  $_data
      * @return string
      */
-    protected function getPassNameAttr($_value)
+    protected function getPassNameAttr($_value, $_data)
     {
-        return lang('pass ' . $_value);
+        return lang('pass ' . $_data['is_pass']);
     }
 
     /**
@@ -176,11 +177,12 @@ class Product extends Model
      * 推荐状态名
      * @access protected
      * @param  string $_value
+     * @param  array  $_data
      * @return string
      */
-    protected function getComNameAttr($_value)
+    protected function getComNameAttr($_value, $_data)
     {
-        return lang('article com ' . $_value);
+        return lang('article com ' . $_data['is_com']);
     }
 
     /**
@@ -188,11 +190,12 @@ class Product extends Model
      * 最热状态名
      * @access protected
      * @param  string $_value
+     * @param  array  $_data
      * @return string
      */
-    protected function getHotNameAttr($_value)
+    protected function getHotNameAttr($_value, $_data)
     {
-        return lang('article hot ' . $_value);
+        return lang('article hot ' . $_data['is_hot']);
     }
 
     /**
@@ -200,11 +203,12 @@ class Product extends Model
      * 置顶状态名
      * @access protected
      * @param  string $_value
+     * @param  array  $_data
      * @return string
      */
-    protected function getTopNameAttr($_value)
+    protected function getTopNameAttr($_value, $_data)
     {
-        return lang('article top ' . $_value);
+        return lang('article top ' . $_data['is_top']);
     }
 
     /**
@@ -212,10 +216,11 @@ class Product extends Model
      * 跳转状态名
      * @access protected
      * @param  string $_value
+     * @param  array  $_data
      * @return string
      */
-    protected function getLinkNameAttr($_value)
+    protected function getLinkNameAttr($_value, $_data)
     {
-        return lang('article link ' . $_value);
+        return lang('article link ' . $_data['is_link']);
     }
 }

@@ -104,11 +104,12 @@ class Feedback extends Model
      * 审核名称
      * @access protected
      * @param  string $_value
+     * @param  array  $_data
      * @return string
      */
-    protected function getPassNameAttr($_value)
+    protected function getPassNameAttr($_value, $_data)
     {
-        return lang('pass ' . $_value);
+        return lang('pass ' . $_data['is_pass']);
     }
 
     /**

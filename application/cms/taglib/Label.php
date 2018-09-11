@@ -19,6 +19,16 @@ class Label extends TagLib
     // 标签定义
     // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
     protected $tags = [
+        'article' => [
+            'attr'  => 'cid,id,async',
+            'close' => 1,
+            'alias' => 'page'
+        ],
+        'list' => [
+            'attr'  => 'cid,async',
+            'close' => 1,
+            'alias' => 'list'
+        ],
         'nav' => [
             'attr'  => 'type,async',
             'close' => 1,
@@ -69,7 +79,9 @@ class Label extends TagLib
                         url: request.api.query,
                         animation: true,
                         data: {
-                            method: "tags.query"
+                            method: "tags.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            timestamp: ' . time() . ',
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -85,6 +97,91 @@ class Label extends TagLib
             $parseStr .= 'logic(\'cms/tags\')->query(); ?>';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr .= $_content;
+            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+        }
+
+        return $parseStr;
+    }
+
+    public function tagArticle($_tag, $_content)
+    {
+        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['cid']   = input($_tag['cid'] . '/f');
+        $_tag['id']    = input($_tag['id'] . '/f');
+
+        if ($_tag['async'] == 'true') {
+            $parseStr = '<script type="text/javascript">
+                $(function(){
+                    $.loading({
+                        url: request.api.query,
+                        animation: true,
+                        data: {
+                            method: "article.find",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            timestamp: ' . time() . ',
+                            cid: "' . $_tag['cid'] . '",
+                            id: "' . $_tag['id'] . '"
+                        }
+                    }, function(result){
+                        if (result.code !== "SUCCESS") {
+                            return false;
+                        }
+                        var data = result.data;
+                        ' . $_content . '
+                    });
+                });
+                </script>';
+        } else {
+            $parseStr  = '<?php $data = ';
+            $parseStr .= 'logic(\'cms/article\')->find(\'' . $_tag['cid'] . '\', \'' . $_tag['id'] . '\');';
+            $parseStr .= '$count = count($data);';
+            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr .= $_content;
+            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+        }
+
+        return $parseStr;
+    }
+
+    /**
+     * 列表
+     * @access public
+     * @param  array  $_tag     标签属性
+     * @param  string $_content 标签内容
+     * @return string|void
+     */
+    public function tagList($_tag, $_content)
+    {
+        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['cid']   = input($_tag['cid'] . '/f');
+
+        if ($_tag['async'] == 'true') {
+            $parseStr = '<script type="text/javascript">
+                $(function(){
+                    $.loading({
+                        url: request.api.query,
+                        animation: true,
+                        data: {
+                            method: "article.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            timestamp: ' . time() . ',
+                            cid: "' . $_tag['cid'] . '"
+                        }
+                    }, function(result){
+                        if (result.code !== "SUCCESS") {
+                            return false;
+                        }
+                        var data = result.data;
+                        ' . $_content . '
+                    });
+                });
+                </script>';
+        } else {
+            $parseStr  = '<?php $data = ';
+            $parseStr .= 'logic(\'cms/article\')->query(\'' . $_tag['cid'] . '\');';
+            $parseStr .= '$count = count($data);';
+            $parseStr .= 'foreach ($data[\'list\'] as $key => $vo) { ?>';
             $parseStr .= $_content;
             $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
         }
@@ -112,6 +209,8 @@ class Label extends TagLib
                         animation: true,
                         data: {
                             method: "banner.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            timestamp: ' . time() . ',
                             slide_id: "' . $_tag['id'] . '"
                         }
                     }, function(result){
@@ -125,7 +224,7 @@ class Label extends TagLib
                 </script>';
         } else {
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/banner\')->query(\'' . $_tag['id'] . '\'); ?>';
+            $parseStr .= 'logic(\'cms/banner\')->query(\'' . $_tag['id'] . '\');';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data as $key => $vo) { ?>';
             $parseStr .= $_content;
@@ -155,6 +254,8 @@ class Label extends TagLib
                         animation: true,
                         data: {
                             method: "ads.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            timestamp: ' . time() . ',
                             ads_id: "' . $_tag['id'] . '"
                         }
                     }, function(result){

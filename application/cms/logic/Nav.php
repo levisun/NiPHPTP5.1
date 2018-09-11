@@ -91,39 +91,30 @@ class Nav
     public function getUrl($_model_id, $_is_channel, $_cat_id)
     {
         if ($_is_channel) {
-            $url = url('/channel/' . $_cat_id, [], 'html', true);
+            $url = 'channel/' . $_cat_id;
         } else {
             switch ($_model_id) {
                 case 1:
-                    $url = url('entry/article/' . $_cat_id, [], 'html', true);
-                    break;
-
                 case 2:
-                    $url = url('entry/picture/' . $_cat_id, [], 'html', true);
-                    break;
-
                 case 3:
-                    $url = url('entry/download/' . $_cat_id, [], 'html', true);
+                case 7:
+                    $url = 'list/' . $_cat_id;
                     break;
 
                 case 4:
-                    $url = url('page/' . $_cat_id, [], 'html', true);
+                    $url = 'page/' . $_cat_id;
                     break;
 
                 case 5:
-                    $url = url('entry/feedback/' . $_cat_id, [], 'html', true);
+                    $url = 'feedback/' . $_cat_id;
                     break;
 
                 case 6:
-                    $url = url('entry/message/' . $_cat_id, [], 'html', true);
-                    break;
-
-                case 7:
-                    $url = url('entry/product/' . $_cat_id, [], 'html', true);
+                    $url = 'message/' . $_cat_id;
                     break;
 
                 case 8:
-                    $url = url('entry/link/' . $_cat_id, [], 'html', true);
+                    $url = 'link/' . $_cat_id;
                     break;
 
                 default:
@@ -132,6 +123,6 @@ class Nav
             }
         }
 
-        return $url;
+        return url($url, [], 'html', true);
     }
 }
