@@ -1,6 +1,6 @@
 <ul class="list"></ul>
 
-{label:list cid="param.cid"}
+{label:list}
 var html = "";
 for(index in result.data.list){
     var data = result.data.list[index];
@@ -13,6 +13,10 @@ $(".list").append(html);
 {/label:list}
 
 
-{label:list cid="param.cid" async="false"}
-    <li>{$vo.title}</li>
+{label:list cid="1" async="false"}
+    <li><a href="{$vo.url}">{$vo.title}</a></li>
 {/label:list}
+
+{label:page cid="2" id="7"}
+
+{/label:page}

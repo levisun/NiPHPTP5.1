@@ -23,6 +23,8 @@ class Base extends Controller
 
     protected $siteInfo = [];
 
+    protected $tableName = '';
+
     protected function initialize()
     {
         concurrent_error();
@@ -49,6 +51,10 @@ class Base extends Controller
         $this->siteInfo = logic('cms/siteinfo')->query();
 
         $this->setTemplate();
+
+        if ($this->requestParam['action'] != 'index' && !$this->tableName = logic('cms/article')->queryTableName()) {
+            $this->redirect(url('error/page', ['code' => 404], 'html', true));
+        }
     }
 
     /**

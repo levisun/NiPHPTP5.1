@@ -61,10 +61,6 @@ class Visit
             ])
             ->setInc('count');
         } else {
-            $map['ip_attr'] =
-            $ip_info['country'] . $ip_info['region'] .
-            $ip_info['city'] . $ip_info['area'];
-
             model('common/visit')
             ->added([
                 'ip'         => $ip_info['ip'],
@@ -163,9 +159,9 @@ class Visit
             'YISOU'          => 'yisouspider',
         ];
 
-        $info = request()->header();
+        $user_agent = request()->header('user-agent');
         foreach ($searchengine as $key => $value) {
-            if (preg_match('/(' . $value . ')/si', $info['user-agent'])) {
+            if (preg_match('/(' . $value . ')/si', $user_agent)) {
                 return $key;
             }
         }

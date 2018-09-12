@@ -458,16 +458,20 @@
         var reg = new RegExp("(^|&)" + _key + "=([^&]*)(&|$)");
         var value = "";
         if (_url) {
-            var array = this.explode("?", _url);
-            _url = array[1] ? array[1] : "";
+            var result = this.explode("?", _url);
+            result = result[1] ? result[1] : "";
         } else {
-            _url = window.location.search.substr(1);
+            var result = window.location.search.substr(1);
         }
-
-        var result = _url.match(reg);
-
         if (result) {
+            result = result.match(reg);
             value = decodeURIComponent(result[2]);
+        } else {
+            _url = _url ? _url : window.location;
+            _url = _url.toString();
+            reg = new RegExp("(" + _key + ")/([0-9a-zA-Z]*)(/|.)");
+            result = _url.match(reg);
+            value = result[2];
         }
 
         return value ? value : _default;

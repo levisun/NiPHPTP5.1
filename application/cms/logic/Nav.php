@@ -27,16 +27,15 @@ class Nav
         model('common/category')
         ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
         ->where([
-            ['type_id', '=', input('param.type_id/f', $_type_id)],
+            ['type_id', '=', input('param.type_id/f', (int) $_type_id)],
             ['is_show', '=', 1],
             ['pid', '=', 0],
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort ASC, id DESC')
         ->cache(!APP_DEBUG)
-        ->select();
-
-        $result = $result->toArray();
+        ->select()
+        ->toArray();
 
         return $this->queryChild($result);
     }

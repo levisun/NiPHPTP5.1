@@ -31,11 +31,11 @@ class Siteinfo
             ['lang', '=', lang(':detect')],
         ])
         ->cache(!APP_DEBUG)
-        ->select();
+        ->select()
+        ->toArray();
 
         $data = [];
         foreach ($result as $value) {
-            $value = $value->toArray();
             $data[$value['name']] = $value['value'];
         }
 

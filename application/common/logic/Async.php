@@ -14,8 +14,8 @@ namespace app\common\logic;
 
 class Async
 {
-    protected $appid;               //
-    protected $appsecret;           //
+    protected $appid;               // ID[数据库中获取]
+    protected $appsecret;           // 密钥[数据库中获取]
     protected $token;               // 令牌[数据库中获取]
 
     protected $sign;                // 签名
@@ -23,7 +23,6 @@ class Async
     protected $format = 'json';     // 返回数据类型[json|pjson|xml]
 
     protected $method;              // 方法
-    protected $params = [];         // 请求参数
 
     protected $encodingaeskey;      // 加解密密钥[数据库中获取]
 
@@ -51,9 +50,6 @@ class Async
         $this->format    = input('param.format');
 
         $this->module    = strtolower(request()->module());
-
-        // 获取外部参数
-        $this->params    = input('param.', 'trim');
 
         // 调试
         $this->apiDebug  = APP_DEBUG;
@@ -246,18 +242,22 @@ class Async
      */
     protected function checkSign()
     {
-        $params = $this->params;
+        if (!$this->sign) {
+            // return 'sign error';
+        }
+
+        $params = input('param.', 'trim');
         ksort($params);
 
-        $string_to_be_signed = '';
+        $str = '';
         foreach ($params as $key => $value) {
-            if (is_string($value)) {
-                $string_to_be_signed .= $key . '=' . $value . '&';
+            if (is_string($value) && $key !== 'sign') {
+                $str .= $key . '=' . $value . '&';
             }
         }
-        $string_to_be_signed = trim($string_to_be_signed, '&');
+        $str = md5(trim($str, '&'));
 
-        if (hash_equals(md5($string_to_be_signed), $this->sign)) {
+        if (hash_equals($str, $this->sign)) {
             return true;
         } else {
             return 'sign error';
@@ -272,12 +272,15 @@ class Async
      */
     public function createRequireToken()
     {
-        if (!session('?_ASYNCTOKEN')) {
-            $http_referer = app()->version() . request()->header('user_agent') . env('app_path') . date('Ymd');
-            // request()->url(true) .
+        $http_referer = md5(
+            app()->version() .
+            request()->header('user_agent') .
+            env('app_path') .
+            date('Ymd') .
+            json_encode(logic('common/IpInfo')->getInfo())
+        );
 
-            session('_ASYNCTOKEN', md5($http_referer));
-        }
+        cookie('_ASYNCTOKEN', substr(md5(time()), 0, 8) . $http_referer);
     }
 
     /**
@@ -288,18 +291,23 @@ class Async
      */
     private function checkRequireToken()
     {
-        if (session('?_ASYNCTOKEN')) {
-            $http_referer = app()->version() . request()->header('user_agent') . env('app_path') . date('Ymd');
-
-            if (session('_ASYNCTOKEN') !== md5($http_referer)) {
-                session('_ASYNCTOKEN', null);
-                return 'request token error';
-            }
-        } else {
+        if (!cookie('?_ASYNCTOKEN')) {
             return 'request token error';
         }
 
-        return true;
+        $http_referer = md5(
+            app()->version() .
+            request()->header('user_agent') .
+            env('app_path') .
+            date('Ymd') .
+            json_encode(logic('common/IpInfo')->getInfo())
+        );
+
+        if (hash_equals($http_referer, substr(cookie('_ASYNCTOKEN'), -32))) {
+            return true;
+        }
+
+        return 'request token error';
     }
 
     /**
@@ -343,15 +351,13 @@ class Async
     protected function outputResult($_params)
     {
         if ($this->apiDebug) {
-            $_params['DEBUG'] = [
-                'USER_AGENT'  => request()->header('user_agent'),
-                'REFERER'     => request()->header('referer'),
-                'TIME_MEMORY' => use_time_memory(),
-                'PARAMS'      => $this->params,
-                'TOKEN'       => session('__token__'),
-                'COOKIE'      => $_COOKIE,
-                'IP_INFO'     => logic('common/IpInfo')->getInfo(),
-            ];
+            $_params['METHOD']         = $this->method;
+            $_params['REFERER']        = request()->header('referer');
+            $_params['IP_INFO']        = logic('common/IpInfo')->getInfo();
+            $_params['COOKIE']         = $_COOKIE;
+            $_params['USER_AGENT']     = request()->header('user_agent');
+            $_params['TIME_MEMORY']    = use_time_memory();
+            $_params['REQUEST_PARAMS'] = input('param.', 'trim');
         }
 
         switch ($this->format) {

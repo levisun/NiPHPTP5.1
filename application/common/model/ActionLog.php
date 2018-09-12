@@ -22,7 +22,7 @@ class ActionLog extends Model
     protected $pk = 'id';
     protected $type = [
         'action_id' => 'integer',
-        'user_id' => 'integer',
+        'user_id'   => 'integer',
     ];
     protected $field = [
         'id',

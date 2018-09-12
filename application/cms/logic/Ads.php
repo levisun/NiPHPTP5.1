@@ -23,7 +23,7 @@ class Ads
      */
     public function query($_ads_id = 0)
     {
-        $_ads_id = input('param.ads_id/f', $_ads_id);
+        $_ads_id = input('param.ads_id/f', (float) $_ads_id);
 
         $date = strtotime(date('Y-m-d'));
         $map = [
@@ -40,7 +40,10 @@ class Ads
         ->cache(!APP_DEBUG)
         ->find();
 
-        $result['url'] = url('/ads/' . $result['id']);
+        if ($result) {
+            $result = $result->toArray();
+            $result['url'] = url('/ads/' . $result['id']);
+        }
 
         return $result;
     }

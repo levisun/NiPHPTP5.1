@@ -54,7 +54,7 @@ Route::domain(['www', 'm'], [
 ])
 ->bind('cms')
 ->ext('html')
-->cache(APP_DEBUG ? false : 2880);
+->cache(false);
 
 Route::domain('my', [
 ])

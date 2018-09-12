@@ -27,7 +27,7 @@ class Banner
         model('common/banner')
         ->field(true)
         ->where([
-            ['id', '=', input('param.slide_id/f', $_slide_id)],
+            ['id', '=', input('param.slide_id/f', (float) $_slide_id)],
             ['lang', '=', lang(':detect')],
         ])
         ->cache(!APP_DEBUG)
@@ -45,7 +45,8 @@ class Banner
             ['lang', '=', lang(':detect')],
         ])
         ->cache(!APP_DEBUG)
-        ->select();
+        ->select()
+        ->toArray();
 
         $data = [];
         foreach ($result as $value) {

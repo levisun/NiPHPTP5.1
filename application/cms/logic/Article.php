@@ -23,12 +23,14 @@ class Article
      */
     public function query($_cid = 0)
     {
-        $_cid = input('param.cid/f', intval($_cid));
+        $_cid = $_cid ? (float) $_cid : input('param.cid/f');
 
-        $table_name = $this->queryTableName($_cid);
+        if (!$table_name = $this->queryTableName($_cid)) {
+            return false;
+        }
 
         // 查询数据
-        $fields = ['id', 'category_id', 'title', 'sort', 'is_pass', 'update_time', 'create_time'];
+        $fields = ['id', 'category_id', 'title', 'sort', 'is_pass', 'is_link', 'url', 'update_time', 'create_time'];
         $append = ['pass_name'];
         if ($table_name !== 'link') {
             $fields[] = 'is_com';
@@ -55,7 +57,7 @@ class Article
             ['a.show_time', '<=', time()],
             ['a.category_id', '=', $_cid]
         ])
-        ->order('a.is_top, a.is_hot, a.is_com, a.sort DESC, a.id DESC')
+        ->order('a.is_top, a.is_hot, a.is_com, t.name DESC, a.sort DESC, a.id DESC')
         ->append($append)
         ->cache(!APP_DEBUG)
         ->paginate(null, null, [
@@ -63,7 +65,13 @@ class Article
         ]);
 
         foreach ($result as $key => $value) {
-            $result[$key]->url = url($table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
+            if ($value->is_link) {
+                $result[$key]->url  = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
+                $result[$key]->url .= '?go=' . urlencode($value->url);
+            } else {
+                $result[$key]->url = url($table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
+            }
+
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
 
             if ($table_name !== 'link') {
@@ -103,10 +111,12 @@ class Article
      */
     public function find($_cid = 0, $_id = 0)
     {
-        $_cid = input('param.cid/f', intval($_cid));
-        $_id  = input('param.id/f', intval($_id));
+        $_cid = $_cid ? (float) $_cid : input('param.cid/f');
+        $_id = $_id ? (float) $_id : input('param.id/f');
 
-        $table_name = $this->queryTableName($_cid);
+        if (!$table_name = $this->queryTableName($_cid)) {
+            return false;
+        }
 
         $result =
         model('common/' . $table_name)
@@ -115,31 +125,72 @@ class Article
         ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
         ->view('type t', ['name' => 'type_name'], 't.id=c.type_id', 'LEFT')
         ->where([
-            ['a.category_id', '=', input('post.cid/f')],
-            ['a.id', '=', input('post.id/f')]
+            ['a.is_pass', '=', 1],
+            ['a.show_time', '<=', time()],
+            ['a.category_id', '=', $_cid],
+            ['a.id', '=', $_id]
         ])
         ->cache(!APP_DEBUG)
-        ->find()
-        ->toArray();
+        ->find();
 
-        if ($table_name !== 'link') {
-            // 查询自定义字段
-            $fields =
-            model('common/' . $table_name . 'Data')
-            ->view($table_name . '_data d', 'data')
-            ->view('fields f', ['name' => 'fields_name'], 'f.id=d.fields_id')
-            ->where([
-                ['d.main_id', '=', $result['id']],
-            ])
-            ->cache(!APP_DEBUG)
-            ->select()
-            ->toArray();
-            foreach ($fields as $val) {
-                $result[$val['fields_name']] = $val['data'];
+        if ($result) {
+            $result = $result->toArray();
+
+            if ($table_name !== 'link') {
+                // 查询自定义字段
+                $fields =
+                model('common/' . $table_name . 'Data')
+                ->view($table_name . '_data d', 'data')
+                ->view('fields f', ['name' => 'fields_name'], 'f.id=d.fields_id')
+                ->where([
+                    ['d.main_id', '=', $result['id']],
+                ])
+                ->cache(!APP_DEBUG)
+                ->select()
+                ->toArray();
+                foreach ($fields as $val) {
+                    $result[$val['fields_name']] = $val['data'];
+                }
             }
+
+            // 更新浏览数
+            model('common/' . $table_name)
+            ->where([
+                ['is_pass', '=', 1],
+                ['show_time', '<=', time()],
+                ['category_id', '=', $_cid],
+                ['id', '=', $_id]
+            ])
+            ->setInc('hits', APP_DEBUG ? 1 : rand(1, 10));
+
+            if (!$this->checkAccess($result['access_id'])) {
+                $result = 'not access';
+            }
+
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    public function go()
+    {
+        # code...
+    }
+
+    /**
+     * 验证访问权限
+     * @access private
+     * @param  integer $_access_id
+     * @return boolean
+     */
+    private function checkAccess($_access_id)
+    {
+        if ($_access_id != 0) {
+            return false;
         }
 
-        return $result;
+        return true;
     }
 
     /**
@@ -150,7 +201,7 @@ class Article
      */
     public function queryTableName($_cid = 0)
     {
-        $cid = input('param.cid/f', intval($_cid));
+        $cid = input('param.cid/f', (float) $_cid);
 
         // 查找栏目所属模型
         $result =
@@ -162,8 +213,11 @@ class Article
         ])
         ->find();
 
-        $result = $result->toArray();
+        if ($result) {
+            $result = $result->toArray();
+            return $result['model_tablename'];
+        }
 
-        return $result['model_tablename'];
+        return false;
     }
 }

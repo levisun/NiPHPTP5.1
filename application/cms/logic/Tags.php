@@ -30,9 +30,8 @@ class Tags
             ['lang', '=', lang(':detect')],
         ])
         ->cache(!APP_DEBUG)
-        ->select();
-
-        $result = $result->toArray();
+        ->select()
+        ->toArray();
 
         foreach ($result as $key => $value) {
             $result[$key]['url'] = url('/tags/' . $value['id']);

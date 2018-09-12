@@ -33,9 +33,7 @@ class Index extends Base
      */
     public function entry()
     {
-        $table_name =
-        logic('cms/article')->queryTableName();
-        return $this->fetch('list_' . $table_name . '.html');
+        return $this->fetch('list_' . $this->tableName . '.html');
     }
 
     /**
@@ -46,9 +44,7 @@ class Index extends Base
      */
     public function article()
     {
-        $table_name =
-        logic('cms/article')->queryTableName();
-        return $this->fetch($table_name . '.html');
+        return $this->fetch($this->tableName . '.html');
     }
 
     /**

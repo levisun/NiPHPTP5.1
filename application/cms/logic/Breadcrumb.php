@@ -50,16 +50,21 @@ class Breadcrumb
         ->cache(!APP_DEBUG)
         ->find();
 
-        $result = $result->toArray();
-        $result['url'] = logic('cms/nav')->getUrl($result['model_id'], $result['is_channel'], $result['id']);
+        if ($result) {
+            $result = $result->toArray();
 
-        $parent = [];
-        if (!empty($result['pid'])) {
-            $parent = $this->queryParent($result['pid']);
+            $result['url'] = logic('cms/nav')->getUrl($result['model_id'], $result['is_channel'], $result['id']);
+
+            $parent = [];
+            if (!empty($result['pid'])) {
+                $parent = $this->queryParent($result['pid']);
+            }
+
+            $parent[] = $result;
+
+            return $parent;
         }
 
-        $parent[] = $result;
-
-        return $parent;
+        return [];
     }
 }

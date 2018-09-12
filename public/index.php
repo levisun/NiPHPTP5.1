@@ -18,8 +18,8 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
-define('NP_VERSION', '2.0.1 Alpha 8.2613');
+define('APP_DEBUG', true);
+define('NP_VERSION', '2.0.1 Alpha a2613-c17');
 
 
 
@@ -40,4 +40,3 @@ version_compare(Container::get('app')->version(), '5.1.24', '=') or die('ThinkPH
 
 // 执行应用并响应
 Container::get('app')->run()->send();
-

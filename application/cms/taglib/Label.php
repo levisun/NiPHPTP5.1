@@ -20,12 +20,12 @@ class Label extends TagLib
     // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
     protected $tags = [
         'article' => [
-            'attr'  => 'cid,id,async',
+            'attr'  => '',
             'close' => 1,
             'alias' => 'page'
         ],
         'list' => [
-            'attr'  => 'cid,async',
+            'attr'  => '',
             'close' => 1,
             'alias' => 'list'
         ],
@@ -107,10 +107,10 @@ class Label extends TagLib
     public function tagArticle($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $_tag['cid']   = input($_tag['cid'] . '/f');
-        $_tag['id']    = input($_tag['id'] . '/f');
-
         if ($_tag['async'] == 'true') {
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:$Request.param.cid}';
+            $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '{:$Request.param.id}';
+
             $parseStr = '<script type="text/javascript">
                 $(function(){
                     $.loading({
@@ -125,7 +125,7 @@ class Label extends TagLib
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
-                            return false;
+                            $.redirect("' . url('error/page', ['code' => 404], 'html', true) . '");
                         }
                         var data = result.data;
                         ' . $_content . '
@@ -133,12 +133,15 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input(\'param.cid/f\')';
+            $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : 'input(\'param.id/f\')';
+
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/article\')->find(\'' . $_tag['cid'] . '\', \'' . $_tag['id'] . '\');';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr .= 'logic(\'cms/article\')->find(' . $_tag['cid'] . ', ' . $_tag['id'] . ');';
+            $parseStr .= 'if($data === false) {redirect(url(\'error/page\', [\'code\' => 404], \'html\', true));}';
+            $parseStr .= '?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php unset($data); ?>';
         }
 
         return $parseStr;
@@ -154,9 +157,9 @@ class Label extends TagLib
     public function tagList($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $_tag['cid']   = input($_tag['cid'] . '/f');
 
         if ($_tag['async'] == 'true') {
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:$Request.param.cid}';
             $parseStr = '<script type="text/javascript">
                 $(function(){
                     $.loading({
@@ -170,7 +173,7 @@ class Label extends TagLib
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
-                            return false;
+                            $.redirect("' . url('error/page', ['code' => 404], 'html', true) . '");
                         }
                         var data = result.data;
                         ' . $_content . '
@@ -178,8 +181,10 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input(\'param.cid/f\')';
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/article\')->query(\'' . $_tag['cid'] . '\');';
+            $parseStr .= 'logic(\'cms/article\')->query(' . $_tag['cid'] . ');';
+            $parseStr .= 'if($data === false) {redirect(url(\'error/page\', [\'code\' => 404], \'html\', true));}';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data[\'list\'] as $key => $vo) { ?>';
             $parseStr .= $_content;

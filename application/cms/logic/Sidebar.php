@@ -40,9 +40,8 @@ class Sidebar
         ->where($map)
         ->order('sort ASC, id DESC')
         ->cache(!APP_DEBUG)
-        ->select();
-
-        $result = $result->toArray();
+        ->select()
+        ->toArray();
 
         $result = $this->queryChild($result);
 
@@ -61,7 +60,6 @@ class Sidebar
 
         foreach ($_data as $key => $value) {
             $nav[$key] = $value;
-            // $nav[$key]['url'] = url('/list/' . $value['id']);
             $nav[$key]['url'] = logic('cms/nav')->getUrl($value['model_id'], $value['is_channel'], $value['id']);
 
             $result =
@@ -73,8 +71,8 @@ class Sidebar
             ])
             ->order('sort ASC, id DESC')
             ->cache(!APP_DEBUG)
-            ->select();
-            $result = $result->toArray();
+            ->select()
+            ->toArray();
 
             if (!empty($result)) {
                 // 递归查询子类
