@@ -157,7 +157,11 @@ function objKeySort(arys) {
 $.loading({
     url: request.api.query,
     // animation: true,
-    data: params
+    data: {
+        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+        timestamp: "{:time()}",
+        method: "settings.info.query"
+    }
 }, function(result){
     if (result.code !== "SUCCESS") {
         return ;
@@ -185,9 +189,8 @@ $.loading({
 
     //Flot Chart (Total Sales)
     var d1 = [];
-    for (var i = 0; i <= 10; i += 1) {
-        //d1.push([i, parseInt(Math.random() * 30)]);
-        d1 = [result.data.visit.value];
+    for (var index in result.data.visit.count) {
+        d1.push([index, result.data.visit.count[index]]);
     }
 
     function plotWithOptions() {

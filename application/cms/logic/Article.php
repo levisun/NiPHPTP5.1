@@ -104,7 +104,7 @@ class Article
     }
 
     /**
-     * 列表
+     * 详情
      * @access public
      * @param
      * @return array
@@ -112,7 +112,7 @@ class Article
     public function find($_cid = 0, $_id = 0)
     {
         $_cid = $_cid ? (float) $_cid : input('param.cid/f');
-        $_id = $_id ? (float) $_id : input('param.id/f');
+        $_id  = $_id  ? (float) $_id  : input('param.id/f');
 
         if (!$table_name = $this->queryTableName($_cid)) {
             return false;
@@ -153,6 +153,32 @@ class Article
                 }
             }
 
+            // 查询相册
+            if (in_array($table_name, ['picture', 'product'])) {
+                $result['albums'] =
+                model('common/' . $table_name . 'Album')
+                ->field(true)
+                ->where([
+                    ['main_id', '=', $result['id']],
+                ])
+                ->cache(!APP_DEBUG)
+                ->select()
+                ->toArray();
+            }
+
+            // 查询标签
+            $result['tags'] =
+            model('common/tagsArticle')
+            ->view('tags_article a', ['tags_id'])
+            ->view('tags t', ['name'], 't.id=a.tags_id')
+            ->where([
+                ['a.category_id', '=', $result['category_id']],
+                ['a.article_id', '=', $result['id']],
+            ])
+            ->cache(!APP_DEBUG)
+            ->select()
+            ->toArray();
+
             // 更新浏览数
             model('common/' . $table_name)
             ->where([
@@ -161,7 +187,7 @@ class Article
                 ['category_id', '=', $_cid],
                 ['id', '=', $_id]
             ])
-            ->setInc('hits', APP_DEBUG ? 1 : rand(1, 10));
+            ->setInc('hits', APP_DEBUG ? 1 : rand(1, 3));
 
             if (!$this->checkAccess($result['access_id'])) {
                 $result = 'not access';

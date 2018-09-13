@@ -104,8 +104,9 @@ class Async
         }
 
         // 请求时间
-        if ($this->timestamp <= strtotime('-1 days')) {
-            $this->errorMsg = 'request timeout';
+        $result = $this->checkTimestamp();
+        if ($result !== true) {
+            $this->errorMsg = $result;
             return false;
         }
 
@@ -139,6 +140,136 @@ class Async
         }
 
         return true;
+    }
+
+    /**
+     * 验证Auth
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkAuth()
+    {
+        return true;
+    }
+
+
+    /**
+     * 验证请求时间戳
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkTimestamp()
+    {
+        if ($this->timestamp <= strtotime('-1 days')) {
+            return 'request timeout';
+        }
+
+        return true;
+    }
+
+    /**
+     * 验证异步加密签名
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkSign()
+    {
+        if (!$this->sign) {
+            // return 'sign error';
+        }
+
+        $params = input('param.', 'trim');
+        ksort($params);
+
+        $str = '';
+        foreach ($params as $key => $value) {
+            if (is_string($value) && $key !== 'sign') {
+                $str .= $key . '=' . $value . '&';
+            }
+        }
+        $str = md5(trim($str, '&'));
+
+        if (hash_equals($str, $this->sign)) {
+            return true;
+        } else {
+            return 'sign error';
+        }
+    }
+
+    /**
+     * 验证Token是否合法
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkToken()
+    {
+        if ($this->token) {
+            $token =
+            model('common/config')
+            ->where([
+                ['name', '=', 'ajax_token']
+            ])
+            ->cache(true)
+            ->value('value');
+
+            if ($token !== $this->token) {
+                return 'token error';
+            }
+        } else {
+            return 'token error';
+        }
+
+        return true;
+    }
+
+    /**
+     * 生成请求令牌
+     * @access public
+     * @param
+     * @return void
+     */
+    public function createRequireToken()
+    {
+        $http_referer = md5(
+            app()->version() .
+            request()->header('user_agent') .
+            env('app_path') .
+            date('Ymd') .
+            json_encode(logic('common/IpInfo')->getInfo())
+        );
+
+        cookie('_ASYNCTOKEN', substr(md5(time()), 0, 8) . $http_referer);
+    }
+
+    /**
+     * 验证请求令牌是否合法
+     * @access private
+     * @param
+     * @return mixed
+     */
+    private function checkRequireToken()
+    {
+        if (!cookie('?_ASYNCTOKEN')) {
+            return 'request token error';
+        }
+
+        $http_referer = md5(
+            app()->version() .
+            request()->header('user_agent') .
+            env('app_path') .
+            date('Ymd') .
+            json_encode(logic('common/IpInfo')->getInfo())
+        );
+
+        if (hash_equals($http_referer, substr(cookie('_ASYNCTOKEN'), -32))) {
+            return true;
+        }
+
+        return 'request token error';
     }
 
     /**
@@ -197,128 +328,14 @@ class Async
     }
 
     /**
-     * 验证Token是否合法
-     * @access private
-     * @param
-     * @return mixed
-     */
-    private function checkToken()
-    {
-        if ($this->token) {
-            $token =
-            model('common/config')
-            ->where([
-                ['name', '=', 'ajax_token']
-            ])
-            ->cache(true)
-            ->value('value');
-
-            if ($token !== $this->token) {
-                return 'token error';
-            }
-        } else {
-            return 'token error';
-        }
-
-        return true;
-    }
-
-    /**
-     * 验证Auth
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function checkAuth()
-    {
-        return true;
-    }
-
-    /**
-     * 验证异步加密签名
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function checkSign()
-    {
-        if (!$this->sign) {
-            // return 'sign error';
-        }
-
-        $params = input('param.', 'trim');
-        ksort($params);
-
-        $str = '';
-        foreach ($params as $key => $value) {
-            if (is_string($value) && $key !== 'sign') {
-                $str .= $key . '=' . $value . '&';
-            }
-        }
-        $str = md5(trim($str, '&'));
-
-        if (hash_equals($str, $this->sign)) {
-            return true;
-        } else {
-            return 'sign error';
-        }
-    }
-
-    /**
-     * 生成请求令牌
-     * @access public
-     * @param
-     * @return void
-     */
-    public function createRequireToken()
-    {
-        $http_referer = md5(
-            app()->version() .
-            request()->header('user_agent') .
-            env('app_path') .
-            date('Ymd') .
-            json_encode(logic('common/IpInfo')->getInfo())
-        );
-
-        cookie('_ASYNCTOKEN', substr(md5(time()), 0, 8) . $http_referer);
-    }
-
-    /**
-     * 验证请求令牌是否合法
-     * @access private
-     * @param
-     * @return mixed
-     */
-    private function checkRequireToken()
-    {
-        if (!cookie('?_ASYNCTOKEN')) {
-            return 'request token error';
-        }
-
-        $http_referer = md5(
-            app()->version() .
-            request()->header('user_agent') .
-            env('app_path') .
-            date('Ymd') .
-            json_encode(logic('common/IpInfo')->getInfo())
-        );
-
-        if (hash_equals($http_referer, substr(cookie('_ASYNCTOKEN'), -32))) {
-            return true;
-        }
-
-        return 'request token error';
-    }
-
-    /**
      * 返回信息
-     * @access public
+     * @access protected
      * @param  string  $_msg         提示信息
      * @param  integer $_code        代码
      * @param  array   $_data        返回数据
      * @return json
      */
-    public function outputData($_msg, $_data = [], $_code = 'SUCCESS')
+    protected function outputData($_msg, $_data = [], $_code = 'SUCCESS')
     {
         return $this->outputResult([
             'code' => $_code,
@@ -329,12 +346,12 @@ class Async
 
     /**
      * 返回错误信息
-     * @access public
+     * @access protected
      * @param  string  $_msg         错误信息
      * @param  integer $_code        错误代码
      * @return json
      */
-    public function outputError($_msg, $_code = 'ERROR')
+    protected function outputError($_msg, $_code = 'ERROR')
     {
         return $this->outputResult([
             'code' => $_code,
@@ -358,15 +375,29 @@ class Async
             $_params['USER_AGENT']     = request()->header('user_agent');
             $_params['TIME_MEMORY']    = use_time_memory();
             $_params['REQUEST_PARAMS'] = input('param.', 'trim');
+            $_params['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
         }
+
+        $header = [
+            'pragma'        => 'cache',
+            'cache-control' => 'max-age=3600,must-revalidate',
+            'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
+            'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+        ];
 
         switch ($this->format) {
             case 'xml':
-                return xml($_params);
+                return xml($_params)
+                ->code(201)
+                ->allowCache(false)
+                ->header($header);
                 break;
 
             case 'jsonp':
-                return jsonp($_params);
+                return jsonp($_params)
+                ->code(201)
+                ->allowCache(false)
+                ->header($header);
                 break;
 
             default:
@@ -374,12 +405,7 @@ class Async
                 json($_params)
                 ->code(201)
                 ->allowCache(false)
-                ->header([
-                    'pragma'        => 'cache',
-                    'cache-control' => 'max-age=3600,must-revalidate',
-                    'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
-                    'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-                ]);
+                ->header($header);
                 break;
         }
     }

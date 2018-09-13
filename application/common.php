@@ -260,41 +260,36 @@ function use_time_memory()
 remove_rundata();
 function remove_rundata()
 {
-    if (!APP_DEBUG && rand(0, 100) !== 0) {
+    // 减少频繁操作,每次请求10分之一几率运行操作
+    if (!APP_DEBUG && rand(0, 9) !== 0) {
+        return false;
+    }
+
+    // 禁止GET以外请求操作
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         return false;
     }
 
     $dir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR;
 
+    $files = ['cache', 'log', 'temp'];
+
+    $dir_path = [];
+    foreach ($files as $key => $value) {
+        $dir_path = array_merge($dir_path, (array) glob($dir . $value . DIRECTORY_SEPARATOR . '*'));
+    }
+
     $all_files = [];
-    $files = [
-        'cache' => (array) glob($dir . 'cache' . DIRECTORY_SEPARATOR . '*'),
-        'log'   => (array) glob($dir . 'log' . DIRECTORY_SEPARATOR . '*'),
-        // 'html'  => (array) glob($dir . 'html' . DIRECTORY_SEPARATOR . '*'),
-        'temp'  => (array) glob($dir . 'temp' .  DIRECTORY_SEPARATOR . '*'),
-        // 'backup' => (array) glob($dir . 'public' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . '*'),
-    ];
-
-    $child = [];
-    foreach ($files as $key => $dir_name) {
-        if ($key !== 'temp') {
-            $child = [];
-            foreach ($dir_name as $path) {
-                $arr = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-                if ($arr) {
-                    $child = array_merge($child, $arr);
-                } else {
-                    $child[] = $path;
-                }
+    foreach ($dir_path as $key => $path) {
+        if (is_file($path)) {
+            $all_files[] = $path;
+        } elseif (is_dir($path . DIRECTORY_SEPARATOR)) {
+            $temp = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+            if (!empty($temp)) {
+                $all_files = array_merge($all_files, $temp);
+            } else {
+                $all_files[] = $path;
             }
-            $all_files = array_merge($all_files, $child);
-
-            // 目录中没有文件时将目录加入到待清理数据中
-            if (empty($child)) {
-                $all_files = array_merge($all_files, $dir_name);
-            }
-        } else {
-            $all_files = array_merge($all_files, $dir_name);
         }
     }
 
@@ -317,9 +312,9 @@ function remove_rundata()
         return false;
     }
 
-    // 随机抽取100条信息
+    // 随机抽取1000条信息
     shuffle($all_files);
-    $all_files = array_slice($all_files, 0, 100);
+    $all_files = array_slice($all_files, 0, 1000);
 
     foreach ($all_files as $path) {
         if (is_file($path)) {

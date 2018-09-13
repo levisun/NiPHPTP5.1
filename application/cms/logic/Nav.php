@@ -21,13 +21,15 @@ class Nav
      * @param  int $_type_id
      * @return array
      */
-    public function query($_type_id = 1)
+    public function query($_type_id = 2)
     {
+        $_type_id = input('param.type_id/f', (float) $_type_id);
+
         $result =
         model('common/category')
         ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
         ->where([
-            ['type_id', '=', input('param.type_id/f', (int) $_type_id)],
+            ['type_id', '=', input('param.type_id/f', $_type_id)],
             ['is_show', '=', 1],
             ['pid', '=', 0],
             ['lang', '=', lang(':detect')],

@@ -30,7 +30,7 @@ class Label extends TagLib
             'alias' => 'list'
         ],
         'nav' => [
-            'attr'  => 'type,async',
+            'attr'  => 'type',
             'close' => 1,
             'alias' => 'category'
         ],
@@ -78,10 +78,10 @@ class Label extends TagLib
                     $.loading({
                         url: request.api.query,
                         animation: true,
+                        type: "get",
                         data: {
                             method: "tags.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            timestamp: ' . time() . ',
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396"
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -116,10 +116,10 @@ class Label extends TagLib
                     $.loading({
                         url: request.api.query,
                         animation: true,
+                        type: "get",
                         data: {
                             method: "article.find",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            timestamp: ' . time() . ',
                             cid: "' . $_tag['cid'] . '",
                             id: "' . $_tag['id'] . '"
                         }
@@ -165,10 +165,10 @@ class Label extends TagLib
                     $.loading({
                         url: request.api.query,
                         animation: true,
+                        type: "get",
                         data: {
                             method: "article.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            timestamp: ' . time() . ',
                             cid: "' . $_tag['cid'] . '"
                         }
                     }, function(result){
@@ -204,7 +204,7 @@ class Label extends TagLib
     public function tagBanner($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $_tag['id']  = !empty($_tag['id']) ? intval($_tag['id']) : '0';
+        $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '0';
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
@@ -212,10 +212,10 @@ class Label extends TagLib
                     $.loading({
                         url: request.api.query,
                         animation: true,
+                        type: "get",
                         data: {
                             method: "banner.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            timestamp: ' . time() . ',
                             slide_id: "' . $_tag['id'] . '"
                         }
                     }, function(result){
@@ -249,7 +249,7 @@ class Label extends TagLib
     public function tagAds($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $_tag['id']  = !empty($_tag['id']) ? intval($_tag['id']) : '0';
+        $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '0';
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
@@ -257,10 +257,10 @@ class Label extends TagLib
                     $.loading({
                         url: request.api.query,
                         animation: true,
+                        type: "get",
                         data: {
                             method: "ads.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            timestamp: ' . time() . ',
                             ads_id: "' . $_tag['id'] . '"
                         }
                     }, function(result){
@@ -292,19 +292,32 @@ class Label extends TagLib
     public function tagMenu($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $cat_id = input('param.cid/f', 0);
+        $cid = input('param.cid/f', 0);
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 $(function(){
-                    var data = '
-                     . json_encode(logic('cms/sidebar')->query($cat_id), JSON_UNESCAPED_UNICODE) . ';'
-                     . $_content . '
+                    $.loading({
+                        url: request.api.query,
+                        animation: true,
+                        type: "get",
+                        data: {
+                            method: "sidebar.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            cid: "' . $cid . '"
+                        }
+                    }, function(result){
+                        if (result.code !== "SUCCESS") {
+                            return false;
+                        }
+                        var data = result.data;
+                        ' . $_content . '
+                    });
                 });
                 </script>';
         } else {
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/sidebar\')->query(\'' . $cat_id . '\');';
+            $parseStr .= 'logic(\'cms/sidebar\')->query(\'' . $cid . '\');';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data as $key => $vo) { ?>';
             $parseStr .= $_content;
@@ -324,19 +337,32 @@ class Label extends TagLib
     public function tagBread($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $cat_id = input('param.cid/f', 0);
+        $cid = input('param.cid/f', 0);
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 $(function(){
-                    var data = '
-                     . json_encode(logic('cms/breadcrumb')->query($cat_id), JSON_UNESCAPED_UNICODE) . ';'
-                     . $_content . '
+                    $.loading({
+                        url: request.api.query,
+                        animation: true,
+                        type: "get",
+                        data: {
+                            method: "breadcrumb.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            cid: "' . $cid . '"
+                        }
+                    }, function(result){
+                        if (result.code !== "SUCCESS") {
+                            return false;
+                        }
+                        var data = result.data;
+                        ' . $_content . '
+                    });
                 });
                 </script>';
         } else {
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/breadcrumb\')->query(\'' . $cat_id . '\');';
+            $parseStr .= 'logic(\'cms/breadcrumb\')->query(\'' . $cid . '\');';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data as $key => $vo) { ?>';
             $parseStr .= $_content;
@@ -361,9 +387,22 @@ class Label extends TagLib
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 $(function(){
-                    var data = '
-                     . json_encode(logic('cms/nav')->query($_tag['type']), JSON_UNESCAPED_UNICODE) . ';'
-                     . $_content . '
+                    $.loading({
+                        url: request.api.query,
+                        animation: true,
+                        type: "get",
+                        data: {
+                            method: "nav.query",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            type_id: "' . $_tag['type'] . '"
+                        }
+                    }, function(result){
+                        if (result.code !== "SUCCESS") {
+                            return false;
+                        }
+                        var data = result.data;
+                        ' . $_content . '
+                    });
                 });
                 </script>';
         } else {

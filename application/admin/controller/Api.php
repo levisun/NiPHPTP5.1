@@ -120,8 +120,8 @@ class Api extends Async
      * @param
      * @return mixed
      */
-    // protected function checkSign()
-    // {
-    //     return true;
-    // }
+    protected function checkSign()
+    {
+        return true;
+    }
 }

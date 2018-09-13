@@ -21,12 +21,12 @@ class Breadcrumb
      * @param  int $data
      * @return array
      */
-    public function query()
+    public function query($_cid = 0)
     {
-        $_cat_id = input('param.cid/f', 0);
+        $_cid = input('param.cid/f', (float) $_cid);
 
-        if ($_cat_id) {
-            return $this->queryParent($_cat_id);
+        if ($_cid) {
+            return $this->queryParent($_cid);
         } else {
             return [];
         }

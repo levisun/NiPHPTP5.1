@@ -41,12 +41,14 @@ class Visit
 
         $ip_info = logic('common/IpInfo')->getInfo();
 
+        $user_agent = safe_filter(request()->header('user-agent'), true, true);
+
         $result =
         model('common/visit')
         ->field(true)
         ->where([
             ['ip', '=', $ip_info['ip']],
-            ['user_agent', '=', request()->header('user-agent')],
+            ['user_agent', '=', $user_agent],
             ['date', '=', strtotime(date('Y-m-d'))]
         ])
         ->cache(true)
@@ -56,7 +58,7 @@ class Visit
             model('common/visit')
             ->where([
                 ['ip', '=', $ip_info['ip']],
-                ['user_agent', '=', request()->header('user-agent')],
+                ['user_agent', '=', $user_agent],
                 ['date', '=', strtotime(date('Y-m-d'))]
             ])
             ->setInc('count');
@@ -66,7 +68,7 @@ class Visit
                 'ip'         => $ip_info['ip'],
                 'ip_attr'    => $ip_info['country'] . $ip_info['region'] .
                                 $ip_info['city'] . $ip_info['area'],
-                'user_agent' => request()->header('user-agent'),
+                'user_agent' => $user_agent,
                 'date'       => strtotime(date('Y-m-d'))
             ]);
         }
@@ -87,12 +89,14 @@ class Visit
             return false;
         }
 
+        $user_agent = safe_filter(request()->header('user-agent'), true, true);
+
         $result =
         model('common/searchengine')
         ->field(true)
         ->where([
             ['name', '=', $key],
-            ['user_agent', '=', request()->header('user-agent')],
+            ['user_agent', '=', $user_agent],
             ['date', '=', strtotime(date('Y-m-d'))]
         ])
         ->value('name');
@@ -101,7 +105,7 @@ class Visit
             model('common/searchengine')
             ->where([
                 ['name', '=', $key],
-                ['user_agent', '=', request()->header('user-agent')],
+                ['user_agent', '=', $user_agent],
                 ['date', '=', strtotime(date('Y-m-d'))]
             ])
             ->setInc('count');
@@ -109,7 +113,7 @@ class Visit
             model('common/searchengine')
             ->added([
                 'name'       => $key,
-                'user_agent' => request()->header('user-agent'),
+                'user_agent' => $user_agent,
                 'date'       => strtotime(date('Y-m-d'))
             ]);
         }
@@ -159,7 +163,7 @@ class Visit
             'YISOU'          => 'yisouspider',
         ];
 
-        $user_agent = request()->header('user-agent');
+        $user_agent = safe_filter(request()->header('user-agent'), true, true);
         foreach ($searchengine as $key => $value) {
             if (preg_match('/(' . $value . ')/si', $user_agent)) {
                 return $key;

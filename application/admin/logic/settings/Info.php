@@ -185,13 +185,8 @@ class Info
         ];
         $num = 0;
         foreach ($count as $key => $value) {
-            $visit['count'][] = '[' . date('ymd', $key) . ', ' . $value . ']';
+            $visit['count'][date('ymd', $key)] =  $value;
             $num++;
-        }
-        if (!empty($visit['count'])) {
-            $visit['count'] = implode(',', $visit['count']);
-        } else {
-            $visit['count'] = '';
         }
 
         $result = [
@@ -199,7 +194,7 @@ class Info
             'value' => $visit,
         ];
 
-        return $result;
+        return $visit;
     }
 
     /**

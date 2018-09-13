@@ -48,4 +48,15 @@ class Api extends Async
     {
         return true;
     }
+
+    /**
+     * 验证请求时间戳
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function checkTimestamp()
+    {
+        return true;
+    }
 }

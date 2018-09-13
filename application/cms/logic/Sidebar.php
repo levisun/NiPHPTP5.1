@@ -21,11 +21,11 @@ class Sidebar
      * @param  array $data
      * @return array
      */
-    public function query()
+    public function query($_cid = 0)
     {
-        $cat_id = input('param.cid/f', 0);
+        $_cid = input('param.cid/f', (float) $_cid);
 
-        $id = $this->queryParent($cat_id);
+        $id = $this->queryParent($_cid);
 
         $map = [
             ['id', '=', $id],
