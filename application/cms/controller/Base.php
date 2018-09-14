@@ -53,7 +53,7 @@ class Base extends Controller
         $this->setTemplate();
 
         if ($this->requestParam['action'] != 'index' && !$this->tableName = logic('cms/article')->queryTableName()) {
-            $this->redirect(url('error/page', ['code' => 404], 'html', true));
+            // $this->redirect(url('error/page', ['code' => 404], 'html', true));
         }
     }
 

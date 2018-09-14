@@ -104,6 +104,8 @@ function view_filter($_content)
         '/(\r|\n|\f)/si'                        // 回车
     ], '', $_content);
 
+    $_content .= '<script type="text/javascript">$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
+
     // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;
@@ -260,8 +262,8 @@ function use_time_memory()
 remove_rundata();
 function remove_rundata()
 {
-    // 减少频繁操作,每次请求10分之一几率运行操作
-    if (!APP_DEBUG && rand(0, 9) !== 0) {
+    // 减少频繁操作,每次请求百分之一几率运行操作
+    if (rand(1, 100) !== 1) {
         return false;
     }
 

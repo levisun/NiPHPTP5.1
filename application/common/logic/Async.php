@@ -242,7 +242,7 @@ class Async
             json_encode(logic('common/IpInfo')->getInfo())
         );
 
-        cookie('_ASYNCTOKEN', substr(md5(time()), 0, 8) . $http_referer);
+        cookie('_ASYNCTOKEN', $http_referer);
     }
 
     /**
@@ -265,7 +265,7 @@ class Async
             json_encode(logic('common/IpInfo')->getInfo())
         );
 
-        if (hash_equals($http_referer, substr(cookie('_ASYNCTOKEN'), -32))) {
+        if (hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
             return true;
         }
 

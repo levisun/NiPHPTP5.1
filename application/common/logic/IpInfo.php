@@ -42,16 +42,23 @@ class IpInfo
         ->cache(true)
         ->find();
 
+        $result = $result ? $result->toArray() : [];
+
+        // 存在更新信息
         if ($result && $result['update_time'] <= strtotime('-1 year')) {
             $this->update($request_ip);
-        } elseif (!$result) {
-            $result = $this->added($request_ip);
         }
 
-        unset($result['id'], $result['update_time']);
-        $result['region'] = is_null($result['region']) ? '' : $result['region'];
-        $result['city']   = is_null($result['city']) ? '' : $result['city'];
-        $result['area']   = is_null($result['area']) ? '' : $result['area'];
+        // 不存在新建信息
+        if (!$result) {
+            $result = $this->added($request_ip);
+            if ($result !== false) {
+                unset($result['id'], $result['update_time']);
+                $result['region'] = empty($result['region']) ? '' : $result['region'];
+                $result['city']   = empty($result['city']) ? '' : $result['city'];
+                $result['area']   = empty($result['area']) ? '' : $result['area'];
+            }
+        }
 
         if (in_array($result['ip'], ['::1', '127.0.0.1'])) {
             $result['country'] = '保留地址或本地局域网';
@@ -80,17 +87,31 @@ class IpInfo
                 $area = 0;
             }
 
-            model('common/IpInfo')
-            ->allowField(true)
-            ->create([
+            if ($country) {
+                model('common/IpInfo')
+                ->allowField(true)
+                ->create([
+                    'ip'          => $_request_ip,
+                    'country_id'  => $country,
+                    'province_id' => $province,
+                    'city_id'     => $city,
+                    'area_id'     => $area,
+                    'update_time' => time(),
+                    'create_time' => time()
+                ]);
+            }
+
+            return [
                 'ip'          => $_request_ip,
-                'country_id'  => $country,
-                'province_id' => $province,
-                'city_id'     => $city,
-                'area_id'     => $area,
+                'country_id'  => $ip['data']['country'],
+                'province_id' => $ip['data']['region'],
+                'city_id'     => $ip['data']['city'],
+                'area_id'     => $ip['data']['area'],
                 'update_time' => time(),
                 'create_time' => time()
-            ]);
+            ];
+        } else {
+            return false;
         }
     }
 

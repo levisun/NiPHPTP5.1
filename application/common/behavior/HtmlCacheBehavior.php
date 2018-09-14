@@ -59,29 +59,37 @@ class HtmlCacheBehavior
      */
     public function write($_content)
     {
-        if (!APP_DEBUG && !request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
-            $path = $this->htmlPath();
-
-            if (!APP_DEBUG && is_file($path) && filectime($path) >= time() - config('cache.expire')) {
-                unlink($path);
-                return true;
-            }
-
-            $storage = new \think\template\driver\File;
-
-            if (is_wechat_request()) {
-                $request_type = 'WECHAT';
-            } elseif (request()->isMobile()) {
-                $request_type = 'MOBILE';
-            } else {
-                $request_type = 'PC';
-            }
-
-            $_content = "<?php\r/*\r" . date('Y-m-d H:i:s') . "\rrequest " . $request_type . "\r" . request()->url(true) . "\r*/\rexit();\r?>\r" . $_content;
-            $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' 失眠小枕头 http://niphp.com");console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
-
-            $storage->write($path, $_content);
+        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+            return false;
         }
+
+        $module = strtolower(request()->module());
+        if ($module === 'common') {
+            return false;
+        }
+
+        if (in_array($module, ['admin', 'member', 'wechat'])) {
+            return false;
+        }
+
+        $path = $this->htmlPath();
+        if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
+            unlink($path);
+        }
+
+        $storage = new \think\template\driver\File;
+
+        if (is_wechat_request()) {
+            $request_type = 'WECHAT';
+        } elseif (request()->isMobile()) {
+            $request_type = 'MOBILE';
+        } else {
+            $request_type = 'PC';
+        }
+
+        $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' 失眠小枕头 http://niphp.com");console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
+
+        $storage->write($path, $_content);
     }
 
     /**
@@ -98,19 +106,21 @@ class HtmlCacheBehavior
 
         $file_name = request()->url(true) . $user_id;
 
+        $path = request()->url();
+        $path = explode('public/', $path);
+        $path = !empty($path[1]) ? $path[1] : 'index.html';
+        $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+
         if (is_wechat_request()) {
-            $file_name .= 'wechat';
+            $path = 'wechat' . DIRECTORY_SEPARATOR . $path;
         } elseif (request()->isMobile()) {
-            $file_name .= 'mobile';
-        } else {
-            $file_name .= 'pc';
+            $path = 'mobile' . DIRECTORY_SEPARATOR . $path;
         }
 
-        $file_name = md5($file_name);
+        $html_path  = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR;
 
-        $html_path  = env('runtime_path') . 'html' . DIRECTORY_SEPARATOR;
-        $html_path .= substr($file_name, 0, 2) . DIRECTORY_SEPARATOR;
-        $html_path .= substr($file_name, 2) . '.php';
+
+        $html_path .= $path;
 
         return $html_path;
     }

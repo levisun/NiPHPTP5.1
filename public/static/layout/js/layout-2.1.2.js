@@ -146,7 +146,7 @@
     /**
      * 加载弹框提示
      */
-    jQuery.uiLoadpopup = function (_tips = "加载中...", _element = "body") {
+    jQuery.uiLoadpopup = function (_tips = "加载中...", _timeout = 15,  _element = "body") {
         if (_tips === false) {
             jQuery("div.layoutUi-loadpopup").remove();
             jQuery("body").removeAttr("style");
@@ -163,7 +163,7 @@
 
             setTimeout(function(){
                 jQuery.uiLoadpopup(false);
-            }, 15 * 1000);
+            }, _timeout * 1000);
         }
     }
 
@@ -229,6 +229,7 @@
         jQuery.ajax({
             url:         _params.url,
             type:        _params.type,
+            async:       false,
             cache:       false,
             data:        form_data,
             processData: false,
