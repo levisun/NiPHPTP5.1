@@ -39,7 +39,7 @@ class IpInfo
         ->where([
             ['i.ip', '=', $request_ip]
         ])
-        ->cache(true)
+        ->cache('IPINFO GETINFO' . $request_ip)
         ->find();
 
         $result = $result ? $result->toArray() : [];
@@ -53,11 +53,12 @@ class IpInfo
         if (!$result) {
             $result = $this->added($request_ip);
             if ($result !== false) {
-                unset($result['id'], $result['update_time']);
                 $result['region'] = empty($result['region']) ? '' : $result['region'];
                 $result['city']   = empty($result['city']) ? '' : $result['city'];
                 $result['area']   = empty($result['area']) ? '' : $result['area'];
             }
+        } else {
+            unset($result['id'], $result['update_time']);
         }
 
         if (in_array($result['ip'], ['::1', '127.0.0.1'])) {
@@ -107,8 +108,8 @@ class IpInfo
                 'province_id' => $ip['data']['region'],
                 'city_id'     => $ip['data']['city'],
                 'area_id'     => $ip['data']['area'],
-                'update_time' => time(),
-                'create_time' => time()
+                // 'update_time' => time(),
+                // 'create_time' => time()
             ];
         } else {
             return false;
@@ -164,6 +165,7 @@ class IpInfo
         ->where([
             ['name', 'LIKE', $_name . '%']
         ])
+        ->cache('IPINFO QUERYREGION' . $_name)
         ->value('id');
 
         return $result ? $result : 0;

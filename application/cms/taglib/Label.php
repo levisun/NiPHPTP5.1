@@ -104,12 +104,19 @@ class Label extends TagLib
         return $parseStr;
     }
 
+    /**
+     * 文章内容
+     * @access public
+     * @param  array  $_tag     标签属性
+     * @param  string $_content 标签内容
+     * @return string|void
+     */
     public function tagArticle($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
         if ($_tag['async'] == 'true') {
-            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:$Request.param.cid}';
-            $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '{:$Request.param.id}';
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
+            $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '{:input(\'param.id/f\')}';
 
             $parseStr = '<script type="text/javascript">
                 $(function(){
@@ -125,10 +132,22 @@ class Label extends TagLib
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
-                            $.redirect("' . url('error/page', ['code' => 404], 'html', true) . '");
+
                         }
                         var data = result.data;
                         ' . $_content . '
+                    });
+                    $.loading({
+                        url: request.api.query,
+                        type: "get",
+                        data: {
+                            method: "article.hits",
+                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            timestamp: "{:time()}",
+                            cid: "' . $_tag['cid'] . '",
+                            id: "' . $_tag['id'] . '"
+                        }
+                    }, function(){
                     });
                 });
                 </script>';
@@ -148,7 +167,7 @@ class Label extends TagLib
     }
 
     /**
-     * 列表
+     * 文章列表
      * @access public
      * @param  array  $_tag     标签属性
      * @param  string $_content 标签内容
@@ -159,7 +178,7 @@ class Label extends TagLib
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
-            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:$Request.param.cid}';
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
             $parseStr = '<script type="text/javascript">
                 $(function(){
                     $.loading({
@@ -292,7 +311,6 @@ class Label extends TagLib
     public function tagMenu($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
-        $cid = input('param.cid/f', 0);
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
@@ -304,7 +322,7 @@ class Label extends TagLib
                         data: {
                             method: "sidebar.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            cid: "' . $cid . '"
+                            cid: "{:input(\'param.cid/f\', 0)}"
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -317,7 +335,7 @@ class Label extends TagLib
                 </script>';
         } else {
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/sidebar\')->query(\'' . $cid . '\');';
+            $parseStr .= 'logic(\'cms/sidebar\')->query();';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data as $key => $vo) { ?>';
             $parseStr .= $_content;
@@ -349,7 +367,7 @@ class Label extends TagLib
                         data: {
                             method: "breadcrumb.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
-                            cid: "' . $cid . '"
+                            cid: "{:input(\'param.cid/f\', 0)}"
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -362,7 +380,7 @@ class Label extends TagLib
                 </script>';
         } else {
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/breadcrumb\')->query(\'' . $cid . '\');';
+            $parseStr .= 'logic(\'cms/breadcrumb\')->query();';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data as $key => $vo) { ?>';
             $parseStr .= $_content;

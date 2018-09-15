@@ -213,7 +213,7 @@ class Async
             ->where([
                 ['name', '=', 'ajax_token']
             ])
-            ->cache(true)
+            ->cache('_COMMON_LOGIC_ASYNC_CHECKTOKEN')
             ->value('value');
 
             if ($token !== $this->token) {
@@ -254,7 +254,7 @@ class Async
     private function checkRequireToken()
     {
         if (!cookie('?_ASYNCTOKEN')) {
-            return 'request token error';
+            return 'request token error1';
         }
 
         $http_referer = md5(

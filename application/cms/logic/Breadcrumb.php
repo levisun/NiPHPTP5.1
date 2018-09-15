@@ -18,12 +18,12 @@ class Breadcrumb
     /**
      * 查询导航
      * @access public
-     * @param  int $data
+     * @param
      * @return array
      */
-    public function query($_cid = 0)
+    public function query()
     {
-        $_cid = input('param.cid/f', (float) $_cid);
+        $_cid = input('param.cid/f', 0);
 
         if ($_cid) {
             return $this->queryParent($_cid);
@@ -47,7 +47,7 @@ class Breadcrumb
             ['id', '=', $_id],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG)
+        ->cache(!APP_DEBUG ? 'BREADCRUMB QUERYPARENT ID' . $_id : false)
         ->find();
 
         if ($result) {

@@ -18,28 +18,26 @@ class Sidebar
     /**
      * 查询侧导航
      * @access public
-     * @param  array $data
+     * @param
      * @return array
      */
-    public function query($_cid = 0)
+    public function query()
     {
-        $_cid = input('param.cid/f', (float) $_cid);
+        $_cid = input('param.cid/f', 0);
 
         $id = $this->queryParent($_cid);
-
-        $map = [
-            ['id', '=', $id],
-            ['is_show', '=', 1],
-            ['pid', '=', 0],
-            ['lang', '=', lang(':detect')],
-        ];
 
         $result =
         model('common/category')
         ->field('id,name,pid,aliases,image,url,is_channel,model_id')
-        ->where($map)
+        ->where([
+            ['id', '=', $id],
+            ['is_show', '=', 1],
+            ['pid', '=', 0],
+            ['lang', '=', lang(':detect')],
+        ])
         ->order('sort ASC, id DESC')
-        ->cache(!APP_DEBUG)
+        ->cache(!APP_DEBUG ? 'SIDEBAR QUERY ID' . $id : false)
         ->select()
         ->toArray();
 
@@ -70,7 +68,7 @@ class Sidebar
                 ['pid', '=', $value['id']]
             ])
             ->order('sort ASC, id DESC')
-            ->cache(!APP_DEBUG)
+            ->cache(!APP_DEBUG ? 'SIDEBAR QUERYCHILD PID' . $value['id'] : false)
             ->select()
             ->toArray();
 
@@ -101,7 +99,7 @@ class Sidebar
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort ASC, id DESC')
-        ->cache(!APP_DEBUG)
+        ->cache(!APP_DEBUG ? 'SIDEBAR QUERYPARENT ID' . $_id : false)
         ->find();
 
         $result = $result ? $result->toArray() : [];

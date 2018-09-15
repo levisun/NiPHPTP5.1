@@ -37,7 +37,7 @@ class Ads
         model('common/ads')
         ->field(true)
         ->where($map)
-        ->cache(!APP_DEBUG)
+        ->cache(!APP_DEBUG ? 'ADS QUERY ID' . $_ads_id : false)
         ->find();
 
         if ($result) {

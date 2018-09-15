@@ -25,9 +25,23 @@ return [
     // 数据库密码
     'password'        => '',
     // 数据库连接端口
-    'hostport'        => '',
+    'hostport'        => '3306',
     // 数据库连接参数
-    'params'          => [],
+    'params'          => [
+        \PDO::ATTR_CASE                     => \PDO::CASE_NATURAL,          // 列名按照原始
+        \PDO::ATTR_ERRMODE                  => \PDO::ERRMODE_EXCEPTION,        // 错误静默模式
+        \PDO::ATTR_ORACLE_NULLS             => \PDO::NULL_NATURAL,
+        \PDO::ATTR_STRINGIFY_FETCHES        => false,
+        \PDO::ATTR_EMULATE_PREPARES         => false,
+        \PDO::ATTR_PERSISTENT               => true,                        // 长链接
+        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => APP_DEBUG ? false : true,    // 查询缓存
+    ],
+    // 开启断线重连
+    'break_reconnect' => true,
+    // 断线标识字符串
+    'break_match_str' => [
+        'error with',
+    ],
     // 数据库编码默认采用utf8
     'charset'         => 'utf8',
     // 数据库表前缀
@@ -54,21 +68,4 @@ return [
     'sql_explain'     => APP_DEBUG,
     // 查询对象
     'query'           => '\\think\\db\\Query',
-
-    'db_config1' => [
-        // 数据库类型
-        'type'        => 'mysql',
-        // 服务器地址
-        'hostname'    => '127.0.0.1',
-        // 数据库名
-        'database'    => 'shangcheng',
-        // 数据库用户名
-        'username'    => 'root',
-        // 数据库密码
-        'password'    => '',
-        // 数据库编码默认采用utf8
-        'charset'     => 'utf8',
-        // 数据库表前缀
-        'prefix'      => 'ecs_',
-    ],
 ];

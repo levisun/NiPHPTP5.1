@@ -67,7 +67,7 @@ function file_size($_size_or_path)
  */
 function concurrent_error()
 {
-    if (!APP_DEBUG && request()->isGet() && rand(0, 999) === 0) {
+    if (!APP_DEBUG && request()->isGet() && rand(1, 100) === 1) {
         abort(500, '并发压力');
     }
 }
@@ -109,6 +109,66 @@ function view_filter($_content)
     // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;
+}
+
+/**
+ * Session管理
+ * 数据加密
+ * @param  string|array  $name session名称，如果为数组表示进行session设置
+ * @param  mixed         $value session值
+ * @param  string        $prefix 前缀
+ * @return mixed
+ */
+function session($name, $value = '', $prefix = null)
+{
+    $value = $value ? encrypt($value) : '';
+
+    if (is_array($name)) {
+        // 初始化
+        Session::init($name);
+    } elseif (is_null($name)) {
+        // 清除
+        Session::clear($value);
+    } elseif ('' === $value) {
+        // 判断或获取
+        return 0 === strpos($name, '?') ? Session::has(substr($name, 1), $prefix) : decrypt(Session::get($name, $prefix));
+    } elseif (is_null($value)) {
+        // 删除
+        return Session::delete($name, $prefix);
+    } else {
+        // 设置
+        return Session::set($name, $value, $prefix);
+    }
+}
+
+/**
+ * Cookie管理
+ * 数据加密
+ * @param  string|array  $name cookie名称，如果为数组表示进行cookie设置
+ * @param  mixed         $value cookie值
+ * @param  mixed         $option 参数
+ * @return mixed
+ */
+function cookie($name, $value = '', $option = null)
+{
+    $value = $value ? encrypt($value) : '';
+
+    if (is_array($name)) {
+        // 初始化
+        Cookie::init($name);
+    } elseif (is_null($name)) {
+        // 清除
+        Cookie::clear($value);
+    } elseif ('' === $value) {
+        // 获取
+        return 0 === strpos($name, '?') ? Cookie::has(substr($name, 1), $option) : decrypt(Cookie::get($name));
+    } elseif (is_null($value)) {
+        // 删除
+        return Cookie::delete($name);
+    } else {
+        // 设置
+        return Cookie::set($name, $value, $option);
+    }
 }
 
 /**
@@ -218,7 +278,7 @@ function lang($_name, $_vars = [], $_lang = '')
 
         return true;
     } elseif ($_name == ':detect') {
-        return Lang::detect();
+        return safe_filter(Lang::detect(), true, true);
     } else {
         return Lang::get($_name, $_vars, $_lang);
     }
@@ -329,33 +389,55 @@ function remove_rundata()
 
 /**
  * 字符串加密
- * @param  string $_str     加密前的字符串
+ * @param  mixed  $_str     加密前的字符串
  * @param  string $_authkey 密钥
  * @return string           加密后的字符串
  */
 function encrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
-    $coded = '';
-    $keylength = strlen($_authkey);
-    for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
-        $coded .= substr($_str, $i, $keylength) ^ $_authkey;
+    $_authkey = md5($_authkey . env('app_path'));
+    if (is_array($_str)) {
+        $en = [];
+        foreach ($_str as $key => $value) {
+            $en[encrypt($key)] = encrypt($value, $_authkey);
+        }
+        return $en;
+    } elseif(is_bool($_str) || is_null($_str)) {
+        return $_str;
+    } else {
+        $coded = '';
+        $keylength = strlen($_authkey);
+        for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
+            $coded .= substr($_str, $i, $keylength) ^ $_authkey;
+        }
+        return str_replace('=', '', base64_encode($coded));
     }
-    return str_replace('=', '', base64_encode($coded));
 }
 
 /**
  * 字符串解密
- * @param  string $_str     加密后的字符串
+ * @param  mixed  $_str     加密后的字符串
  * @param  string $_authkey 密钥
  * @return string           加密前的字符串
  */
 function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
-    $coded = '';
-    $keylength = strlen($_authkey);
-    $_str = base64_decode($_str);
-    for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
-        $coded .= substr($_str, $i, $keylength) ^ $_authkey;
+    $_authkey = md5($_authkey . env('app_path'));
+    if (is_array($_str)) {
+        $de = [];
+        foreach ($_str as $key => $value) {
+            $de[decrypt($key)] = decrypt($value, $_authkey);
+        }
+        return $de;
+    } elseif(is_bool($_str) || is_null($_str)) {
+        return $_str;
+    } else {
+        $coded = '';
+        $keylength = strlen($_authkey);
+        $_str = base64_decode($_str);
+        for ($i = 0, $count = strlen($_str); $i < $count; $i += $keylength) {
+            $coded .= substr($_str, $i, $keylength) ^ $_authkey;
+        }
+        return $coded;
     }
-    return $coded;
 }
 
 /**

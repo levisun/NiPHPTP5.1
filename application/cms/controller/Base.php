@@ -73,6 +73,7 @@ class Base extends Controller
             ['name', '=', 'cms_theme'],
             ['lang', '=', lang(':detect')],
         ])
+        ->cache(!APP_DEBUG ? 'CMS BASE SETTEMPLATE')
         ->value('value');
 
         $view_path  = env('root_path') . basename($this->request->root());

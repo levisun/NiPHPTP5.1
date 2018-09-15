@@ -39,10 +39,10 @@ class Upload
             logic('common/upload')
             ->fileOne($receive_data);
 
-            $msg = is_string($result) ? $result : $result['save_dir'] . $result['file_name'];
-
-            create_action_log($msg, 'upload_file');
-            remove_old_upload_file($msg);
+            if (!is_string($result)) {
+                create_action_log($result['save_dir'] . $result['file_name'], 'upload_file');
+                remove_old_upload_file($result['save_dir'] . $result['file_name']);
+            }
 
             return $result;
         } else {

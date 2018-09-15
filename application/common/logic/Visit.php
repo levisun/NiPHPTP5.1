@@ -51,7 +51,7 @@ class Visit
             ['user_agent', '=', $user_agent],
             ['date', '=', strtotime(date('Y-m-d'))]
         ])
-        ->cache(true)
+        ->cache('VISIT ADDEDVISIT' . $ip_info['ip'] . md5($user_agent))
         ->value('ip');
 
         if ($result) {
@@ -99,6 +99,7 @@ class Visit
             ['user_agent', '=', $user_agent],
             ['date', '=', strtotime(date('Y-m-d'))]
         ])
+        ->cache('VISIT ADDEDSEARCHENGINE' . $ip_info['ip'] . md5($user_agent))
         ->value('name');
 
         if ($result) {

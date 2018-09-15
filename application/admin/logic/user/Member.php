@@ -89,7 +89,7 @@ class Member
             ['pid', '=', input('post.region_id/f', 100000)],
         ])
         ->order('id ASC')
-        ->cache(true)
+        ->cache('ADMIN REGION' . input('post.region_id/f', 100000))
         ->select()
         ->toArray();
 

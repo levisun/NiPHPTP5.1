@@ -23,14 +23,15 @@ class Banner
      */
     public function query($_slide_id = 0)
     {
+        $_slide_id = input('param.slide_id/f', (float) $_slide_id);
         $parent =
         model('common/banner')
         ->field(true)
         ->where([
-            ['id', '=', input('param.slide_id/f', (float) $_slide_id)],
+            ['id', '=', $_slide_id],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG)
+        ->cache(!APP_DEBUG ? 'BANNER QUERY ID' . $_slide_id : false)
         ->find();
 
         if (is_null($parent)) {
@@ -44,7 +45,7 @@ class Banner
             ['pid', '=', $parent['id']],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG)
+        ->cache(!APP_DEBUG ? 'BANNER QUERY PID' . $parent['id'] : false)
         ->select()
         ->toArray();
 
