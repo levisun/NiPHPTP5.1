@@ -79,8 +79,7 @@ function concurrent_error()
  */
 function is_wechat_request()
 {
-    $agent = request()->header('user-agent');
-    return strpos($agent, 'MicroMessenger') !== false ? true : false;
+    return strpos(request()->header('user-agent'), 'MicroMessenger') !== false ? true : false;
 }
 
 /**
@@ -104,7 +103,7 @@ function view_filter($_content)
         '/(\r|\n|\f)/si'                        // 回车
     ], '', $_content);
 
-    $_content .= '<script type="text/javascript">$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
+    // $_content .= '<script type="text/javascript">$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
 
     // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
@@ -121,6 +120,7 @@ function view_filter($_content)
  */
 function session($name, $value = '', $prefix = null)
 {
+    $name  = 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
     $value = $value ? encrypt($value) : '';
 
     if (is_array($name)) {
@@ -151,6 +151,7 @@ function session($name, $value = '', $prefix = null)
  */
 function cookie($name, $value = '', $option = null)
 {
+    $name  = 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
     $value = $value ? encrypt($value) : '';
 
     if (is_array($name)) {

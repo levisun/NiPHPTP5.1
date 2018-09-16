@@ -34,7 +34,7 @@ return [
         \PDO::ATTR_STRINGIFY_FETCHES        => false,
         \PDO::ATTR_EMULATE_PREPARES         => false,
         \PDO::ATTR_PERSISTENT               => true,                        // 长链接
-        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => APP_DEBUG ? false : true,    // 查询缓存
+        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,    // 查询缓存
     ],
     // 开启断线重连
     'break_reconnect' => true,

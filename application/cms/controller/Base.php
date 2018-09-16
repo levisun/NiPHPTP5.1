@@ -68,12 +68,11 @@ class Base extends Controller
         // 重新定义模板目录
         $default_theme =
         model('common/config')
-        ->field(true)
         ->where([
             ['name', '=', 'cms_theme'],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'CMS BASE SETTEMPLATE')
+        ->cache(!APP_DEBUG ? 'CMS BASE SETTEMPLATE' : false)
         ->value('value');
 
         $view_path  = env('root_path') . basename($this->request->root());
