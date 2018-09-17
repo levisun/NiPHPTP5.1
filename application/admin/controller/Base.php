@@ -90,31 +90,9 @@ class Base extends Controller
      */
     private function setTemplate()
     {
-        // 重新定义模板目录
-        $view_path  = env('root_path') . basename($this->request->root());
-        $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
-        $view_path .= 'admin' . DIRECTORY_SEPARATOR;
-        $view_path .= config('default_theme') . DIRECTORY_SEPARATOR;
+        $template = get_template_config(config('default_theme'));
 
-        // 模板地址 带域名
-        $default_theme  = $this->domain . 'theme/admin/';
-        $default_theme .= config('default_theme') . '/';
-
-        $replace = [
-            '__DOMAIN__'   => $this->domain,
-            '__PHP_SELF__' => basename($this->request->baseFile()),
-            '__STATIC__'   => $this->domain . 'static/',
-            '__THEME__'    => config('default_theme'),
-            '__CSS__'      => $default_theme . 'css/',
-            '__JS__'       => $default_theme . 'js/',
-            '__IMG__'      => $default_theme . 'images/',
-        ];
-
-        $template = config('template.');
-        $template['view_path'] = $view_path;
-        $template['tpl_replace_string'] = $replace;
-        config('template.view_path', $view_path);
-        config('template.tpl_replace_string', $replace);
+        config('template.view_path', $template['view_path']);
 
         $this->engine($template);
         $this->filter('view_filter');

@@ -46,7 +46,7 @@ return [
     'url_domain_deploy'    => true,
 
     // 异常页面的模板文件
-    'exception_tmpl'       => Env::get('root_path') . 'public/theme/think_exception.tpl',
+    'exception_tmpl'       => Env::get('root_path') . 'public/theme/abort/think_exception.tpl',
     // 错误显示信息,非调试模式有效
     'error_message'        => '页面错误！请稍后再试～',
     // 显示错误信息
@@ -55,6 +55,7 @@ return [
     'exception_handle'     => '',
 
     'http_exception_template' => [
-        500 => __DIR__ . '/public/theme/index.html'
+        404 => dirname(__DIR__) . '/public/theme/abort/404.html',
+        500 => dirname(__DIR__) . '/public/theme/abort/500.html'
     ],
 ];

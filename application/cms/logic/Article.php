@@ -16,140 +16,13 @@ class Article
 {
 
     /**
-     * 文章列表
-     * @access public
-     * @param  integer $_cid 栏目ID
-     * @return array
-     */
-    public function query($_cid = 0)
-    {
-        $_cid = $_cid ? (float) $_cid : input('param.cid/f');
-
-        if (!$table_name = $this->queryTableName($_cid)) {
-            return false;
-        }
-
-        // 查询数据
-        $fields = ['id', 'category_id', 'title', 'sort', 'is_pass', 'is_link', 'url', 'update_time', 'create_time'];
-        $append = ['pass_name'];
-        if ($table_name !== 'link') {
-            $fields[] = 'is_com';
-            $fields[] = 'is_hot';
-            $fields[] = 'is_top';
-            $fields[] = 'is_link';
-        }
-
-        if (!in_array($table_name, ['link', 'message', 'feedback'])) {
-            $append[] = 'com_name';
-            $append[] = 'hot_name';
-            $append[] = 'top_name';
-            $append[] = 'link_name';
-        }
-
-        $result =
-        model('common/' . $table_name)
-        ->view($table_name . ' a', $fields)
-        ->view('category c', ['name' => 'category_name'], 'c.id=a.category_id')
-        ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
-        ->view('type t', ['name' => 'type_name'], 't.id=c.type_id', 'LEFT')
-        ->where([
-            ['a.is_pass', '=', 1],
-            ['a.show_time', '<=', time()],
-            ['a.category_id', '=', $_cid]
-        ])
-        ->order('a.is_top, a.is_hot, a.is_com, t.name DESC, a.sort DESC, a.id DESC')
-        ->append($append)
-        // ->cache(!APP_DEBUG ? 'ARTICLE QUERY CATEGORY_ID' . $_cid : false)
-        ->paginate(null, null, [
-            'path' => url('list/'. $_cid, [], 'html', true),
-        ]);
-
-        foreach ($result as $key => $value) {
-            if ($value->is_link) {
-                $result[$key]->url  = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
-                $result[$key]->url .= '?go=' . urlencode($value->url);
-            } else {
-                $result[$key]->url = url($table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
-            }
-
-            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
-
-            if ($table_name !== 'link') {
-                // 查询自定义字段
-                $fields =
-                model('common/' . $table_name . 'Data')
-                ->view($table_name . '_data d', 'data')
-                ->view('fields f', ['name' => 'fields_name'], 'f.id=d.fields_id')
-                ->where([
-                    ['d.main_id', '=', $value->id],
-                ])
-                ->select()
-                ->toArray();
-                foreach ($fields as $val) {
-                    $result[$key][$val['fields_name']] = $val['data'];
-                }
-            }
-        }
-
-        $list = $result->toArray();
-
-        return [
-            'list'         => $list['data'],
-            'total'        => $list['total'],
-            'per_page'     => $list['per_page'],
-            'current_page' => $list['current_page'],
-            'last_page'    => $list['last_page'],
-            'page'         => str_replace('/index/', '/', $result->render()),
-        ];
-    }
-
-    /**
-     * 更新点击数
-     * @access public
-     * @param  integer $_cid 栏目ID
-     * @param  integer $_id  文章ID
-     * @return array
-     */
-    public function hits($_cid = 0, $_id = 0)
-    {
-        $_cid = $_cid ? (float) $_cid : input('param.cid/f');
-        $_id  = $_id  ? (float) $_id  : input('param.id/f');
-
-        if (!$table_name = $this->queryTableName($_cid)) {
-            return false;
-        }
-
-        // 更新浏览数
-        model('common/' . $table_name)
-        ->where([
-            ['is_pass', '=', 1],
-            ['show_time', '<=', time()],
-            ['category_id', '=', $_cid],
-            ['id', '=', $_id]
-        ])
-        ->setInc('hits', APP_DEBUG ? 1 : rand(1, 3));
-
-        return
-        model('common/' . $table_name)
-        ->field(['hits', 'comment_count'])
-        ->where([
-            ['is_pass', '=', 1],
-            ['show_time', '<=', time()],
-            ['category_id', '=', $_cid],
-            ['id', '=', $_id]
-        ])
-        ->cache(!APP_DEBUG ? 'ARTICLE HITS CATEGORY_ID id' . $_cid . $_id : false, 30)
-        ->find();
-    }
-
-    /**
      * 文章详情
      * @access public
      * @param  integer $_cid 栏目ID
      * @param  integer $_id  文章ID
      * @return array
      */
-    public function find($_cid = 0, $_id = 0)
+    public function query($_cid = 0, $_id = 0)
     {
         $_cid = $_cid ? (float) $_cid : input('param.cid/f');
         $_id  = $_id  ? (float) $_id  : input('param.id/f');
@@ -240,6 +113,45 @@ class Article
     }
 
     /**
+     * 更新点击数
+     * @access public
+     * @param  integer $_cid 栏目ID
+     * @param  integer $_id  文章ID
+     * @return array
+     */
+    public function hits($_cid = 0, $_id = 0)
+    {
+        $_cid = $_cid ? (float) $_cid : input('param.cid/f');
+        $_id  = $_id  ? (float) $_id  : input('param.id/f');
+
+        if (!$table_name = $this->queryTableName($_cid)) {
+            return false;
+        }
+
+        // 更新浏览数
+        model('common/' . $table_name)
+        ->where([
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()],
+            ['category_id', '=', $_cid],
+            ['id', '=', $_id]
+        ])
+        ->setInc('hits', APP_DEBUG ? 1 : rand(1, 3));
+
+        return
+        model('common/' . $table_name)
+        ->field(['hits', 'comment_count'])
+        ->where([
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()],
+            ['category_id', '=', $_cid],
+            ['id', '=', $_id]
+        ])
+        ->cache(!APP_DEBUG ? 'ARTICLE HITS CATEGORY_ID id' . $_cid . $_id : false, 30)
+        ->find();
+    }
+
+    /**
      * 验证访问权限
      * @access private
      * @param  integer $_access_id
@@ -277,6 +189,8 @@ class Article
         if ($result) {
             $result = $result->toArray();
             return $result['model_tablename'];
+        } else {
+            abort(404);
         }
 
         return false;

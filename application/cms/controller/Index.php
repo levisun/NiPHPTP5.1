@@ -95,6 +95,7 @@ class Index extends Base
     public function go()
     {
         # code...
+        die();
     }
 
     /**

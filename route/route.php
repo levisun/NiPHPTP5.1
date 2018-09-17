@@ -28,6 +28,7 @@ Route::domain(['www', 'm'], [
     // 列表页[文章 图片 下载 反馈 留言 产品 友链]
     'list/:cid$'         => 'index/entry',
     'link/:cid$'         => 'index/entry',
+    'go/:cid/:id$'       => 'index/go',
 
     // 频道页
     'channel/:cid$'      => 'index/channel',

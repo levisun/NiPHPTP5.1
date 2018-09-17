@@ -72,40 +72,21 @@ class Base extends Controller
             ['name', '=', 'cms_theme'],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'CMS BASE SETTEMPLATE' : false)
+        ->cache('CMS BASE SETTEMPLATE')
         ->value('value');
 
-        $view_path  = env('root_path') . basename($this->request->root());
-        $view_path .= DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
-        $view_path .= 'cms' . DIRECTORY_SEPARATOR;
-        $view_path .= $default_theme . DIRECTORY_SEPARATOR;
+        $template = get_template_config($default_theme);
 
-        // 模板地址 带域名
-        $default_theme  = $this->domain . 'theme/cms/' . $default_theme . '/';
-
-        $replace = [
-            '__DOMAIN__'      => $this->domain,
-            '__PHP_SELF__'    => basename($this->request->baseFile()),
-            '__STATIC__'      => $this->domain . 'static/',
-            '__THEME__'       => config('default_theme'),
-            '__CSS__'         => $default_theme . 'css/',
-            '__JS__'          => $default_theme . 'js/',
-            '__IMG__'         => $default_theme . 'images/',
-
-            '__TITLE__'       => $this->siteInfo['website_name'],
-            '__KEYWORDS__'    => $this->siteInfo['website_keywords'],
-            '__DESCRIPTION__' => $this->siteInfo['website_description'],
-            '__BOTTOM_MSG__'  => htmlspecialchars_decode($this->siteInfo['bottom_message']),
-            '__COPYRIGHT__'   => $this->siteInfo['copyright'],
-            '__SCRIPT__'      => htmlspecialchars_decode($this->siteInfo['script']),
-        ];
-
-        $template = config('template.');
-        $template['view_path'] = $view_path;
-        $template['tpl_replace_string'] = $replace;
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
-        config('template.view_path', $view_path);
-        config('template.tpl_replace_string', $replace);
+
+        $template['tpl_replace_string']['__TITLE__']       = $this->siteInfo['website_name'];
+        $template['tpl_replace_string']['__KEYWORDS__']    = $this->siteInfo['website_keywords'];
+        $template['tpl_replace_string']['__DESCRIPTION__'] = $this->siteInfo['website_description'];
+        $template['tpl_replace_string']['__BOTTOM_MSG__']  = htmlspecialchars_decode($this->siteInfo['bottom_message']);
+        $template['tpl_replace_string']['__COPYRIGHT__']   = $this->siteInfo['copyright'];
+        $template['tpl_replace_string']['__SCRIPT__']      = htmlspecialchars_decode($this->siteInfo['script']);
+
+        config('template.view_path', $template['view_path']);
 
         $this->engine($template);
         $this->filter('view_filter');

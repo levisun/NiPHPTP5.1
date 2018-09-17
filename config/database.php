@@ -29,12 +29,12 @@ return [
     // 数据库连接参数
     'params'          => [
         \PDO::ATTR_CASE                     => \PDO::CASE_NATURAL,          // 列名按照原始
-        \PDO::ATTR_ERRMODE                  => \PDO::ERRMODE_EXCEPTION,        // 错误静默模式
+        \PDO::ATTR_ERRMODE                  => \PDO::ERRMODE_EXCEPTION,     // 错误静默模式
         \PDO::ATTR_ORACLE_NULLS             => \PDO::NULL_NATURAL,
         \PDO::ATTR_STRINGIFY_FETCHES        => false,
         \PDO::ATTR_EMULATE_PREPARES         => false,
         \PDO::ATTR_PERSISTENT               => true,                        // 长链接
-        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,    // 查询缓存
+        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,                        // 查询缓存
     ],
     // 开启断线重连
     'break_reconnect' => true,

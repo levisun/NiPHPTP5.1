@@ -14,6 +14,8 @@
 return [
     // 模板后缀
     'view_suffix'   => 'html',
+    // 模板路径
+    'view_path'     => dirname(__DIR__) . '/public/theme/abort/',
     // 模板文件名分隔符
     'view_depr'     => DIRECTORY_SEPARATOR,
     // 布局

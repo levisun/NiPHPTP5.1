@@ -125,14 +125,14 @@ class Label extends TagLib
                         animation: true,
                         type: "get",
                         data: {
-                            method: "article.find",
+                            method: "article.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
                             cid: "' . $_tag['cid'] . '",
                             id: "' . $_tag['id'] . '"
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
-
+                            return false;
                         }
                         var data = result.data;
                         ' . $_content . '
@@ -156,8 +156,8 @@ class Label extends TagLib
             $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : 'input(\'param.id/f\')';
 
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/article\')->find(' . $_tag['cid'] . ', ' . $_tag['id'] . ');';
-            $parseStr .= 'if($data === false) {redirect(url(\'error/page\', [\'code\' => 404], \'html\', true));}';
+            $parseStr .= 'logic(\'cms/article\')->query(' . $_tag['cid'] . ', ' . $_tag['id'] . ');';
+            $parseStr .= 'if($data === false) {abort(404);}';
             $parseStr .= '?>';
             $parseStr .= $_content;
             $parseStr .= '<?php unset($data); ?>';
@@ -186,13 +186,13 @@ class Label extends TagLib
                         animation: true,
                         type: "get",
                         data: {
-                            method: "article.query",
+                            method: "listing.query",
                             token: "c2630911e31549d4ddb556daba9c20d9c910d396",
                             cid: "' . $_tag['cid'] . '"
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
-                            $.redirect("' . url('error/page', ['code' => 404], 'html', true) . '");
+                            return false;
                         }
                         var data = result.data;
                         ' . $_content . '
@@ -202,8 +202,8 @@ class Label extends TagLib
         } else {
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input(\'param.cid/f\')';
             $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/article\')->query(' . $_tag['cid'] . ');';
-            $parseStr .= 'if($data === false) {redirect(url(\'error/page\', [\'code\' => 404], \'html\', true));}';
+            $parseStr .= 'logic(\'cms/listing\')->query(' . $_tag['cid'] . ');';
+            $parseStr .= 'if($data === false) {abort(404);}';
             $parseStr .= '$count = count($data);';
             $parseStr .= 'foreach ($data[\'list\'] as $key => $vo) { ?>';
             $parseStr .= $_content;

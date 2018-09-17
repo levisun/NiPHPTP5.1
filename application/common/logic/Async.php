@@ -353,10 +353,14 @@ class Async
      */
     protected function outputError($_msg, $_code = 'ERROR')
     {
-        return $this->outputResult([
-            'code' => $_code,
-            'msg'  => $_msg,
-        ]);
+        if (APP_DEBUG) {
+            return $this->outputResult([
+                'code' => $_code,
+                'msg'  => $_msg,
+            ]);
+        } else {
+            abort(404);
+        }
     }
 
     /**

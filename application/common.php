@@ -23,6 +23,8 @@ function rl()
     print_r($res);
 }
 
+
+
 /**
  * 随机码  邀请码  兑换码
  * @param
@@ -67,7 +69,7 @@ function file_size($_size_or_path)
  */
 function concurrent_error()
 {
-    if (!APP_DEBUG && request()->isGet() && rand(1, 100) === 1) {
+    if (!APP_DEBUG && request()->isGet() && rand(1, 10000) === 1) {
         abort(500, '并发压力');
     }
 }
@@ -89,12 +91,6 @@ function is_wechat_request()
  */
 function view_filter($_content)
 {
-    if (!APP_DEBUG) {
-        $_content .= '<script type="text/javascript">
-        console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");
-        </script>';
-    }
-
     $_content = preg_replace([
         '/<\!--.*?-->/si',                      // HTML注释
         '/(\/\*).*?(\*\/)/si',                  // JS注释
@@ -103,11 +99,38 @@ function view_filter($_content)
         '/(\r|\n|\f)/si'                        // 回车
     ], '', $_content);
 
-    // $_content .= '<script type="text/javascript">$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
+    $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
 
-    // Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
+    Hook::exec(['app\\common\\behavior\\HtmlCacheBehavior', 'write'], $_content);
 
     return $_content;
+}
+
+/**
+ * 模板设置参数
+ * @param  string $_default_theme 模板主题
+ * @return array
+ */
+function get_template_config($_default_theme)
+{
+    $template = config('template.');
+
+    $template['view_path'] = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' .
+        DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR .
+        request()->module() . DIRECTORY_SEPARATOR .
+        $_default_theme . DIRECTORY_SEPARATOR;
+
+    $template['tpl_replace_string'] = [
+        '__DOMAIN__'   => request()->root(true) . '/',
+        '__PHP_SELF__' => basename(request()->baseFile()),
+        '__STATIC__'   => request()->root(true) . '/static/',
+        '__THEME__'    => $_default_theme,
+        '__CSS__'      => request()->root(true) . '/theme/' . request()->module() . '/' . $_default_theme . '/css/',
+        '__JS__'       => request()->root(true) . '/theme/' . request()->module() . '/' . $_default_theme . '/js/',
+        '__IMG__'      => request()->root(true) . '/theme/' . request()->module() . '/' . $_default_theme . '/images/',
+    ];
+
+    return $template;
 }
 
 /**

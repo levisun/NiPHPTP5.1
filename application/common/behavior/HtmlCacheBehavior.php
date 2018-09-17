@@ -24,41 +24,10 @@ class HtmlCacheBehavior
      */
     public function run()
     {
-        if (!APP_DEBUG && !request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
-            if (request()->module() == 'admin' && request()->action() != 'login' && !session('?' . config('user_auth_key'))) {
-                header('Location:' . url('/admin'));
-                exit();
-            }
-
-            $path = $this->htmlPath();
-
-            if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
-                // 异步请求
-                logic('common/async')->createRequireToken();
-
-                $html = file_get_contents($path);
-                $html = preg_replace('/<\?php(.*?)\?>/si', '', $html);
-
-                // 替换新的表单令牌
-                $html = preg_replace('/(<input type="hidden" name="__token__" value=").*?(" \/>)/si', token(), $html);
-
-                echo $html;
-
-                exit();
-            } elseif (is_file($path)) {
-                unlink($path);
-            }
+        if (APP_DEBUG) {
+            return false;
         }
-    }
 
-    /**
-     * 创建静态文件
-     * @access public
-     * @param  string $_content
-     * @return void
-     */
-    public function write($_content)
-    {
         if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
             return false;
         }
@@ -73,7 +42,43 @@ class HtmlCacheBehavior
         }
 
         $path = $this->htmlPath();
+
         if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
+            // 异步请求
+            logic('common/async')->createRequireToken();
+
+            echo file_get_contents($path);
+            exit();
+        }
+    }
+
+    /**
+     * 创建静态文件
+     * @access public
+     * @param  string $_content
+     * @return void
+     */
+    public function write($_content)
+    {
+        if (APP_DEBUG) {
+            return false;
+        }
+
+        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+            return false;
+        }
+
+        $module = strtolower(request()->module());
+        if ($module === 'common') {
+            return false;
+        }
+
+        if (in_array($module, ['admin', 'member', 'wechat'])) {
+            return false;
+        }
+
+        $path = $this->htmlPath();
+        if (is_file($path)) {
             unlink($path);
         }
 
