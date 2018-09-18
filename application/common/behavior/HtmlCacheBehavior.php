@@ -92,7 +92,7 @@ class HtmlCacheBehavior
             $request_type = 'PC';
         }
 
-        $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' 失眠小枕头 http://niphp.com");console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
+        $_content .= '<script type="text/javascript">console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
 
         $storage->write($path, $_content);
     }
