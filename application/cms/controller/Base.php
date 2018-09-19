@@ -27,15 +27,10 @@ class Base extends Controller
 
     protected function initialize()
     {
-        concurrent_error();
-
         // 生成异步请求令牌
         logic('common/async')->createRequireToken();
         // IP地区信息[记录自己的IP地址库]
         logic('common/IpInfo')->getInfo();
-        // 访问记录
-        logic('common/visit')->addedVisit();
-        logic('common/visit')->addedSearchengine();
 
         // 请求参数
         $this->requestParam = [
@@ -75,7 +70,7 @@ class Base extends Controller
         ->cache('CMS BASE SETTEMPLATE')
         ->value('value');
 
-        $template = get_template_config($default_theme);
+        $template = logic('common/tools')->getTemplateConfig($default_theme);
 
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
 

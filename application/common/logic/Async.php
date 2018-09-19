@@ -53,9 +53,6 @@ class Async
 
         // 调试
         $this->apiDebug  = APP_DEBUG;
-
-        // IP地区信息[记录自己的IP地址库]
-        logic('common/IpInfo')->getInfo();
     }
 
     /**
@@ -239,7 +236,7 @@ class Async
             request()->header('user_agent') .
             env('app_path') .
             date('Ymd') .
-            json_encode(logic('common/IpInfo')->getInfo())
+            request()->ip()
         );
 
         cookie('_ASYNCTOKEN', $http_referer);
@@ -254,7 +251,7 @@ class Async
     private function checkRequireToken()
     {
         if (!cookie('?_ASYNCTOKEN')) {
-            return 'request token error1';
+            return 'request token error';
         }
 
         $http_referer = md5(
@@ -262,7 +259,7 @@ class Async
             request()->header('user_agent') .
             env('app_path') .
             date('Ymd') .
-            json_encode(logic('common/IpInfo')->getInfo())
+            request()->ip()
         );
 
         if (hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
@@ -377,7 +374,7 @@ class Async
             $_params['IP_INFO']        = logic('common/IpInfo')->getInfo();
             $_params['COOKIE']         = $_COOKIE;
             $_params['USER_AGENT']     = request()->header('user_agent');
-            $_params['TIME_MEMORY']    = use_time_memory();
+            $_params['TIME_MEMORY']    = $this->useTimeMemory();
             $_params['REQUEST_PARAMS'] = input('param.', 'trim');
             $_params['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
         }
@@ -412,5 +409,27 @@ class Async
                 ->header($header);
                 break;
         }
+    }
+
+    /**
+     * 运行时间与占用内存
+     * @access protected
+     * @param  boolean $_start
+     * @return mixed
+     */
+    protected function useTimeMemory()
+    {
+        $runtime = number_format(microtime(true) - app()->getBeginTime(), 10);
+        $reqs    = $runtime > 0 ? number_format(1 / $runtime, 2) : '∞';
+        $mem     = number_format((memory_get_usage() - app()->getBeginMem()) / 1024, 2);
+
+        return [
+            '运行时间' => number_format($runtime, 6) . 's',
+            '吞吐率'   => $reqs . 'req/s',
+            '内存消耗' => $mem . 'kb',
+            '文件加载' => count(get_included_files()),
+            '查询信息' => \think\Db::$queryTimes . ' queries ' . \think\Db::$executeTimes . ' writes',
+            '缓存信息' => app('cache')->getReadTimes() . ' reads ' . app('cache')->getWriteTimes() . ' writes',
+        ];
     }
 }

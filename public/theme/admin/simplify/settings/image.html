@@ -313,6 +313,7 @@ $.loading({
                 $("#"+index).val($.htmlDecode(result.data[index]));
             }
         }
+        $("#img-water_image").attr("src", request.domain+result.data.water_image);
     }
 });
 

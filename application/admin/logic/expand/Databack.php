@@ -41,10 +41,10 @@ class Databack extends Model
             $name = substr($name, 0, -4);
 
             $file_dir[] = [
-                'id'   => encrypt($name),
+                'id'   => logic('common/tools')->encrypt($name),
                 'name' => $name,
                 'time' => date('Y-m-d H:i:s', filectime($value)),
-                'size' => file_size($value),
+                'size' => logic('common/tools')->fileSize($value),
 
             ];
         }
@@ -78,7 +78,7 @@ class Databack extends Model
         $TEMP_DIR = $this->createDir();
 
         $zip = new \Pclzip('');
-        $zip->zipname = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . decrypt($receive_data['id']) . '.zip';
+        $zip->zipname = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . logic('common/tools')->decrypt($receive_data['id']) . '.zip';
         $zip->extract(PCLZIP_OPT_PATH, $TEMP_DIR);
 
         $file = (array) glob($TEMP_DIR . '*');

@@ -1,19 +1,34 @@
 <?php
 /**
  *
- * 访问统计 - 业务层
+ * 访问记录 - 行为
  *
  * @package   NiPHPCMS
- * @category  application\admin\logic\expand
+ * @category  common\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2018/9
  */
-namespace app\common\logic;
+
+namespace app\common\behavior;
 
 class Visit
 {
+    /**
+     * 访问记录
+     * @access public
+     * @param
+     * @return void
+     */
+    public function run()
+    {
+        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+            return false;
+        }
+        $this->addedVisit();
+        $this->addedSearchengine();
+    }
 
     /**
      * 查询
@@ -51,7 +66,7 @@ class Visit
             ['user_agent', '=', $user_agent],
             ['date', '=', strtotime(date('Y-m-d'))]
         ])
-        ->cache('VISIT ADDEDVISIT' . $ip_info['ip'] . md5($user_agent))
+        ->cache('VISIT ADDEDVISIT' . md5($ip_info['ip'] . $user_agent))
         ->value('ip');
 
         if ($result) {
@@ -99,7 +114,7 @@ class Visit
             ['user_agent', '=', $user_agent],
             ['date', '=', strtotime(date('Y-m-d'))]
         ])
-        ->cache('VISIT ADDEDSEARCHENGINE' . $ip_info['ip'] . md5($user_agent))
+        ->cache('VISIT ADDEDSEARCHENGINE' . md5($ip_info['ip'] . $user_agent))
         ->value('name');
 
         if ($result) {
@@ -124,11 +139,11 @@ class Visit
 
     /**
      * 删除过期的搜索日志(保留三个月)
-     * @access public
+     * @access protected
      * @param
      * @return void
      */
-    public function remove($_model_name)
+    protected function remove($_model_name)
     {
         if (rand(0, 10) !== 0) {
             return false;

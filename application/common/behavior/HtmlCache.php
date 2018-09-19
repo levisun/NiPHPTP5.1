@@ -8,12 +8,12 @@
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2018/5
+ * @since     2018/9
  */
 
 namespace app\common\behavior;
 
-class HtmlCacheBehavior
+class HtmlCache
 {
 
     /**
@@ -48,6 +48,9 @@ class HtmlCacheBehavior
             logic('common/async')->createRequireToken();
 
             echo file_get_contents($path);
+
+            \think\Facade\Hook::exec('app\\common\\behavior\\Visit');
+            \think\Facade\Hook::exec('app\\common\\behavior\\RunGarbage');
             exit();
         }
     }
@@ -92,7 +95,7 @@ class HtmlCacheBehavior
             $request_type = 'PC';
         }
 
-        $_content .= '<script type="text/javascript">console.log("HTML ' . $request_type . '端静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
+        $_content .= '<script type="text/javascript">console.log("' . $request_type . 'HTML静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
 
         $storage->write($path, $_content);
     }

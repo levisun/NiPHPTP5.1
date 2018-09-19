@@ -158,7 +158,7 @@ class Member
             model('common/member')
             ->added([
                 'username' => $receive_data['username'],
-                'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                'password' => logic('common/tools')->md5Password($receive_data['password'], $receive_data['salt']),
                 'email'    => $receive_data['email'],
                 'realname' => $receive_data['realname'],
                 'nickname' => $receive_data['nickname'],
@@ -299,7 +299,7 @@ class Member
                 $member_data = [
                     'id'       => $receive_data['id'],
                     'username' => $receive_data['username'],
-                    'password' => md5_password($receive_data['password'], $receive_data['salt']),
+                    'password' => logic('common/tools')->md5Password($receive_data['password'], $receive_data['salt']),
                     'email'    => $receive_data['email'],
                     'realname' => $receive_data['realname'],
                     'nickname' => $receive_data['nickname'],

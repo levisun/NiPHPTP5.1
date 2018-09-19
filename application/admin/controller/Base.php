@@ -37,9 +37,7 @@ class Base extends Controller
             'lang'       => lang(':detect'),                                    // 语言
         ];
 
-        // 域名
-        $this->domain = $this->request->domain() . $this->request->root() . '/';
-
+        // 模板设置
         $this->setTemplate();
 
         // 用户权限校验
@@ -90,7 +88,7 @@ class Base extends Controller
      */
     private function setTemplate()
     {
-        $template = get_template_config(config('default_theme'));
+        $template = logic('common/tools')->getTemplateConfig(config('default_theme'));
 
         config('template.view_path', $template['view_path']);
 

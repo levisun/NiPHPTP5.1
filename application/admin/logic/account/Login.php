@@ -47,7 +47,7 @@ class Login
         }
 
         // 登录密码错误
-        if ($user_data['password'] !== md5_password($receive_data['password'], $user_data['salt'])) {
+        if ($user_data['password'] !== logic('common/tools')->md5Password($receive_data['password'], $user_data['salt'])) {
             // 密码错误 锁定IP
             logic('common/RequestLog')->lockIp($login_ip, $module);
             return lang('error username or password');
