@@ -35,7 +35,7 @@ class Nav
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort ASC, id DESC')
-        ->cache(!APP_DEBUG ? 'NAV QUERY TYPE_ID' . $_type_id : false)
+        ->cache(!APP_DEBUG ? 'NAV QT' . $_type_id : false)
         ->select()
         ->toArray();
 
@@ -65,7 +65,7 @@ class Nav
                 ['pid', '=', $value['id']]
             ])
             ->order('sort ASC, id DESC')
-            ->cache(!APP_DEBUG ? 'NAV QUERYCHILD PID' . $value['id'] : false)
+            ->cache(!APP_DEBUG ? 'NAV QCP' . $value['id'] : false)
             ->select();
             $result = $result->toArray();
 

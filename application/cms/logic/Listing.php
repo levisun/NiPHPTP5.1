@@ -83,6 +83,7 @@ class Listing
                 ->where([
                     ['d.main_id', '=', $value->id],
                 ])
+                ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
                 ->select()
                 ->toArray();
                 foreach ($fields as $val) {
@@ -121,6 +122,7 @@ class Listing
         ->where([
             ['c.id', '=', $cid],
         ])
+        ->cache(!APP_DEBUG ? 'TABLE QTN' . $cid : false)
         ->find();
 
         if ($result) {

@@ -2,6 +2,7 @@
 /**
  *
  * 清理运行垃圾 - 行为
+ * 过期的数据缓存垃圾,模板数据垃圾
  *
  * @package   NiPHPCMS
  * @category  common\behavior

@@ -19,8 +19,6 @@ class Base extends Controller
     // 请求参数
     protected $requestParam = [];
 
-    protected $domain = '';
-
     protected $siteInfo = [];
 
     protected $tableName = '';
@@ -29,8 +27,6 @@ class Base extends Controller
     {
         // 生成异步请求令牌
         logic('common/async')->createRequireToken();
-        // IP地区信息[记录自己的IP地址库]
-        logic('common/IpInfo')->getInfo();
 
         // 请求参数
         $this->requestParam = [
@@ -39,9 +35,6 @@ class Base extends Controller
             'action'     => strtolower($this->request->action()),               // 请求方法
             'lang'       => lang(':detect'),                                    // 语言
         ];
-
-        // 域名
-        $this->domain = $this->request->domain() . $this->request->root() . '/';
 
         $this->siteInfo = logic('cms/siteinfo')->query();
 

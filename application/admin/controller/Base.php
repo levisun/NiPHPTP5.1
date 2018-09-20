@@ -19,16 +19,8 @@ class Base extends Controller
     // 请求参数
     protected $requestParam = [];
 
-    protected $domain = '';
-
     protected function initialize()
     {
-        // 生成异步请求令牌
-        logic('common/Async')->createRequireToken();
-
-        // IP地区信息[记录自己的IP地址库]
-        logic('common/IpInfo')->getInfo();
-
         // 请求参数
         $this->requestParam = [
             'module'     => strtolower($this->request->module()),               // 请求模块

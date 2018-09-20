@@ -15,10 +15,14 @@
 return [
     // 应用初始化
     'app_init'     => [
+        // 并发抛出500
         'app\\common\\behavior\\Concurrent'
     ],
     // 应用开始
     'app_begin'    => [
+        // GET请求下生成API请求TOKEN
+        'app\\common\\behavior\\ApiToken',
+        // HTML静态文件[限定CMS模块]
         'app\\common\\behavior\\HtmlCache'
     ],
     // 模块初始化
@@ -29,7 +33,9 @@ return [
     'log_write'    => [],
     // 应用结束
     'app_end'      => [
+        // 访问记录[限定CMS模块]
         'app\\common\\behavior\\Visit',
+        // GET请求下清除运行垃圾文件
         'app\\common\\behavior\\RunGarbage'
     ],
 ];

@@ -16,6 +16,31 @@ use think\facade\Lang;
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 
 /**
+ * 阻挡请求
+ * @return mixed
+ */
+function request_block()
+{
+    // 阻挡Ajax Pjax Post类型请求
+    if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+        return true;
+    }
+
+    // common模块抛出404
+    $module = strtolower(request()->module());
+    if ($module === 'common') {
+        abort(404);
+    }
+
+    // 阻挡admin member wechat 和 空模块的请求
+    if (in_array($module, ['admin', 'member', 'wechat']) || empty($module)) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * 是否微信请求
  * @param
  * @return boolean
@@ -221,12 +246,12 @@ function lang($_name, $_vars = [], $_lang = '')
         // 加载对应语言包
         $lang_path  = env('app_path') . request()->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-        $lang_path .= Lang::detect() . '.php';
+        $lang_path .= logic('common/tools')->safeFilter(Lang::detect(), true, true) . '.php';
         Lang::load($lang_path);
 
         return true;
     } elseif ($_name == ':detect') {
-        return safe_filter(Lang::detect(), true, true);
+        return logic('common/tools')->safeFilter(Lang::detect(), true, true);
     } else {
         return Lang::get($_name, $_vars, $_lang);
     }

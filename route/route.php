@@ -22,7 +22,22 @@ Route::domain(['admin'])
 ->bind('admin')
 ->ext('do');
 
-Route::domain(['www', 'm'], [
+Route::domain('my', [
+])
+->bind('member')
+->ext('do');
+
+Route::domain('mall', [
+])
+->bind('mall')
+->ext('html');
+
+Route::domain('api.wechat', [
+])
+->bind('wechat')
+->ext('do');
+
+Route::domain(['www', 'm', 'wechat'], [
     'getipinfo'          => 'index/getipinfo',
 
     // 列表页[文章 图片 下载 反馈 留言 产品 友链]
@@ -56,21 +71,6 @@ Route::domain(['www', 'm'], [
 ->bind('cms')
 ->ext('html')
 ->cache(!APP_DEBUG);
-
-Route::domain('my', [
-])
-->bind('member')
-->ext('shtml');
-
-Route::domain('mall', [
-])
-->bind('mall')
-->ext('shtml');
-
-Route::domain('api.wechat', [
-])
-->bind('wechat')
-->ext('shtml');
 
 return [
 ];

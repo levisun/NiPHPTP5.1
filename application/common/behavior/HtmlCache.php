@@ -28,24 +28,13 @@ class HtmlCache
             return false;
         }
 
-        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
-            return false;
-        }
-
-        $module = strtolower(request()->module());
-        if ($module === 'common') {
-            return false;
-        }
-
-        if (in_array($module, ['admin', 'member', 'wechat'])) {
+        if (request_block()) {
             return false;
         }
 
         $path = $this->htmlPath();
 
         if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
-            // 异步请求
-            logic('common/async')->createRequireToken();
 
             echo file_get_contents($path);
 
@@ -109,19 +98,23 @@ class HtmlCache
      */
     private function htmlPath()
     {
-        $user_id  = session('?' . config('user_auth_key')) ? 'session=' . session(config('user_auth_key')) : '';
+        /*$user_id  = session('?' . config('user_auth_key')) ? 'session=' . session(config('user_auth_key')) : '';
         $user_id .= cookie('?' . config('user_auth_key')) ? 'cookie=' . cookie(config('user_auth_key')) : '';
 
-        $file_name = request()->url(true) . $user_id;
+        $file_name = request()->url(true) . $user_id;*/
 
+        # "public/"分割数组可能有错
         $path = request()->url();
         $path = explode('public/', $path);
         $path = !empty($path[1]) ? $path[1] : 'index.html';
         $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
 
-        if (is_wechat_request()) {
+        // 获得二级域名 根据二级域名生成文件路径
+        $domain = substr(request()->url(true), 7, 2);
+
+        if (is_wechat_request() || $domain == 'we') {
             $path = 'wechat' . DIRECTORY_SEPARATOR . $path;
-        } elseif (request()->isMobile()) {
+        } elseif (request()->isMobile() || $domain == 'm.') {
             $path = 'mobile' . DIRECTORY_SEPARATOR . $path;
         }
 

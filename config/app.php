@@ -37,7 +37,7 @@ return [
     // pathinfo分隔符
     'pathinfo_depr'        => '/',
     // URL伪静态后缀
-    'url_html_suffix'      => 'do|htm|html|shtml',
+    'url_html_suffix'      => 'do|htm|html',
     // 路由使用完整匹配
     'route_complete_match' => true,
     // 是否强制使用路由
@@ -55,7 +55,7 @@ return [
     'exception_handle'     => '',
 
     'http_exception_template' => [
-        404 => dirname(__DIR__) . '/public/theme/abort/404.html',
-        500 => dirname(__DIR__) . '/public/theme/abort/500.html'
+        404 => Env::get('root_path') . 'public/theme/abort/404.html',
+        500 => Env::get('root_path') . 'public/theme/abort/500.html'
     ],
 ];

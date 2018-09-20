@@ -74,7 +74,7 @@ class WechatApi extends Wechat
         switch ($this->receive['type']) {
             // 文字信息
             case Wechat::MSGTYPE_TEXT:
-                $return = [
+                return [
                     'type' => 'text',
                     'data' => $this->receive['key']['text'],
                 ];
@@ -82,7 +82,7 @@ class WechatApi extends Wechat
 
             // 图片信息
             case Wechat::MSGTYPE_IMAGE:
-                $return = [
+                return [
                     'type' => 'image',
                     'data' => $this->receive['key']['image'],
                 ];
@@ -90,7 +90,7 @@ class WechatApi extends Wechat
 
             // 地址信息
             case Wechat::MSGTYPE_LOCATION:
-                $return = [
+                return [
                     'type' => 'location',
                     'data' => $this->receive['key']['location'],
                 ];
@@ -98,7 +98,7 @@ class WechatApi extends Wechat
 
             // 链接信息
             case Wechat::MSGTYPE_LINK:
-                $return = [
+                return [
                     'type' => 'link',
                     'data' => $this->receive['key']['link'],
                 ];
@@ -106,7 +106,7 @@ class WechatApi extends Wechat
 
             // 音频信息
             case Wechat::MSGTYPE_VOICE:
-                $return = [
+                return [
                     'type' => 'voice',
                     'data' => $this->receive['key']['voice'],
                 ];
@@ -115,7 +115,7 @@ class WechatApi extends Wechat
             // 视频信息
             case Wechat::MSGTYPE_VIDEO:
             case Wechat::MSGTYPE_SHORTVIDEO:
-                $return = [
+                return [
                     'type' => 'video',
                     'data' => $this->receive['key']['video'],
                 ];
@@ -123,7 +123,7 @@ class WechatApi extends Wechat
 
             // 音乐信息
             case Wechat::MSGTYPE_MUSIC:
-                $return = [
+                return [
                     'type' => 'music',
                     'data' => '',
                 ];
@@ -131,7 +131,7 @@ class WechatApi extends Wechat
 
             // 图文信息
             case Wechat::MSGTYPE_NEWS:
-                $return = [
+                return [
                     'type' => 'news',
                     'data' => '',
                 ];
@@ -139,21 +139,19 @@ class WechatApi extends Wechat
 
             // 事件推送信息
             case Wechat::MSGTYPE_EVENT:
-                $return = [
+                return [
                     'type' => 'event',
                     'data' => $this->event(),
                 ];
                 break;
 
             default:
-                $return = [
+                return [
                     'type' => 'text',
                     'data' => $this->receive['key']['text'],
                 ];
                 break;
         }
-
-        return $return;
     }
 
     /**
@@ -277,7 +275,7 @@ class WechatApi extends Wechat
     {
         // cache('_cachename', $_value, $_expired);
         $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
+        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
 
         $file = $dir . $_cachename . '.php';
 
@@ -301,7 +299,7 @@ class WechatApi extends Wechat
     {
         // cache($_cachename);
         $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
+        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
 
         $file = $dir . $_cachename . '.php';
 
@@ -329,7 +327,7 @@ class WechatApi extends Wechat
     {
         // cache($_cachename, null);
         $dir  = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
+        $dir .= 'runtime' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR;
 
         $file = $dir . $_cachename . '.php';
 

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 并发 - 行为
+ * API请求令牌 - 行为
  *
  * @package   NiPHPCMS
  * @category  common\behavior
@@ -13,26 +13,22 @@
 
 namespace app\common\behavior;
 
-class Concurrent
+class ApiToken
 {
+
     /**
-     * 并发压力
+     * API请求令牌
      * @access public
      * @param
      * @return void
      */
     public function run()
     {
-        if (APP_DEBUG) {
+        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
             return false;
         }
 
-        if (request_block()) {
-            return false;
-        }
-
-        if (rand(1, 10000) === 1) {
-            abort(500);
-        }
+        // 异步请求
+        logic('common/async')->createRequireToken();
     }
 }

@@ -43,7 +43,7 @@ class Article
             ['a.category_id', '=', $_cid],
             ['a.id', '=', $_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE FIND CATEGORY_ID ID' . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? 'ARTICLE FCI' . $_cid . $_id : false)
         ->find();
 
         if ($result) {
@@ -58,7 +58,7 @@ class Article
                 ->where([
                     ['d.main_id', '=', $result['id']],
                 ])
-                ->cache(!APP_DEBUG ? 'ARTICLE FIND DATA MAIN_ID' . $result['id'] : false)
+                ->cache(!APP_DEBUG ? 'ARTICLE FDM' . $result['id'] : false)
                 ->select()
                 ->toArray();
                 foreach ($fields as $val) {
@@ -74,7 +74,7 @@ class Article
                 ->where([
                     ['main_id', '=', $result['id']],
                 ])
-                ->cache(!APP_DEBUG ? 'ARTICLE FIND ALBUMS MAIN_ID' . $result['id'] : false)
+                ->cache(!APP_DEBUG ? 'ARTICLE FAM' . $result['id'] : false)
                 ->select()
                 ->toArray();
             }
@@ -88,7 +88,7 @@ class Article
                 ['a.category_id', '=', $result['category_id']],
                 ['a.article_id', '=', $result['id']],
             ])
-            ->cache(!APP_DEBUG ? 'ARTICLE FIND TAGS CATEGORY_ID ARTICLE_ID' . $result['category_id'] . $result['id'] : false)
+            ->cache(!APP_DEBUG ? 'ARTICLE FTCA' . $result['category_id'] . $result['id'] : false)
             ->select()
             ->toArray();
 
@@ -147,7 +147,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE HITS CATEGORY_ID id' . $_cid . $_id : false, 30)
+        ->cache(!APP_DEBUG ? 'ARTICLE HCI' . $_cid . $_id : false, 30)
         ->find();
     }
 
@@ -184,6 +184,7 @@ class Article
         ->where([
             ['c.id', '=', $cid],
         ])
+        ->cache(!APP_DEBUG ? 'TABLE QTN' . $cid : false)
         ->find();
 
         if ($result) {

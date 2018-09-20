@@ -23,9 +23,10 @@ class Visit
      */
     public function run()
     {
-        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+        if (request_block()) {
             return false;
         }
+
         $this->addedVisit();
         $this->addedSearchengine();
     }
@@ -56,7 +57,7 @@ class Visit
 
         $ip_info = logic('common/IpInfo')->getInfo();
 
-        $user_agent = safe_filter(request()->header('user-agent'), true, true);
+        $user_agent = logic('common/tools')->safeFilter(request()->header('user-agent'), true, true);
 
         $result =
         model('common/visit')
@@ -104,7 +105,7 @@ class Visit
             return false;
         }
 
-        $user_agent = safe_filter(request()->header('user-agent'), true, true);
+        $user_agent = logic('common/tools')->safeFilter(request()->header('user-agent'), true, true);
 
         $result =
         model('common/searchengine')
@@ -179,7 +180,7 @@ class Visit
             'YISOU'          => 'yisouspider',
         ];
 
-        $user_agent = safe_filter(request()->header('user-agent'), true, true);
+        $user_agent = request()->header('user-agent');
         foreach ($searchengine as $key => $value) {
             if (preg_match('/(' . $value . ')/si', $user_agent)) {
                 return $key;
