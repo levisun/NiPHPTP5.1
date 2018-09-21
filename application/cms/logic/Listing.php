@@ -25,6 +25,10 @@ class Listing
     {
         $_cid = $_cid ? (float) $_cid : input('param.cid/f');
 
+        if ($data = cache('ARTICLE QCI' . $_cid)) {
+            return $data;
+        }
+
         if (!$table_name = $this->queryTableName($_cid)) {
             return false;
         }
@@ -59,7 +63,6 @@ class Listing
         ])
         ->order('a.is_top, a.is_hot, a.is_com, t.name DESC, a.sort DESC, a.id DESC')
         ->append($append)
-        // ->cache(!APP_DEBUG ? 'ARTICLE QUERY CATEGORY_ID' . $_cid : false)
         ->paginate(null, null, [
             'path' => url('list/'. $_cid, [], 'html', true),
         ]);
@@ -83,18 +86,44 @@ class Listing
                 ->where([
                     ['d.main_id', '=', $value->id],
                 ])
-                ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
+                // ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
                 ->select()
                 ->toArray();
                 foreach ($fields as $val) {
                     $result[$key][$val['fields_name']] = $val['data'];
                 }
             }
+
+            // 查询相册
+            if (in_array($table_name, ['picture', 'product'])) {
+                $result[$key]['albums'] =
+                model('common/' . $table_name . 'Album')
+                ->field(true)
+                ->where([
+                    ['main_id', '=', $value->id],
+                ])
+                // ->cache(!APP_DEBUG ? 'LISITING FAM' . $value->id : false)
+                ->select()
+                ->toArray();
+            }
+
+            // 查询标签
+            $result[$key]['tags'] =
+            model('common/tagsArticle')
+            ->view('tags_article a', ['tags_id'])
+            ->view('tags t', ['name'], 't.id=a.tags_id')
+            ->where([
+                ['a.category_id', '=', $value->category_id],
+                ['a.article_id', '=', $value->id],
+            ])
+            // ->cache(!APP_DEBUG ? 'LISITING FTCA' . $value->category_id . $value->id : false)
+            ->select()
+            ->toArray();
         }
 
         $list = $result->toArray();
 
-        return [
+        $data = [
             'list'         => $list['data'],
             'total'        => $list['total'],
             'per_page'     => $list['per_page'],
@@ -102,6 +131,12 @@ class Listing
             'last_page'    => $list['last_page'],
             'page'         => str_replace('/index/', '/', $result->render()),
         ];
+
+        if (!APP_DEBUG) {
+            cache('ARTICLE QCI' . $_cid, $data);
+        }
+
+        return $data;
     }
 
     /**

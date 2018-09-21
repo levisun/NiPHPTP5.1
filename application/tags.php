@@ -1,7 +1,7 @@
 <?php
 /**
  *
- *
+ * 行为
  *
  * @package   NiPHPCMS
  * @category  application
@@ -15,13 +15,13 @@
 return [
     // 应用初始化
     'app_init'     => [
-        // 并发抛出500
+        // 并发抛出500[每次访问万分之一几率执行操作]
         'app\\common\\behavior\\Concurrent'
     ],
     // 应用开始
     'app_begin'    => [
         // GET请求下生成API请求TOKEN
-        'app\\common\\behavior\\ApiToken',
+        'app\\common\\behavior\\CreateApiToken',
         // HTML静态文件[限定CMS模块]
         'app\\common\\behavior\\HtmlCache'
     ],
@@ -35,7 +35,7 @@ return [
     'app_end'      => [
         // 访问记录[限定CMS模块]
         'app\\common\\behavior\\Visit',
-        // GET请求下清除运行垃圾文件
-        'app\\common\\behavior\\RunGarbage'
+        // GET请求下清除运行垃圾文件[每次访问百分之一几率执行操作]
+        'app\\common\\behavior\\RemoveRunGarbage'
     ],
 ];

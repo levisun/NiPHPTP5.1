@@ -2,8 +2,8 @@
 
 {label:list}
 var html = "";
-for(index in result.data.list){
-    var data = result.data.list[index];
+for(index in list){
+    var data = list[index];
     html += "<li>";
     html += "<a href='"+data.url+"'>"+data.title+"</a>";
     html += data.create_time;

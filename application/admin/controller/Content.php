@@ -29,6 +29,7 @@ class Content extends Base
             $tpl = 'content_' . $operate;
         }
 
+        // 安模型表名拼接模板名
         if (input('param.model', false)) {
             $tpl .= '_' . input('param.model');
         }

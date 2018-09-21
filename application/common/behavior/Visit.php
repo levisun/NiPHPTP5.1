@@ -23,7 +23,7 @@ class Visit
      */
     public function run()
     {
-        if (request_block()) {
+        if (request_block(['admin', 'member', 'wechat'])) {
             return false;
         }
 

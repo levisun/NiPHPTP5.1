@@ -17,9 +17,10 @@ defined('APP_DEBUG') or define('APP_DEBUG', true);
 
 /**
  * 阻挡请求
+ * @param  array 不执行操作的模块
  * @return mixed
  */
-function request_block()
+function request_block($_module_list = ['admin', 'member', 'wechat'])
 {
     // 阻挡Ajax Pjax Post类型请求
     if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
@@ -32,8 +33,13 @@ function request_block()
         abort(404);
     }
 
-    // 阻挡admin member wechat 和 空模块的请求
-    if (in_array($module, ['admin', 'member', 'wechat']) || empty($module)) {
+    // 空模块的请求
+    if (empty($module)) {
+        return true;
+    }
+
+    // 阻挡admin member wechat模块
+    if (!empty($_module_list) && in_array($module, $_module_list)) {
         return true;
     }
 

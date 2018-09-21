@@ -27,7 +27,7 @@ class Concurrent
             return false;
         }
 
-        if (request_block()) {
+        if (request_block(['admin', 'wechat'])) {
             return false;
         }
 

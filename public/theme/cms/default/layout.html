@@ -31,27 +31,19 @@
 
 <nav id="nav"></nav>
 <menu id="bread"></menu>
-<menu id="menu"></menu>
+<menu id="menu">
+    <h1></h1>
+</menu>
 {label:nav type="2"}
-for(var index in data) {
-    var res = data[index];
-    $("#nav").append("<a href='"+res.url+"'>"+res.name+"</a>");
-}
+$("#nav").append("<a href='"+vo.url+"'>"+vo.name+"</a>");
 {/label:nav}
 
 {label:bread}
-for(var index in data) {
-    var res = data[index];
-    $("#bread").append("<a href='"+res.url+"'>"+res.name+"</a>");
-}
+$("#bread").append("<a href='"+vo.url+"'>"+vo.name+"</a>");
 {/label:bread}
 
-{label:menu}
-$("#menu").append("<h1>"+data.name+"</h1>");
-for(var index in data.child) {
-    var res = data.child[index];
-    $("#menu").append("<a href='"+res.url+"'>"+res.name+"</a>");
-}
+{label:menu ele="#menu h1"}
+$("#menu").append("<a href='"+vo.url+"'>"+vo.name+"</a>");
 {/label:menu}
 
 

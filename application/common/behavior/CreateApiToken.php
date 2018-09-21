@@ -13,7 +13,7 @@
 
 namespace app\common\behavior;
 
-class ApiToken
+class CreateApiToken
 {
 
     /**
@@ -24,7 +24,7 @@ class ApiToken
      */
     public function run()
     {
-        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+        if (request_block(false)) {
             return false;
         }
 

@@ -2,7 +2,7 @@
 /**
  *
  * 清理运行垃圾 - 行为
- * 过期的数据缓存垃圾,模板数据垃圾
+ * 过期的数据缓存垃圾,模板编译垃圾
  *
  * @package   NiPHPCMS
  * @category  common\behavior
@@ -14,7 +14,7 @@
 
 namespace app\common\behavior;
 
-class RunGarbage
+class RemoveRunGarbage
 {
 
     /**
@@ -25,12 +25,12 @@ class RunGarbage
      */
     public function run()
     {
-        // 减少频繁操作,每次请求百分之一几率运行操作
-        if (rand(1, 100) !== 1) {
+        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
             return false;
         }
 
-        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+        // 减少频繁操作,每次请求百分之一几率运行操作
+        if (rand(1, 100) !== 1) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class RunGarbage
         }
 
         // 过滤未过期文件与目录
-        $days = APP_DEBUG ? strtotime('-3 hour') : strtotime('-7 days');
+        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-7 days');
         foreach ($all_files as $key => $path) {
             if (is_file($path)) {
                 if (filectime($path) >= $days) {

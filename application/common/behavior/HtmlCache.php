@@ -28,7 +28,7 @@ class HtmlCache
             return false;
         }
 
-        if (request_block()) {
+        if (request_block(['admin', 'member', 'wechat'])) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class HtmlCache
             echo file_get_contents($path);
 
             \think\Facade\Hook::exec('app\\common\\behavior\\Visit');
-            \think\Facade\Hook::exec('app\\common\\behavior\\RunGarbage');
+            \think\Facade\Hook::exec('app\\common\\behavior\\RemoveRunGarbage');
             exit();
         }
     }
@@ -56,16 +56,7 @@ class HtmlCache
             return false;
         }
 
-        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
-            return false;
-        }
-
-        $module = strtolower(request()->module());
-        if ($module === 'common') {
-            return false;
-        }
-
-        if (in_array($module, ['admin', 'member', 'wechat'])) {
+        if (request_block(['admin', 'member', 'wechat'])) {
             return false;
         }
 
