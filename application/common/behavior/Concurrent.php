@@ -35,4 +35,9 @@ class Concurrent
             abort(500);
         }
     }
+
+    public function restart()
+    {
+        # code...
+    }
 }

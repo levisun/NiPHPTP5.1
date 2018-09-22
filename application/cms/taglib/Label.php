@@ -87,10 +87,12 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        for (var key in data) {
-                            var vo = data[key];
-                            ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            for (var key in data) {
+                                var vo = data[key];
+                                ' . $_content . '
+                            }
                         }
                     });
                 });
@@ -137,10 +139,12 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        for (var key in data) {
-                            var vo = data[key];
-                            ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            for (var key in data) {
+                                var vo = data[key];
+                                ' . $_content . '
+                            }
                         }
                     });
                     jQuery.loading({
@@ -200,14 +204,16 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        var list = result.data.list;
-                        var page = result.data.page;
-                        var total = result.data.total;
-                        var current_page = result.data.current_page;
-                        var last_page = result.data.last_page;
-                        var per_page = result.data.per_page;
-                        ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            var list = result.data.list;
+                            var page = result.data.page;
+                            var total = result.data.total;
+                            var current_page = result.data.current_page;
+                            var last_page = result.data.last_page;
+                            var per_page = result.data.per_page;
+                            ' . $_content . '
+                        }
                     });
                 });
                 </script>';
@@ -253,10 +259,12 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        for (var key in data) {
-                            var vo = data[key];
-                            ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            for (var key in data) {
+                                var vo = data[key];
+                                ' . $_content . '
+                            }
                         }
                     });
                 });
@@ -301,10 +309,12 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        for (var key in data) {
-                            var vo = data[key];
-                            ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            for (var key in data) {
+                                var vo = data[key];
+                                ' . $_content . '
+                            }
                         }
                     });
                 });
@@ -346,7 +356,7 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        if (result.data.lenght > 0) {
+                        if (result.data) {
                             var data = result.data;';
             if (!empty($_tag['ele'])) {
                 $parseStr .= 'jQuery("' . $_tag['ele'] . '").html(data.name);';
@@ -399,10 +409,12 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        for (var key in data) {
-                            var vo = data[key];
-                            ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            for (var key in data) {
+                                var vo = data[key];
+                                ' . $_content . '
+                            }
                         }
                     });
                 });
@@ -447,10 +459,12 @@ class Label extends TagLib
                         if (result.code !== "SUCCESS") {
                             return false;
                         }
-                        var data = result.data;
-                        for (var key in data) {
-                            var vo = data[key];
-                            ' . $_content . '
+                        if (result.data) {
+                            var data = result.data;
+                            for (var key in data) {
+                                var vo = data[key];
+                                ' . $_content . '
+                            }
                         }
                     });
                 });

@@ -91,7 +91,7 @@ function session($name, $value = '', $prefix = null)
     $name  = 0 === strpos($name, '?') ?
         '?' . logic('common/tools')->encrypt(substr($name, 1)) :
         logic('common/tools')->encrypt($name);
-    $value = $value ? logic('common/tools')->encrypt($value) : '';
+    $value = $value ? logic('common/tools')->encrypt($value) : $value;
 
     if (is_array($name)) {
         // 初始化
@@ -128,7 +128,7 @@ function cookie($name, $value = '', $option = null)
         '?' . logic('common/tools')->encrypt(substr($name, 1)) :
         logic('common/tools')->encrypt($name);
 
-    $value = $value ? logic('common/tools')->encrypt($value) : '';
+    $value = $value ? logic('common/tools')->encrypt($value) : $value;
 
     if (is_array($name)) {
         // 初始化

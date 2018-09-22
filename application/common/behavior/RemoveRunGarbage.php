@@ -34,42 +34,19 @@ class RemoveRunGarbage
             return false;
         }
 
-        $dir = env('root_path') . 'runtime' . DIRECTORY_SEPARATOR;
-
-        $files = ['cache', 'log', 'temp'];
+        $files = [
+            'runtime' . DIRECTORY_SEPARATOR . 'cache',
+            'runtime' . DIRECTORY_SEPARATOR . 'log',
+            'runtime' . DIRECTORY_SEPARATOR . 'temp',
+            'public' . DIRECTORY_SEPARATOR . 'html',
+        ];
 
         $dir_path = [];
-        foreach ($files as $key => $value) {
-            $dir_path = array_merge($dir_path, (array) glob($dir . $value . DIRECTORY_SEPARATOR . '*'));
+        foreach ($files as $key => $dir) {
+            $dir_path = array_merge($dir_path, (array) glob(env('root_path') . $dir . DIRECTORY_SEPARATOR . '*'));
         }
 
-        $all_files = [];
-        foreach ($dir_path as $key => $path) {
-            if (is_file($path)) {
-                $all_files[] = $path;
-            } elseif (is_dir($path . DIRECTORY_SEPARATOR)) {
-                $temp = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-                if (!empty($temp)) {
-                    $all_files = array_merge($all_files, $temp);
-                } else {
-                    $all_files[] = $path;
-                }
-            }
-        }
-
-        // 过滤未过期文件与目录
-        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-7 days');
-        foreach ($all_files as $key => $path) {
-            if (is_file($path)) {
-                if (filectime($path) >= $days) {
-                    unset($all_files[$key]);
-                }
-            } elseif (is_dir($path)) {
-                if (filectime($path) >= $days) {
-                    unset($all_files[$key]);
-                }
-            }
-        }
+        $all_files = $this->getDir($dir_path);
 
         // 为空
         if (empty($all_files)) {
@@ -87,5 +64,36 @@ class RemoveRunGarbage
                 @rmdir($path);
             }
         }
+    }
+
+    /**
+     * 获得目录中的所有文件与目录
+     * @access private
+     * @param  string $_dir_path
+     * @return array
+     */
+    private function getDir($_dir_path)
+    {
+        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-7 days');
+
+        $all_files = [];
+        foreach ($_dir_path as $key => $path) {
+            if (is_file($path)) {
+                // 过滤未过期文件
+                if (filectime($path) <= $days) {
+                    $all_files[] = $path;
+                }
+            } elseif (is_dir($path . DIRECTORY_SEPARATOR)) {
+                $temp = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+                if (!empty($temp)) {
+                    $temp = $this->getDir($temp);
+                    $all_files = array_merge($all_files, $temp);
+                } else {
+                    $all_files[] = $path;
+                }
+            }
+        }
+
+        return $all_files;
     }
 }

@@ -36,10 +36,10 @@ class HtmlCache
 
         if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
 
-            echo file_get_contents($path);
-
             \think\Facade\Hook::exec('app\\common\\behavior\\Visit');
             \think\Facade\Hook::exec('app\\common\\behavior\\RemoveRunGarbage');
+
+            echo file_get_contents($path);
             exit();
         }
     }

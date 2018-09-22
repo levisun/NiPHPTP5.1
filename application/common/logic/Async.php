@@ -65,7 +65,11 @@ class Async
     protected function exec()
     {
         if ($this->validate()) {
-            return call_user_func_array([$this->object, $this->action], []);
+            $result = call_user_func_array([$this->object, $this->action], []);
+            if (is_null($result) || $result === false) {
+                abort(404);
+            }
+            return $result;
         } else {
             return false;
         }

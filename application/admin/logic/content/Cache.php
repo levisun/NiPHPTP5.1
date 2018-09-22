@@ -63,7 +63,7 @@ class Cache
     private function removeHtml()
     {
         // HTML静态缓存
-        $file_path = (array) glob(env('runtime_path') . 'html' . DIRECTORY_SEPARATOR . '*');
+        $file_path = (array) glob(env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . '*');
         foreach ($file_path as $path) {
             $_path = (array) glob($path . DIRECTORY_SEPARATOR . '*');
             foreach ($_path as $file) {
