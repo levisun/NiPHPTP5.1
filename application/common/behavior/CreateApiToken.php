@@ -24,6 +24,9 @@ class CreateApiToken
      */
     public function run()
     {
+        // 阻挡Ajax Pjax Post类型请求
+        // 阻挡common模块请求
+        // 允许所有模块请求
         if (request_block(false)) {
             return false;
         }

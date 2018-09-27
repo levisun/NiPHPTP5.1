@@ -149,9 +149,9 @@ class Role
                 foreach ($value as $k => $val) {
                     $k = explode('_', $k);
                     $k = !empty($k[1]) ? $k[1] : $k[0];
-                    $node_data['node_id'] = $val;
-                    $node_data['level']   = $key;
-                    $node_data['module']  = $k;
+                    $node_data['node_id'] = (float) $val;
+                    $node_data['level']   = (float) $key;
+                    $node_data['module']  = (float) $k;
 
                     model('common/access')
                     ->added($node_data);
@@ -308,9 +308,9 @@ class Role
                 foreach ($value as $k => $val) {
                     $k = explode('_', $k);
                     $k = !empty($k[1]) ? $k[1] : $k[0];
-                    $node_data['node_id'] = $val;
-                    $node_data['level']   = $key;
-                    $node_data['module']  = $k;
+                    $node_data['node_id'] = (float) $val;
+                    $node_data['level']   = (float) $key;
+                    $node_data['module']  = (float) $k;
 
                     model('common/access')
                     ->added($node_data);

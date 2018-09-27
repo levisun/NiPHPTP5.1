@@ -119,7 +119,7 @@ class Admin
             model('common/admin')
             ->added([
                 'username' => $receive_data['username'],
-                'password' => logic('common/tools')->md5Password($receive_data['password'], $receive_data['salt']),
+                'password' => md5_password($receive_data['password'], $receive_data['salt']),
                 'email'    => $receive_data['email'],
                 'salt'     => $receive_data['salt'],
             ]);
@@ -231,7 +231,7 @@ class Admin
                 $admin_data = [
                     'id'       => $receive_data['id'],
                     'username' => $receive_data['username'],
-                    'password' => logic('common/tools')->md5Password($receive_data['password'], $receive_data['salt']),
+                    'password' => md5_password($receive_data['password'], $receive_data['salt']),
                     'email'    => $receive_data['email'],
                     'salt'     => $receive_data['salt'],
                 ];

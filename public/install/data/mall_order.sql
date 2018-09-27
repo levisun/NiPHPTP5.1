@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `np_mall_order` (
   KEY `user_id` (`user_id`),
   KEY `seller_id` (`seller_id`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '订单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '订单表';
 
 DROP TABLE IF EXISTS `np_mall_order_goods`;
 CREATE TABLE IF NOT EXISTS `np_mall_order_goods` (
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `np_mall_order_goods` (
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `goods_id` (`goods_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '订单商品表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '订单商品表';
 
 DROP TABLE IF EXISTS `np_mall_order_address`;
 CREATE TABLE IF NOT EXISTS `np_mall_order_address` (
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `np_mall_order_address` (
   `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_id` (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '订单收货地址';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '订单收货地址';
 
 
 
@@ -75,4 +75,4 @@ CREATE TABLE IF NOT EXISTS `np_mall_order_bonus` (
   KEY `type` (`type`),
   KEY `use_time` (`use_time`),
   KEY `overdue_time` (`overdue_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '红包表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '红包表';

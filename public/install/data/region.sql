@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `np_region` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='地区表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='地区表';
 INSERT INTO `np_region` (`id`, `pid`, `name`) VALUES
 (100000, 0, '中国'),
 (110000, 100000, '北京市'),

@@ -38,7 +38,7 @@ CREATE TABLE `np_ipinfo` (
   `area_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '区',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='IP地域信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IP地域信息';
 
 --
 -- 转存表中的数据 `np_ipinfo`

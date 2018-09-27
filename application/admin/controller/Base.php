@@ -80,7 +80,7 @@ class Base extends Controller
      */
     private function setTemplate()
     {
-        $template = logic('common/tools')->getTemplateConfig(config('default_theme'));
+        $template = get_template_config(config('default_theme'));
 
         config('template.view_path', $template['view_path']);
 

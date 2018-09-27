@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `np_access` (
   KEY `role_id` (`role_id`),
   KEY `node_id` (`node_id`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '权限表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '权限表';
 INSERT INTO `np_access` (`role_id`, `node_id`, `status`, `level`, `module`) VALUES
 (1, 1, 1, 1, 'admin'),
 (1, 2, 1, 2, 'settings'),
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `np_node` (
   KEY `level` (`level`),
   KEY `name` (`name`),
   KEY `status` (`status`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT '节点表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT '节点表';
 INSERT INTO np_node(`id`, `name`, `title`, `status`, `remark`, `pid`, `level`) VALUES
 (1,  'admin',    '后台', 1, '后台模块',   0, 1),
 (2,  'settings', '设置', 1, '设置控制器', 1, 2),
@@ -333,7 +333,7 @@ CREATE TABLE IF NOT EXISTS `np_role` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '组表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '组表';
 INSERT INTO np_role(`name`, `pid`, `status`, `remark`) VALUES('创始人', 0, 1, '创始人');
 
 DROP TABLE IF EXISTS `np_role_admin`;
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `np_role_admin` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `group_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '管理员组关系表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '管理员组关系表';
 INSERT INTO np_role_admin(`role_id`, `user_id`) VALUES(1, 1);
 
 DROP TABLE IF EXISTS `np_admin`;
@@ -363,5 +363,5 @@ CREATE TABLE IF NOT EXISTS `np_admin` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   KEY `password` (`password`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '管理员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '管理员表';
 INSERT INTO np_admin(`username`, `password`, `email`, `salt`) VALUES('levisun', 'de0c5656615eb18d37cfad23e084449b', 'levisun@mail.com', '0af476');

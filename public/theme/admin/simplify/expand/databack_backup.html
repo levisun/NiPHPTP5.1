@@ -63,19 +63,21 @@ $.loading({
     }
 
     var list = "";
+    var num = 0;
     for (var index in result.data) {
-        if(index % 4 == 0) {
+        if(num % 4 == 0) {
             list += "<tr>";
         }
 
         list += "<td>";
-        list += "<input type='checkbox' name='table_name["+index+"]' value='"+result.data[index]+"' />";
-        list += result.data[index];
+        list += "<input type='checkbox' name='table_name[]' value='"+result.data[index]+"' />";
+        list += index;
         list += "</td>";
 
-        if(index % 4 == 3) {
+        if(num % 4 == 3) {
             list += "</tr>";
         }
+        num++;
     }
     $("#dataTable tbody").prepend(list);
 });

@@ -235,15 +235,26 @@ class Async
      */
     public function createRequireToken()
     {
-        $http_referer = md5(
-            app()->version() .
-            request()->header('user_agent') .
-            env('app_path') .
-            date('Ymd') .
-            request()->ip()
+        $http_referer = crypt(
+            request()->server('HTTP_USER_AGENT') .
+            request()->url(true) .
+            request()->ip(),
+            '$6$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
         cookie('_ASYNCTOKEN', $http_referer);
+
+        // 球用没有干扰用的
+        \think\Facade\Cookie::set('r_token', sha1(
+            request()->server('HTTP_USER_AGENT') .
+            request()->url(true) .
+            request()->ip()
+        ));
+        \think\Facade\Cookie::set('r_sign', md5(
+            request()->ip() .
+            request()->url(true) .
+            request()->server('HTTP_USER_AGENT')
+        ));
     }
 
     /**
@@ -258,12 +269,11 @@ class Async
             return 'request token error';
         }
 
-        $http_referer = md5(
-            app()->version() .
-            request()->header('user_agent') .
-            env('app_path') .
-            date('Ymd') .
-            request()->ip()
+        $http_referer = crypt(
+            request()->server('HTTP_USER_AGENT') .
+            request()->server('HTTP_REFERER') .
+            request()->ip(),
+            '$6$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
         if (hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
@@ -373,14 +383,16 @@ class Async
     protected function outputResult($_params)
     {
         if ($this->apiDebug) {
-            $_params['METHOD']         = $this->method;
-            $_params['REFERER']        = request()->header('referer');
-            $_params['IP_INFO']        = logic('common/IpInfo')->getInfo();
-            $_params['COOKIE']         = $_COOKIE;
-            $_params['USER_AGENT']     = request()->header('user_agent');
-            $_params['TIME_MEMORY']    = $this->useTimeMemory();
-            $_params['REQUEST_PARAMS'] = input('param.', 'trim');
-            $_params['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'];
+            $_params['HTTP_REFERER']    = request()->server('http_referer');
+            $_params['HTTP_USER_AGENT'] = request()->server('http_user_agent');
+            $_params['REQUEST_METHOD']  = request()->server('request_method');
+            $_params['IP_INFO']         = logic('common/IpInfo')->getInfo();
+            $_params['COOKIE']          = $_COOKIE;
+
+            $_params['METHOD']          = $this->method;
+            $_params['REQUEST_PARAMS']  = input('param.', 'trim');
+
+            $_params['TIME_MEMORY']     = $this->useTimeMemory();
         }
 
         $header = [

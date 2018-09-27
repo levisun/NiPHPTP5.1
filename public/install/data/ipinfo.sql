@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `np_ipinfo` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip` (`ip`),
   KEY `update_time` (`update_time`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT 'IP地域信息';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT 'IP地域信息';
 
 INSERT INTO `np_ipinfo` (`ip`, `country_id`, `province_id`, `city_id`, `area_id`, `update_time`, `create_time`) VALUES
 ('117.22.144.218', 100000, 610000, 220403, 0, 1534605995, 1534604292),

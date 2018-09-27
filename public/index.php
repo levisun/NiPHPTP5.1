@@ -18,7 +18,7 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 // 版本
 define('NP_VERSION', '2.0.1 Alpha a2613-c17');

@@ -28,6 +28,9 @@ class HtmlCache
             return false;
         }
 
+        // 阻挡Ajax Pjax Post类型请求
+        // 阻挡common模块请求
+        // 允许admin member wechat模块请求
         if (request_block(['admin', 'member', 'wechat'])) {
             return false;
         }

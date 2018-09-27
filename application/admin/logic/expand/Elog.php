@@ -35,10 +35,11 @@ class Elog
             foreach ($temp as $path) {
                 $date = substr($value, -6);
                 $name = basename($path);
-                $file_dir[$date . $name] = [
+                $file_dir[] = [
+                    'name' => $date . $name,
                     'time' => filectime($path),
-                    'size' => logic('common/tools')->fileSize($path),
-                    'show' => url('expand/elog', ['operate' => 'show', 'id' => logic('common/tools')->encrypt($date . DIRECTORY_SEPARATOR . $name)]),
+                    'size' => file_size($path),
+                    'show' => url('expand/elog', ['operate' => 'show', 'id' => encrypt($date . DIRECTORY_SEPARATOR . $name)]),
                 ];
             }
         }
@@ -55,7 +56,7 @@ class Elog
     public function find()
     {
         $name = input('post.id');
-        $name = logic('common/tools')->decrypt($name);
+        $name = decrypt($name);
 
         $path  = env('runtime_path') . 'log' . DIRECTORY_SEPARATOR . $name;
         $result = '';

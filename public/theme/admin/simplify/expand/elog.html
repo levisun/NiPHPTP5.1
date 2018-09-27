@@ -39,7 +39,7 @@ $.loading({
     var list = "";
     for (var index in result.data) {
         list = list + "<tr>";
-        list = list + "<td>"+index+"</td>";
+        list = list + "<td>"+result.data[index].name+"</td>";
         list = list + "<td>"+result.data[index].size+"</td>";
 
         list = list + "<td>";

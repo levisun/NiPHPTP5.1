@@ -152,10 +152,10 @@ class Auth
             $breadcrumb .= '</a></li>';
         }
 
-        if (request()->param('cid')) {
-            $bread = $this->getBreadcrumbParent(request()->param('cid'));
-        } elseif (request()->param('pid')) {
-            $bread = $this->getBreadcrumbParent(request()->param('pid'));
+        if (input('param.cid/f')) {
+            $bread = $this->getBreadcrumbParent(input('param.cid/f'));
+        } elseif (input('param.pid/f')) {
+            $bread = $this->getBreadcrumbParent(input('param.pid/f'));
         }
 
         if (!empty($bread)) {

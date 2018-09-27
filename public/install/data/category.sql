@@ -29,4 +29,4 @@ CREATE TABLE IF NOT EXISTS `np_category` (
   KEY `is_channel` (`is_channel`),
   KEY `access_id` (`access_id`),
   KEY `lang` (`lang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='栏目表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='栏目表';

@@ -1,0 +1,7 @@
+/* onebutton Theme */
+.fileuploader-theme-onebutton .fileuploader-input {
+    display: inline-block;
+}
+.fileuploader-theme-onebutton .fileuploader-input .fileuploader-input-caption {
+    display: none;
+}

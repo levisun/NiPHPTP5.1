@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `np_member` (
   KEY `province_id` (`province_id`),
   KEY `city_id` (`city_id`),
   KEY `area_id` (`area_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '会员';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员';
 
 DROP TABLE IF EXISTS `np_member_oauth`;
 CREATE TABLE IF NOT EXISTS `np_member_oauth` (
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `np_member_oauth` (
   KEY `user_id` (`user_id`),
   KEY `openid` (`openid`),
   KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '第三方登录会员';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '第三方登录会员';
 
 DROP TABLE IF EXISTS `np_member_wechat`;
 CREATE TABLE IF NOT EXISTS `np_member_wechat` (
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   KEY `appname` (`appname`),
   UNIQUE KEY `openid` (`openid`),
   KEY `unionid` (`unionid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT '微信用户信息表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT '微信用户信息表';
 
 DROP TABLE IF EXISTS `np_level_member`;
 CREATE TABLE IF NOT EXISTS `np_level_member` (
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `np_level_member` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `level_id` (`level_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '会员组关系表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员组关系表';
 
 DROP TABLE IF EXISTS `np_level`;
 CREATE TABLE IF NOT EXISTS `np_level` (
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `np_level` (
   PRIMARY KEY (`id`),
   KEY `integral` (`integral`),
   KEY `status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '会员组';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '会员组';
 INSERT INTO np_level(`name`, `status`, `integral`) VALUES
 ('钻石会员', 1, 500000000),
 ('黄金会员', 1, 30000000),

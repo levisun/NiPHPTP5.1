@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/jquery.fileuploader.css">
+    <link rel="stylesheet" href="../css/font-fileuploader.css">
+    <script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="../js/jquery.fileuploader.min.js"></script>
+</head>
+<body>
+<form action="submit.php" method="post" enctype="multipart/form-data">
+    <input type="file" name="files" data-fileuploader-files='[{"name":"stocksnap_4521.jpg","type":"image\/jpeg","size":71135,"file":"uploads\/stocksnap_4521.jpg","data":{"url":"http:\/\/localhost\/fileuploader\/examples\/preloaded-files\/uploads\/stocksnap_4521.jpg","thumbnail":"uploads\/thumbs\/stocksnap_4521.jpg"}}]'>
+
+    <input type="submit">
+</form>
+
+<script>
+$(document).ready(function() {
+
+    // enable fileuploader plugin
+    $('input[name="files"]').fileuploader({
+        addMore: true
+    });
+
+});
+</script>
+</body>
+</html>

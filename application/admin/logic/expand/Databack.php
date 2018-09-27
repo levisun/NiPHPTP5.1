@@ -41,10 +41,10 @@ class Databack extends Model
             $name = substr($name, 0, -4);
 
             $file_dir[] = [
-                'id'   => logic('common/tools')->encrypt($name),
+                'id'   => encrypt($name),
                 'name' => $name,
                 'time' => date('Y-m-d H:i:s', filectime($value)),
-                'size' => logic('common/tools')->fileSize($value),
+                'size' => file_size($value),
 
             ];
         }
@@ -78,7 +78,7 @@ class Databack extends Model
         $TEMP_DIR = $this->createDir();
 
         $zip = new \Pclzip('');
-        $zip->zipname = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . logic('common/tools')->decrypt($receive_data['id']) . '.zip';
+        $zip->zipname = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . decrypt($receive_data['id']) . '.zip';
         $zip->extract(PCLZIP_OPT_PATH, $TEMP_DIR);
 
         $file = (array) glob($TEMP_DIR . '*');
@@ -122,6 +122,8 @@ class Databack extends Model
 
         $TABLES_SQL = '';
         foreach ($receive_data['table_name'] as $table_name) {
+            $table_name = decrypt($table_name);
+
             $tableRes = parent::query('SHOW CREATE TABLE `' . $table_name . '`');
             if (empty($tableRes[0]['Create Table'])) {
                 continue;
@@ -264,7 +266,8 @@ class Databack extends Model
 
         $tables = array();
         foreach ($result as $key => $value) {
-            $tables[] = current($value);
+            $value = current($value);
+            $tables[str_replace(config('database.prefix'), '', $value)] = encrypt($value);
         }
         return $tables;
     }

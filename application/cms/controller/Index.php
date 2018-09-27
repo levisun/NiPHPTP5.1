@@ -22,6 +22,8 @@ class Index extends Base
      */
     public function index()
     {
+        $str = emoji_encode('大家快来动动脑筋吧😄（答案将于下期公布哟）抖音小助手 儿童文学社 #我才是实力自拍王');
+        echo ($str);die();
         return $this->fetch('index.html');
     }
 

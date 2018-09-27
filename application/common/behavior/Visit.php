@@ -69,7 +69,7 @@ class Visit
 
         $ip_info = logic('common/IpInfo')->getInfo();
 
-        $user_agent = logic('common/tools')->safeFilter(request()->header('user-agent'), true, true);
+        $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
 
         $result =
         model('common/visit')
@@ -117,7 +117,7 @@ class Visit
             return false;
         }
 
-        $user_agent = logic('common/tools')->safeFilter(request()->header('user-agent'), true, true);
+        $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
 
         $result =
         model('common/searchengine')
@@ -192,7 +192,7 @@ class Visit
             'YISOU'          => 'yisouspider',
         ];
 
-        $user_agent = request()->header('user-agent');
+        $user_agent = request()->server('HTTP_USER_AGENT');
         foreach ($searchengine as $key => $value) {
             if (preg_match('/(' . $value . ')/si', $user_agent)) {
                 return $key;

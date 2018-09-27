@@ -15,4 +15,4 @@ CREATE TABLE IF NOT EXISTS `np_reply` (
   KEY `type` (`type`),
   KEY `status` (`status`),
   KEY `lang` (`lang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信回复表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微信回复表';

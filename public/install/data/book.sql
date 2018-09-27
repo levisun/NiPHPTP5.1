@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `np_book` (
   KEY `is_hot` (`is_hot`),
   KEY `delete_time` (`delete_time`),
   KEY `lang` (`lang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='书库表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书库表';
 
 DROP TABLE IF EXISTS `np_book_type`;
 CREATE TABLE IF NOT EXISTS `np_book_type` (
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `np_book_type` (
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名',
   `description` varchar(555) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='书库分类';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书库分类';
 
 DROP TABLE IF EXISTS `np_book_article`;
 CREATE TABLE IF NOT EXISTS `np_book_article` (
@@ -59,4 +59,4 @@ CREATE TABLE IF NOT EXISTS `np_book_article` (
   KEY `book_id` (`book_id`),
   KEY `is_pass` (`is_pass`),
   KEY `delete_time` (`delete_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='书库文章表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书库文章表';

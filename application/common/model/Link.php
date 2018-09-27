@@ -120,8 +120,8 @@ class Link extends Model
 
         foreach ($form_data['id'] as $key => $value) {
             $data[] = [
-                'id'   => $key,
-                'sort' => $value,
+                'id'   => (float) $key,
+                'sort' => (float) $value,
             ];
         }
 

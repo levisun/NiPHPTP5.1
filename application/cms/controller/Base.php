@@ -63,7 +63,7 @@ class Base extends Controller
         ->cache('CMS BASE SETTEMPLATE')
         ->value('value');
 
-        $template = logic('common/tools')->getTemplateConfig($default_theme);
+        $template = get_template_config($default_theme);
 
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
 
