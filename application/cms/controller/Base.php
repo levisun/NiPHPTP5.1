@@ -77,7 +77,7 @@ class Base extends Controller
         config('template.view_path', $template['view_path']);
 
         $this->engine($template);
-        // $this->filter('view_filter');
+        $this->filter('view_filter');
     }
 
     /**

@@ -268,7 +268,7 @@
                     <div class="col-lg-10">
                         <input type="text" name="water_image" id="water_image" class="form-control" value="">
                         <button type="button" class="btn btn-success marginTB-xs" id="upload" >{:lang('button upload')}</button>
-                        <img src="" id="img-water_image" width="100">
+                        <img  style="display: none;" id="img-water_image" width="100">
                     </div>
                 </div>
 
@@ -314,6 +314,7 @@ $.loading({
             }
         }
         $("#img-water_image").attr("src", request.domain+result.data.water_image);
+        $("#img-water_image").show();
     }
 });
 

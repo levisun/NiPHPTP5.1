@@ -182,9 +182,9 @@ function view_filter($_content)
         '/(\r|\n|\f)/si'                        // 回车
     ], '', $_content);
 
-    // $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
+    $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
 
-    Hook::exec(['app\\common\\behavior\\HtmlCache', 'write'], $_content);
+    // Hook::exec(['app\\common\\behavior\\HtmlCache', 'write'], $_content);
 
     return $_content;
 }
