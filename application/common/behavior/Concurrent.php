@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 并发 - 行为
+ * 缓解并发 - 行为
  *
  * @package   NiPHPCMS
  * @category  common\behavior
@@ -24,7 +24,7 @@ class Concurrent
     public function run()
     {
         if (APP_DEBUG) {
-            return false;
+            return true;
         }
 
         // 拦截频繁请求
@@ -37,7 +37,7 @@ class Concurrent
         // 阻挡common模块请求
         // 允许admin wechat模块请求
         if (request_block(['admin', 'wechat'])) {
-            return false;
+            return true;
         }
 
         // 万分之一抛出异常

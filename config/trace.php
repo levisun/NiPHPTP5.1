@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Trace设置
+ * Trace配置
  *
  * @package   NiPHPCMS
  * @category  config

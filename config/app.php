@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 应用设置
+ * 应用配置
  *
  * @package   NiPHPCMS
  * @category  config

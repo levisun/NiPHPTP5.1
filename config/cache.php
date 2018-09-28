@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 缓存设置
+ * 缓存配置
  *
  * @package   NiPHPCMS
  * @category  config

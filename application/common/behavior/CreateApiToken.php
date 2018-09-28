@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * API请求令牌 - 行为
+ * 生成API请求令牌 - 行为
  *
  * @package   NiPHPCMS
  * @category  common\behavior
@@ -28,7 +28,7 @@ class CreateApiToken
         // 阻挡common模块请求
         // 允许所有模块请求
         if (request_block(false)) {
-            return false;
+            return true;
         }
 
         // 异步请求

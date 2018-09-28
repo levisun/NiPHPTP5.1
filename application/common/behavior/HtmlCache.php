@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 行为
+ * html缓存 - 行为
  *
  * @package   NiPHPCMS
  * @category  common\behavior
@@ -25,14 +25,14 @@ class HtmlCache
     public function run()
     {
         if (APP_DEBUG) {
-            return false;
+            return true;
         }
 
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
         // 允许admin member wechat模块请求
         if (request_block(['admin', 'member', 'wechat'])) {
-            return false;
+            return true;
         }
 
         $path = $this->htmlPath();
@@ -56,11 +56,11 @@ class HtmlCache
     public function write($_content)
     {
         if (APP_DEBUG) {
-            return false;
+            return true;
         }
 
         if (request_block(['admin', 'member', 'wechat'])) {
-            return false;
+            return true;
         }
 
         $path = $this->htmlPath();

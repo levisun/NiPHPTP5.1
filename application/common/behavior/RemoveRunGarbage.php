@@ -26,12 +26,12 @@ class RemoveRunGarbage
     public function run()
     {
         if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
-            return false;
+            return true;
         }
 
         // 减少频繁操作,每次请求百分之一几率运行操作
-        if (rand(1, 100) !== 1) {
-            return false;
+        if (!APP_DEBUG && rand(1, 100) !== 1) {
+            return true;
         }
 
         $files = [
@@ -50,7 +50,7 @@ class RemoveRunGarbage
 
         // 为空
         if (empty($all_files)) {
-            return false;
+            return true;
         }
 
         // 随机抽取1000条信息

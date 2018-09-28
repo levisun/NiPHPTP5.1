@@ -35,12 +35,14 @@ class Elog
             foreach ($temp as $path) {
                 $date = substr($value, -6);
                 $name = basename($path);
-                $file_dir[] = [
-                    'name' => $date . $name,
-                    'time' => filectime($path),
-                    'size' => file_size($path),
-                    'show' => url('expand/elog', ['operate' => 'show', 'id' => encrypt($date . DIRECTORY_SEPARATOR . $name)]),
-                ];
+                if (false !== strpos($name, '_error')) {
+                    $file_dir[] = [
+                        'name' => $date . $name,
+                        'time' => filectime($path),
+                        'size' => file_size($path),
+                        'show' => url('expand/elog', ['operate' => 'show', 'id' => encrypt($date . DIRECTORY_SEPARATOR . $name)]),
+                    ];
+                }
             }
         }
 
@@ -62,6 +64,25 @@ class Elog
         $result = '';
         if (is_file($path)) {
             $result = file_get_contents($path);
+            $pattern = [
+                env('root_path')     => '',
+
+                'application\common' => '公众',
+                'application\admin'  => '后台',
+                'application\cms'    => '前台',
+                'application\mall'   => '商城',
+                'application\member' => '会员',
+                'application\wecaht' => '微信',
+
+                'app\common'         => '公众',
+                'app\admin'          => '后台',
+                'app\cms'            => '前台',
+                'app\mall'           => '商城',
+                'app\member'         => '会员',
+                'app\wecaht'         => '微信',
+                'app'                => '',
+            ];
+            $result = str_replace(array_keys($pattern), array_values($pattern), $result);
         }
 
         return $result;

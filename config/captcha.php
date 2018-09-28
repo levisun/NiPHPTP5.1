@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 验证码设置
+ * 验证码配置
  *
  * @package   NiPHPCMS
  * @category  config

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 日志设置
+ * 日志配置
  *
  * @package   NiPHPCMS
  * @category  config

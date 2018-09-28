@@ -24,7 +24,7 @@ class Visit
     public function run()
     {
         if (request_block(['admin', 'member', 'wechat'])) {
-            return false;
+            return true;
         }
 
         $this->addedVisit();

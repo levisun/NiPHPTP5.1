@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 数据库设置
+ * 数据库配置
  *
  * @package   NiPHPCMS
  * @category  config

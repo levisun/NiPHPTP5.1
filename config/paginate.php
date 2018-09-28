@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 分页设置
+ * 分页配置
  *
  * @package   NiPHPCMS
  * @category  config

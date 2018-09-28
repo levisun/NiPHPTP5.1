@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Cookie设置
+ * Cookie配置
  *
  * @package   NiPHPCMS
  * @category  config

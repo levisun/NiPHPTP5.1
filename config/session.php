@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 会话设置
+ * 会话配置
  *
  * @package   NiPHPCMS
  * @category  config
