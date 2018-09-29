@@ -23,24 +23,12 @@ class Visit
      */
     public function run()
     {
-        if (request_block(['admin', 'member', 'wechat'])) {
+        if (request_block(['admin', 'wechat'])) {
             return true;
         }
 
         $this->addedVisit();
         $this->addedSearchengine();
-
-        // 记录每次访问的地址,方便跳转返回
-        if (cookie('?back_url')) {
-            $back_url = cookie('back_url');
-            $back_url = array_merge($back_url, [request()->url(true)]);
-        } else {
-            $back_url = [
-                request()->url(true)
-            ];
-        }
-        $back_url = array_slice($back_url, -3, 3);
-        cookie('back_url', $back_url);
     }
 
     /**

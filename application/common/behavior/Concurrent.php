@@ -15,6 +15,7 @@ namespace app\common\behavior;
 
 class Concurrent
 {
+
     /**
      * 并发压力
      * @access public

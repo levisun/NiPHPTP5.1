@@ -19,7 +19,7 @@ class Login extends Validate
     protected $rule = [
         'username' => ['require', 'length:6,20', 'token'],
         'password' => ['require', 'max:30'],
-        // 'captcha'  => ['require', 'length:6', 'captcha'],
+        'captcha'  => ['require', 'length:6', 'captcha'],
     ];
 
     protected $message = [

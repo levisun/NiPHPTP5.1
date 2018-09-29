@@ -22,21 +22,23 @@ define('APP_DEBUG', true);
 
 // 版本
 define('NP_VERSION', '2.0.1 Alpha a2613-c17');
+header('X-Powered-By: NiP ' . NP_VERSION);
 
-
-
+// PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
+// 定义超时时间
 if (APP_DEBUG) set_time_limit(60); else set_time_limit(300);
-ini_set('memory_limit', '32M');
-header('X-Powered-By: NiPHP ' . NP_VERSION);
+// 定义运行内存
+if (APP_DEBUG) ini_set('memory_limit', '32M'); else ini_set('memory_limit', '64M');
+
 // if (function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
 libxml_disable_entity_loader(true);
 
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 
-// thinkphp版本支持
-version_compare(Container::get('app')->version(), '5.1.24', '=') or die('ThinkPHP version = 5.1.24!');
+// THINKPHP版本支持
+version_compare(Container::get('app')->version(), '5.1.25', '>=') or die('ThinkPHP version >= 5.1.25!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 

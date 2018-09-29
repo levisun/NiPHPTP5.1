@@ -248,7 +248,7 @@
     /**
      * 加载更多
      */
-    jQuery.loadMore = function (_callback) {
+    jQuery.loadMore = function (_params, _callback) {
         jQuery("body").attr("Layout-loading-page", 1);
         jQuery("body").attr("Layout-loading-bool", "true");
 
@@ -262,16 +262,18 @@
                 jQuery("body").attr("Layout-loading-page", page_num);
                 jQuery("body").attr("Layout-loading-bool", "false");
 
-                jQuery.loading({
-                    type: "get",
-                    url: window.location.href,
-                    animation: true,
-                    data: {
-                        p: page_num,
-                    },
-                }, function (result) {
+                _params.var_page = jQuery.isSet(_params.var_page, "p");
+
+                _params.data[_params.var_page] = page_num;
+
+
+                jQuery.loading(_params, function (result) {
                     jQuery("body").attr("Layout-loading-bool", "true");
                     jQuery("body").removeAttr("style");
+
+                    if (result.code == "ERROR") {
+                        jQuery("body").attr("Layout-loading-bool", "false");
+                    }
 
                     _callback(result);
                 });
@@ -283,18 +285,25 @@
      * 加载
      */
     jQuery.loading = function (_params, _callback) {
-        if (jQuery.isSet(_params.animation) && _params.animation === true) {
-            jQuery.uiLoadpopup();
-        }
+        var ajax_type         = jQuery.isSet(_params.type, "post"),
+            ajax_url          = jQuery.isSet(_params.url, "?ajax_url=undefined"),
+            ajax_data         = jQuery.isSet(_params.data, {}),
+            ajax_async        = jQuery.isSet(_params.async, true),
+            ajax_cache        = jQuery.isSet(_params.cache, true),
+            ajax_dataType     = jQuery.isSet(_params.dataType, "json"),
+            ajax_processData  = jQuery.isSet(_params.processData, true),
+            ajax_contentType  = jQuery.isSet(_params.contentType, "application/x-www-form-urlencoded"),
+            animation         = jQuery.isSet(_params.animation, false),
+            animation_type    = jQuery.isSet(_params.animation_type, "uiLoadmore"),
+            animation_tips    = jQuery.isSet(_params.animation_tips, "加载中..."),
+            animation_time    = jQuery.isSet(_params.animation_time, 15),
+            animation_element = jQuery.isSet(_params.animation_element, "body");
 
-        var ajax_type        = jQuery.isSet(_params.type, "post"),
-            ajax_url         = jQuery.isSet(_params.url, "?ajax_url=undefined"),
-            ajax_data        = jQuery.isSet(_params.data, {}),
-            ajax_async       = jQuery.isSet(_params.async, true),
-            ajax_cache       = jQuery.isSet(_params.cache, true),
-            ajax_dataType    = jQuery.isSet(_params.dataType, "json"),
-            ajax_processData = jQuery.isSet(_params.processData, true),
-            ajax_contentType = jQuery.isSet(_params.contentType, "application/x-www-form-urlencoded");
+        if (animation && animation_type === "uiLoadpopup") {
+            jQuery.uiLoadpopup(animation_tips, animation_time, animation_element);
+        } else if (animation && animation_type === "uiLoadmore") {
+            jQuery.uiLoadmore(animation_tips, animation_element);
+        }
 
         jQuery.ajax({
             type:        ajax_type,
@@ -307,14 +316,18 @@
             data:        ajax_data,
             success: function (result) {
                 _callback(result);
-                if (jQuery.isSet(_params.animation) && _params.animation === true) {
+                if (animation && animation_type === "uiLoadpopup") {
                     jQuery.uiLoadpopup(false);
+                } else if (animation && animation_type === "uiLoadmore") {
+                    jQuery.uiLoadmore(false);
                 }
             },
             error: function (result) {
                 _callback(result);
-                if (jQuery.isSet(_params.animation) && _params.animation === true) {
+                if (animation && animation_type === "uiLoadpopup") {
                     jQuery.uiLoadpopup(false);
+                } else if (animation && animation_type === "uiLoadmore") {
+                    jQuery.uiLoadmore(false);
                 }
             }
         });

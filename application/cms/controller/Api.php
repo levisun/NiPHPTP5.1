@@ -33,6 +33,12 @@ class Api extends Async
         }
     }
 
+    /**
+     * ip地区信息
+     * @access public
+     * @param
+     * @return json
+     */
     public function getipinfo()
     {
         return $this->outputData('IP INFO', logic('common/IpInfo')->getInfo());

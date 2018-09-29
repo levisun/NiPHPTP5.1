@@ -35,24 +35,24 @@ class Rbac
     public function __construct()
     {
         // 是否需要认证
-        $this->user_auth_on = config('user_auth_on');
+        $this->user_auth_on            = config('user_auth_on');
         // 验证类型
-        $this->user_auth_type = config('user_auth_type');
+        $this->user_auth_type          = config('user_auth_type');
 
         // 需要认证模块
-        $this->require_auth_module = strtoupper(config('require_auth_module'));
+        $this->require_auth_module     = strtoupper(config('require_auth_module'));
         // 无需认证模块
-        $this->not_auth_module = strtoupper(config('not_auth_module'));
+        $this->not_auth_module         = strtoupper(config('not_auth_module'));
 
         // 需要认证的控制器
         $this->require_auth_controller = strtoupper(config('require_auth_controller'));
         // 无需认证的控制器
-        $this->not_auth_controller = strtoupper(config('not_auth_controller'));
+        $this->not_auth_controller     = strtoupper(config('not_auth_controller'));
 
         // 需要认证的方法
-        $this->require_auth_action = strtoupper(config('require_auth_action'));
+        $this->require_auth_action     = strtoupper(config('require_auth_action'));
         // 无需认证的方法
-        $this->not_auth_action = strtoupper(config('not_auth_action'));
+        $this->not_auth_action         = strtoupper(config('not_auth_action'));
     }
 
     /**

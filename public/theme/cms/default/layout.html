@@ -7,8 +7,8 @@
     <meta name="keywords" content="__KEYWORDS__">
     <meta name="description" content="__DESCRIPTION__">
     <meta name="author" content="">
-    {css href="__STATIC__layout/css/layout-2.0.1.css" /}
-    {js href="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js,__STATIC__layout/js/layout-2.0.1.js"}
+    {css href="__STATIC__layout/css/layout-2.0.1.css,__STATIC__library/layui/css/layui.css" /}
+    {js href="__STATIC__library/layui/layui.js,https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js,__STATIC__layout/js/layout-2.0.1.js"}
     <script type="text/javascript">
     var request = {
         domain:     "__DOMAIN__",
@@ -24,25 +24,51 @@
     };
     </script>
 </head>
-
 <body>
 
-<nav id="nav"></nav>
-<menu id="bread"></menu>
-<menu id="menu">
-    <h1></h1>
+<header>
+    <nav>
+        <ul class="layui-nav" lay-filter="">
+            <li class="layui-nav-item layui-this"><a href="">首页</a></li>
+        </ul>
+        {label:nav type="2"}
+        $("nav ul.layui-nav").append("<li class='layui-nav-item'><a href='"+vo.url+"'>"+vo.name+"</a></li>");
+        {/label:nav}
+    </nav>
+
+    <menu>
+        <span class="layui-breadcrumb" style="visibility: visible;">
+            <a href="">首页</a>
+        </span>
+        {label:bread}
+        $("menu span.layui-breadcrumb").append("<span lay-separator=''>/</span><a href='"+vo.url+"'>"+vo.name+"</a>");
+        {/label:bread}
+    </menu>
+</header>
+
+
+<menu>
+    <ul class="layui-nav layui-nav-tree">
+        <li class="layui-nav-item layui-nav-itemed">
+            <a href="javascript:;" class="side-title"></a>
+            <dl class="layui-nav-child">
+            </dl>
+        </li>
+    </ul>
+    {label:menu ele=".side-title"}
+    $("menu ul dl.layui-nav-child").append("<dd><a href='"+vo.url+"'>"+vo.name+"</a></dd>");
+    {/label:menu}
 </menu>
-{label:nav type="2"}
-$("#nav").append("<a href='"+vo.url+"'>"+vo.name+"</a>");
-{/label:nav}
 
-{label:bread}
-$("#bread").append("<a href='"+vo.url+"'>"+vo.name+"</a>");
-{/label:bread}
 
-{label:menu ele="#menu h1"}
-$("#menu").append("<a href='"+vo.url+"'>"+vo.name+"</a>");
-{/label:menu}
+<div class="layui-row">
+
+</div>
+
+
+
+
+
 
 
 {__CONTENT__}

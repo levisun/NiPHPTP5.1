@@ -13,9 +13,9 @@
                     <input type="password" name="password" class="form-control" placeholder="{:lang('password')}" validate-type="m" validate-msg="ddddddd">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group captcha">
                     <input type="text" name="captcha" class="form-control captcha" placeholder="{:lang('captcha')}">
-                    <img src="{:captcha_src()}" alt="captcha" class="captcha" />
+
                 </div>
 
                 <div class="m-top-md p-top-sm">
@@ -43,5 +43,12 @@ $("form").submit(function(){
         handle(result, "{:url('settings/info')}");
     });
     return false;
+});
+$(document).on("focus", "input.captcha", function(){
+    var val = $("input.captcha").val();
+    if (!val) {
+        $("div.captcha img").remove();
+        $("div.captcha").append('{:captcha_img()}');
+    }
 });
 </script>
