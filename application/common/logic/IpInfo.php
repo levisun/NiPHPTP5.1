@@ -32,10 +32,10 @@ class IpInfo
         $result =
         model('common/IpInfo')
         ->view('ipinfo i', ['id', 'ip', 'update_time'])
-        ->view('region country', ['name' => 'country'], 'country.id=i.country_id', 'LEFT')
-        ->view('region region', ['name' => 'region'], 'region.id=i.province_id', 'LEFT')
-        ->view('region city', ['name' => 'city'], 'city.id=i.city_id', 'LEFT')
-        ->view('region area', ['name' => 'area'], 'area.id=i.area_id', 'LEFT')
+        ->view('region country', ['id' => 'country_id', 'name' => 'country'], 'country.id=i.country_id', 'LEFT')
+        ->view('region region', ['id' => 'region_id', 'name' => 'region'], 'region.id=i.province_id', 'LEFT')
+        ->view('region city', ['id' => 'city_id', 'name' => 'city'], 'city.id=i.city_id', 'LEFT')
+        ->view('region area', ['id' => 'area_id', 'name' => 'area'], 'area.id=i.area_id', 'LEFT')
         ->where([
             ['i.ip', '=', $request_ip]
         ])
@@ -104,12 +104,14 @@ class IpInfo
 
             return [
                 'ip'          => $_request_ip,
-                'country_id'  => $ip['data']['country'],
-                'province_id' => $ip['data']['region'],
-                'city_id'     => $ip['data']['city'],
-                'area_id'     => $ip['data']['area'],
-                // 'update_time' => time(),
-                // 'create_time' => time()
+                'country'     => $ip['data']['country'],
+                'province'    => $ip['data']['region'],
+                'city'        => $ip['data']['city'],
+                'area'        => $ip['data']['area'],
+                'country_id'  => $country,
+                'province_id' => $province,
+                'city_id'     => $city,
+                'area_id'     => $area,
             ];
         } else {
             return false;

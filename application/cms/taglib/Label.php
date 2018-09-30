@@ -70,7 +70,7 @@ class Label extends TagLib
      */
     public function tagTags($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
@@ -81,7 +81,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "tags.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396"
+                            token: "' . $this->getToken() . '"
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -118,7 +118,7 @@ class Label extends TagLib
      */
     public function tagArticle($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
         if ($_tag['async'] == 'true') {
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
             $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '{:input(\'param.id/f\')}';
@@ -131,7 +131,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             cid: "' . $_tag['cid'] . '",
                             id: "' . $_tag['id'] . '"
                         }
@@ -152,7 +152,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             timestamp: "{:time()}",
                             cid: "' . $_tag['cid'] . '",
                             id: "' . $_tag['id'] . '"
@@ -185,7 +185,7 @@ class Label extends TagLib
      */
     public function tagList($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
@@ -197,7 +197,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "listing.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             cid: "' . $_tag['cid'] . '"
                         }
                     }, function(result){
@@ -240,7 +240,7 @@ class Label extends TagLib
      */
     public function tagBanner($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
         $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '0';
 
         if ($_tag['async'] == 'true') {
@@ -252,7 +252,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "banner.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             slide_id: "' . $_tag['id'] . '"
                         }
                     }, function(result){
@@ -290,7 +290,7 @@ class Label extends TagLib
      */
     public function tagAds($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
         $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '0';
 
         if ($_tag['async'] == 'true') {
@@ -302,7 +302,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "ads.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             ads_id: "' . $_tag['id'] . '"
                         }
                     }, function(result){
@@ -338,7 +338,7 @@ class Label extends TagLib
      */
     public function tagMenu($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
@@ -349,7 +349,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "sidebar.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             cid: "{:input(\'param.cid/f\', 0)}"
                         }
                     }, function(result){
@@ -390,7 +390,7 @@ class Label extends TagLib
      */
     public function tagBread($_tag, $_content)
     {
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
         $cid = input('param.cid/f', 0);
 
         if ($_tag['async'] == 'true') {
@@ -402,7 +402,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "breadcrumb.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             cid: "{:input(\'param.cid/f\', 0)}"
                         }
                     }, function(result){
@@ -440,8 +440,8 @@ class Label extends TagLib
      */
     public function tagNav($_tag, $_content)
     {
-        $_tag['type']  = !empty($_tag['type']) ? intval($_tag['type']) : '2';
-        $_tag['async'] = !empty($_tag['async']) ? trim($_tag['async']) : 'true';
+        $_tag['type']  = !empty($_tag['type']) ? (float) $_tag['type'] : '2';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
@@ -452,7 +452,7 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "nav.query",
-                            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
+                            token: "' . $this->getToken() . '",
                             type_id: "' . $_tag['type'] . '"
                         }
                     }, function(result){
@@ -479,5 +479,22 @@ class Label extends TagLib
         }
 
         return $parseStr;
+    }
+
+    /**
+     * 获得Token
+     * @access private
+     * @param
+     * @return string
+     */
+    private function getToken()
+    {
+        return
+        model('common/config')
+        ->where([
+            ['name', '=', 'ajax_token']
+        ])
+        ->cache('_CMS_TAGLIB_TOKEN')
+        ->value('value');
     }
 }

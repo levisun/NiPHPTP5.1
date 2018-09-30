@@ -51,7 +51,7 @@ class Async
 
         $this->module    = strtolower(request()->module());
 
-        // 调试
+        // 显示调试信息
         $this->apiDebug  = APP_DEBUG;
     }
 
@@ -382,25 +382,29 @@ class Async
      */
     protected function outputResult($_params)
     {
+        $header = [];
+
         if ($this->apiDebug) {
-            $_params['HTTP_REFERER']    = request()->server('http_referer');
-            $_params['HTTP_USER_AGENT'] = request()->server('http_user_agent');
-            $_params['REQUEST_METHOD']  = request()->server('request_method');
-            $_params['IP_INFO']         = logic('common/IpInfo')->getInfo();
-            $_params['COOKIE']          = $_COOKIE;
+            $_params['DEBUG']['HEADERS']['HTTP_REFERER']    = request()->server('HTTP_REFERER');
+            $_params['DEBUG']['HEADERS']['HTTP_USER_AGENT'] = request()->server('HTTP_USER_AGENT');
+            $_params['DEBUG']['HEADERS']['COOKIE']          = $_COOKIE;
+            $_params['DEBUG']['HEADERS']['IP_INFO']         = logic('common/IpInfo')->getInfo();
+            $_params['DEBUG']['HEADERS']['REQUEST_METHOD']  = request()->server('REQUEST_METHOD');
 
-            $_params['METHOD']          = $this->method;
-            $_params['REQUEST_PARAMS']  = input('param.', 'trim');
+            $_params['DEBUG']['METHOD']          = $this->method;
+            $_params['DEBUG']['REQUEST_PARAMS']  = input('param.', 'trim');
 
-            $_params['TIME_MEMORY']     = $this->useTimeMemory();
+            $_params['DEBUG']['TIME_MEMORY']     = $this->useTimeMemory();
+
+            $header = [
+                'pragma'        => 'cache',
+                'cache-control' => 'max-age=3600,must-revalidate',
+                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 3600) . ' GMT',
+                'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+            ];
         }
 
-        $header = [
-            'pragma'        => 'cache',
-            'cache-control' => 'max-age=3600,must-revalidate',
-            'expires'       => gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME'] + 3600) . ' GMT',
-            'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-        ];
+
 
         switch ($this->format) {
             case 'xml':
@@ -421,7 +425,7 @@ class Async
                 return
                 json($_params)
                 ->code(201)
-                ->allowCache(false)
+                ->allowCache(true)
                 ->header($header);
                 break;
         }

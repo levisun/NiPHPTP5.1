@@ -10,7 +10,6 @@
  * @link      www.NiPHP.com
  * @since     2018/9
  */
-
 namespace app\common\behavior;
 
 class HtmlCache
@@ -39,8 +38,8 @@ class HtmlCache
 
         if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
 
-            \think\Facade\Hook::exec('app\\common\\behavior\\Visit');
-            \think\Facade\Hook::exec('app\\common\\behavior\\RemoveRunGarbage');
+            behavior('app\\common\\behavior\\Visit');
+            behavior('app\\common\\behavior\\RemoveRunGarbage');
 
             echo file_get_contents($path);
             exit();

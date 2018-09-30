@@ -33,9 +33,9 @@ return [
     'log_write'    => [],
     // 应用结束
     'app_end'      => [
-        // GET请求下清除运行垃圾文件[每次访问百分之一几率执行操作]
-        'app\\common\\behavior\\RemoveRunGarbage',
         // 访问记录[限定CMS模块]
-        'app\\common\\behavior\\Visit'
+        'app\\common\\behavior\\Visit',
+        // GET请求下清除运行垃圾文件[每次访问百分之一几率执行操作]
+        'app\\common\\behavior\\RemoveRunGarbage'
     ],
 ];
