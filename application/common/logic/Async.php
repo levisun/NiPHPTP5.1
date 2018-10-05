@@ -38,6 +38,7 @@ class Async
     protected $apiDebug = true;     // 调试信息
 
     protected $errorMsg;            // 错误信息
+    protected $debugMsg = [];          // 调试信息
 
     public function __construct()
     {
@@ -179,7 +180,7 @@ class Async
     protected function checkSign()
     {
         if (!$this->sign) {
-            // return 'sign error';
+            return 'sign error';
         }
 
         $params = input('param.', 'trim');
@@ -192,6 +193,7 @@ class Async
             }
         }
         $str = md5(trim($str, '&'));
+        $this->debugMsg['sign'] = $str;
 
         if (hash_equals($str, $this->sign)) {
             return true;
@@ -216,6 +218,8 @@ class Async
             ])
             ->cache('_COMMON_LOGIC_ASYNC_CHECKTOKEN')
             ->value('value');
+
+            $this->debugMsg['token'] = $token;
 
             if ($token !== $this->token) {
                 return 'token error';
@@ -275,6 +279,8 @@ class Async
             request()->ip(),
             '$6$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
+
+        $this->debugMsg['r_token'] = $http_referer;
 
         if (hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
             return true;
@@ -382,7 +388,12 @@ class Async
      */
     protected function outputResult($_params)
     {
-        $header = [];
+        $header = [
+            'pragma'        => 'cache',
+            'cache-control' => 'max-age=3600,must-revalidate',
+            'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 3600) . ' GMT',
+            'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+        ];
 
         if ($this->apiDebug) {
             $_params['DEBUG']['HEADERS']['HTTP_REFERER']    = request()->server('HTTP_REFERER');
@@ -395,13 +406,9 @@ class Async
             $_params['DEBUG']['REQUEST_PARAMS']  = input('param.', 'trim');
 
             $_params['DEBUG']['TIME_MEMORY']     = $this->useTimeMemory();
+            $_params['DEBUG']['ASYNC'] = $this->debugMsg;
 
-            $header = [
-                'pragma'        => 'cache',
-                'cache-control' => 'max-age=3600,must-revalidate',
-                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 3600) . ' GMT',
-                'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-            ];
+            $header = [];
         }
 
 
@@ -425,7 +432,7 @@ class Async
                 return
                 json($_params)
                 ->code(201)
-                ->allowCache(true)
+                ->allowCache(false)
                 ->header($header);
                 break;
         }
