@@ -30,7 +30,7 @@ class RemoveRunGarbage
         }
 
         // 减少频繁操作,每次请求百分之一几率运行操作
-        if (!APP_DEBUG && rand(1, 100) !== 1) {
+        if (rand(1, 100) !== 1) {
             return true;
         }
 

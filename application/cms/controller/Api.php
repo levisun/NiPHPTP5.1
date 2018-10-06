@@ -41,9 +41,7 @@ class Api extends Async
      */
     public function getipinfo()
     {
-
         return $this->outputData('IP INFO', logic('common/IpInfo')->getInfo());
-
     }
 
     /**

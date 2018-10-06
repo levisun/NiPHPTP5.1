@@ -19,6 +19,11 @@ class Label extends TagLib
     // 标签定义
     // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
     protected $tags = [
+        'tags' => [
+            'attr'  => '',
+            'close' => 1,
+            'alias' => 'tag',
+        ],
         'article' => [
             'attr'  => '',
             'close' => 1,
@@ -54,10 +59,10 @@ class Label extends TagLib
             'close' => 1,
             'alias' => 'slide',
         ],
-        'tags' => [
-            'attr'  => '',
+        'query'  => [
+            'attr'  => 'sql',
             'close' => 1,
-            'alias' => 'tag',
+            'alias' => 'db',
         ],
     ];
 
@@ -127,6 +132,7 @@ class Label extends TagLib
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
             $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : '{:input(\'param.id/f\')}';
 
+            $time = time();
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.loading({
@@ -163,13 +169,13 @@ class Label extends TagLib
                         data: {
                             method: "article.hits",
                             token: "' . $this->getToken() . '",
-                            timestamp: "{:time()}",
+                            timestamp: "' . $time . '",
                             cid: "' . $_tag['cid'] . '",
                             id: "' . $_tag['id'] . '",
                             sign: "' . $this->sign([
                                 'method'    => 'article.hits',
                                 'token'     => $this->getToken(),
-                                'timestamp' => time(),
+                                'timestamp' => $time,
                                 'cid'       => $_tag['cid'],
                                 'id'        => $_tag['id']
                                 ]) . '"
@@ -205,7 +211,7 @@ class Label extends TagLib
         $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
-            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : input('param.cid/f');
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.loading({
@@ -524,6 +530,22 @@ class Label extends TagLib
             $parseStr .= $_content;
             $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
         }
+
+        return $parseStr;
+    }
+
+    /**
+     * nav标签解析
+     * @access public
+     * @param  array  $_tag     标签属性
+     * @param  string $_content 标签内容
+     * @return string|void
+     */
+    public function query($_tag, $_content)
+    {
+        $parseStr  = '<?php $data = Db::query(' . $_tag['sql'] . ')';
+
+        $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
 
         return $parseStr;
     }

@@ -243,21 +243,23 @@ class Async
             request()->server('HTTP_USER_AGENT') .
             request()->url(true) .
             request()->ip(),
-            '$6$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
+            '$5$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
         cookie('_ASYNCTOKEN', $http_referer);
 
-        // 球用没有干扰用的
+        // 干扰用的 球用没有
         \think\Facade\Cookie::set('r_token', sha1(
             request()->server('HTTP_USER_AGENT') .
             request()->url(true) .
-            request()->ip()
+            request()->ip() .
+            time()
         ));
         \think\Facade\Cookie::set('r_sign', md5(
             request()->ip() .
             request()->url(true) .
-            request()->server('HTTP_USER_AGENT')
+            request()->server('HTTP_USER_AGENT') .
+            time()
         ));
     }
 
@@ -277,7 +279,7 @@ class Async
             request()->server('HTTP_USER_AGENT') .
             request()->server('HTTP_REFERER') .
             request()->ip(),
-            '$6$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
+            '$5$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
         $this->debugMsg['r_token'] = $http_referer;
@@ -298,12 +300,14 @@ class Async
     private function checkLogicFile()
     {
         // 检查业务分层文件是否存在
-        $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR;
-        $file_path .= 'logic' . DIRECTORY_SEPARATOR;
+        $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
+
         if ($this->layer !== 'logic') {
             $file_path .= $this->layer . DIRECTORY_SEPARATOR;
         }
+
         $file_path .= $this->class . '.php';
+
         if (!is_file($file_path)) {
             return '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
         }
@@ -396,45 +400,41 @@ class Async
         ];
 
         if ($this->apiDebug) {
-            $_params['DEBUG']['HEADERS']['HTTP_REFERER']    = request()->server('HTTP_REFERER');
-            $_params['DEBUG']['HEADERS']['HTTP_USER_AGENT'] = request()->server('HTTP_USER_AGENT');
-            $_params['DEBUG']['HEADERS']['COOKIE']          = $_COOKIE;
-            $_params['DEBUG']['HEADERS']['IP_INFO']         = logic('common/IpInfo')->getInfo();
-            $_params['DEBUG']['HEADERS']['REQUEST_METHOD']  = request()->server('REQUEST_METHOD');
-
-            $_params['DEBUG']['METHOD']          = $this->method;
-            $_params['DEBUG']['REQUEST_PARAMS']  = input('param.', 'trim');
-
-            $_params['DEBUG']['TIME_MEMORY']     = $this->useTimeMemory();
-            $_params['DEBUG']['ASYNC'] = $this->debugMsg;
+            $_params['debug'] = [
+                'async'          => $this->debugMsg,
+                'request_params' => input('param.', 'trim'),
+                'method'         => $this->method,
+                'time_memory'    => $this->useTimeMemory(),
+                'headers'        => [
+                    'cookie'          => $_COOKIE,
+                    'http_referer'    => request()->server('HTTP_REFERER'),
+                    'http_user_agent' => request()->server('HTTP_USER_AGENT'),
+                    'ip_info'         => logic('common/IpInfo')->getInfo(),
+                    'request_method'  => request()->server('REQUEST_METHOD')
+                ]
+            ];
 
             $header = [];
         }
 
-
-
-        switch ($this->format) {
-            case 'xml':
-                return xml($_params)
-                ->code(201)
-                ->allowCache(false)
-                ->header($header);
-                break;
-
-            case 'jsonp':
-                return jsonp($_params)
-                ->code(201)
-                ->allowCache(false)
-                ->header($header);
-                break;
-
-            default:
-                return
-                json($_params)
-                ->code(201)
-                ->allowCache(false)
-                ->header($header);
-                break;
+        if ($this->format == 'xml') {
+            return
+            xml($_params)
+            ->code(201)
+            ->allowCache(false)
+            ->header($header);
+        } elseif ($this->format == 'jsonp') {
+            return
+            jsonp($_params)
+            ->code(201)
+            ->allowCache(false)
+            ->header($header);
+        } else {
+            return
+            json($_params)
+            ->code(201)
+            ->allowCache(false)
+            ->header($header);
         }
     }
 

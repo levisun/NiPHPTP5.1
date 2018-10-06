@@ -24,15 +24,11 @@ class Concurrent
      */
     public function run()
     {
-        if (APP_DEBUG) {
-            return true;
-        }
-
         // 拦截频繁请求
         // 拦截非法请求
-        if ($this->intercept()) {
-            abort(502);
-        }
+        // if ($this->intercept()) {
+        //     abort(502);
+        // }
 
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
@@ -42,7 +38,7 @@ class Concurrent
         }
 
         // 万分之一抛出异常
-        if (rand(1, 10000) === 1) {
+        if (!APP_DEBUG && rand(1, 10000) === 1) {
             abort(502);
         }
     }
@@ -58,48 +54,25 @@ class Concurrent
     {
         $ip = request()->ip();
         // 如果缓存不存在,生成缓存
-        if (!$data = cache('Concurrent IP' . md5($ip))) {
-            cache('Concurrent IP' . md5($ip), [
+
+        if (!cache('?CIP' . $ip)) {
+            $result = [
                 'total' => 1,
-                'time'  => time()
-            ]);
-        } else {
-            // 缓存存在
-
-            // 更新旧缓存数据
-            if (date('Ymd', $data['time']) < date('Ymd')) {
-                $data = [
-                    'total' => 1,
-                    'time'  => time()
-                ];
-                cache('Concurrent IP' . md5($ip), $data);
-            }
-
-            // 判断请求是否在合法范围内
-            // 十秒内超过1000次请求抛出异常
-            if ($data['time'] + 10 >= time() && $data['total'] >= 1000) {
-                // 更新请求时间确保每次进行异常抛出
-                cache('Concurrent IP' . md5($ip), [
-                    'total' => $data['total'],
-                    'time'  => strtotime(date('Y-m-d 23:59:59'))
-                ]);
-
-                return true;
-            }
-
-            // 更新请求次数与时间
-            if ($data['time'] + 10 >= time()) {
-                cache('Concurrent IP' . md5($ip), [
-                    'total' => ++$data['total'],
-                    'time'  => $data['time']
-                ]);
-            } else {
-                cache('Concurrent IP' . md5($ip), [
-                    'total' => 1,
-                    'time'  => time()
-                ]);
-            }
+                'time'  => time(),
+            ];
         }
+        $result = cache('CIP' . $ip);
+
+        if ($result['total'] > 100) {
+            $result['time'] = strtotime(date('Y-m-d 23:59:59'));
+        } elseif ($result['time'] + 600 >= time()) {
+            $result['total'] = $result['total'] + 1;
+        } else {
+            $result['total'] = $result['total'] + 1;
+            $result['time'] = time();
+        }
+
+        cache('CIP' . $ip, $result, 0);
 
         return false;
     }

@@ -19,6 +19,11 @@ namespace think;
 
 // 调试开关
 define('APP_DEBUG', true);
+if (in_array($_SERVER['SERVER_NAME'], ['localhost', '127.0.0.1'])) {
+    defined('APP_DEBUG') or define('APP_DEBUG', false);
+} else {
+    defined('APP_DEBUG') or define('APP_DEBUG', true);
+}
 
 // 版本
 define('NP_VERSION', '2.0.1 Alpha a2613-c17');
@@ -29,7 +34,7 @@ version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
 // 定义超时时间
 if (APP_DEBUG) set_time_limit(60); else set_time_limit(300);
 // 定义运行内存
-if (APP_DEBUG) ini_set('memory_limit', '32M'); else ini_set('memory_limit', '64M');
+if (APP_DEBUG) ini_set('memory_limit', '16M'); else ini_set('memory_limit', '64M');
 
 // if (function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
 libxml_disable_entity_loader(true);
