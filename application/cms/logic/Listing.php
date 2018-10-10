@@ -68,6 +68,8 @@ class Listing
         ]);
 
         foreach ($result as $key => $value) {
+            $result[$key]->flag   = encrypt($value->id);
+
             if ($value->is_link) {
                 $result[$key]->url  = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
                 $result[$key]->url .= '?go=' . urlencode($value->url);
@@ -86,7 +88,7 @@ class Listing
                 ->where([
                     ['d.main_id', '=', $value->id],
                 ])
-                // ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
+                ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
                 ->select()
                 ->toArray();
                 foreach ($fields as $val) {
@@ -102,7 +104,7 @@ class Listing
                 ->where([
                     ['main_id', '=', $value->id],
                 ])
-                // ->cache(!APP_DEBUG ? 'LISITING FAM' . $value->id : false)
+                ->cache(!APP_DEBUG ? 'LISITING FAM' . $value->id : false)
                 ->select()
                 ->toArray();
             }
@@ -116,7 +118,7 @@ class Listing
                 ['a.category_id', '=', $value->category_id],
                 ['a.article_id', '=', $value->id],
             ])
-            // ->cache(!APP_DEBUG ? 'LISITING FTCA' . $value->category_id . $value->id : false)
+            ->cache(!APP_DEBUG ? 'LISITING FTCA' . $value->category_id . $value->id : false)
             ->select()
             ->toArray();
         }

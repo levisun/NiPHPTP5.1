@@ -43,6 +43,7 @@ class Ads
         if ($result) {
             $result = $result->toArray();
             $result['url'] = url('/ads/' . $result['id']);
+            $result['flag'] = encrypt($result['id']);
         }
 
         return $result;

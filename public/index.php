@@ -19,11 +19,6 @@ namespace think;
 
 // 调试开关
 define('APP_DEBUG', true);
-if (in_array($_SERVER['SERVER_NAME'], ['localhost', '127.0.0.1'])) {
-    defined('APP_DEBUG') or define('APP_DEBUG', false);
-} else {
-    defined('APP_DEBUG') or define('APP_DEBUG', true);
-}
 
 // 版本
 define('NP_VERSION', '2.0.1 Alpha a2613-c17');

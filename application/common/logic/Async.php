@@ -12,48 +12,30 @@
  */
 namespace app\common\logic;
 
+use think\Response;
+use think\exception\HttpResponseException;
+
 class Async
 {
-    protected $appid;               // ID[数据库中获取]
-    protected $appsecret;           // 密钥[数据库中获取]
-    protected $token;               // 令牌[数据库中获取]
+    protected $moduleName;              // 模块名
 
-    protected $sign;                // 签名
-    protected $timestamp;           // 请求时间
-    protected $format = 'json';     // 返回数据类型[json|pjson|xml]
+    protected $sign;                    // 签名
+    protected $timestamp;               // 请求时间
+    protected $format      = 'json';    // 返回数据类型[json|pjson|xml]
 
-    protected $method;              // 方法
+    protected $methodName;
+    protected $layer       = 'logic';
+    protected $class       = 'index';
+    protected $action      = 'index';
 
-    protected $encodingaeskey;      // 加解密密钥[数据库中获取]
+    private   $logicObject = null;      // 业务类对象
 
-    protected $module;              // 模块[自动获取]
-
-    protected $object;              // 实例化的方法
-
-
-    protected $layer  = 'logic';    // 业务类所在层
-    protected $class  = 'index';    // 业务逻辑类名
-    protected $action = 'index';    // 业务类方法
-
-    protected $apiDebug = true;     // 调试信息
-
-    protected $errorMsg;            // 错误信息
-    protected $debugMsg = [];          // 调试信息
+    protected $apiDebug    = false;     // 调试模式
+    protected $debugMsg    = [];        // 错误信息
 
     public function __construct()
     {
-        // 公共参数赋值
-        $this->token     = input('param.token');
-
-        $this->sign      = input('param.sign');
-        $this->timestamp = input('param.timestamp', 0);
-        $this->method    = input('param.method');
-        $this->format    = input('param.format');
-
-        $this->module    = strtolower(request()->module());
-
-        // 显示调试信息
-        $this->apiDebug  = APP_DEBUG;
+        # code...
     }
 
     /**
@@ -65,110 +47,43 @@ class Async
      */
     protected function exec()
     {
-        if ($this->validate()) {
-            $result = call_user_func_array([$this->object, $this->action], []);
-            if (is_null($result) || $result === false) {
-                abort(404);
-            }
-            return $result;
-        } else {
-            return false;
-        }
+        $this->_initialize();
+        return call_user_func_array([$this->logicObject, $this->action], []);
     }
 
     /**
-     * 验证数据合法性
+     * 初始化操作
+     * @access protected
+     */
+    protected function _initialize()
+    {
+        // 验证请求合法性
+        $this->checkAsyncToken();
+
+        $this->moduleName = strtolower(request()->module());
+        $this->sign       = input('param.sign');
+        $this->timestamp  = input('param.timestamp', 0);
+        $this->format     = strtolower(input('param.format', 'json'));
+        $this->methodName = strtolower(input('param.method'));
+        $this->apiDebug   = APP_DEBUG;      // 显示调试信息
+
+        // 解析method参数
+        $this->analysisMethod();
+
+        $this->auth();
+
+        $this->checkSign();
+    }
+
+    /**
+     * 验证权限
      * @access protected
      * @param
      * @return mixed
      */
-    protected function validate()
+    protected function auth()
     {
-        // 验证请求方式
-        // 异步只允许 Ajax Pjax Post 请求类型
-        if (!request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
-            $this->errorMsg = 'request mode error';
-            return false;
-        }
-
-        // 验证需求令牌 此令牌程序生成[createRequireToken()]
-        $result = $this->checkRequireToken();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        // 验证Token
-        $result = $this->checkToken();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        // 请求时间
-        $result = $this->checkTimestamp();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        // 验证Sign
-        $result = $this->checkSign();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        // 验证参数 缺少请求执行方法参数
-        // 自动查找业务层方法
-        $result = $this->autoFindMethod();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        // 验证Auth权限
-        $result = $this->checkAuth();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        // 验证Logic文件是否存在
-        $result = $this->checkLogicFile();
-        if ($result !== true) {
-            $this->errorMsg = $result;
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * 验证Auth
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function checkAuth()
-    {
-        return true;
-    }
-
-
-    /**
-     * 验证请求时间戳
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function checkTimestamp()
-    {
-        if ($this->timestamp <= strtotime('-1 days')) {
-            return 'request timeout';
-        }
-
-        return true;
+        abort(404);
     }
 
     /**
@@ -180,7 +95,7 @@ class Async
     protected function checkSign()
     {
         if (!$this->sign) {
-            return 'sign error';
+            $this->error('sign error');
         }
 
         $params = input('param.', 'trim');
@@ -193,42 +108,138 @@ class Async
             }
         }
         $str = md5(trim($str, '&'));
-        $this->debugMsg['sign'] = $str;
 
-        if (hash_equals($str, $this->sign)) {
-            return true;
-        } else {
-            return 'sign error';
+        if (!hash_equals($str, $this->sign)) {
+            $this->debugMsg['sign'] = $str;
+
+            $this->error('sign error');
         }
     }
 
     /**
-     * 验证Token是否合法
-     * @access protected
+     * 解析method参数
+     * 参数[业务分层名.类名.方法名]
+     * 参数[logic.类名.方法名]
+     * 参数[logic.类名.index]
+     * @access private
      * @param
      * @return mixed
      */
-    protected function checkToken()
+    private function analysisMethod()
     {
-        if ($this->token) {
-            $token =
-            model('common/config')
-            ->where([
-                ['name', '=', 'ajax_token']
-            ])
-            ->cache('_COMMON_LOGIC_ASYNC_CHECKTOKEN')
-            ->value('value');
-
-            $this->debugMsg['token'] = $token;
-
-            if ($token !== $this->token) {
-                return 'token error';
-            }
-        } else {
-            return 'token error';
+        if (!$this->methodName) {
+            $this->error('[METHOD] parameter error');
         }
 
-        return true;
+        $this->layer  = 'logic';
+        $this->class  = 'Index';
+        $this->action = 'index';
+
+        // 参数[业务分层名.类名.方法名]
+        // 参数[logic.类名.方法名] 业务分层名默认logic
+        // 参数[logic.类名.index] 业务分层名默认logic 方法名默认index
+        $count = count(explode('.', $this->methodName));
+        if ($count == 3) {
+            list($this->layer, $this->class, $this->action) = explode('.', $this->methodName, 3);
+        } elseif ($count == 2) {
+            list($this->class, $this->action) = explode('.', $this->methodName, 2);
+        } elseif ($count == 1) {
+            list($this->class) = explode('.', $this->methodName, 1);
+        }
+
+        // 检查业务分层文件是否存在
+        $file_path  = env('app_path') . $this->moduleName . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
+
+        if ($this->layer !== 'logic') {
+            $file_path .= $this->layer . DIRECTORY_SEPARATOR;
+        }
+
+        $file_path .= ucfirst($this->class) . '.php';
+
+        if (!is_file($file_path)) {
+            $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+
+            $this->error('[METHOD] parameter error');
+        }
+
+        // 检查方法是否存在
+        $this->logicObject = logic($this->moduleName . '/' . $this->layer . '/' . $this->class);
+        if (!method_exists($this->logicObject, $this->action)) {
+            $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+
+            $this->error('[METHOD] parameter error');
+        }
+    }
+
+    /**
+     * 操作成功返回的数据
+     * @param string $msg   提示信息
+     * @param mixed  $data   要返回的数据
+     * @param int    $code   错误码，默认为SUCCESS
+     * @param string $type  输出类型
+     * @param array  $header 发送的 Header 信息
+     */
+    protected function success($_msg, $_data = null, $_code = 'SUCCESS')
+    {
+        $this->result($_msg, $_data, $_code);
+    }
+    /**
+     * 操作失败返回的数据
+     * @param string $msg   提示信息
+     * @param mixed  $data   要返回的数据
+     * @param int    $code   错误码，默认为ERROR
+     * @param string $type  输出类型
+     * @param array  $header 发送的 Header 信息
+     */
+    protected function error($_msg, $_data = null, $_code = 'ERROR')
+    {
+        $this->result($_msg, $_data, $_code);
+    }
+
+    /**
+     * 返回封装后的 API 数据到客户端
+     * @access protected
+     * @param  mixed  $msg    提示信息
+     * @param  mixed  $data   要返回的数据
+     * @param  int    $code   错误码，默认为SUCCESS
+     * @return void
+     * @throws HttpResponseException
+     */
+    protected function result($_msg, $_data = null, $_code = 'SUCCESS')
+    {
+        $header = [];
+
+        $result = [
+            'code' => $_code,
+            'msg'  => $_msg,
+            'time' => request()->server('REQUEST_TIME'),
+            'data' => $_data,
+        ];
+
+        if ($this->apiDebug) {
+            $result['debug'] = [
+                'async'          => $this->debugMsg,
+                'request_params' => input('param.', [], 'trim'),
+                'method'         => $this->methodName,
+                'headers'        => [
+                    'cookie'          => $_COOKIE,
+                    'http_referer'    => request()->server('HTTP_REFERER'),
+                    'http_user_agent' => request()->server('HTTP_USER_AGENT'),
+                    'ip_info'         => logic('common/IpInfo')->getInfo(),
+                    'request_method'  => request()->server('REQUEST_METHOD'),
+                ]
+            ];
+        } else {
+            $header = [
+                'pragma'        => 'cache',
+                'cache-control' => 'max-age=28800,must-revalidate',
+                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 28800) . ' GMT',
+                'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+            ];
+        }
+
+        $response = Response::create($result, $this->format, 201, $header);
+        throw new HttpResponseException($response);
     }
 
     /**
@@ -237,30 +248,16 @@ class Async
      * @param
      * @return void
      */
-    public function createRequireToken()
+    public function createAsyncToken()
     {
         $http_referer = crypt(
             request()->server('HTTP_USER_AGENT') .
             request()->url(true) .
             request()->ip(),
-            '$5$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
+            '$5$rounds=5000$' . sha1(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
         cookie('_ASYNCTOKEN', $http_referer);
-
-        // 干扰用的 球用没有
-        \think\Facade\Cookie::set('r_token', sha1(
-            request()->server('HTTP_USER_AGENT') .
-            request()->url(true) .
-            request()->ip() .
-            time()
-        ));
-        \think\Facade\Cookie::set('r_sign', md5(
-            request()->ip() .
-            request()->url(true) .
-            request()->server('HTTP_USER_AGENT') .
-            time()
-        ));
     }
 
     /**
@@ -269,194 +266,23 @@ class Async
      * @param
      * @return mixed
      */
-    private function checkRequireToken()
+    private function checkAsyncToken()
     {
-        if (!cookie('?_ASYNCTOKEN')) {
-            return 'request token error';
+        // 验证请求方式
+        // 异步只允许 Ajax Pjax Post 请求类型
+        if (!request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
+            abort(404);
         }
 
         $http_referer = crypt(
             request()->server('HTTP_USER_AGENT') .
             request()->server('HTTP_REFERER') .
             request()->ip(),
-            '$5$rounds=5000$' . md5(env('app_path') . app()->version() . date('Ymd')) . '$'
+            '$5$rounds=5000$' . sha1(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
-        $this->debugMsg['r_token'] = $http_referer;
-
-        if (hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
-            return true;
-        }
-
-        return 'request token error';
-    }
-
-    /**
-     * 验证Logic文件是否存在
-     * @access private
-     * @param
-     * @return mixed
-     */
-    private function checkLogicFile()
-    {
-        // 检查业务分层文件是否存在
-        $file_path  = env('app_path') . $this->module . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
-
-        if ($this->layer !== 'logic') {
-            $file_path .= $this->layer . DIRECTORY_SEPARATOR;
-        }
-
-        $file_path .= $this->class . '.php';
-
-        if (!is_file($file_path)) {
-            return '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-        }
-
-        // 检查方法是否存在
-        $this->object = logic($this->module . '/' . $this->layer . '/' . $this->class);
-        if (is_object($this->object) && method_exists($this->object, $this->action)) {
-            return true;
-        } else {
-            return '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-        }
-    }
-
-    /**
-     * 根据METHOD命名规范查找业务层方法
-     * @access private
-     * @param
-     * @return mixed
-     */
-    private function autoFindMethod()
-    {
-        if (!$this->method) {
-            return '[METHOD] parameter error';
-        }
-
-        // 参数[业务分层名.类名.方法名]
-        // 参数[logic.类名.方法名] 业务分层名默认logic
-        // 参数[logic.类名.index] 业务分层名默认logic 方法名默认index
-        $count = count(explode('.', $this->method));
-        if ($count == 3) {
-            list($this->layer, $this->class, $this->action) = explode('.', $this->method, 3);
-        } elseif ($count == 2) {
-            list($this->class, $this->action) = explode('.', $this->method, 2);
-        } elseif ($count == 1) {
-            list($this->class) = explode('.', $this->method, 1);
-        }
-
-        return true;
-    }
-
-    /**
-     * 返回信息
-     * @access protected
-     * @param  string  $_msg         提示信息
-     * @param  integer $_code        代码
-     * @param  array   $_data        返回数据
-     * @return json
-     */
-    protected function outputData($_msg, $_data = [], $_code = 'SUCCESS')
-    {
-        return $this->outputResult([
-            'code' => $_code,
-            'msg'  => $_msg,
-            'data' => $_data,
-        ]);
-    }
-
-    /**
-     * 返回错误信息
-     * @access protected
-     * @param  string  $_msg         错误信息
-     * @param  integer $_code        错误代码
-     * @return json
-     */
-    protected function outputError($_msg, $_code = 'ERROR')
-    {
-        if (APP_DEBUG) {
-            return $this->outputResult([
-                'code' => $_code,
-                'msg'  => $_msg,
-            ]);
-        } else {
+        if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
             abort(404);
         }
-    }
-
-    /**
-     * 自定义输出格式
-     * @access protected
-     * @param  array
-     * @return mixed
-     */
-    protected function outputResult($_params)
-    {
-        $header = [
-            'pragma'        => 'cache',
-            'cache-control' => 'max-age=3600,must-revalidate',
-            'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 3600) . ' GMT',
-            'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-        ];
-
-        if ($this->apiDebug) {
-            $_params['debug'] = [
-                'async'          => $this->debugMsg,
-                'request_params' => input('param.', 'trim'),
-                'method'         => $this->method,
-                'time_memory'    => $this->useTimeMemory(),
-                'headers'        => [
-                    'cookie'          => $_COOKIE,
-                    'http_referer'    => request()->server('HTTP_REFERER'),
-                    'http_user_agent' => request()->server('HTTP_USER_AGENT'),
-                    'ip_info'         => logic('common/IpInfo')->getInfo(),
-                    'request_method'  => request()->server('REQUEST_METHOD')
-                ]
-            ];
-
-            $header = [];
-        }
-
-        if ($this->format == 'xml') {
-            return
-            xml($_params)
-            ->code(201)
-            ->allowCache(false)
-            ->header($header);
-        } elseif ($this->format == 'jsonp') {
-            return
-            jsonp($_params)
-            ->code(201)
-            ->allowCache(false)
-            ->header($header);
-        } else {
-            return
-            json($_params)
-            ->code(201)
-            ->allowCache(false)
-            ->header($header);
-        }
-    }
-
-    /**
-     * 运行时间与占用内存
-     * @access protected
-     * @param  boolean $_start
-     * @return mixed
-     */
-    protected function useTimeMemory()
-    {
-        $runtime = number_format(microtime(true) - app()->getBeginTime(), 10);
-        $reqs    = $runtime > 0 ? number_format(1 / $runtime, 2) : '∞';
-        $mem     = number_format((memory_get_usage() - app()->getBeginMem()) / 1024, 2);
-
-        return [
-            '运行时间' => number_format($runtime, 6) . 's',
-            '吞吐率'   => $reqs . 'req/s',
-            '内存消耗' => $mem . 'kb',
-            '文件加载' => count(get_included_files()),
-            '查询信息' => \think\Db::$queryTimes . ' queries ' . \think\Db::$executeTimes . ' writes',
-            '缓存信息' => app('cache')->getReadTimes() . ' reads ' . app('cache')->getWriteTimes() . ' writes',
-        ];
     }
 }

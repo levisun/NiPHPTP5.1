@@ -57,7 +57,6 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "settings.email.query"
     }
@@ -71,8 +70,7 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=settings.email.editor";
-    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
-    form_data += "&timestamp={:time()}";
+     form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

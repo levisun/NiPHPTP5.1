@@ -4,14 +4,14 @@
  * 缓解并发 - 行为
  *
  * @package   NiPHPCMS
- * @category  common\behavior
+ * @category  cms\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2018/9
  */
 
-namespace app\common\behavior;
+namespace app\cms\behavior;
 
 class Concurrent
 {
@@ -26,14 +26,13 @@ class Concurrent
     {
         // 拦截频繁请求
         // 拦截非法请求
-        // if ($this->intercept()) {
-        //     abort(502);
-        // }
+        if ($this->intercept()) {
+            abort(502);
+        }
 
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
-        // 允许admin wechat模块请求
-        if (request_block(['admin', 'wechat'])) {
+        if (request_block()) {
             return true;
         }
 
@@ -52,27 +51,32 @@ class Concurrent
      */
     private function intercept()
     {
-        $ip = request()->ip();
+        $ip = md5('CIP' . request()->ip());
         // 如果缓存不存在,生成缓存
 
-        if (!cache('?CIP' . $ip)) {
+        if (cache('?' . $ip)) {
+            $result = cache($ip);
+
+            if ($result['total'] > 100) {
+                return true;
+            } elseif ($result['total'] >= 100) {
+                $result['total'] = $result['total'] + 1;
+                $result['time']  = strtotime(date('Y-m-d 23:59:59'));
+            } elseif ($result['time'] >= time()) {
+                $result['total'] = $result['total'] + 1;
+                $result['time']  = time() + 60;
+            } else {
+                $result['total'] = 1;
+                $result['time']  = time() + 60;
+            }
+        } else {
             $result = [
                 'total' => 1,
                 'time'  => time(),
             ];
         }
-        $result = cache('CIP' . $ip);
 
-        if ($result['total'] > 100) {
-            $result['time'] = strtotime(date('Y-m-d 23:59:59'));
-        } elseif ($result['time'] + 600 >= time()) {
-            $result['total'] = $result['total'] + 1;
-        } else {
-            $result['total'] = $result['total'] + 1;
-            $result['time'] = time();
-        }
-
-        cache('CIP' . $ip, $result, 0);
+        cache($ip, $result, 0);
 
         return false;
     }

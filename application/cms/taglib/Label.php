@@ -82,15 +82,14 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
                             method: "tags.query",
-                            token: "' . $this->getToken() . '",
-                            sign: "' . $this->sign([
-                                'method' => 'tags.query',
-                                'token'  => $this->getToken()
-                                ]) . '"
+                            token:  "' . $this->getToken() . '",
+                            sign:   jQuery.sign({
+                                method: "tags.query",
+                                token:  "' . $this->getToken() . '"
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -137,22 +136,23 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
                             method: "article.query",
                             token: "' . $this->getToken() . '",
-                            cid: "' . $_tag['cid'] . '",
-                            id: "' . $_tag['id'] . '",
-                            sign: "' . $this->sign([
-                                'method'    => 'article.query',
-                                'token'     => $this->getToken(),
-                                'cid'       => $_tag['cid'],
-                                'id'        => $_tag['id']
-                                ]) . '"
+                            cid:   "' . $_tag['cid'] . '",
+                            id:    "' . $_tag['id'] . '",
+                            sign:  jQuery.sign({
+                                method: "article.query",
+                                token:  "' . $this->getToken() . '",
+                                cid:    "' . $_tag['cid'] . '",
+                                id:     "' . $_tag['id'] . '",
+                                })
                         }
                     }, function(result){
-                        if (result.code !== "SUCCESS") {
+                        if (result.code === "ABORT:404") {
+                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                        } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
@@ -168,17 +168,17 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: "' . $this->getToken() . '",
+                            token:     "' . $this->getToken() . '",
                             timestamp: "' . $time . '",
-                            cid: "' . $_tag['cid'] . '",
-                            id: "' . $_tag['id'] . '",
-                            sign: "' . $this->sign([
-                                'method'    => 'article.hits',
-                                'token'     => $this->getToken(),
-                                'timestamp' => $time,
-                                'cid'       => $_tag['cid'],
-                                'id'        => $_tag['id']
-                                ]) . '"
+                            cid:       "' . $_tag['cid'] . '",
+                            id:        "' . $_tag['id'] . '",
+                            sign:      jQuery.sign({
+                                method:    "article.hits",
+                                token:     "' . $this->getToken() . '",
+                                timestamp: "' . $time . '",
+                                cid:       "' . $_tag['cid'] . '",
+                                id:        "' . $_tag['id'] . '",
+                                })
                         }
                     }, function(){
                     });
@@ -211,22 +211,21 @@ class Label extends TagLib
         $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
         if ($_tag['async'] == 'true') {
-            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : input('param.cid/f');
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input(\'param.cid/f\')}';
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
                             method: "listing.query",
-                            token: "' . $this->getToken() . '",
-                            cid: "' . $_tag['cid'] . '",
-                            sign: "' . $this->sign([
-                                'method' => 'listing.query',
-                                'token'  => $this->getToken(),
-                                'cid'    => $_tag['cid']
-                                ]) . '"
+                            token:  "' . $this->getToken() . '",
+                            cid:    "' . $_tag['cid'] . '",
+                            sign:   jQuery.sign({
+                                method: "listing.query",
+                                token:  "' . $this->getToken() . '",
+                                cid:    "' . $_tag['cid'] . '"
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -276,17 +275,16 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
-                            method: "banner.query",
-                            token: "' . $this->getToken() . '",
+                            method:   "banner.query",
+                            token:    "' . $this->getToken() . '",
                             slide_id: "' . $_tag['id'] . '",
-                            sign: "' . $this->sign([
-                                'method'   => 'banner.query',
-                                'token'    => $this->getToken(),
-                                'slide_id' => $_tag['id']
-                                ]) . '"
+                            sign:     jQuery.sign({
+                                method:   "banner.query",
+                                token:    "' . $this->getToken() . '",
+                                slide_id: "' . $_tag['id'] . '"
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -331,17 +329,16 @@ class Label extends TagLib
                 $(function(){
                     $.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
-                            method: "ads.query",
-                            token: "' . $this->getToken() . '",
-                            ads_id: "' . $_tag['id'] . '",
-                            sign: "' . $this->sign([
-                                'method' => 'ads.query',
-                                'token'  => $this->getToken(),
-                                'ads_id' => $_tag['id']
-                                ]) . '"
+                            method:  "ads.query",
+                            token:   "' . $this->getToken() . '",
+                            ads_id:  "' . $_tag['id'] . '",
+                            sign:    jQuery.sign({
+                                method: "ads.query",
+                                token:  "' . $this->getToken() . '",
+                                ads_id: "' . $_tag['id'] . '"
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -383,17 +380,16 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
                             method: "sidebar.query",
-                            token: "' . $this->getToken() . '",
-                            cid: "{:input(\'param.cid/f\', 0)}",
-                            sign: "' . $this->sign([
-                                'method' => 'sidebar.query',
-                                'token'  => $this->getToken(),
-                                'cid'    => input('param.cid/f', 0)
-                                ]) . '"
+                            token:  "' . $this->getToken() . '",
+                            cid:    "{:input(\'param.cid/f\', 0)}",
+                            sign:   jQuery.sign({
+                                method: "sidebar.query",
+                                token:  "' . $this->getToken() . '",
+                                cid:    "{:input(\'param.cid/f\', 0)}"
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -441,17 +437,16 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
                             method: "breadcrumb.query",
-                            token: "' . $this->getToken() . '",
-                            cid: "{:input(\'param.cid/f\', 0)}",
-                            sign: "' . $this->sign([
-                                'method' => 'breadcrumb.query',
-                                'token'  => $this->getToken(),
-                                'cid'    => input('param.cid/f', 0)
-                                ]) . '"
+                            token:  "' . $this->getToken() . '",
+                            cid:    "{:input(\'param.cid/f\', 0)}",
+                            sign:   jQuery.sign({
+                                method: "breadcrumb.query",
+                                token:  "' . $this->getToken() . '",
+                                cid:    "{:input(\'param.cid/f\', 0)}",
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {
@@ -496,17 +491,16 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.loading({
                         url: request.api.query,
-                        animation: true,
                         type: "get",
                         data: {
-                            method: "nav.query",
-                            token: "' . $this->getToken() . '",
+                            method:  "nav.query",
+                            token:   "' . $this->getToken() . '",
                             type_id: "' . $_tag['type'] . '",
-                            sign: "' . $this->sign([
-                                'method'  => 'nav.query',
-                                'token'   => $this->getToken(),
-                                'type_id' => $_tag['type']
-                                ]) . '"
+                            sign:    jQuery.sign({
+                                method:  "nav.query",
+                                token:   "' . $this->getToken() . '",
+                                type_id: "' . $_tag['type'] . '",
+                                })
                         }
                     }, function(result){
                         if (result.code !== "SUCCESS") {

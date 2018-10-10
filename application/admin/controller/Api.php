@@ -26,9 +26,9 @@ class Api extends Async
     {
         $result = $this->exec();
         if ($result === false) {
-            return $this->outputError($this->errorMsg);
+            return $this->error($this->errorMsg);
         } else {
-            return $this->outputData('QUERY SUCCESS', $result);
+            return $this->success('QUERY SUCCESS', $result);
         }
     }
 
@@ -42,11 +42,11 @@ class Api extends Async
     {
         $result = $this->exec();
         if ($result === false && $this->errorMsg) {
-            return $this->outputError($this->errorMsg);
+            return $this->error($this->errorMsg);
         } elseif ($result === true) {
-            return $this->outputData(lang('exec success'), $result);
+            return $this->success(lang('exec success'), $result);
         } else {
-            return $this->outputError($result);
+            return $this->error($result);
         }
     }
 
@@ -60,11 +60,11 @@ class Api extends Async
     {
         $result = $this->exec();
         if ($result === false && $this->errorMsg) {
-            return $this->outputError($this->errorMsg);
+            return $this->error($this->errorMsg);
         } elseif (is_string($result)) {
-            return $this->outputError($result);
+            return $this->error($result);
         } else {
-            return $this->outputData(lang('upload success'), $result);
+            return $this->success(lang('upload success'), $result);
         }
     }
 
@@ -75,33 +75,30 @@ class Api extends Async
      * @param
      * @return mixed
      */
-    protected function checkAuth()
+    protected function auth()
     {
         // 权限验证
         if ($this->action != 'login') {
             // 是否登录
             if (!session('?' . config('user_auth_key'))) {
-                return 'ILLEGAL REQUEST';
+                $this->error('ILLEGAL REQUEST');
             }
 
             // 过滤基础信息查询方法权限判断
-            if (!in_array($this->action, ['added', 'reomve', 'find', 'editor', 'query', 'upload'])) {
+            // 'added', 'reomve', 'find', 'editor', 'upload'
+            if (!in_array($this->action, ['query', 'upload'])) {
                 return true;
             }
 
-            $auth =
-            !logic('common/Rbac')
-            ->checkAuth(
+            // 登录权限信息
+            if (!logic('common/Rbac')->checkAuth(
                 session(config('user_auth_key')),
                 'admin',
                 $this->layer,
                 $this->class,
                 $this->action
-            );
-
-            // 登录权限信息
-            if ($auth) {
-                return 'ILLEGAL REQUEST';
+            )) {
+                $this->error('ILLEGAL REQUEST');
             }
 
             if ($this->action === 'upload') {

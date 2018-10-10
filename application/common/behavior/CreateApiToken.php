@@ -26,12 +26,11 @@ class CreateApiToken
     {
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
-        // 允许所有模块请求
-        if (request_block(false)) {
+        if (request_block()) {
             return true;
         }
 
         // 异步请求
-        logic('common/async')->createRequireToken();
+        logic('common/async')->createAsyncToken();
     }
 }

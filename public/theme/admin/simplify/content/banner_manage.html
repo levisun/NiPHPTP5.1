@@ -45,7 +45,6 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "content.banner.query",
         pid: "{$Request.param.pid}"
@@ -79,7 +78,6 @@ $(document).on("click", "#paging a", function(){
         url: request.api.query,
         animation: true,
         data: {
-            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
             timestamp: "{:time()}",
             method: "content.banner.query",
             pid: "{$Request.param.pid}",
@@ -118,7 +116,6 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            token: "c2630911e31549d4ddb556daba9c20d9c910d396",
             timestamp: "{:time()}",
             method: "content.banner.remove",
             id: id
@@ -134,8 +131,7 @@ $(document).on("click", ".np-btn-remove", function(){
 
 $("form").submit(function(){
     var form_data = "method=content.banner.sort";
-    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
-    form_data += "&timestamp={:time()}";
+     form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

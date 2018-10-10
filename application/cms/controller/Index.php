@@ -33,7 +33,11 @@ class Index extends Base
      */
     public function entry()
     {
-        return $this->fetch('list_' . $this->tableName . '.html');
+        $table_name = logic('cms/article')->queryTableName();
+        if (!$table_name) {
+            abort(404);
+        }
+        return $this->fetch('list_' . $table_name . '.html');
     }
 
     /**
@@ -44,7 +48,11 @@ class Index extends Base
      */
     public function article()
     {
-        return $this->fetch($this->tableName . '.html');
+        $table_name = logic('cms/article')->queryTableName();
+        if (!$table_name) {
+            abort(404);
+        }
+        return $this->fetch($table_name . '.html');
     }
 
     /**
@@ -107,5 +115,18 @@ class Index extends Base
     public function getipinfo()
     {
         return json(logic('common/IpInfo')->getInfo());
+    }
+
+    /**
+     * 异常抛出
+     * @access public
+     * @param
+     * @return void
+     */
+    public function abort()
+    {
+        $this->view->engine->layout(false);
+        abort(input('param.code/f', 404));
+        return false;
     }
 }

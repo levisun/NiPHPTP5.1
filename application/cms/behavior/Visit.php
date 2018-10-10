@@ -4,14 +4,14 @@
  * 访问记录 - 行为
  *
  * @package   NiPHPCMS
- * @category  common\behavior
+ * @category  cms\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2018/9
  */
 
-namespace app\common\behavior;
+namespace app\cms\behavior;
 
 class Visit
 {
@@ -23,7 +23,9 @@ class Visit
      */
     public function run()
     {
-        if (request_block(['admin', 'wechat'])) {
+        // 阻挡Ajax Pjax Post类型请求
+        // 阻挡common模块请求
+        if (request_block()) {
             return true;
         }
 

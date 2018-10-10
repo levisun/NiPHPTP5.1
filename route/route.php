@@ -11,6 +11,7 @@
 
 Route::pattern([
     'operate' => '\w+',
+    'code'    => '\d+',
     'cid'     => '\d+',
     'pid'     => '\d+',
     'id'      => '\d+',
@@ -66,6 +67,10 @@ Route::domain(['www', 'm', 'wechat'], [
     'page/:cid'          => 'index/article',
 
     'tags'               => 'index/tags',
+
+
+    // 异常抛出
+    'error/:code'        => 'index/abort',
 
 ])
 ->bind('cms')

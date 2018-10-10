@@ -13,13 +13,13 @@
 
 return [
     // cookie 名称前缀
-    'prefix'    => 'np_pillow',
+    'prefix'    => 'np_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径
     'path'      => '/',
     // cookie 有效域名
-    'domain'    => '',
+    'domain'    => request()->rootDomain(), //request()->url(true)
     //  cookie 启用安全传输
     'secure'    => false,
     // httponly设置

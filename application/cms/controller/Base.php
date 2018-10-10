@@ -16,40 +16,13 @@ use think\Controller;
 
 class Base extends Controller
 {
-    // 请求参数
-    protected $requestParam = [];
 
     protected $siteInfo = [];
 
-    protected $tableName = '';
-
     protected function initialize()
     {
-        // 请求参数
-        $this->requestParam = [
-            'module'     => strtolower($this->request->module()),               // 请求模块
-            'controller' => strtolower($this->request->controller()),           // 请求控制器
-            'action'     => strtolower($this->request->action()),               // 请求方法
-            'lang'       => lang(':detect'),                                    // 语言
-        ];
-
         $this->siteInfo = logic('cms/siteinfo')->query();
 
-        $this->setTemplate();
-
-        if ($this->requestParam['action'] != 'index' && !$this->tableName = logic('cms/article')->queryTableName()) {
-            // abort(404);
-        }
-    }
-
-    /**
-     * 设置模板
-     * @access private
-     * @param
-     * @return void
-     */
-    private function setTemplate()
-    {
         // 重新定义模板目录
         $default_theme =
         model('common/config')
@@ -63,7 +36,6 @@ class Base extends Controller
         $template = get_template_config($default_theme);
 
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
-
         $template['tpl_replace_string']['__TITLE__']       = $this->siteInfo['website_name'];
         $template['tpl_replace_string']['__KEYWORDS__']    = $this->siteInfo['website_keywords'];
         $template['tpl_replace_string']['__DESCRIPTION__'] = $this->siteInfo['website_description'];

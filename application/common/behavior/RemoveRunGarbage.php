@@ -25,7 +25,9 @@ class RemoveRunGarbage
      */
     public function run()
     {
-        if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
+        // 阻挡Ajax Pjax Post类型请求
+        // 阻挡common模块请求
+        if (request_block()) {
             return true;
         }
 

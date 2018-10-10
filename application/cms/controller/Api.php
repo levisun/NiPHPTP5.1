@@ -26,10 +26,13 @@ class Api extends Async
     public function query()
     {
         $result = $this->exec();
+
         if ($result === false) {
-            return $this->outputError($this->errorMsg);
+            return $this->error($this->errorMsg);
+        } elseif ($result === null) {
+            return $this->error('404', 'ABORT:404');
         } else {
-            return $this->outputData('QUERY SUCCESS', $result);
+            return $this->success('QUERY SUCCESS', $result);
         }
     }
 
@@ -41,27 +44,10 @@ class Api extends Async
      */
     public function getipinfo()
     {
-        return $this->outputData('IP INFO', logic('common/IpInfo')->getInfo());
+        return $this->success('IP INFO', logic('common/IpInfo')->getInfo());
     }
 
-    /**
-     * 验证异步加密签名
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    // protected function checkSign()
-    // {
-    //     return true;
-    // }
-
-    /**
-     * 验证请求时间戳
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function checkTimestamp()
+    protected function auth()
     {
         return true;
     }

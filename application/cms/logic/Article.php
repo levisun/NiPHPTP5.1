@@ -48,6 +48,7 @@ class Article
 
         if ($result) {
             $result = $result->toArray();
+            $result['flag'] = encrypt($result['id']);
 
             if ($table_name !== 'link') {
                 // 查询自定义字段

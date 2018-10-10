@@ -41,7 +41,6 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "category.type.category"
     }
@@ -54,7 +53,6 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=category.type.added";
-    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
     form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({

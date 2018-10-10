@@ -143,7 +143,6 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "category.category.find",
         id: "{$Request.param.id}"
@@ -164,7 +163,6 @@ $.loading({
 $.loading({
     url: request.api.query,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "category.category.type"
     }
@@ -178,7 +176,6 @@ $.loading({
 $.loading({
     url: request.api.query,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "category.category.models"
     }
@@ -192,7 +189,6 @@ $.loading({
 $.loading({
     url: request.api.query,
     data: {
-        token: "c2630911e31549d4ddb556daba9c20d9c910d396",
         timestamp: "{:time()}",
         method: "category.category.level"
     }
@@ -224,7 +220,6 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=category.category.editor";
-    form_data += "&token=c2630911e31549d4ddb556daba9c20d9c910d396";
     form_data += "&timestamp={:time()}";
     form_data += "&"+$(this).serialize();
     $.loading({

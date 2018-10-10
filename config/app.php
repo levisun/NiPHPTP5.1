@@ -58,6 +58,6 @@ return [
         403 => Env::get('root_path') . 'public/theme/abort/403.html',           // 禁止访问
         404 => Env::get('root_path') . 'public/theme/abort/404.html',           // 找不到
         500 => Env::get('root_path') . 'public/theme/abort/500.html',           // 服务器错误
-        502 => Env::get('root_path') . 'public/theme/abort/500.html',           // 网关错误
+        502 => Env::get('root_path') . 'public/theme/abort/502.html',           // 网关错误
     ],
 ];

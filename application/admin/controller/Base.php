@@ -16,42 +16,16 @@ use think\Controller;
 
 class Base extends Controller
 {
-    // 请求参数
-    protected $requestParam = [];
 
     protected function initialize()
     {
-        // 请求参数
-        $this->requestParam = [
-            'module'     => strtolower($this->request->module()),               // 请求模块
-            'controller' => strtolower($this->request->controller()),           // 请求控制器
-            'action'     => strtolower($this->request->action()),               // 请求方法
-            'lang'       => lang(':detect'),                                    // 语言
-        ];
-
         // 模板设置
-        $this->setTemplate();
+        $template = get_template_config(config('default_theme'));
+        config('template.view_path', $template['view_path']);
+        $this->engine($template);
 
-        // 用户权限校验
+
         if (session('?' . config('user_auth_key'))) {
-            // 审核用户权限
-            $auth =
-            !logic('common/Rbac')
-            ->checkAuth(
-                session(config('user_auth_key')),
-                $this->requestParam['module'],
-                $this->requestParam['controller'],
-                $this->requestParam['action']
-            );
-            if ($auth) {
-                $this->error('no permission', 'settings/info');
-            }
-
-            // 登录页重定向
-            if ($this->requestParam['action'] == 'login') {
-                $this->redirect(url('settings/info'));
-            }
-
             // 用户信息
             $this->assign('ADMIN_DATA', session('admin_data'));
 
@@ -61,8 +35,6 @@ class Base extends Controller
 
             // 搜索按钮状态
             $this->assign('button_search', 0);
-        } elseif ($this->requestParam['controller'] != 'account') {
-            $this->redirect(url('account/login'));
         }
 
         // 网站标题与面包屑
@@ -70,20 +42,5 @@ class Base extends Controller
         $this->assign('TITLE', $tit_bre['title']);
         $this->assign('BREADCRUMB', $tit_bre['breadcrumb']);
         $this->assign('SUB_TITLE', $tit_bre['sub_title']);
-    }
-
-    /**
-     * 设置模板
-     * @access private
-     * @param
-     * @return void
-     */
-    private function setTemplate()
-    {
-        $template = get_template_config(config('default_theme'));
-
-        config('template.view_path', $template['view_path']);
-
-        $this->engine($template);
     }
 }

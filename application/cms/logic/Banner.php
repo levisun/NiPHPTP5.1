@@ -52,9 +52,10 @@ class Banner
         $data = [];
         foreach ($result as $value) {
             // $value = $value->toArray();
-            $value['url'] = url('/banner/' . $vo['id']);
-            $value['width'] = $parent['width'];
+            $value['url']    = url('/banner/' . $vo['id']);
+            $value['width']  = $parent['width'];
             $value['height'] = $parent['height'];
+            $value['flag']   = encrypt($parent['id']);
             $data[] = $value;
         }
 

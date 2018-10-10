@@ -167,7 +167,7 @@ class IpInfo
         ->where([
             ['name', 'LIKE', $_name . '%']
         ])
-        ->cache('IPINFO QUERYREGION' . $_name)
+        // ->cache('IPINFO QUERYREGION' . $_name)
         ->value('id');
 
         return $result ? $result : 0;

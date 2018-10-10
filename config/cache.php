@@ -15,8 +15,8 @@ return [
     // 驱动方式
     'type'         => 'File',
     // 缓存前缀
-    'prefix'       => '',
+    'prefix'       => APP_DEBUG ? '' : substr(md5(Env::get('root_path')), 0, 9),
     // 缓存有效期 0表示永久缓存
-    'expire'       => 28800,
+    'expire'       => APP_DEBUG ? 300 : 28800,
     'cache_subdir' => !APP_DEBUG,
 ];
