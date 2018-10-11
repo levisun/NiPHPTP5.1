@@ -47,16 +47,6 @@ class Async
      */
     protected function exec()
     {
-        $this->_initialize();
-        return call_user_func_array([$this->logicObject, $this->action], []);
-    }
-
-    /**
-     * 初始化操作
-     * @access protected
-     */
-    protected function _initialize()
-    {
         // 验证请求合法性
         $this->checkAsyncToken();
 
@@ -73,6 +63,8 @@ class Async
         $this->auth();
 
         $this->checkSign();
+
+        return call_user_func_array([$this->logicObject, $this->action], []);
     }
 
     /**
@@ -238,7 +230,7 @@ class Async
             ];
         }
 
-        $response = Response::create($result, $this->format, 201, $header);
+        $response = Response::create($result, $this->format, 200, $header);
         throw new HttpResponseException($response);
     }
 

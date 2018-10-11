@@ -85,10 +85,8 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "tags.query",
-                            token:  "' . $this->getToken() . '",
                             sign:   jQuery.sign({
-                                method: "tags.query",
-                                token:  "' . $this->getToken() . '"
+                                method: "tags.query"
                                 })
                         }
                     }, function(result){
@@ -139,14 +137,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.query",
-                            token: "' . $this->getToken() . '",
                             cid:   "' . $_tag['cid'] . '",
                             id:    "' . $_tag['id'] . '",
                             sign:  jQuery.sign({
                                 method: "article.query",
-                                token:  "' . $this->getToken() . '",
                                 cid:    "' . $_tag['cid'] . '",
-                                id:     "' . $_tag['id'] . '",
+                                id:     "' . $_tag['id'] . '"
                                 })
                         }
                     }, function(result){
@@ -168,16 +164,14 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token:     "' . $this->getToken() . '",
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token:     "' . $this->getToken() . '",
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
-                                id:        "' . $_tag['id'] . '",
+                                id:        "' . $_tag['id'] . '"
                                 })
                         }
                     }, function(){
@@ -219,11 +213,9 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "listing.query",
-                            token:  "' . $this->getToken() . '",
                             cid:    "' . $_tag['cid'] . '",
                             sign:   jQuery.sign({
                                 method: "listing.query",
-                                token:  "' . $this->getToken() . '",
                                 cid:    "' . $_tag['cid'] . '"
                                 })
                         }
@@ -278,11 +270,9 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:   "banner.query",
-                            token:    "' . $this->getToken() . '",
                             slide_id: "' . $_tag['id'] . '",
                             sign:     jQuery.sign({
                                 method:   "banner.query",
-                                token:    "' . $this->getToken() . '",
                                 slide_id: "' . $_tag['id'] . '"
                                 })
                         }
@@ -332,11 +322,9 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:  "ads.query",
-                            token:   "' . $this->getToken() . '",
                             ads_id:  "' . $_tag['id'] . '",
                             sign:    jQuery.sign({
                                 method: "ads.query",
-                                token:  "' . $this->getToken() . '",
                                 ads_id: "' . $_tag['id'] . '"
                                 })
                         }
@@ -383,11 +371,9 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "sidebar.query",
-                            token:  "' . $this->getToken() . '",
                             cid:    "{:input(\'param.cid/f\', 0)}",
                             sign:   jQuery.sign({
                                 method: "sidebar.query",
-                                token:  "' . $this->getToken() . '",
                                 cid:    "{:input(\'param.cid/f\', 0)}"
                                 })
                         }
@@ -440,12 +426,10 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "breadcrumb.query",
-                            token:  "' . $this->getToken() . '",
                             cid:    "{:input(\'param.cid/f\', 0)}",
                             sign:   jQuery.sign({
                                 method: "breadcrumb.query",
-                                token:  "' . $this->getToken() . '",
-                                cid:    "{:input(\'param.cid/f\', 0)}",
+                                cid:    "{:input(\'param.cid/f\', 0)}"
                                 })
                         }
                     }, function(result){
@@ -494,12 +478,10 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:  "nav.query",
-                            token:   "' . $this->getToken() . '",
                             type_id: "' . $_tag['type'] . '",
                             sign:    jQuery.sign({
                                 method:  "nav.query",
-                                token:   "' . $this->getToken() . '",
-                                type_id: "' . $_tag['type'] . '",
+                                type_id: "' . $_tag['type'] . '"
                                 })
                         }
                     }, function(result){
@@ -535,50 +517,12 @@ class Label extends TagLib
      * @param  string $_content 标签内容
      * @return string|void
      */
-    public function query($_tag, $_content)
+    public function tagQuery($_tag, $_content)
     {
         $parseStr  = '<?php $data = Db::query(' . $_tag['sql'] . ')';
 
         $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
 
         return $parseStr;
-    }
-
-    /**
-     * 生成Sign签名
-     * @access private
-     * @param  array   $_params
-     * @return string
-     */
-    private function sign($_params)
-    {
-        ksort($_params);
-
-        $str = '';
-        foreach ($_params as $key => $value) {
-            if (!is_array($value) && $key !== 'sign') {
-                $str .= $key . '=' . $value . '&';
-            }
-        }
-        $str = md5(trim($str, '&'));
-
-        return $str;
-    }
-
-    /**
-     * 获得Token
-     * @access private
-     * @param
-     * @return string
-     */
-    private function getToken()
-    {
-        return
-        model('common/config')
-        ->where([
-            ['name', '=', 'ajax_token']
-        ])
-        ->cache('_CMS_TAGLIB_TOKEN')
-        ->value('value');
     }
 }

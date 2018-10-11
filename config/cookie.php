@@ -14,6 +14,7 @@
 return [
     // cookie 名称前缀
     'prefix'    => 'np_',
+    'prefix'    => substr(md5(Env::get('root_path')), 9, 3) . '_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径

@@ -24,7 +24,6 @@ class Base extends Controller
         config('template.view_path', $template['view_path']);
         $this->engine($template);
 
-
         if (session('?' . config('user_auth_key'))) {
             // 用户信息
             $this->assign('ADMIN_DATA', session('admin_data'));
