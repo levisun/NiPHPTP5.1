@@ -33,9 +33,7 @@ class Listing
             return false;
         }
 
-        // 查询数据
         $fields = ['id', 'category_id', 'title', 'sort', 'is_pass', 'is_link', 'url', 'update_time', 'create_time'];
-        $append = ['pass_name'];
         if ($table_name !== 'link') {
             $fields[] = 'is_com';
             $fields[] = 'is_hot';
@@ -43,6 +41,7 @@ class Listing
             $fields[] = 'is_link';
         }
 
+        $append = ['pass_name'];
         if (!in_array($table_name, ['link', 'message', 'feedback'])) {
             $append[] = 'com_name';
             $append[] = 'hot_name';
@@ -63,9 +62,7 @@ class Listing
         ])
         ->order('a.is_top, a.is_hot, a.is_com, t.name DESC, a.sort DESC, a.id DESC')
         ->append($append)
-        ->paginate(null, null, [
-            'path' => url('list/'. $_cid, [], 'html', true),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
@@ -131,7 +128,7 @@ class Listing
             'per_page'     => $list['per_page'],
             'current_page' => $list['current_page'],
             'last_page'    => $list['last_page'],
-            'page'         => str_replace('/index/', '/', $result->render()),
+            'page'         => $result->render(),
         ];
 
         if (!APP_DEBUG) {

@@ -53,9 +53,7 @@ class Keyword
             'type_name',
             'status'
         ])
-        ->paginate(null, null, [
-            'path' => url($url),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

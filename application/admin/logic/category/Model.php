@@ -31,9 +31,7 @@ class Model
             'model_status',
             'model_name'
         ])
-        ->paginate(null, null, [
-            'path' => url('category/model'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             if ($value->id > 9) {

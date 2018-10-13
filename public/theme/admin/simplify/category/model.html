@@ -30,12 +30,15 @@
     </div>
 </div>
 <script type="text/javascript">
+var page = window.location.hash;
+page = page.substr(1, page.length);
 $.loading({
     url: request.api.query,
     animation: true,
     data: {
         timestamp: "{:time()}",
-        method: "category.model.query"
+        method: "category.model.query",
+        p: page
     }
 }, function(result){
     if (result.code !== "SUCCESS") {
@@ -53,11 +56,10 @@ $.loading({
     }
     $("#dataTable tbody").prepend(list);
     $("#paging").prepend(result.data.page);
-    pagingToAjax();
 });
 
-$(document).on("click", "#paging a", function(){
-    var page = $.urlParam("p", "", $(this).attr("url"));
+function paging(_page) {
+    $.rewriteUrl("{:url()}#"+_page);
     $.loading({
         url: request.api.query,
         animation: true,
@@ -86,8 +88,7 @@ $(document).on("click", "#paging a", function(){
 
         $("#dataTable tbody").prepend(list);
         $("#paging").prepend(result.data.page);
-        pagingToAjax();
     });
-});
+};
 
 </script>

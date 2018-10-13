@@ -45,23 +45,25 @@ class Async
      * @param
      * @return mixed
      */
-    protected function exec()
+    protected function run()
     {
         // 验证请求合法性
         $this->checkAsyncToken();
 
-        $this->moduleName = strtolower(request()->module());
-        $this->sign       = input('param.sign');
-        $this->timestamp  = input('param.timestamp', 0);
-        $this->format     = strtolower(input('param.format', 'json'));
-        $this->methodName = strtolower(input('param.method'));
-        $this->apiDebug   = APP_DEBUG;      // 显示调试信息
+        $this->moduleName = strtolower(request()->module());                    // 模块名称
+        $this->sign       = input('param.sign');                                // 请求数据签名
+        $this->timestamp  = input('param.timestamp', 0);                        // 请求时间戳
+        $this->format     = strtolower(input('param.format', 'json'));          // 返回数据类型
+        $this->methodName = strtolower(input('param.method'));                  // 请求API方法名
+        $this->apiDebug   = APP_DEBUG;                                          // 显示调试信息
 
         // 解析method参数
         $this->analysisMethod();
 
+        // 请求权限校验
         $this->auth();
 
+        // 请求数据签名校验
         $this->checkSign();
 
         return call_user_func_array([$this->logicObject, $this->action], []);
@@ -165,11 +167,12 @@ class Async
 
     /**
      * 操作成功返回的数据
-     * @param string $msg   提示信息
-     * @param mixed  $data   要返回的数据
-     * @param int    $code   错误码，默认为SUCCESS
-     * @param string $type  输出类型
-     * @param array  $header 发送的 Header 信息
+     * @access protected
+     * @param  string $msg   提示信息
+     * @param  mixed  $data   要返回的数据
+     * @param  int    $code   错误码，默认为SUCCESS
+     * @return void
+     * @throws HttpResponseException
      */
     protected function success($_msg, $_data = null, $_code = 'SUCCESS')
     {
@@ -177,11 +180,12 @@ class Async
     }
     /**
      * 操作失败返回的数据
-     * @param string $msg   提示信息
-     * @param mixed  $data   要返回的数据
-     * @param int    $code   错误码，默认为ERROR
-     * @param string $type  输出类型
-     * @param array  $header 发送的 Header 信息
+     * @access protected
+     * @param  string $msg   提示信息
+     * @param  mixed  $data   要返回的数据
+     * @param  int    $code   错误码，默认为ERROR
+     * @return void
+     * @throws HttpResponseException
      */
     protected function error($_msg, $_data = null, $_code = 'ERROR')
     {
@@ -190,14 +194,14 @@ class Async
 
     /**
      * 返回封装后的 API 数据到客户端
-     * @access protected
+     * @access private
      * @param  mixed  $msg    提示信息
      * @param  mixed  $data   要返回的数据
      * @param  int    $code   错误码，默认为SUCCESS
      * @return void
      * @throws HttpResponseException
      */
-    protected function result($_msg, $_data = null, $_code = 'SUCCESS')
+    private function result($_msg, $_data = null, $_code = 'SUCCESS')
     {
         $header = [];
 
@@ -224,8 +228,8 @@ class Async
         } else {
             $header = [
                 'pragma'        => 'cache',
-                'cache-control' => 'max-age=28800,must-revalidate',
-                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 28800) . ' GMT',
+                'cache-control' => 'max-age=3600,must-revalidate',
+                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 3600) . ' GMT',
                 'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
             ];
         }

@@ -102,9 +102,7 @@ class Content
         ])
         ->order('a.id DESC')
         ->append($append)
-        ->paginate(null, null, [
-            'path' => url('content/content', ['operate' => 'manage', 'cid' => input('param.cid/f')]),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

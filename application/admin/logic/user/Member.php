@@ -51,9 +51,7 @@ class Member
         ->append([
             'status_name'
         ])
-        ->paginate(null, null, [
-            'path' => url('user/member'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

@@ -28,9 +28,7 @@ class Comment
             ['lang', '=', lang(':detect')],
         ])
         ->order('id DESC')
-        ->paginate(null, null, [
-            'path' => url('content/comment'),
-        ]);
+        ->paginate();
 
         $list = $result->toArray();
 

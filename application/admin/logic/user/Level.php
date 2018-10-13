@@ -29,9 +29,7 @@ class Level
         ->append([
             'status_name'
         ])
-        ->paginate(null, null, [
-            'path' => url('user/level'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

@@ -25,7 +25,7 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->exec();
+        $result = $this->run();
 
         if ($result === false) {
             return $this->error($this->errorMsg);

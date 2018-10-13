@@ -47,9 +47,7 @@ class Admin
         ->view('role r', ['name' => 'role_name'], 'r.id=ra.role_id')
         ->where($map)
         ->order('a.update_time DESC, a.id DESC')
-        ->paginate(null, null, [
-            'path' => url('user/admin'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

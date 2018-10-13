@@ -93,6 +93,12 @@ class Article
             ->select()
             ->toArray();
 
+            // 上一篇
+            $result['oth'] = [
+                'previous' => $this->previous($_id, $_cid),
+                'next'     => $this->next($_id, $_cid),
+            ];
+
             // 更新浏览数
             model('common/' . $table_name)
             ->where([
@@ -111,6 +117,104 @@ class Article
         } else {
             return false;
         }
+    }
+
+    /**
+     * 下一篇
+     * @param  integer $_cid 栏目ID
+     * @param  integer $_id  文章ID
+     * @return mixed
+     */
+    public function next($_id, $_cid)
+    {
+        $table_name = $this->queryTableName($_cid);
+        $next_id =
+        model('common/' . $table_name)
+        ->where([
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()],
+            ['category_id', '=', $_cid],
+            ['id', '>', $_id]
+        ])
+        ->order('is_top, is_hot, is_com, sort DESC, id DESC')
+        ->min('id');
+
+        $result =
+        model('common/' . $table_name)
+        ->field(['id', 'category_id', 'title', 'is_link', 'url'])
+        ->where([
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()],
+            ['category_id', '=', $_cid],
+            ['id', '=', $next_id]
+        ])
+        ->find();
+
+        if ($result) {
+            $result->flag = encrypt($result->id);
+
+            if ($result->is_link) {
+                $result->url  = url('go/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url .= '?go=' . urlencode($result->url);
+            } else {
+                $result->url = url($table_name . '/' . $result->category_id . '/' . $result->id, [], 'html', true);
+            }
+
+            $result->url = str_replace('/index/', '/', $result->url);
+
+            $result = $result->toArray();
+        }
+
+        return $result;
+    }
+
+    /**
+     * 上一篇
+     * @param  integer $_cid 栏目ID
+     * @param  integer $_id  文章ID
+     * @return mixed
+     */
+    public function previous($_id, $_cid)
+    {
+        $table_name = $this->queryTableName($_cid);
+        $previous_id =
+        model('common/' . $table_name)
+        ->where([
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()],
+            ['category_id', '=', $_cid],
+            ['id', '<', $_id]
+        ])
+        ->order('is_top, is_hot, is_com, sort DESC, id DESC')
+        ->max('id');
+
+        $result =
+        model('common/' . $table_name)
+        ->field(['id', 'category_id', 'title', 'is_link', 'url'])
+        ->where([
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()],
+            ['category_id', '=', $_cid],
+            ['id', '=', $previous_id]
+        ])
+        ->find();
+
+        if ($result) {
+            $result->flag = encrypt($result->id);
+
+            if ($result->is_link) {
+                $result->url  = url('go/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url .= '?go=' . urlencode($result->url);
+            } else {
+                $result->url = url($table_name . '/' . $result->category_id . '/' . $result->id, [], 'html', true);
+            }
+
+            $result->url = str_replace('/index/', '/', $result->url);
+
+            $result = $result->toArray();
+        }
+
+        return $result;
     }
 
     /**

@@ -32,9 +32,7 @@ class Role
         ->append([
             'status_name'
         ])
-        ->paginate(null, null, [
-            'path' => url('user/role'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             if ($value->id == 1) {

@@ -47,9 +47,7 @@ class Fields
         ->append([
             'require'
         ])
-        ->paginate(null, null, [
-            'path' => url('category/fields'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

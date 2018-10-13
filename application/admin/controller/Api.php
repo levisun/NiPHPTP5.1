@@ -24,7 +24,7 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->exec();
+        $result = $this->run();
         if ($result === false) {
             return $this->error($this->errorMsg);
         } else {
@@ -40,7 +40,7 @@ class Api extends Async
      */
     public function settle()
     {
-        $result = $this->exec();
+        $result = $this->run();
         if ($result === false && $this->errorMsg) {
             return $this->error($this->errorMsg);
         } elseif ($result === true) {
@@ -58,7 +58,7 @@ class Api extends Async
      */
     public function upload()
     {
-        $result = $this->exec();
+        $result = $this->run();
         if ($result === false && $this->errorMsg) {
             return $this->error($this->errorMsg);
         } elseif (is_string($result)) {

@@ -37,8 +37,6 @@ class Base extends Controller
 
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
         $template['tpl_replace_string']['__TITLE__']       = $this->siteInfo['website_name'];
-        $template['tpl_replace_string']['__KEYWORDS__']    = $this->siteInfo['website_keywords'];
-        $template['tpl_replace_string']['__DESCRIPTION__'] = $this->siteInfo['website_description'];
         $template['tpl_replace_string']['__BOTTOM_MSG__']  = htmlspecialchars_decode($this->siteInfo['bottom_message']);
         $template['tpl_replace_string']['__COPYRIGHT__']   = $this->siteInfo['copyright'];
         $template['tpl_replace_string']['__SCRIPT__']      = htmlspecialchars_decode($this->siteInfo['script']);
@@ -46,6 +44,9 @@ class Base extends Controller
         config('template.view_path', $template['view_path']);
 
         $this->engine($template);
+        $this->assign('KEYWORDS', $this->siteInfo['website_keywords']);
+        $this->assign('DESCRIPTION', $this->siteInfo['website_description']);
+
         $this->filter('view_filter');
     }
 

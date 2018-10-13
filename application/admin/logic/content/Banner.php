@@ -32,9 +32,7 @@ class Banner
         model('common/banner')
         ->where($map)
         ->order('id DESC')
-        ->paginate(null, null, [
-            'path' => url('content/banner'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $url = [

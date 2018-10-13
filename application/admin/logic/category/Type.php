@@ -39,9 +39,7 @@ class Type
         ->view('category c', ['name'=>'cat_name'], 'c.id=t.category_id')
         ->where($map)
         ->order('t.id DESC')
-        ->paginate(null, null, [
-            'path' => url('category/type'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [

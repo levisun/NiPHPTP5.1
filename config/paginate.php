@@ -1,17 +1,18 @@
 <?php
 /**
  *
- * 分页配置
+ * 分页设置
  *
  * @package   NiPHPCMS
  * @category  config
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2017/12
+ * @since     2018/10
  */
 return [
     'type'      => 'bootstrap',
     'var_page'  => 'p',
-    'list_rows' => 44,
+    'list_rows' => 2,
+    'path'      => 'javascript:paging([PAGE]);'
 ];

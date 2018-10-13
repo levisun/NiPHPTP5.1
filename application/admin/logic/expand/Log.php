@@ -38,9 +38,7 @@ class Log
         ->view('role_admin ra', 'user_id', 'ra.user_id=l.user_id')
         ->view('role r', ['name'=>'role_name'], 'r.id=ra.role_id')
         ->order('l.create_time DESC')
-        ->paginate(null, null, [
-            'path' => url('expand/log'),
-        ]);
+        ->paginate();
 
         $list = $result->toArray();
 

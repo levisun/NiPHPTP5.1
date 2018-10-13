@@ -30,9 +30,7 @@ class Ads
             ['lang', '=', lang(':detect')],
         ])
         ->order('id DESC')
-        ->paginate(null, null, [
-            'path' => url('content/ads'),
-        ]);
+        ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->start_time = date('Y/m/d', $value['start_time']);
