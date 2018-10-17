@@ -511,7 +511,7 @@ class Label extends TagLib
     }
 
     /**
-     * nav标签解析
+     * 标签解析
      * @access public
      * @param  array  $_tag     标签属性
      * @param  string $_content 标签内容

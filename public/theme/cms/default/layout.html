@@ -1,35 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>__TITLE__</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="{$KEYWORDS}">
-    <meta name="description" content="{$DESCRIPTION}">
-    <meta name="author" content="">
-    {css href="__STATIC__nipui/css/nipui-2.1.1.css" /}
-    {css href="__STATIC__library/layui/css/layui.css" /}
-    {js href="__STATIC__library/layui/layui.js" /}
-    {js href="__STATIC__library/jquery/jquery-3.1.1.min.js" /}
-    {js href="__STATIC__nipui/js/nipui-2.1.1.js" /}
-    <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
-    <script type="text/javascript">
-    var request = {
-        domain:     "__DOMAIN__",
-        api: {
-            query:  "{:url('api/query', '', true, true)}",
-            settle: "{:url('api/settle', '', true, true)}",
-            upload: "{:url('api/upload', '', true, true)}",
-        },
-        static:     "__STATIC__",
-        css:        "__CSS__",
-        js:         "__JS__",
-        img:        "__IMG__"
-    };
-    </script>
-</head>
-<body>
-
 <header>
     <nav>
         <ul class="layui-nav" lay-filter="">
@@ -81,6 +49,3 @@
     <div>__BOTTOM_MSG__</div>
     <div>__COPYRIGHT__</div>
 </footer>
-
-</body>
-</html>

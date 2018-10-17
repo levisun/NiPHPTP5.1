@@ -23,17 +23,7 @@ class Base extends Controller
     {
         $this->siteInfo = logic('cms/siteinfo')->query();
 
-        // 重新定义模板目录
-        $default_theme =
-        model('common/config')
-        ->where([
-            ['name', '=', 'cms_theme'],
-            ['lang', '=', lang(':detect')],
-        ])
-        ->cache('CMS BASE SETTEMPLATE')
-        ->value('value');
-
-        $template = get_template_config($default_theme);
+        $template = get_template_config($this->siteInfo['cms_theme']);
 
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
         $template['tpl_replace_string']['__TITLE__']       = $this->siteInfo['website_name'];
@@ -42,12 +32,12 @@ class Base extends Controller
         $template['tpl_replace_string']['__SCRIPT__']      = htmlspecialchars_decode($this->siteInfo['script']);
 
         config('template.view_path', $template['view_path']);
+        config('template.tpl_replace_string', $template['tpl_replace_string']);
 
         $this->engine($template);
-        $this->assign('KEYWORDS', $this->siteInfo['website_keywords']);
-        $this->assign('DESCRIPTION', $this->siteInfo['website_description']);
 
-        $this->filter('view_filter');
+        $view_filter = logic('common/ViewFilter');
+        $this->filter([$view_filter, 'view']);
     }
 
     /**
@@ -63,6 +53,7 @@ class Base extends Controller
         if ($template) {
             $template = config('template.view_path') . $template;
         }
+
         return parent::fetch($template, $vars, $config);
     }
 }

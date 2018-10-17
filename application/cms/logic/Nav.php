@@ -50,9 +50,8 @@ class Nav
      */
     protected function queryChild($_data)
     {
-        $nav = [];
-
         foreach ($_data as $key => $value) {
+            $key = $key++;
             $nav[$key] = $value;
 
             $nav[$key]['url'] = $this->getUrl($value['model_id'], $value['is_channel'], $value['id']);

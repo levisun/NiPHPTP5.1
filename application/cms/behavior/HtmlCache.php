@@ -37,7 +37,7 @@ class HtmlCache
 
         if (is_file($path) && filectime($path) >= time() - config('cache.expire')) {
 
-            behavior('app\\common\\behavior\\Visit');
+            behavior('app\\cms\\behavior\\Visit');
             behavior('app\\common\\behavior\\RemoveRunGarbage');
 
             echo file_get_contents($path);
@@ -53,11 +53,7 @@ class HtmlCache
      */
     public function write($_content)
     {
-        if (APP_DEBUG) {
-            return true;
-        }
-
-        if (request_block(['admin', 'member', 'wechat'])) {
+        if (request_block()) {
             return true;
         }
 
@@ -67,17 +63,6 @@ class HtmlCache
         }
 
         $storage = new \think\template\driver\File;
-
-        if (is_wechat_request()) {
-            $request_type = 'WECHAT';
-        } elseif (request()->isMobile()) {
-            $request_type = 'MOBILE';
-        } else {
-            $request_type = 'PC';
-        }
-
-        $_content .= '<script type="text/javascript">console.log("' . $request_type . 'HTML静态缓存 生成日期' . date('Y-m-d H:i:s') . '");console.log("request url ' . request()->url(true) . '");</script>';
-
         $storage->write($path, $_content);
     }
 
@@ -90,11 +75,6 @@ class HtmlCache
      */
     private function htmlPath()
     {
-        /*$user_id  = session('?' . config('user_auth_key')) ? 'session=' . session(config('user_auth_key')) : '';
-        $user_id .= cookie('?' . config('user_auth_key')) ? 'cookie=' . cookie(config('user_auth_key')) : '';
-
-        $file_name = request()->url(true) . $user_id;*/
-
         # "public/"分割数组可能有错
         $path = request()->url();
         $path = explode('public/', $path);
@@ -102,11 +82,11 @@ class HtmlCache
         $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
 
         // 获得二级域名 根据二级域名生成文件路径
-        $domain = substr(request()->url(true), 7, 2);
+        // $domain = substr(request()->url(true), 7, 2);
 
-        if (is_wechat_request() || $domain == 'we') {
+        if (is_wechat_request()) {
             $path = 'wechat' . DIRECTORY_SEPARATOR . $path;
-        } elseif (request()->isMobile() || $domain == 'm.') {
+        } elseif (request()->isMobile()) {
             $path = 'mobile' . DIRECTORY_SEPARATOR . $path;
         }
 

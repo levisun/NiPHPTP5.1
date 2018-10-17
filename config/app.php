@@ -41,7 +41,7 @@ return [
     // 路由使用完整匹配
     'route_complete_match' => true,
     // 是否强制使用路由
-    'url_route_must'       => false,
+    'url_route_must'       => true,
     // 域名部署
     'url_domain_deploy'    => true,
 

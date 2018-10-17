@@ -27,7 +27,7 @@ header('X-Powered-By: NiP ' . NP_VERSION);
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP version >= 5.6.0!');
 // 定义超时时间
-if (APP_DEBUG) set_time_limit(60); else set_time_limit(300);
+if (APP_DEBUG) set_time_limit(30); else set_time_limit(300);
 // 定义运行内存
 if (APP_DEBUG) ini_set('memory_limit', '16M'); else ini_set('memory_limit', '64M');
 

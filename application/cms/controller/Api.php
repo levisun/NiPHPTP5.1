@@ -28,11 +28,11 @@ class Api extends Async
         $result = $this->run();
 
         if ($result === false) {
-            return $this->error($this->errorMsg);
+            $this->error($this->errorMsg);
         } elseif ($result === null) {
-            return $this->error('404', 'ABORT:404');
+            $this->error('404', 'ABORT:404');
         } else {
-            return $this->success('QUERY SUCCESS', $result);
+            $this->success('QUERY SUCCESS', $result);
         }
     }
 
@@ -44,7 +44,7 @@ class Api extends Async
      */
     public function getipinfo()
     {
-        return $this->success('IP INFO', logic('common/IpInfo')->getInfo());
+        $this->success('IP INFO', logic('common/IpInfo')->getInfo());
     }
 
     protected function auth()

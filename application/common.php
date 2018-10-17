@@ -17,51 +17,6 @@ use think\facade\Session;
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 
 /**
- * 模板过滤
- * @param  string $_content
- * @return string
- */
-function view_filter($_content)
-{
-    $_content = preg_replace('/(<meta).*?(charset=\").*?(\").*?(>)/si', '', $_content);
-
-    $head = '<meta charset="utf-8">' .
-            '<meta name="author" content="失眠小枕头">' .
-            '<meta name="copyright" content="本页版权失眠小枕头所有. All Rights Reserved">' .
-            '<meta name="generator" content="niphp">' .
-            '<meta name="robots" content="all">' .
-            '<meta name="renderer" content="webkit">' .
-            '<meta http-equiv="Cache-Control" content="no-siteapp">';
-
-    if (request()->isMobile()) {
-        $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">';
-        $head .= '<meta name="apple-mobile-web-app-capable" content="yes">';
-        $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black">';
-        $head .= '<meta name="format-detection" content="telephone=yes">';
-        $head .= '<meta name="format-detection" content="email=yes">';
-    } else {
-        $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">';
-    }
-    $head .= '<link rel="dns-prefetch" href="' . request()->domain() . '" />';
-
-    $_content = str_replace('<head>', '<head>' . $head, $_content);
-
-    $_content = preg_replace([
-        '/<\!--.*?-->/si',                      // HTML注释
-        '/(\/\*).*?(\*\/)/si',                  // JS注释
-        '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',      // JS注释
-        '/( ){2,}/si',                          // 空格
-        '/(\r|\n|\f)/si'                        // 回车
-    ], '', $_content);
-
-    $_content .= '<script type="text/javascript">console.log("Copyright © 2013-' . date('Y') . ' by 失眠小枕头");$.ajax({url:"' . url('api/getipinfo', ['ip'=> '117.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)], true, true) . '"});</script>';
-
-    // Hook::exec(['app\\common\\behavior\\HtmlCache', 'write'], $_content);
-
-    return $_content;
-}
-
-/**
  * emoji编码
  * @param  string $str
  * @return string

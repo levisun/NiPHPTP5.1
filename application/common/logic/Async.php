@@ -168,9 +168,9 @@ class Async
     /**
      * 操作成功返回的数据
      * @access protected
-     * @param  string $msg   提示信息
-     * @param  mixed  $data   要返回的数据
-     * @param  int    $code   错误码，默认为SUCCESS
+     * @param  string $msg  提示信息
+     * @param  mixed  $data 要返回的数据
+     * @param  int    $code 错误码，默认为SUCCESS
      * @return void
      * @throws HttpResponseException
      */
@@ -181,9 +181,9 @@ class Async
     /**
      * 操作失败返回的数据
      * @access protected
-     * @param  string $msg   提示信息
-     * @param  mixed  $data   要返回的数据
-     * @param  int    $code   错误码，默认为ERROR
+     * @param  string $msg  提示信息
+     * @param  mixed  $data 要返回的数据
+     * @param  int    $code 错误码，默认为ERROR
      * @return void
      * @throws HttpResponseException
      */
@@ -195,9 +195,9 @@ class Async
     /**
      * 返回封装后的 API 数据到客户端
      * @access private
-     * @param  mixed  $msg    提示信息
-     * @param  mixed  $data   要返回的数据
-     * @param  int    $code   错误码，默认为SUCCESS
+     * @param  mixed $msg  提示信息
+     * @param  mixed $data 要返回的数据
+     * @param  int   $code 错误码，默认为SUCCESS
      * @return void
      * @throws HttpResponseException
      */
@@ -234,7 +234,7 @@ class Async
             ];
         }
 
-        $response = Response::create($result, $this->format, 200, $header);
+        $response = Response::create($result, $this->format, 200, $header)->allowCache(false);
         throw new HttpResponseException($response);
     }
 

@@ -25,10 +25,10 @@ class Api extends Async
     public function query()
     {
         $result = $this->run();
-        if ($result === false) {
-            return $this->error($this->errorMsg);
+        if (!is_null($result)) {
+            $this->success('QUERY SUCCESS', $result);
         } else {
-            return $this->success('QUERY SUCCESS', $result);
+            $this->error('404', 'ABORT:404');
         }
     }
 
@@ -41,12 +41,10 @@ class Api extends Async
     public function settle()
     {
         $result = $this->run();
-        if ($result === false && $this->errorMsg) {
-            return $this->error($this->errorMsg);
-        } elseif ($result === true) {
-            return $this->success(lang('exec success'), $result);
+        if ($result === true) {
+            $this->success(lang('exec success'), $result);
         } else {
-            return $this->error($result);
+            $this->error($result);
         }
     }
 
@@ -59,7 +57,7 @@ class Api extends Async
     public function upload()
     {
         $result = $this->run();
-        if ($result === false && $this->errorMsg) {
+        if ($result === false) {
             return $this->error($this->errorMsg);
         } elseif (is_string($result)) {
             return $this->error($result);

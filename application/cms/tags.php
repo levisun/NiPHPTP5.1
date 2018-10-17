@@ -18,7 +18,7 @@ return [
         // 并发抛出500[每次访问万分之一几率执行操作]
         'app\\cms\\behavior\\Concurrent',
         // HTML静态文件
-        'app\\cms\\behavior\\HtmlCache'
+        // 'app\\cms\\behavior\\HtmlCache'
     ],
     // 应用结束
     'app_end'      => [
