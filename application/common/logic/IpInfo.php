@@ -30,7 +30,7 @@ class IpInfo
         $request_ip = input('param.ip', request()->ip());
 
         $result =
-        model('common/IpInfo')
+        model('common/model/IpInfo')
         ->view('ipinfo i', ['id', 'ip', 'update_time'])
         ->view('region country', ['id' => 'country_id', 'name' => 'country'], 'country.id=i.country_id', 'LEFT')
         ->view('region region', ['id' => 'region_id', 'name' => 'region'], 'region.id=i.province_id', 'LEFT')
@@ -89,7 +89,7 @@ class IpInfo
             }
 
             if ($country) {
-                model('common/IpInfo')
+                model('common/model/IpInfo')
                 ->allowField(true)
                 ->create([
                     'ip'          => $_request_ip,
@@ -137,7 +137,7 @@ class IpInfo
                 $area = 0;
             }
 
-            model('common/IpInfo')
+            model('common/model/IpInfo')
             ->allowField(true)
             ->where([
                 ['ip', '=', $_request_ip],
@@ -163,7 +163,7 @@ class IpInfo
         $_name = safe_filter($_name, true, true);
 
         $result =
-        model('common/region')
+        model('common/model/region')
         ->where([
             ['name', 'LIKE', $_name . '%']
         ])

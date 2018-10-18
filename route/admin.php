@@ -13,6 +13,7 @@
 
 Route::domain('admin', function(){
     Route::rule('index', 'account/login');
+
     Route::group('api', function(){
         Route::rule('query',  'query');
         Route::rule('settle', 'settle');
@@ -96,6 +97,6 @@ Route::domain('admin', function(){
     })->prefix('api/');
 })
 ->bind('admin')
-->cache(!APP_DEBUG)
+->cache(false)
 ->ext('do');
 

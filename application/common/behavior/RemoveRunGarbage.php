@@ -24,7 +24,7 @@ class RemoveRunGarbage
      * @return void
      */
     public function run()
-    {
+    {trace('RemoveRunGarbage','info');
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
         if (request_block()) {

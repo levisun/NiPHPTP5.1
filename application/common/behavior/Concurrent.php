@@ -4,14 +4,14 @@
  * 缓解并发 - 行为
  *
  * @package   NiPHPCMS
- * @category  cms\behavior
+ * @category  common\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2018/9
  */
 
-namespace app\cms\behavior;
+namespace app\common\behavior;
 
 class Concurrent
 {
@@ -23,7 +23,10 @@ class Concurrent
      * @return void
      */
     public function run()
-    {
+    {trace('Concurrent','info');
+
+        trace(request()->isAjax(), 'info');
+
         // 拦截频繁请求
         // 拦截非法请求
         if ($this->intercept()) {

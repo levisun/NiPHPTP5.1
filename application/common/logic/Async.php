@@ -125,10 +125,6 @@ class Async
             $this->error('[METHOD] parameter error');
         }
 
-        $this->layer  = 'logic';
-        $this->class  = 'Index';
-        $this->action = 'index';
-
         // 参数[业务分层名.类名.方法名]
         // 参数[logic.类名.方法名] 业务分层名默认logic
         // 参数[logic.类名.index] 业务分层名默认logic 方法名默认index
@@ -228,8 +224,8 @@ class Async
         } else {
             $header = [
                 'pragma'        => 'cache',
-                'cache-control' => 'max-age=3600,must-revalidate',
-                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 3600) . ' GMT',
+                'cache-control' => 'max-age=1200,must-revalidate',
+                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 1200) . ' GMT',
                 'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
             ];
         }

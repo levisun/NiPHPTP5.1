@@ -44,6 +44,8 @@ return [
     'url_route_must'       => true,
     // 域名部署
     'url_domain_deploy'    => true,
+    // 开启路由延迟解析
+    'url_lazy_route'       => true,
 
     // 异常页面的模板文件
     'exception_tmpl'       => Env::get('root_path') . 'public/theme/abort/think_exception.tpl',

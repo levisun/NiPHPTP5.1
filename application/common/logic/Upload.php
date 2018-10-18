@@ -35,11 +35,21 @@ class Upload
     private function init($_params)
     {
         $this->uploadParams = $this->createParams($_params['type']);
-        $this->savePath     = env('root_path') . basename(request()->root());
+        $this->savePath     = env('root_path') . 'public';
         $this->savePath    .= DIRECTORY_SEPARATOR . 'upload';
         $this->savePath    .= DIRECTORY_SEPARATOR . $this->uploadParams['dir'];
         // $this->savePath    .= DIRECTORY_SEPARATOR;
         $this->validate     = $this->validate();
+    }
+
+    public function fileAll($_params)
+    {
+        // 初始化
+        $this->init($_params);
+
+        $file = request()->file('upload');
+
+        halt($file);
     }
 
     /**
@@ -77,8 +87,7 @@ class Upload
         $upload_thumb_filename = $this->createThumb($this->uploadFileName);
 
         return [
-            // 'domain'     => request()->domain() . substr(request()->baseFile(), 0, -16),
-            'domain'     => request()->domain() . request()->root(),
+            'domain'     => request()->root(true),
             'save_dir'   => '/upload/' . $this->uploadParams['dir'],
             'file_name'  => $this->uploadFileName,
             'thumb_name' => $upload_thumb_filename,

@@ -31,8 +31,8 @@ class ViewFilter
     public function view($_content)
     {
         $_content = preg_replace([
-            '/(<\!DOCTYPE).*?(>).*?(<body).*?(>)/si',
-            '/(<\/body>).*?(<\/html>)/si',
+            '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
+            '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
             '/<\!--.*?-->/si',                      // HTML注释
             '/(\/\*).*?(\*\/)/si',                  // JS注释
             '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',      // JS注释

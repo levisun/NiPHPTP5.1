@@ -22,7 +22,7 @@ class Index extends Base
      */
     public function index()
     {
-        return $this->fetch('index.html');
+        return $this->fetch('index');
     }
 
     /**
@@ -37,7 +37,7 @@ class Index extends Base
         if (!$table_name) {
             abort(404);
         }
-        return $this->fetch('list_' . $table_name . '.html');
+        return $this->fetch('list_' . $table_name);
     }
 
     /**
@@ -52,7 +52,7 @@ class Index extends Base
         if (!$table_name) {
             abort(404);
         }
-        return $this->fetch($table_name . '.html');
+        return $this->fetch($table_name);
     }
 
     /**
@@ -63,7 +63,7 @@ class Index extends Base
      */
     public function channel()
     {
-        return $this->fetch('channel.html');
+        return $this->fetch('channel');
     }
 
     /**
@@ -74,7 +74,7 @@ class Index extends Base
      */
     public function feedback()
     {
-        return $this->fetch('feedback.html');
+        return $this->fetch('feedback');
     }
 
     /**
@@ -85,7 +85,7 @@ class Index extends Base
      */
     public function message()
     {
-        return $this->fetch('message.html');
+        return $this->fetch('message');
     }
 
     /**
@@ -96,7 +96,7 @@ class Index extends Base
      */
     public function tags()
     {
-        return $this->fetch('tags.html');
+        return $this->fetch('tags');
     }
 
     /**/

@@ -137,21 +137,9 @@ function request_block()
     // 阻挡Ajax Pjax Post类型请求
     if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
         return true;
+    } else {
+        return false;
     }
-
-    // common模块抛出404
-    $module = strtolower(request()->module());
-
-    if ($module === 'common') {
-        abort(404);
-    }
-
-    // 阻挡空模块的请求
-    if (empty($module)) {
-        return true;
-    }
-
-    return false;
 }
 
 /**

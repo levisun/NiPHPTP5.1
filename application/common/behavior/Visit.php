@@ -4,14 +4,14 @@
  * 访问记录 - 行为
  *
  * @package   NiPHPCMS
- * @category  cms\behavior
+ * @category  common\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2018/9
  */
 
-namespace app\cms\behavior;
+namespace app\common\behavior;
 
 class Visit
 {
@@ -22,7 +22,7 @@ class Visit
      * @return void
      */
     public function run()
-    {
+    {trace('Visit','info');
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
         if (request_block()) {
@@ -57,12 +57,12 @@ class Visit
             return false;
         }
 
-        $ip_info = logic('common/IpInfo')->getInfo();
+        $ip_info = logic('common/logic/IpInfo')->getInfo();
 
         $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
 
         $result =
-        model('common/visit')
+        model('common/model/visit')
         ->field(true)
         ->where([
             ['ip', '=', $ip_info['ip']],
@@ -73,7 +73,7 @@ class Visit
         ->value('ip');
 
         if ($result) {
-            model('common/visit')
+            model('common/model/visit')
             ->where([
                 ['ip', '=', $ip_info['ip']],
                 ['user_agent', '=', $user_agent],
@@ -81,7 +81,7 @@ class Visit
             ])
             ->setInc('count');
         } else {
-            model('common/visit')
+            model('common/model/visit')
             ->added([
                 'ip'         => $ip_info['ip'],
                 'ip_attr'    => $ip_info['country'] . $ip_info['region'] .
@@ -110,7 +110,7 @@ class Visit
         $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
 
         $result =
-        model('common/searchengine')
+        model('common/model/searchengine')
         ->field(true)
         ->where([
             ['name', '=', $key],
@@ -121,7 +121,7 @@ class Visit
         ->value('name');
 
         if ($result) {
-            model('common/searchengine')
+            model('common/model/searchengine')
             ->where([
                 ['name', '=', $key],
                 ['user_agent', '=', $user_agent],
@@ -129,7 +129,7 @@ class Visit
             ])
             ->setInc('count');
         } else {
-            model('common/searchengine')
+            model('common/model/searchengine')
             ->added([
                 'name'       => $key,
                 'user_agent' => $user_agent,
@@ -152,7 +152,7 @@ class Visit
             return false;
         }
 
-        model('common/' . $_model_name)
+        model('common/model/' . $_model_name)
         ->where([
             ['date', '<=', strtotime('-90 days')]
         ])

@@ -18,5 +18,5 @@ return [
     'prefix'       => substr(md5(request()->subDomain() . env('root_path')), 0, 9),
     // 缓存有效期 0表示永久缓存
     'expire'       => APP_DEBUG ? 300 : 28800,
-    'cache_subdir' => !APP_DEBUG,
+    'cache_subdir' => false,
 ];

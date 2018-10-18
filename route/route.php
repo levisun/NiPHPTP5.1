@@ -20,6 +20,8 @@ Route::pattern([
     'p'       => '\d+',
 ]);
 
+
+
 Route::domain('my', [
 ])
 ->bind('member')
