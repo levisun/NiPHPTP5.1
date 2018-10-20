@@ -26,13 +26,6 @@ class Cache
     public function compile()
     {
         // 编译缓存
-        $file_path = (array) glob(env('runtime_path') . 'temp' . DIRECTORY_SEPARATOR . '*');
-        foreach ($file_path as $path) {
-            if (is_file($path)) {
-                unlink($path);
-            }
-        }
-
         $this->removeHtml();
 
         return true;
@@ -46,7 +39,17 @@ class Cache
      */
     public function cache()
     {
-        DataCache::clear();
+        $dir_path = (array) glob(env('runtime_path') . 'cache' . DIRECTORY_SEPARATOR . '*');
+        $all_files = $this->getDir($dir_path);
+        if (!empty($all_files)) {
+            foreach ($all_files as $path) {
+                if (is_file($path)) {
+                    @unlink($path);
+                } elseif (is_dir($path)) {
+                    @rmdir($path);
+                }
+            }
+        }
 
         $this->removeCommand();
         $this->removeHtml();
@@ -62,16 +65,30 @@ class Cache
      */
     private function removeHtml()
     {
-        // HTML静态缓存
-        $file_path = (array) glob(env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . '*');
-        foreach ($file_path as $path) {
-            $_path = (array) glob($path . DIRECTORY_SEPARATOR . '*');
-            foreach ($_path as $file) {
-                if (is_file($file)) {
-                    unlink($file);
+        // 静态文件
+        $dir_path = (array) glob(env('root_path') . 'public' . DIRECTORY_SEPARATOR .  'html' . DIRECTORY_SEPARATOR . '*');
+        $all_files = $this->getDir($dir_path);
+        if (!empty($all_files)) {
+            foreach ($all_files as $path) {
+                if (is_file($path)) {
+                    @unlink($path);
+                } elseif (is_dir($path)) {
+                    @rmdir($path);
                 }
             }
-            rmdir($path);
+        }
+
+        // 编译文件
+        $dir_path = (array) glob(env('runtime_path') . 'temp' . DIRECTORY_SEPARATOR . '*');
+        $all_files = $this->getDir($dir_path);
+        if (!empty($all_files)) {
+            foreach ($all_files as $path) {
+                if (is_file($path)) {
+                    @unlink($path);
+                } elseif (is_dir($path)) {
+                    @rmdir($path);
+                }
+            }
         }
     }
 
@@ -104,5 +121,31 @@ class Cache
                 unlink($file);
             }
         }
+    }
+
+    /**
+     * 获得目录中的所有文件与目录
+     * @access private
+     * @param  string $_dir_path
+     * @return array
+     */
+    private function getDir($_dir_path)
+    {
+        $all_files = [];
+        foreach ($_dir_path as $key => $path) {
+            if (is_file($path)) {
+                $all_files[] = $path;
+            } elseif (is_dir($path . DIRECTORY_SEPARATOR)) {
+                $temp = (array) glob($path . DIRECTORY_SEPARATOR . '*');
+                if (!empty($temp)) {
+                    $temp = $this->getDir($temp);
+                    $all_files = array_merge($all_files, $temp);
+                } else {
+                    $all_files[] = $path;
+                }
+            }
+        }
+
+        return $all_files;
     }
 }

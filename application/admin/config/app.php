@@ -40,22 +40,14 @@ return [
     // URL伪静态后缀
     'url_html_suffix'         => 'do',
 
-    // 认证key
-    'user_auth_key'           => 'auth_id',
-    // 是否需要认证
-    'user_auth_on'            => true,
-    // 验证类型
-    'user_auth_type'          => 1,
-    // 需要认证模块
-    'require_auth_module'     => '',
-    // 无需认证模块
-    'not_auth_module'         => 'admin',
-    // 需要认证的控制器
-    'require_auth_controller' => '',
-    // 无需认证的控制器
-    'not_auth_controller'     => 'account',
-    // 需要认证的方法
-    'require_auth_action'     => '',
-    // 无需认证的方法
-    'not_auth_action'         => 'login,logout,verify',
+    'user_auth_founder'       => 1,
+    'user_auth_key'           => 'auth_id',                                     // 认证key
+    'user_auth_on'            => true,                                          // 是否需要认证
+    'user_auth_type'          => 2,                                             // 验证类型
+    'require_auth_module'     => '',                                            // 需要认证模块
+    'not_auth_module'         => 'admin',                                       // 无需认证模块
+    'require_auth_controller' => '',                                            // 需要认证的控制器
+    'not_auth_controller'     => 'account',                                     // 无需认证的控制器
+    'require_auth_action'     => '',                                            // 需要认证的方法
+    'not_auth_action'         => 'login,logout,verify',                         // 无需认证的方法
 ];

@@ -16,13 +16,14 @@ Route::domain(['www', 'm'], function(){
 
     Route::rule('list/:cid$',   'index/entry');
     Route::rule('link/:cid$',   'index/entry');
-    Route::rule('go/:cid/:id$', 'index/go');
+    Route::rule('go/:cid/[:id]$',  'index/go');
 
-    Route::rule('channel/:cid$',  'index/index/channel');
+    Route::rule('search/:cid$',   'index/search');
+    Route::rule('channel/:cid$',  'index/channel');
     Route::rule('feedback/:cid$', 'index/feedback');
     Route::rule('message/:cid$',  'index/message');
-    Route::rule('search/:cid$',   'index/search');
 
+    Route::rule('comment/:cid/:id$',  'index/comment');
     Route::rule('article/:cid/:id$',  'index/article');
     Route::rule('picture/:cid/:id$',  'index/article');
     Route::rule('download/:cid/:id$', 'index/article');
@@ -36,7 +37,7 @@ Route::domain(['www', 'm'], function(){
     Route::group('api', function(){
         Route::rule('query',  'query');
         Route::rule('settle', 'settle');
-        Route::rule('upload', 'upload');
+        // Route::rule('upload', 'upload');
     })->prefix('api/');
 })
 ->bind('cms')

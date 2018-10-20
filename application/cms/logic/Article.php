@@ -48,6 +48,7 @@ class Article
 
         if ($result) {
             $result = $result->toArray();
+            $result['content'] = htmlspecialchars_decode($result['content']);
             $result['flag'] = encrypt($result['id']);
 
             if ($table_name !== 'link') {

@@ -1,17 +1,19 @@
 <?php
 /**
  *
- * 中间件配置
+ * 反馈 - 业务层
  *
  * @package   NiPHPCMS
- * @category  config
+ * @category  application\cms\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2018/9
+ * @since     2018/8
  */
+namespace app\cms\logic;
 
-return [
-    // 默认中间件命名空间
-    'default_namespace' => 'app\\http\\middleware\\',
-];
+class Feedback
+{
+
+
+}

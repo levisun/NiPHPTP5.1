@@ -28,7 +28,7 @@ class Api extends Async
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {
-            $this->error('404', 'ABORT:404');
+            $this->error('404', 'ABORT:404', '404');
         }
     }
 
@@ -79,13 +79,7 @@ class Api extends Async
         if ($this->action != 'login') {
             // 是否登录
             if (!session('?' . config('user_auth_key'))) {
-                $this->error('ILLEGAL REQUEST');
-            }
-
-            // 过滤基础信息查询方法权限判断
-            // 'added', 'reomve', 'find', 'editor', 'upload'
-            if (!in_array($this->action, ['query', 'upload'])) {
-                return true;
+                abort(404);
             }
 
             // 登录权限信息
@@ -96,13 +90,7 @@ class Api extends Async
                 $this->class,
                 $this->action
             )) {
-                $this->error('ILLEGAL REQUEST');
-            }
-
-            if ($this->action === 'upload') {
-                $this->layer  = 'logic';
-                $this->class  = 'upload';
-                $this->action = 'file';
+                abort(404);
             }
         }
 

@@ -12,7 +12,9 @@
  */
 namespace app\admin\logic\user;
 
-class Member
+use app\admin\logic\Upload;
+
+class Member extends Upload
 {
 
     /**

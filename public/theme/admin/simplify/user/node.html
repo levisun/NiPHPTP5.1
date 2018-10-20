@@ -69,7 +69,7 @@ $.loading({
             list = list + "<a href='"+result.data[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
         }
         if (result.data[index].url.remove) {
-            list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
         }
         list = list + "</td>";
 

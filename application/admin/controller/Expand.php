@@ -58,6 +58,6 @@ class Expand extends Base
      */
     public function visit()
     {
-        # code...
+        return $this->fetch();
     }
 }

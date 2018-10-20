@@ -37,18 +37,18 @@ return [
     // pathinfo分隔符
     'pathinfo_depr'        => '/',
     // URL伪静态后缀
-    'url_html_suffix'      => 'do|htm|html',
+    'url_html_suffix'      => '',
     // 路由使用完整匹配
     'route_complete_match' => true,
     // 是否强制使用路由
-    'url_route_must'       => true,
+    'url_route_must'       => false,
     // 域名部署
     'url_domain_deploy'    => true,
     // 开启路由延迟解析
     'url_lazy_route'       => true,
 
     // 异常页面的模板文件
-    'exception_tmpl'       => Env::get('root_path') . 'public/theme/abort/think_exception.tpl',
+    'exception_tmpl'       => env('root_path') . 'public/theme/abort/think_exception.tpl',
     // 错误显示信息,非调试模式有效
     'error_message'        => '页面错误！请稍后再试～',
     // 显示错误信息
@@ -57,9 +57,9 @@ return [
     'exception_handle'     => '',
 
     'http_exception_template' => [
-        403 => Env::get('root_path') . 'public/theme/abort/403.html',           // 禁止访问
-        404 => Env::get('root_path') . 'public/theme/abort/404.html',           // 找不到
-        500 => Env::get('root_path') . 'public/theme/abort/500.html',           // 服务器错误
-        502 => Env::get('root_path') . 'public/theme/abort/502.html',           // 网关错误
+        403 => env('root_path') . 'public/theme/abort/403.html',           // 禁止访问
+        404 => env('root_path') . 'public/theme/abort/404.html',           // 找不到
+        500 => env('root_path') . 'public/theme/abort/500.html',           // 服务器错误
+        502 => env('root_path') . 'public/theme/abort/502.html',           // 网关错误
     ],
 ];

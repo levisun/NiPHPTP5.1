@@ -118,7 +118,7 @@ class Nav
                     break;
 
                 default:
-                    # code...
+                    $url = 'go/' . $_cat_id;
                     break;
             }
         }

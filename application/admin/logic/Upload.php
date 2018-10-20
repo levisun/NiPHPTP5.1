@@ -21,7 +21,7 @@ class Upload
      * @param
      * @return mixed
      */
-    public function file()
+    public function upload()
     {
         if (request()->isPost()) {
             $receive_data = [

@@ -12,7 +12,9 @@
  */
 namespace app\admin\logic\wechat;
 
-class Keyword
+use app\admin\logic\Upload;
+
+class Keyword extends Upload
 {
 
     /**

@@ -15,7 +15,7 @@ return [
     // 模板后缀
     'view_suffix'   => 'html',
     // 模板路径
-    'view_path'     => Env::get('root_path') . '/public/theme/abort/',
+    'view_path'     => env('root_path') . '/public/theme/abort/',
     // 模板文件名分隔符
     'view_depr'     => DIRECTORY_SEPARATOR,
     // 布局

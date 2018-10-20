@@ -170,7 +170,7 @@ class Async
      * @return void
      * @throws HttpResponseException
      */
-    protected function success($_msg, $_data = null, $_code = 'SUCCESS')
+    protected function success($_msg, $_data = [], $_code = 'SUCCESS')
     {
         $this->result($_msg, $_data, $_code);
     }
@@ -183,7 +183,7 @@ class Async
      * @return void
      * @throws HttpResponseException
      */
-    protected function error($_msg, $_data = null, $_code = 'ERROR')
+    protected function error($_msg, $_data = [], $_code = 'ERROR')
     {
         $this->result($_msg, $_data, $_code);
     }
@@ -197,7 +197,7 @@ class Async
      * @return void
      * @throws HttpResponseException
      */
-    private function result($_msg, $_data = null, $_code = 'SUCCESS')
+    private function result($_msg, $_data = [], $_code = 'SUCCESS')
     {
         $header = [];
 

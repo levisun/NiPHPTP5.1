@@ -26,13 +26,10 @@ class Api extends Async
     public function query()
     {
         $result = $this->run();
-
-        if ($result === false) {
-            $this->error($this->errorMsg);
-        } elseif ($result === null) {
-            $this->error('404', 'ABORT:404');
-        } else {
+        if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
+        } else {
+            $this->error('404', 'ABORT:404', '404');
         }
     }
 

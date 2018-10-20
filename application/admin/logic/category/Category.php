@@ -12,7 +12,9 @@
  */
 namespace app\admin\logic\category;
 
-class Category
+use app\admin\logic\Upload;
+
+class Category extends Upload
 {
 
     /**
@@ -177,6 +179,7 @@ class Category
             'is_show'         => input('post.is_show/f', 1),
             'is_channel'      => input('post.is_channel/f', 0),
             'image'           => input('post.image'),
+            'url'             => input('post.url'),
             'seo_title'       => input('post.seo_title'),
             'seo_keywords'    => input('post.seo_keywords'),
             'seo_description' => input('post.seo_description'),
@@ -284,6 +287,7 @@ class Category
             'is_show'         => input('post.is_show/f', 1),
             'is_channel'      => input('post.is_channel/f', 0),
             'image'           => input('post.image'),
+            'url'             => input('post.url'),
             'seo_title'       => input('post.seo_title'),
             'seo_keywords'    => input('post.seo_keywords'),
             'seo_description' => input('post.seo_description'),

@@ -20,24 +20,24 @@ class Rbac
     private $method;        // 类名
     private $action;        // 方法名
 
-    private $user_auth_on;
-    private $user_auth_type;
+    private $user_auth_founder = false;                                         // 创始人ID
+    private $user_auth_on      = true;                                          // 是否需要认证
+    private $user_auth_type    = 2;                                             // 验证类型
 
-    private $require_auth_module;
-    private $not_auth_module;
+    private $require_auth_module;                                               // 需要认证模块
+    private $not_auth_module;                                                   // 无需认证模块
 
-    private $require_auth_controller;
-    private $not_auth_controller;
+    private $require_auth_controller;                                           // 需要认证的控制器
+    private $not_auth_controller;                                               // 无需认证的控制器
 
-    private $require_auth_action;
-    private $not_auth_action;
+    private $require_auth_action;                                               // 需要认证的方法
+    private $not_auth_action;                                                   // 无需认证的方法
 
     public function __construct()
     {
-        // 是否需要认证
-        $this->user_auth_on            = config('user_auth_on');
-        // 验证类型
-        $this->user_auth_type          = config('user_auth_type');
+        $this->user_auth_founder       = config('user_auth_founder');           // 创始人ID
+        $this->user_auth_on            = config('user_auth_on');                // 是否需要认证
+        $this->user_auth_type          = config('user_auth_type');              // 验证类型
 
         // 需要认证模块
         $this->require_auth_module     = strtoupper(config('require_auth_module'));
@@ -63,6 +63,7 @@ class Rbac
      */
     public function checkAuth($_auth_id, $_module = '', $_controller = '', $_method = '', $_action = 'query')
     {
+        $_auth_id         = (float) $_auth_id;
         $this->module     = strtoupper($_module);
         $this->controller = strtoupper($_controller);
         $this->method     = strtoupper($_method);
@@ -145,16 +146,12 @@ class Rbac
     {
         if ($this->user_auth_type == 2) {
             // 实时校验权限
-            $access_list = $this->getAccessList($_auth_id);
-            session('_access_list', $access_list);
-        } else {
-            if (session('?_access_list')) {
-                $access_list = session('_access_list');
-            } else {
-                session('_access_list', $this->getAccessList($_auth_id));
-                $access_list = session('_access_list');
-            }
+            session('_access_list', $this->getAccessList($_auth_id));
+        } elseif (!session('?_access_list')) {
+            session('_access_list', $this->getAccessList($_auth_id));
         }
+
+        $access_list = session('_access_list');
 
         if (isset($access_list[$this->module][$this->controller][$this->method][$this->action])) {
             return true;
@@ -212,20 +209,32 @@ class Rbac
      */
     private function getAuth($_auth_id, $_level = 1, $_pid = 0)
     {
-        $result =
-        model('common/Node')
-        ->view('node', ['id', 'name'])
-        ->view('role_admin', [], 1)
-        ->view('role', [], 'role.id=role_admin.role_id')
-        ->view('access', [], ['access.role_id=role.id', 'access.node_id=node.id'])
-        ->where( [
-            ['role.status', '=', 1],
-            ['node.status', '=', 1],
-            ['node.level', '=', $_level],
-            ['node.pid', '=', $_pid],
-            ['role_admin.user_id', '=', $_auth_id],
-        ])
-        ->select();
+        if ($this->user_auth_founder) {
+            $result =
+            model('common/Node')
+            ->field(['id', 'name'])
+            ->where([
+                ['status', '=', 1],
+                ['level', '=', $_level],
+                ['pid', '=', $_pid],
+            ])
+            ->select();
+        } else {
+            $result =
+            model('common/Node')
+            ->view('node', ['id', 'name'])
+            ->view('role_admin', [], 1)
+            ->view('role', [], 'role.id=role_admin.role_id')
+            ->view('access', [], ['access.role_id=role.id', 'access.node_id=node.id'])
+            ->where([
+                ['role.status', '=', 1],
+                ['node.status', '=', 1],
+                ['node.level', '=', $_level],
+                ['node.pid', '=', $_pid],
+                ['role_admin.user_id', '=', $_auth_id],
+            ])
+            ->select();
+        }
 
         return $result ? $result->toArray() : [];
     }

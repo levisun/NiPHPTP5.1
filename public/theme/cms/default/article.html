@@ -1,3 +1,12 @@
+<h1 id="article-title"></h1>
+<article id="article-content"></article>
+<div>
+    <div id="article-previous"></div>
+    <div id="article-next"></div>
+</div>
 {label:page}
-
+$("#article-title").html(data.title);
+$("#article-content").html(data.content);
+$("#article-previous").html("<a href='"+data.oth.previous.url+"'>"+data.oth.previous.title+"</a>");
+$("#article-next").html("<a href='"+data.oth.next.url+"'>"+data.oth.next.title+"</a>");
 {/label:page}

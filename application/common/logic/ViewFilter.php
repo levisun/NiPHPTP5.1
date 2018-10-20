@@ -33,11 +33,11 @@ class ViewFilter
         $_content = preg_replace([
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
-            '/<\!--.*?-->/si',                      // HTML注释
-            '/(\/\*).*?(\*\/)/si',                  // JS注释
-            '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',      // JS注释
-            '/( ){2,}/si',                          // 空格
-            '/(\r|\n|\f)/si'                        // 回车
+            '/<\!--.*?-->/si',                          // HTML注释
+            '/(\/\*).*?(\*\/)/si',                      // JS注释
+            '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',          // JS注释
+            // '/( ){2,}/si',                           // 空格
+            // '/(\r|\n|\f)/si'                         // 回车
         ], '', $_content);
         $_content = $this->head($_content);
         $_content = $this->foot($_content);

@@ -1,29 +1,29 @@
 <header>
-    <nav>
-        <ul class="layui-nav" lay-filter="">
-            <li class="layui-nav-item layui-this"><a href="">首页</a></li>
+    <nav id="nav">
+        <ul>
+            <li><a href="">首页</a></li>
         </ul>
         {label:nav type="2"}
-        $("nav ul.layui-nav").append("<li class='layui-nav-item'><a href='"+vo.url+"'>"+vo.name+"</a></li>");
+        $("nav#nav ul").append("<li><a href='"+vo.url+"'>"+vo.name+"</a></li>");
         {/label:nav}
     </nav>
 
-    <menu>
-        <span class="layui-breadcrumb" style="visibility: visible;">
+    <menu id="breadcrumb">
+        <span>
             <a href="">首页</a>
         </span>
         {label:bread}
-        $("menu span.layui-breadcrumb").append("<span lay-separator=''>/</span><a href='"+vo.url+"'>"+vo.name+"</a>");
+        $("menu#breadcrumb").append("<span>/</span><a href='"+vo.url+"'>"+vo.name+"</a>");
         {/label:bread}
     </menu>
 </header>
 
 
 <menu>
-    <ul class="layui-nav layui-nav-tree">
-        <li class="layui-nav-item layui-nav-itemed">
-            <a href="javascript:;" class="side-title"></a>
-            <dl class="layui-nav-child">
+    <ul>
+        <li>
+            <a class="side-title"></a>
+            <dl>
             </dl>
         </li>
     </ul>

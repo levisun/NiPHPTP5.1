@@ -104,12 +104,12 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/tags\')->query(); ?>';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr  = '<?php $tags = logic(\'cms/tags\')->query(); ?>';
+            $parseStr .= 'if (is_null($tags)) {abort(404);}';
+            $parseStr .= '$count = count($tags);';
+            $parseStr .= 'foreach ($tags as $key => $vo) { ?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php } unset($tags, $count, $key, $vo); ?>';
         }
 
         return $parseStr;
@@ -146,17 +146,21 @@ class Label extends TagLib
                                 })
                         }
                     }, function(result){
-                        if (result.code === "ABORT:404") {
+                        if (result.code === "404") {
                             jQuery.redirect("' . url('error/404', [], 'html', true) . '");
                         } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
                             var data = result.data;
-                            for (var key in data) {
-                                var vo = data[key];
-                                ' . $_content . '
+                            jQuery("title").text(data.title+" - "+jQuery("title").text());
+                            if (data.keywords) {
+                                jQuery("meta[name=\'keywords\']").attr("content", data.keywords);
                             }
+                            if (data.description) {
+                                jQuery("meta[name=\'description\']").attr("content", data.description);
+                            }
+                            ' . $_content . '
                         }
                     });
                     jQuery.loading({
@@ -182,12 +186,10 @@ class Label extends TagLib
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input(\'param.cid/f\')';
             $_tag['id']  = !empty($_tag['id']) ? (float) $_tag['id'] : 'input(\'param.id/f\')';
 
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/article\')->query(' . $_tag['cid'] . ', ' . $_tag['id'] . ');';
-            $parseStr .= 'if($data === false) {abort(404);}';
-            $parseStr .= '?>';
+            $parseStr  = '<?php $article = logic(\'cms/article\')->query(' . $_tag['cid'] . ', ' . $_tag['id'] . ');';
+            $parseStr .= 'if (is_null($article)) {abort(404);}?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php unset($data); ?>';
+            $parseStr .= '<?php unset($article); ?>';
         }
 
         return $parseStr;
@@ -220,7 +222,9 @@ class Label extends TagLib
                                 })
                         }
                     }, function(result){
-                        if (result.code !== "SUCCESS") {
+                        if (result.code === "404") {
+                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                        } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
@@ -238,13 +242,12 @@ class Label extends TagLib
                 </script>';
         } else {
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input(\'param.cid/f\')';
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/listing\')->query(' . $_tag['cid'] . ');';
-            $parseStr .= 'if($data === false) {abort(404);}';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data[\'list\'] as $key => $vo) { ?>';
+            $parseStr  = '<?php $list = logic(\'cms/listing\')->query(' . $_tag['cid'] . ');';
+            $parseStr .= 'if (is_null($list)) {abort(404);}';
+            $parseStr .= '$count = count($list["list"]);';
+            $parseStr .= 'foreach ($list["list"] as $key => $vo) { ?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php } unset($list, $count, $key, $vo); ?>';
         }
 
         return $parseStr;
@@ -277,7 +280,9 @@ class Label extends TagLib
                                 })
                         }
                     }, function(result){
-                        if (result.code !== "SUCCESS") {
+                        if (result.code === "404") {
+                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                        } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
@@ -291,12 +296,12 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/banner\')->query(\'' . $_tag['id'] . '\');';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr  = '<?php $banner = logic(\'cms/banner\')->query(\'' . $_tag['id'] . '\');';
+            $parseStr .= 'if (is_null($banner)) {abort(404);}';
+            $parseStr .= '$count = count($banner);';
+            $parseStr .= 'foreach ($banner as $key => $vo) { ?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php } unset($banner, $count, $key, $vo); ?>';
         }
 
         return $parseStr;
@@ -343,10 +348,10 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/ads\')->query(\'' . $_tag['id'] . '\'); ?>';
+            $parseStr  = '<?php $ads = logic(\'cms/ads\')->query(\'' . $_tag['id'] . '\');';
+            $parseStr .= 'if (is_null($ads)) {abort(404);}?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php unset($data); ?>';
+            $parseStr .= '<?php unset($ads); ?>';
         }
 
         return $parseStr;
@@ -378,7 +383,9 @@ class Label extends TagLib
                                 })
                         }
                     }, function(result){
-                        if (result.code !== "SUCCESS") {
+                        if (result.code === "404") {
+                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                        } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
@@ -395,12 +402,12 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/sidebar\')->query();';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr  = '<?php $menu = logic(\'cms/sidebar\')->query();';
+            $parseStr .= 'if (is_null($menu)) {abort(404);}';
+            $parseStr .= '$count = count($menu);';
+            $parseStr .= 'foreach ($menu as $key => $vo) { ?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php } unset($menu, $count, $key, $vo); ?>';
         }
 
         return $parseStr;
@@ -433,7 +440,9 @@ class Label extends TagLib
                                 })
                         }
                     }, function(result){
-                        if (result.code !== "SUCCESS") {
+                        if (result.code === "404") {
+                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                        } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
@@ -447,12 +456,12 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/breadcrumb\')->query();';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr  = '<?php $bread = logic(\'cms/breadcrumb\')->query();';
+            $parseStr .= 'if (is_null($bread)) {abort(404);}';
+            $parseStr .= '$count = count($bread);';
+            $parseStr .= 'foreach ($bread as $key => $vo) { ?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php } unset($bread, $count, $key, $vo); ?>';
         }
 
         return $parseStr;
@@ -485,7 +494,9 @@ class Label extends TagLib
                                 })
                         }
                     }, function(result){
-                        if (result.code !== "SUCCESS") {
+                        if (result.code === "404") {
+                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                        } else if (result.code !== "SUCCESS") {
                             return false;
                         }
                         if (result.data) {
@@ -499,12 +510,12 @@ class Label extends TagLib
                 });
                 </script>';
         } else {
-            $parseStr  = '<?php $data = ';
-            $parseStr .= 'logic(\'cms/nav\')->query(\'' . $_tag['type'] . '\');';
-            $parseStr .= '$count = count($data);';
-            $parseStr .= 'foreach ($data as $key => $vo) { ?>';
+            $parseStr  = '<?php $nav = logic(\'cms/nav\')->query(\'' . $_tag['type'] . '\');';
+            $parseStr .= 'if (is_null($nav)) {abort(404);}';
+            $parseStr .= '$count = count($nav);';
+            $parseStr .= 'foreach ($nav as $key => $vo) { ?>';
             $parseStr .= $_content;
-            $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';
+            $parseStr .= '<?php } unset($nav, $count, $key, $vo); ?>';
         }
 
         return $parseStr;

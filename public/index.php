@@ -18,7 +18,7 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 // 版本
 define('NP_VERSION', '2.0.1 Alpha a2613-c17');
@@ -36,9 +36,6 @@ libxml_disable_entity_loader(true);
 
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
-
-// THINKPHP版本支持
-version_compare(Container::get('app')->version(), '5.1.25', '>=') or die('ThinkPHP version >= 5.1.25!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 

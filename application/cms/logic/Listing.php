@@ -68,8 +68,7 @@ class Listing
             $result[$key]->flag   = encrypt($value->id);
 
             if ($value->is_link) {
-                $result[$key]->url  = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
-                $result[$key]->url .= '?go=' . urlencode($value->url);
+                $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
             } else {
                 $result[$key]->url = url($table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
             }

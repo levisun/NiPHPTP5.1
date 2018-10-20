@@ -12,7 +12,9 @@
  */
 namespace app\admin\logic\content;
 
-class Ads
+use app\admin\logic\Upload;
+
+class Ads extends Upload
 {
 
     /**

@@ -33,11 +33,11 @@ return [
         \PDO::ATTR_ORACLE_NULLS             => \PDO::NULL_NATURAL,
         \PDO::ATTR_STRINGIFY_FETCHES        => false,
         \PDO::ATTR_EMULATE_PREPARES         => false,
-        \PDO::ATTR_PERSISTENT               => true,                        // 长链接
+        // \PDO::ATTR_PERSISTENT               => true,                        // 长链接
         \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,                        // 查询缓存
     ],
     // 开启断线重连
-    'break_reconnect' => true,
+    // 'break_reconnect' => true,
     // 断线标识字符串
     'break_match_str' => [
         'error with',

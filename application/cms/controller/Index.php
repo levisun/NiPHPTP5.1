@@ -89,6 +89,17 @@ class Index extends Base
     }
 
     /**
+     * 评论
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function comment()
+    {
+        return $this->fetch('comment');
+    }
+
+    /**
      * 标签
      * @access public
      * @param

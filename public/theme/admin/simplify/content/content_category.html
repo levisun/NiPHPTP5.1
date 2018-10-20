@@ -32,7 +32,8 @@ $.loading({
     animation: true,
     data: {
         timestamp: "{:time()}",
-        method: "content.content.category",
+        method: "content.content.query",
+        type: "category",
         pid: "{$Request.param.pid|default='0'}"
     }
 }, function(result){

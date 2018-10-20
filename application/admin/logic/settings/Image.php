@@ -12,7 +12,9 @@
  */
 namespace app\admin\logic\settings;
 
-class Image
+use app\admin\logic\Upload;
+
+class Image extends Upload
 {
 
     /**

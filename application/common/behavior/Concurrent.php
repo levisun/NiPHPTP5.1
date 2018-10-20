@@ -24,9 +24,6 @@ class Concurrent
      */
     public function run()
     {trace('Concurrent','info');
-
-        trace(request()->isAjax(), 'info');
-
         // 拦截频繁请求
         // 拦截非法请求
         if ($this->intercept()) {

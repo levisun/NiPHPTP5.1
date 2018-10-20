@@ -12,7 +12,9 @@
  */
 namespace app\admin\logic\content;
 
-class Banner
+use app\admin\logic\Upload;
+
+class Banner extends Upload
 {
 
     /**
