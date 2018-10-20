@@ -24,35 +24,74 @@ class Rbac
     private $user_auth_on      = true;                                          // 是否需要认证
     private $user_auth_type    = 2;                                             // 验证类型
 
-    private $require_auth_module;                                               // 需要认证模块
+    private $req_auth_module;                                                   // 需要认证模块
     private $not_auth_module;                                                   // 无需认证模块
 
-    private $require_auth_controller;                                           // 需要认证的控制器
+    private $req_auth_controller;                                               // 需要认证的控制器
     private $not_auth_controller;                                               // 无需认证的控制器
 
-    private $require_auth_action;                                               // 需要认证的方法
-    private $not_auth_action;                                                   // 无需认证的方法
+    private $req_auth_method;                                                   // 需要认证的方法
+    private $not_auth_method;                                                   // 无需认证的方法
+
+    private $req_auth_action;                                                   // 需要认证的操作
+    private $not_auth_action;                                                   // 无需认证的操作
 
     public function __construct()
     {
-        $this->user_auth_founder       = config('user_auth_founder');           // 创始人ID
-        $this->user_auth_on            = config('user_auth_on');                // 是否需要认证
-        $this->user_auth_type          = config('user_auth_type');              // 验证类型
+        // 创始人ID
+        if (config('?user_auth_founder')) {
+            $this->user_auth_founder = config('user_auth_founder');
+        }
+
+        // 是否需要认证
+        if (config('?user_auth_on')) {
+            $this->user_auth_on = config('user_auth_on');
+        }
+
+        // 验证类型
+        if (config('?user_auth_type')) {
+            $this->user_auth_type = config('user_auth_type');
+        }
 
         // 需要认证模块
-        $this->require_auth_module     = strtoupper(config('require_auth_module'));
+        if (config('?req_auth_module')) {
+            $this->req_auth_module = explode(',', strtoupper(config('req_auth_module')));
+        }
+
         // 无需认证模块
-        $this->not_auth_module         = strtoupper(config('not_auth_module'));
+        if (config('?not_auth_module')) {
+            $this->not_auth_module = explode(',', strtoupper(config('not_auth_module')));
+        }
 
         // 需要认证的控制器
-        $this->require_auth_controller = strtoupper(config('require_auth_controller'));
+        if (config('?req_auth_controller')) {
+            $this->req_auth_controller = explode(',', strtoupper(config('req_auth_controller')));
+        }
+
         // 无需认证的控制器
-        $this->not_auth_controller     = strtoupper(config('not_auth_controller'));
+        if (config('?not_auth_controller')) {
+            $this->not_auth_controller = explode(',', strtoupper(config('not_auth_controller')));
+        }
 
         // 需要认证的方法
-        $this->require_auth_action     = strtoupper(config('require_auth_action'));
+        if (config('?req_auth_method')) {
+            $this->req_auth_method = explode(',', strtoupper(config('req_auth_method')));
+        }
+
         // 无需认证的方法
-        $this->not_auth_action         = strtoupper(config('not_auth_action'));
+        if (config('?not_auth_method')) {
+            $this->not_auth_method = explode(',', strtoupper(config('not_auth_method')));
+        }
+
+        // 需要认证的操作
+        if (config('?req_auth_action')) {
+            $this->req_auth_action = explode(',', strtoupper(config('req_auth_action')));
+        }
+
+        // 无需认证的操作
+        if (config('?not_auth_action')) {
+            $this->not_auth_action = explode(',', strtoupper(config('not_auth_action')));
+        }
     }
 
     /**
@@ -69,11 +108,16 @@ class Rbac
         $this->method     = strtoupper($_method);
         $this->action     = strtoupper($_action);
 
+        if (!$_auth_id) {
+            return true;
+        }
+
         // 检查当前操作是否需要认证
         if ($this->checkAccess()) {
-            return $this->accessDecision($_auth_id);
+            // 验证当前操作权限
+            return !$this->accessDecision($_auth_id);
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -89,47 +133,50 @@ class Rbac
             return false;
         }
 
-        $module_     = [];
-        $controller_ = [];
-        $method_     = [];
-
-        if ($this->require_auth_module) {
-            //需要认证的模块
-            $module_['yes'] = explode(',', $this->require_auth_module);
-        } else {
-            //无需认证的操作
-            $module_['no'] = explode(',', $this->not_auth_module);
-        }
-
-        if ($this->require_auth_controller) {
-            //需要认证的模块
-            $controller_['yes'] = explode(',', $this->require_auth_controller);
-        } else {
-            //无需认证的操作
-            $controller_['no'] = explode(',', $this->not_auth_controller);
-        }
-
-        if ($this->require_auth_action) {
-            //需要认证的模块
-            $method_['yes'] = explode(',', $this->require_auth_action);
-        } else {
-            //无需认证的操作
-            $method_['no'] = explode(',', $this->not_auth_action);
-        }
-
-        if (!empty($module_['no']) && in_array($this->module, $module_['no'])) {
-            if (!empty($controller_['no']) && in_array($this->controller, $controller_['no'])) {
-                if (!empty($method_['no']) && in_array($this->method, $method_['no'])) {
-                    return false;
-                }
+        if (!empty($this->req_auth_module)) {
+            // 需要认证的模块
+            if (in_array($this->module, $this->req_auth_module)) {
+                return true;
+            }
+        } elseif (!empty($this->not_auth_module)) {
+            // 无需认证的模块
+            if (in_array($this->module, $this->not_auth_module)) {
+                return false;
             }
         }
 
-        if (!empty($module_['yes']) && in_array($this->module, $module_['yes'])) {
-            if (!empty($controller_['yes']) && in_array($this->controller, $controller_['yes'])) {
-                if (!empty($method_['yes']) && in_array($this->method, $method_['yes'])) {
-                    return true;
-                }
+        if (!empty($this->req_auth_controller)) {
+            // 需要认证的控制器
+            if (in_array($this->controller, $this->req_auth_controller)) {
+                return true;
+            }
+        } elseif (!empty($this->not_auth_controller)) {
+            // 无需认证的控制器
+            if (in_array($this->controller, $this->not_auth_controller)) {
+                return false;
+            }
+        }
+
+        if (!empty($this->req_auth_method)) {
+            // 需要认证的方法
+            if (in_array($this->method, $this->req_auth_method)) {
+                return true;
+            }
+        } elseif (!empty($this->not_auth_method)) {
+            if (in_array($this->method, $this->not_auth_method)) {
+                return false;
+            }
+        }
+
+        if (!empty($this->req_auth_action)) {
+            // 需要认证的操作
+            if (in_array($this->action, $this->req_auth_action)) {
+                return true;
+            }
+        } elseif (!empty($this->not_auth_action)) {
+            // 无需认证的操作
+            if (in_array($this->action, $this->not_auth_action)) {
+                return false;
             }
         }
 
@@ -140,7 +187,7 @@ class Rbac
      * 权限认证的过滤器方法
      * @access private
      * @param  int     $_auth_id
-     * @return array
+     * @return boolean 权限是否存在
      */
     private function accessDecision($_auth_id)
     {
@@ -184,9 +231,10 @@ class Rbac
                     $met['name'] = strtoupper($met['name']);
                     $action = $this->getAuth($_auth_id, 4, $met['id']);
 
+                    // 添加查询操作
                     $a_ = [
-                        'query' => true,
-                        'find'  => true,
+                        'QUERY' => true,
+                        'FIND'  => true,
                     ];
                     foreach ($action as $act) {
                         $a_[$act['name']] = true;

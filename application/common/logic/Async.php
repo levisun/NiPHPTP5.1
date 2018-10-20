@@ -57,14 +57,10 @@ class Async
         $this->methodName = strtolower(input('param.method'));                  // 请求API方法名
         $this->apiDebug   = APP_DEBUG;                                          // 显示调试信息
 
-        // 解析method参数
-        $this->analysisMethod();
 
-        // 请求权限校验
-        $this->auth();
-
-        // 请求数据签名校验
-        $this->checkSign();
+        $this->analysisMethod();    // 解析method参数
+        $this->auth();              // 请求权限校验
+        $this->sign();              // 请求数据签名校验
 
         return call_user_func_array([$this->logicObject, $this->action], []);
     }
@@ -86,7 +82,7 @@ class Async
      * @param
      * @return mixed
      */
-    protected function checkSign()
+    protected function sign()
     {
         if (!$this->sign) {
             $this->error('sign error');

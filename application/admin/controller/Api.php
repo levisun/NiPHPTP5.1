@@ -83,7 +83,7 @@ class Api extends Async
             }
 
             // 登录权限信息
-            if (!logic('common/Rbac')->checkAuth(
+            if (logic('common/Rbac')->checkAuth(
                 session(config('user_auth_key')),
                 'admin',
                 $this->layer,
@@ -103,7 +103,7 @@ class Api extends Async
      * @param
      * @return mixed
      */
-    protected function checkSign()
+    protected function sign()
     {
         return true;
     }

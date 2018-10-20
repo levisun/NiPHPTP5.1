@@ -37,7 +37,7 @@ class Auth
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
             // 审核用户权限
-            if (!logic('common/Rbac')->checkAuth(
+            if (logic('common/Rbac')->checkAuth(
                     session(config('user_auth_key')),
                     $module,
                     $controller,

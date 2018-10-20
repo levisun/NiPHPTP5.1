@@ -27,27 +27,24 @@ return [
     ],
 
     // 模板
-    'default_theme'           => 'simplify',
+    'default_theme'       => 'simplify',
     // 默认语言
-    'default_lang'            => 'zh-cn',
+    'default_lang'        => 'zh-cn',
     // 是否开启多语言
-    'lang_switch_on'          => true,
+    'lang_switch_on'      => true,
 
     // 默认控制器名
-    'default_controller'      => 'account',
+    'default_controller'  => 'account',
     // 默认操作名
-    'default_action'          => 'login',
+    'default_action'      => 'login',
     // URL伪静态后缀
-    'url_html_suffix'         => 'do',
+    'url_html_suffix'     => 'do',
 
-    'user_auth_founder'       => 1,
-    'user_auth_key'           => 'auth_id',                                     // 认证key
-    'user_auth_on'            => true,                                          // 是否需要认证
-    'user_auth_type'          => 2,                                             // 验证类型
-    'require_auth_module'     => '',                                            // 需要认证模块
-    'not_auth_module'         => 'admin',                                       // 无需认证模块
-    'require_auth_controller' => '',                                            // 需要认证的控制器
-    'not_auth_controller'     => 'account',                                     // 无需认证的控制器
-    'require_auth_action'     => '',                                            // 需要认证的方法
-    'not_auth_action'         => 'login,logout,verify',                         // 无需认证的方法
+    'user_auth_founder'   => 1,
+    'user_auth_key'       => 'auth_id',                                         // 认证key
+    'user_auth_on'        => true,                                              // 是否需要认证
+    'user_auth_type'      => 2,                                                 // 验证类型
+    'not_auth_controller' => 'account',                                         // 无需认证的控制器
+    'not_auth_method'     => 'login,logout,verify',                             // 无需认证的方法
+    'not_auth_action'     => 'type,category',                                   // 无需认证的操作
 ];

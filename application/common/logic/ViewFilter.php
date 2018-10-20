@@ -56,6 +56,13 @@ class ViewFilter
      */
     private function foot($_content)
     {
+        // 插件加载
+        if (!empty($this->config['hook'])) {
+            foreach ($this->config['hook'] as $hook) {
+
+            }
+        }
+
         $foot  = '<script type="text/javascript">';
         $foot .= '';
         $foot .= 'console.log("author 失眠小枕头\ncopyright © 2013-' . date('Y') . ' by 失眠小枕头");';

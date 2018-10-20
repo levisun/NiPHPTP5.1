@@ -14,11 +14,6 @@ namespace app\admin\logic\account;
 
 class Auth
 {
-    // 不获得系统设置数据与权限菜单的方法
-    protected $action = [
-        'login',
-        'logout',
-    ];
 
     /**
      * 权限菜单

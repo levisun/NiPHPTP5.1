@@ -18,6 +18,55 @@ class Content extends Upload
 {
 
     /**
+     * 内容类别
+     * @access public
+     * @param
+     * @return array
+     */
+    public function category()
+    {
+        $map = [
+            ['c.pid', '=', input('param.pid/f', 0)],
+            ['c.model_id', '<>', '9'],
+            ['c.lang', '=', lang(':detect')],
+        ];
+
+        $result =
+        model('common/category')
+        ->view('category c', ['id', 'name', 'type_id', 'is_show', 'is_channel', 'model_id'])
+        ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
+        ->view('category cc', ['id' => 'child'], 'c.id=cc.pid', 'LEFT')
+        ->where($map)
+        ->group('c.id')
+        ->order('c.sort DESC, c.id DESC')
+        ->append([
+            'type_name',
+            'show',
+            'channel'
+        ])
+        ->select()
+        ->toArray();
+
+        foreach ($result as $key => $value) {
+            $url = [];
+
+            if ($value['child']) {
+                $url['child'] = url('content/content', array('operate' => 'child', 'pid' => $value['id']));
+            }
+
+            if ($value['model_id'] == 4) {
+                $url['manage'] = url('content/content', array('operate' => 'page', 'cid' => $value['id']));
+            } else {
+                $url['manage'] = url('content/content', array('operate' => 'manage', 'cid' => $value['id']));
+            }
+
+            $result[$key]['url'] = $url;
+        }
+
+        return $result;
+    }
+
+    /**
      * 查询内容列表
      * @access public
      * @param
@@ -25,10 +74,6 @@ class Content extends Upload
      */
     public function query()
     {
-        if (input('param.type') === 'category') {
-            return $this->category();
-        }
-
         // 查找栏目所属模型
         $table_name = $this->queryTableName();
 
@@ -94,55 +139,6 @@ class Content extends Upload
             'last_page'    => $list['last_page'],
             'page'         => $result->render(),
         ];
-    }
-
-    /**
-     * 内容类别
-     * @access private
-     * @param
-     * @return array
-     */
-    private function category()
-    {
-        $map = [
-            ['c.pid', '=', input('param.pid/f', 0)],
-            ['c.model_id', '<>', '9'],
-            ['c.lang', '=', lang(':detect')],
-        ];
-
-        $result =
-        model('common/category')
-        ->view('category c', ['id', 'name', 'type_id', 'is_show', 'is_channel', 'model_id'])
-        ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
-        ->view('category cc', ['id' => 'child'], 'c.id=cc.pid', 'LEFT')
-        ->where($map)
-        ->group('c.id')
-        ->order('c.sort DESC, c.id DESC')
-        ->append([
-            'type_name',
-            'show',
-            'channel'
-        ])
-        ->select()
-        ->toArray();
-
-        foreach ($result as $key => $value) {
-            $url = [];
-
-            if ($value['child']) {
-                $url['child'] = url('content/content', array('operate' => 'child', 'pid' => $value['id']));
-            }
-
-            if ($value['model_id'] == 4) {
-                $url['manage'] = url('content/content', array('operate' => 'page', 'cid' => $value['id']));
-            } else {
-                $url['manage'] = url('content/content', array('operate' => 'manage', 'cid' => $value['id']));
-            }
-
-            $result[$key]['url'] = $url;
-        }
-
-        return $result;
     }
 
     /**
