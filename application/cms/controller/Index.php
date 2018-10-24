@@ -136,7 +136,6 @@ class Index extends Base
      */
     public function abort()
     {
-        $this->view->engine->layout(false);
         abort(input('param.code/f', 404));
         return false;
     }

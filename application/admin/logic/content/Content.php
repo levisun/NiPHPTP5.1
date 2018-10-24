@@ -235,7 +235,42 @@ class Content extends Upload
      * @return mixed
      */
     public function editor()
-    {}
+    {
+        $receive_data = [
+            'id'            => input('post.id/f'),
+            'title'         => input('post.title'),
+            'keywords'      => input('post.keywords'),
+            'description'   => input('post.description'),
+            'content'       => input('post.content', '', config('content_filter')),
+            'thumb'         => input('post.thumb'),
+            'category_id'   => input('post.category_id/f'),
+            'type_id'       => input('post.type_id/f'),
+            'is_pass'       => input('post.is_pass/f'),
+            'is_com'        => input('post.is_com/f'),
+            'is_top'        => input('post.is_top/f'),
+            'is_hot'        => input('post.is_hot/f'),
+            'sort'          => input('post.sort/f'),
+            'username'      => input('post.username'),
+            'origin'        => input('post.origin'),
+            'user_id'       => input('post.user_id/f'),
+            'url'           => input('post.url'),
+            'is_link'       => input('post.is_link/f'),
+            // 'show_time'     => input('post.show_time'),
+            // 'delete_time'   => input('post.title'),
+            'access_id'     => input('post.access_id/f'),
+            'lang'          => lang(':detect'),
+            '__token__'     => input('post.__token__'),
+        ];
+
+        $table_name = $this->queryTableName();
+        halt($table_name);
+        $result = validate('admin/content/content.editor', input('post.'));
+        if (true !== $result) {
+            return $result;
+        }
+
+        print_r($_POST);
+    }
 
      /**
      * 排序
@@ -253,6 +288,17 @@ class Content extends Upload
             'id' => input('post.sort/a'),
         ]);
     }
+
+    public function type()
+    {
+        return
+        model('common/type')
+        ->where([
+            ['category_id', '=', input('post.cid/f')],
+        ])
+        ->select();
+    }
+
 
     /**
      * 获取对应的模型表名

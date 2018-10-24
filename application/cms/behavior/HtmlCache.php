@@ -22,7 +22,7 @@ class HtmlCache
      * @return void
      */
     public function run()
-    {
+    {trace('HtmlCache', 'warning');
         if (APP_DEBUG) {
             return true;
         }

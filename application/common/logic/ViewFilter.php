@@ -30,19 +30,22 @@ class ViewFilter
 
     public function view($_content)
     {
-        $_content = preg_replace([
+        $replace = [
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
             '/<\!--.*?-->/si',                          // HTML注释
             '/(\/\*).*?(\*\/)/si',                      // JS注释
             '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',          // JS注释
-            // '/( ){2,}/si',                           // 空格
-            // '/(\r|\n|\f)/si'                         // 回车
-        ], '', $_content);
+        ];
+        if (!APP_DEBUG) {
+            $replace[] = '/( ){2,}/si';         // 空格
+            $replace[] = '/(\r|\n|\f)/si';      // 回车
+        }
+        $_content = preg_replace($replace, '', $_content);
         $_content = $this->head($_content);
         $_content = $this->foot($_content);
 
-        behavior(['app\\cms\\behavior\\HtmlCache', 'write'], $_content);
+        logic('common/html')->write($_content);
 
         return $_content;
     }

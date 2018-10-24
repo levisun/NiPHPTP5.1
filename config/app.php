@@ -37,7 +37,7 @@ return [
     // pathinfo分隔符
     'pathinfo_depr'        => '/',
     // URL伪静态后缀
-    'url_html_suffix'      => '',
+    'url_html_suffix'      => 'do,html',
     // 路由使用完整匹配
     'route_complete_match' => true,
     // 是否强制使用路由
@@ -53,8 +53,6 @@ return [
     'error_message'        => '页面错误！请稍后再试～',
     // 显示错误信息
     'show_error_msg'       => false,
-    // 异常处理handle类 留空使用 \think\exception\Handle
-    'exception_handle'     => '',
 
     'http_exception_template' => [
         403 => env('root_path') . 'public/theme/abort/403.html',           // 禁止访问

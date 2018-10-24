@@ -77,7 +77,7 @@ $.loading({
 });
 
 function paging(_page) {
-    $.rewriteUrl("{:url()}#"+_page);
+    $.rewriteUrl("{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}#"+_page);
     $.loading({
         url: request.api.query,
         animation: true,
@@ -86,7 +86,7 @@ function paging(_page) {
             method: "content.content.query",
             cid: "{$Request.param.cid}",
             timestamp: "{:time()}",
-            p: page
+            p: _page
         }
     }, function(result){
         if (result.code !== "SUCCESS") {

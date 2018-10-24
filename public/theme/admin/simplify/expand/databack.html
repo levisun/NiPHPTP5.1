@@ -50,6 +50,7 @@ $.loading({
 
         list = list + "<td>";
         list = list + "<a class='np-btn-reduction' data-id='"+result.data[index].id+"'><i class='fa fa-retweet'></i>{:lang('button reduction')}</a>";
+        list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><i class='fa fa-retweet'></i>{:lang('button remove')}</a>";
         list = list + "</td>";
 
         list = list + "</tr>";
@@ -69,6 +70,24 @@ $(document).on("click", ".np-btn-reduction", function(){
         },
     }, function(result){
         // handle(result, false, false);
+    });
+    return false;
+});
+$(document).on("click", ".np-btn-remove", function(){
+    var id = $(this).attr("data-id");
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: {
+            timestamp: "{:time()}",
+            method: "expand.databack.remove",
+            id: id
+        },
+    }, function(result){
+        handle(result, false, false);
+        if (result.code === "SUCCESS") {
+            $.reload();
+        }
     });
     return false;
 });

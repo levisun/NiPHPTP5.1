@@ -253,7 +253,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE HCI' . $_cid . $_id : false, 30)
+        ->cache(!APP_DEBUG ? 'ARTICLE HCI' . $_cid . $_id : false, rand(30, 60))
         ->find();
     }
 

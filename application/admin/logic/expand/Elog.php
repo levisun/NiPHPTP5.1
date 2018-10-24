@@ -23,26 +23,25 @@ class Elog
      */
     public function query()
     {
-        $dir  = env('runtime_path') . 'log' . DIRECTORY_SEPARATOR . '*';
-        $file = (array) glob($dir);
+        $file = (array) glob(env('runtime_path') . 'log' . DIRECTORY_SEPARATOR . '*');
         rsort($file);
 
         $file_dir = [];
-        foreach ($file as $key => $value) {
-            $temp = (array) glob($value . DIRECTORY_SEPARATOR . '*');
-            rsort($temp);
+        foreach ($file as $path) {
+            $name = basename($path);
 
-            foreach ($temp as $path) {
-                $date = substr($value, -6);
-                $name = basename($path);
-                if (false !== strpos($name, '_error')) {
-                    $file_dir[] = [
-                        'name' => $date . $name,
-                        'time' => filectime($path),
-                        'size' => file_size($path),
-                        'show' => url('expand/elog', ['operate' => 'show', 'id' => encrypt($date . DIRECTORY_SEPARATOR . $name)]),
-                    ];
-                }
+            // 只显示错误,警告错误日志
+            if (
+                false !== strpos($name, '_error') ||
+                false !== strpos($name, '_warning') ||
+                false !== strpos($name, '_notice')
+            ) {
+                $file_dir[] = [
+                    'name' => $name,
+                    'time' => filectime($path),
+                    'size' => file_size($path),
+                    'show' => url('expand/elog', ['operate' => 'show', 'id' => encrypt($name)]),
+                ];
             }
         }
 

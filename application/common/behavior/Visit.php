@@ -92,6 +92,8 @@ class Visit
         }
 
         $this->remove('visit');
+
+        trace('[behavior] visit', 'notice');
     }
 
     /**
@@ -138,6 +140,8 @@ class Visit
         }
 
         $this->remove('searchengine');
+
+        trace('[behavior] searchengine', 'notice');
     }
 
     /**

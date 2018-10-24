@@ -56,7 +56,7 @@ class Databack extends Model
      * 还原数据库
      * @access public
      * @param
-     * @return void
+     * @return boolean
      */
     public function reduction()
     {
@@ -64,9 +64,8 @@ class Databack extends Model
         ini_set('memory_limit', '128M');
 
         $receive_data = [
-            'type'      => input('post.type/f'),
-            'id'        => input('post.id'),
-            '__token__' => input('post.__token__'),
+            'type' => input('post.type/f'),
+            'id'   => input('post.id'),
         ];
 
         // 安全还原
@@ -98,10 +97,30 @@ class Databack extends Model
     }
 
     /**
+     * 删除数据库备份
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function remove()
+    {
+        $receive_data = [
+            'id' => input('post.id'),
+        ];
+
+        $file = env('root_path') . 'backup' . DIRECTORY_SEPARATOR . decrypt($receive_data['id']) . '.zip';
+        if (is_file($file)) {
+            unlink($file);
+        }
+
+        return true;
+    }
+
+    /**
      * 备份数据库
      * @access public
      * @param  integer $_limit
-     * @return void
+     * @return boolean
      */
     public function backup($_limit = 1000)
     {

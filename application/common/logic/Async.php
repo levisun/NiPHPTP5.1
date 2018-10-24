@@ -52,7 +52,7 @@ class Async
 
         $this->moduleName = strtolower(request()->module());                    // 模块名称
         $this->sign       = input('param.sign');                                // 请求数据签名
-        $this->timestamp  = input('param.timestamp', 0);                        // 请求时间戳
+        $this->timestamp  = input('param.timestamp/f', 0);                      // 请求时间戳
         $this->format     = strtolower(input('param.format', 'json'));          // 返回数据类型
         $this->methodName = strtolower(input('param.method'));                  // 请求API方法名
         $this->apiDebug   = APP_DEBUG;                                          // 显示调试信息
@@ -217,7 +217,11 @@ class Async
                     'request_method'  => request()->server('REQUEST_METHOD'),
                 ]
             ];
-        } else {
+        }
+
+        // 浏览器页面缓存数据
+        // 有时间戳并且非调试模式开启
+        elseif (!$this->timestamp && !$this->apiDebug) {
             $header = [
                 'pragma'        => 'cache',
                 'cache-control' => 'max-age=1200,must-revalidate',

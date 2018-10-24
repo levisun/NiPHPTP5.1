@@ -23,9 +23,11 @@ class Sidebar
      */
     public function query()
     {
-        $_cid = input('param.cid/f', 0);
-
-        $id = $this->queryParent($_cid);
+        $cid = input('param.cid/f', 0);
+        if (empty($cid)) {
+            return [];
+        }
+        $id = $this->queryParent($cid);
 
         $result =
         model('common/category')

@@ -19,6 +19,8 @@ class Base extends Controller
 
     protected function initialize()
     {
+        if (request()->ext() !== 'do') abort(404);
+
         // 模板设置
         $template = get_template_config(config('default_theme'));
         config('template.view_path', $template['view_path']);

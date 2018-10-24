@@ -23,18 +23,19 @@ class Concurrent
      * @return void
      */
     public function run()
-    {trace('Concurrent','info');
-        // 拦截频繁请求
-        // 拦截非法请求
-        if ($this->intercept()) {
-            abort(502);
-        }
-
+    {
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
         if (request_block()) {
+            // 拦截频繁请求
+            // 拦截非法请求
+            if ($this->intercept()) {
+                abort(502);
+            }
             return true;
         }
+
+        trace('[behavior] concurrent', 'notice');
 
         // 万分之一抛出异常
         if (!APP_DEBUG && rand(1, 10000) === 1) {
@@ -62,12 +63,12 @@ class Concurrent
             } elseif ($result['total'] >= 100) {
                 $result['total'] = $result['total'] + 1;
                 $result['time']  = strtotime(date('Y-m-d 23:59:59'));
-            } elseif ($result['time'] >= time()) {
+            } elseif (time() <= $result['time']) {
                 $result['total'] = $result['total'] + 1;
-                $result['time']  = time() + 60;
+                $result['time']  = time() + 10;
             } else {
                 $result['total'] = 1;
-                $result['time']  = time() + 60;
+                $result['time']  = time() + 10;
             }
         } else {
             $result = [

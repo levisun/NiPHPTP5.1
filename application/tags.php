@@ -15,8 +15,8 @@
 return [
     // 应用初始化
     'app_init'     => [
-        // 并发抛出500[每次访问万分之一几率执行操作]
-        // 'app\\common\\behavior\\Concurrent',
+        // 并发抛出504[每次访问万分之一几率执行操作]
+        'app\\common\\behavior\\Concurrent',
         // GET请求下生成API请求TOKEN
         'app\\common\\behavior\\CreateApiToken',
     ],

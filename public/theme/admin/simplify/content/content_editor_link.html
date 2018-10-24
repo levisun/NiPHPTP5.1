@@ -65,8 +65,8 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="hidden" name="category_id" value="">
-                        <input type="hidden" name="id" value="">
+                        <input type="hidden" name="category_id" id="category_id" value="">
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -90,6 +90,37 @@ $.loading({
 }, function(result) {
     if (result.code === "SUCCESS") {
         editor_data = result.data;
+        eachToInput(editor_data);
     }
+});
+
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        timestamp: "{:time()}",
+        method: "content.content.type",
+        cid: "{$Request.param.cid}"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
+        $("#type_id").append(type_option);
+    }
+});
+
+$("form").submit(function(){
+    var form_data = "method=content.content.editor";
+     form_data += "&timestamp={:time()}";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result, "{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}");
+    });
+    return false;
 });
 </script>

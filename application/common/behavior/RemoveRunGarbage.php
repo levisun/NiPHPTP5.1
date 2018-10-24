@@ -35,16 +35,17 @@ class RemoveRunGarbage
         if (rand(1, 100) !== 1) {
             return true;
         }
+        trace('[behavior] RemoveRunGarbage', 'notice');
 
         $files = [
             'runtime' . DIRECTORY_SEPARATOR . 'cache',
             'runtime' . DIRECTORY_SEPARATOR . 'log',
-            // 'runtime' . DIRECTORY_SEPARATOR . 'temp',
-            'public' . DIRECTORY_SEPARATOR . 'html',
+            'runtime' . DIRECTORY_SEPARATOR . 'temp',
+            'public'  . DIRECTORY_SEPARATOR . 'html',
         ];
 
         $dir_path = [];
-        foreach ($files as $key => $dir) {
+        foreach ($files as $dir) {
             $dir_path = array_merge($dir_path, (array) glob(env('root_path') . $dir . DIRECTORY_SEPARATOR . '*'));
         }
 

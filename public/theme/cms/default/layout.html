@@ -4,7 +4,7 @@
             <li><a href="">首页</a></li>
         </ul>
         {label:nav type="2"}
-        $("nav#nav ul").append("<li><a href='"+vo.url+"'>"+vo.name+"</a></li>");
+        <li><a href="{$vo.url}">{$vo.name}</a></li>
         {/label:nav}
     </nav>
 
@@ -13,23 +13,26 @@
             <a href="">首页</a>
         </span>
         {label:bread}
-        $("menu#breadcrumb").append("<span>/</span><a href='"+vo.url+"'>"+vo.name+"</a>");
+        <span>/</span><a href="{$vo.url}">{$vo.name}</a>
         {/label:bread}
     </menu>
 </header>
 
 
 <menu>
+    {label:menu}{/label:menu}
+    {if isset($menu['chlid'])}
     <ul>
         <li>
-            <a class="side-title"></a>
+            <a class="side-title">{$menu.name}</a>
             <dl>
+                {volist name="menu.child" id="vo"}
+                <dd><a href="{$vo.url}">{$vo.name}</a></dd>
+                {/volist}
             </dl>
         </li>
     </ul>
-    {label:menu ele=".side-title"}
-    $("menu ul dl.layui-nav-child").append("<dd><a href='"+vo.url+"'>"+vo.name+"</a></dd>");
-    {/label:menu}
+    {/if}
 </menu>
 
 
