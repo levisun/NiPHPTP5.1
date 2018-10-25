@@ -1,0 +1,14 @@
+<table id="listing" class="layui-table" lay-even lay-skin="nob">
+
+</table>
+{label:link}
+var html = "";
+for(index in list){
+    var data = list[index];
+    html += "<tr>";
+    html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
+    html += "<td>" + data.create_time + "</td>";
+    html += "</tr>";
+}
+$("#listing").append(html);
+{/label:link}

@@ -1,22 +1,14 @@
-<ul class="list"></ul>
+<table id="listing" class="layui-table" lay-even lay-skin="nob">
 
+</table>
 {label:list}
 var html = "";
 for(index in list){
     var data = list[index];
-    html += "<li>";
-    html += "<a href='"+data.url+"'>"+data.title+"</a>";
-    html += data.create_time;
-    html += "</li>";
+    html += "<tr>";
+    html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
+    html += "<td>" + data.create_time + "</td>";
+    html += "</tr>";
 }
-$(".list").append(html);
+$("#listing").append(html);
 {/label:list}
-
-
-{label:list cid="1"}
-
-{/label:list}
-
-{label:page cid="2" id="7"}
-
-{/label:page}

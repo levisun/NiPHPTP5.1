@@ -35,7 +35,7 @@ class RemoveRunGarbage
         if (rand(1, 100) !== 1) {
             return true;
         }
-        trace('[behavior] RemoveRunGarbage', 'notice');
+        // trace('[behavior] RemoveRunGarbage', 'warning');
 
         $files = [
             'runtime' . DIRECTORY_SEPARATOR . 'cache',

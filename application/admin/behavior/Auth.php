@@ -34,6 +34,8 @@ class Auth
             return true;
         }
 
+        $redirect = '';
+
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
             // 审核用户权限
@@ -43,18 +45,20 @@ class Auth
                     $controller,
                     $action
             )) {
-                echo redirect(url('settings/info'))->send();
-                die();
+                $redirect = url('settings/info');
             }
 
             // 登录页重定向
             if ($action === 'login') {
-                echo redirect(url('settings/info'))->send();
-                die();
+                $redirect = url('settings/info');
             }
         } elseif ($controller !== 'account') {
             // 未登录跳转登录页
-            echo redirect(url('account/login'))->send();
+            $redirect = url('account/login') . '?back=' . urlencode(request()->url(true));
+        }
+
+        if ($redirect) {
+            echo redirect($redirect)->send();
             die();
         }
 

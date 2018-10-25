@@ -25,7 +25,7 @@ class Visit
     {
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
-        if (request_block()) {
+        if (request_block() || request()->module() === 'admin') {
             return true;
         }
 
@@ -93,7 +93,7 @@ class Visit
 
         $this->remove('visit');
 
-        trace('[behavior] visit', 'notice');
+        // trace('[behavior] visit', 'warning');
     }
 
     /**
@@ -141,7 +141,7 @@ class Visit
 
         $this->remove('searchengine');
 
-        trace('[behavior] searchengine', 'notice');
+        // trace('[behavior] searchengine', 'warning');
     }
 
     /**

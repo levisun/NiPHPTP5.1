@@ -148,7 +148,7 @@ function request_block()
 
     // 阻挡空模块请求
     // 阻挡验证码请求
-    if (empty($module) && request()->path() == 'captcha') {
+    if (empty($module) && request()->path() == 'captcha.' . request()->ext()) {
         return true;
     }
 
@@ -348,6 +348,7 @@ function cookie($name, $value = '', $option = null)
  */
 function encrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
     $_authkey = md5($_authkey . env('app_path'));
+
     if (is_array($_str)) {
         $en = [];
         foreach ($_str as $key => $value) {
@@ -374,6 +375,7 @@ function encrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
  */
 function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
     $_authkey = md5($_authkey . env('app_path'));
+
     if (is_array($_str)) {
         $de = [];
         foreach ($_str as $key => $value) {

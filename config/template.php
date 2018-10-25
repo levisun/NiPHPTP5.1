@@ -25,7 +25,7 @@ return [
     // 布局输出替换变量
     'layout_item'   => '{__CONTENT__}',
     // 去除模板文件里面的html空格与换行
-    'strip_space'   => true,
+    'strip_space'   => !APP_DEBUG,
     // 模板编译缓存
     'tpl_cache'     => !APP_DEBUG,
     // 模板渲染缓存

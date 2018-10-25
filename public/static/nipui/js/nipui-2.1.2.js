@@ -505,7 +505,7 @@
         } else {
             _url = _url ? _url : window.location;
             _url = _url.toString();
-            reg = new RegExp("(/)" + _key + "/([0-9a-zA-Z_%]*)(/|.)");
+            reg = new RegExp("(/" + _key + ")[\-|/]([0-9a-zA-Z_%]*)(/|.)");
             result = _url.match(reg);
             if (result) {
                 value = decodeURIComponent(result[2]);

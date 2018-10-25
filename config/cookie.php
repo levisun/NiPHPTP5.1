@@ -13,7 +13,7 @@
 
 return [
     // cookie 名称前缀
-    'prefix'    => substr(md5(env('root_path')), 9, 3) . '_',
+    'prefix'    => strtoupper(substr(md5(env('root_path')), 9, 7)) . '_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径

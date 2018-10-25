@@ -242,6 +242,8 @@ class Async
      */
     public function createAsyncToken()
     {
+        $salt = strtoupper(substr(md5(request()->domain() . env('root_path')), 7, 3)) . '_';
+
         $http_referer = crypt(
             request()->server('HTTP_USER_AGENT') .
             request()->url(true) .
@@ -249,7 +251,7 @@ class Async
             '$5$rounds=5000$' . sha1(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
-        cookie('_ASYNCTOKEN', $http_referer);
+        cookie('_ASYNCTOKEN' . $salt, $http_referer);
     }
 
     /**
@@ -266,6 +268,8 @@ class Async
             abort(404);
         }
 
+        $salt = strtoupper(substr(md5(request()->domain() . env('root_path')), 7, 3)) . '_';
+
         $http_referer = crypt(
             request()->server('HTTP_USER_AGENT') .
             request()->server('HTTP_REFERER') .
@@ -273,7 +277,7 @@ class Async
             '$5$rounds=5000$' . sha1(env('app_path') . app()->version() . date('Ymd')) . '$'
         );
 
-        if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
+        if (!cookie('?_ASYNCTOKEN' . $salt) or !hash_equals($http_referer, cookie('_ASYNCTOKEN' . $salt))) {
             abort(404);
         }
     }

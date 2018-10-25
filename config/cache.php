@@ -15,7 +15,7 @@ return [
     // 驱动方式
     'type'         => 'File',
     // 缓存前缀
-    'prefix'       => substr(md5(request()->subDomain() . env('root_path')), 0, 9),
+    'prefix'       => substr(md5(request()->domain() . env('root_path')), 0, 9),
     // 缓存有效期 0表示永久缓存
     'expire'       => APP_DEBUG ? 300 : 28800,
     'cache_subdir' => false,

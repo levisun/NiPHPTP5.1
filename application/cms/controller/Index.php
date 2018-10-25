@@ -74,6 +74,7 @@ class Index extends Base
      */
     public function feedback()
     {
+        $this->assign('data', logic('cms/feedback')->queryInput());
         return $this->fetch('feedback');
     }
 

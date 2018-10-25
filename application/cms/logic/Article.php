@@ -27,7 +27,8 @@ class Article
         $_cid = $_cid ? (float) $_cid : input('param.cid/f');
         $_id  = $_id  ? (float) $_id  : input('param.id/f');
 
-        if (!$table_name = $this->queryTableName($_cid)) {
+        $table_name = $this->queryTableName($_cid);
+        if (!$table_name || $table_name === 'link') {
             return false;
         }
 
@@ -35,7 +36,7 @@ class Article
         model('common/' . $table_name)
         ->view($table_name . ' a', true)
         ->view('category c', ['name' => 'category_name'], 'c.id=a.category_id')
-        ->view('model m', ['name' => 'model_name'], 'm.id=c.model_id')
+        ->view('model m', [], 'm.id=c.model_id')
         ->view('type t', ['name' => 'type_name'], 't.id=c.type_id', 'LEFT')
         ->where([
             ['a.is_pass', '=', 1],
@@ -51,21 +52,19 @@ class Article
             $result['content'] = htmlspecialchars_decode($result['content']);
             $result['flag'] = encrypt($result['id']);
 
-            if ($table_name !== 'link') {
-                // 查询自定义字段
-                $fields =
-                model('common/' . $table_name . 'Data')
-                ->view($table_name . '_data d', 'data')
-                ->view('fields f', ['name' => 'fields_name'], 'f.id=d.fields_id')
-                ->where([
-                    ['d.main_id', '=', $result['id']],
-                ])
-                ->cache(!APP_DEBUG ? 'ARTICLE FDM' . $result['id'] : false)
-                ->select()
-                ->toArray();
-                foreach ($fields as $val) {
-                    $result[$val['fields_name']] = $val['data'];
-                }
+            // 查询自定义字段
+            $fields =
+            model('common/' . $table_name . 'Data')
+            ->view($table_name . '_data d', 'data')
+            ->view('fields f', ['name' => 'fields_name'], 'f.id=d.fields_id')
+            ->where([
+                ['d.main_id', '=', $result['id']],
+            ])
+            ->cache(!APP_DEBUG ? 'ARTICLE FDM' . $result['id'] : false)
+            ->select()
+            ->toArray();
+            foreach ($fields as $val) {
+                $result[$val['fields_name']] = $val['data'];
             }
 
             // 查询相册
@@ -95,10 +94,12 @@ class Article
             ->toArray();
 
             // 上一篇
-            $result['oth'] = [
-                'previous' => $this->previous($_id, $_cid),
-                'next'     => $this->next($_id, $_cid),
-            ];
+            if (in_array($table_name, ['article', 'download', 'picture', 'product'])) {
+                $result['oth'] = [
+                    'prev' => $this->previous($_id, $_cid, $table_name),
+                    'next' => $this->next($_id, $_cid, $table_name),
+                ];
+            }
 
             // 更新浏览数
             model('common/' . $table_name)
@@ -122,15 +123,16 @@ class Article
 
     /**
      * 下一篇
+     * @access private
      * @param  integer $_cid 栏目ID
      * @param  integer $_id  文章ID
+     * @param  string  $_table_name
      * @return mixed
      */
-    public function next($_id, $_cid)
+    private function next($_id, $_cid, $_table_name)
     {
-        $table_name = $this->queryTableName($_cid);
         $next_id =
-        model('common/' . $table_name)
+        model('common/' . $_table_name)
         ->where([
             ['is_pass', '=', 1],
             ['show_time', '<=', time()],
@@ -141,7 +143,7 @@ class Article
         ->min('id');
 
         $result =
-        model('common/' . $table_name)
+        model('common/' . $_table_name)
         ->field(['id', 'category_id', 'title', 'is_link', 'url'])
         ->where([
             ['is_pass', '=', 1],
@@ -154,7 +156,7 @@ class Article
         if ($result) {
             $result->flag = encrypt($result->id);
 
-            if ($result->is_link) {
+            if (!empty($result->is_link) && $result->is_link) {
                 $result->url  = url('go/' . $result->category_id . '/' . $result->id, [], 'html', true);
                 $result->url .= '?go=' . urlencode($result->url);
             } else {
@@ -171,15 +173,16 @@ class Article
 
     /**
      * 上一篇
+     * @access private
      * @param  integer $_cid 栏目ID
      * @param  integer $_id  文章ID
+     * @param  string  $_table_name
      * @return mixed
      */
-    public function previous($_id, $_cid)
+    private function previous($_id, $_cid, $_table_name)
     {
-        $table_name = $this->queryTableName($_cid);
         $previous_id =
-        model('common/' . $table_name)
+        model('common/' . $_table_name)
         ->where([
             ['is_pass', '=', 1],
             ['show_time', '<=', time()],
@@ -190,7 +193,7 @@ class Article
         ->max('id');
 
         $result =
-        model('common/' . $table_name)
+        model('common/' . $_table_name)
         ->field(['id', 'category_id', 'title', 'is_link', 'url'])
         ->where([
             ['is_pass', '=', 1],
@@ -203,11 +206,11 @@ class Article
         if ($result) {
             $result->flag = encrypt($result->id);
 
-            if ($result->is_link) {
+            if (!empty($result->is_link) && $result->is_link) {
                 $result->url  = url('go/' . $result->category_id . '/' . $result->id, [], 'html', true);
                 $result->url .= '?go=' . urlencode($result->url);
             } else {
-                $result->url = url($table_name . '/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url = url($_table_name . '/' . $result->category_id . '/' . $result->id, [], 'html', true);
             }
 
             $result->url = str_replace('/index/', '/', $result->url);

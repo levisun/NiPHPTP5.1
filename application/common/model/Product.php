@@ -13,7 +13,7 @@
 namespace app\common\model;
 
 use think\Model;
-use think\model\concern\SoftDelete
+use think\model\concern\SoftDelete;
 
 class Product extends Model
 {
@@ -91,8 +91,6 @@ class Product extends Model
      */
     protected function remove($_receive_data)
     {
-        $map  = ;
-
         $result =
         $this->where([
             ['id', '=', $_receive_data['id']],

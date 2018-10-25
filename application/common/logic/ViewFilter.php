@@ -59,6 +59,9 @@ class ViewFilter
      */
     private function foot($_content)
     {
+        $foot  = '';
+        $foot .= '<div style="text-align: center;"><a href="http://www.NiPHP.com" target="_blank">Powered by NiPHP' . NP_VERSION . '</a></div>';
+
         // 插件加载
         if (!empty($this->config['hook'])) {
             foreach ($this->config['hook'] as $hook) {
@@ -66,9 +69,9 @@ class ViewFilter
             }
         }
 
-        $foot  = '<script type="text/javascript">';
+        $foot .= '<script type="text/javascript">';
         $foot .= '';
-        $foot .= 'console.log("author 失眠小枕头\ncopyright © 2013-' . date('Y') . ' by 失眠小枕头");';
+        $foot .= 'console.log("Author NiPHP\nCopyright © 2013-' . date('Y') . ' by NiPHP");';
         $foot .= '</script>';
         $foot .= '</body><html>';
 
@@ -85,12 +88,12 @@ class ViewFilter
     {
         $head = '<!DOCTYPE html><html lang="en"><head>' .
                 '<meta charset="utf-8">' .
-                '<meta name="author" content="失眠小枕头">' .
-                '<meta name="generator" content="niphp">' .
+                '<meta name="author" content="NiPHP">' .
+                '<meta name="generator" content="NiPHP">' .
                 '<meta name="robots" content="all">' .
                 '<meta name="renderer" content="webkit">' .
                 '<meta http-equiv="Cache-Control" content="no-siteapp">' .
-                '<title>' . $this->siteInfo['website_name'] . '</title>' .
+                '<title>' . $this->siteInfo['website_name'] . ' Powered by NiPHP</title>' .
                 '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '">' .
                 '<meta name="description" content="' . $this->siteInfo['website_description'] . '">' .
                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />';

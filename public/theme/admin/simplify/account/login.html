@@ -15,11 +15,11 @@
 
                 <div class="form-group captcha">
                     <input type="text" name="captcha" class="form-control captcha" placeholder="{:lang('captcha')}">
-
                 </div>
 
                 <div class="m-top-md p-top-sm">
                     {:token()}
+                    <input type="hidden" name="back" value="{$Request.param.back}">
                     <input type="submit" class="btn btn-success btn-block np-login-btn" value="{:lang('button login')}">
                 </div>
             </form>

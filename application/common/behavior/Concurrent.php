@@ -35,7 +35,7 @@ class Concurrent
             return true;
         }
 
-        trace('[behavior] concurrent', 'notice');
+        // trace('[behavior] concurrent', 'warning');
 
         // 万分之一抛出异常
         if (!APP_DEBUG && rand(1, 10000) === 1) {

@@ -1,54 +1,62 @@
-<header>
-    <nav id="nav">
-        <ul>
-            <li><a href="">首页</a></li>
-        </ul>
-        {label:nav type="2"}
-        <li><a href="{$vo.url}">{$vo.name}</a></li>
-        {/label:nav}
-    </nav>
+<header id="header" class="layui-fluid">
+    <div id="top" class="layui-row">
+        <menu id="top-menu" class="layui-col-md4 layui-col-md-offset8" style="text-align: right;">
+            <ul>
+                {label:nav type="1"}
+                <li><a href="{$vo.url}">{$vo.name}</a></li>
+                {/label:nav}
+            </ul>
+        </menu>
+    </div>
 
-    <menu id="breadcrumb">
-        <span>
-            <a href="">首页</a>
-        </span>
-        {label:bread}
-        <span>/</span><a href="{$vo.url}">{$vo.name}</a>
-        {/label:bread}
-    </menu>
+    <nav id="nav">
+        <ul class="layui-nav">
+            <li class="layui-nav-item"><a href="">首页</a></li>
+            {label:nav type="2"}
+            <li class="layui-nav-item"><a href="{$vo.url}">{$vo.name}</a></li>
+            {/label:nav}
+        </ul>
+    </nav>
 </header>
 
+<div id="body" class="layui-fluid">
+    <div class="layui-row">
+        <aside id="sidebar" class="layui-col-md2">
+            <menu>
+                {label:menu /}
+                {if isset($menu['child'])}
+                <ul class="layui-nav layui-nav-tree">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="side-title">{$menu.name}</a>
+                        <dl class="layui-nav-child">
+                            {volist name="menu.child" id="vo"}
+                            <dd><a href="{$vo.url}">{$vo.name}</a></dd>
+                            {/volist}
+                        </dl>
+                    </li>
+                </ul>
+                {/if}
+            </menu>
+        </aside>
 
-<menu>
-    {label:menu}{/label:menu}
-    {if isset($menu['chlid'])}
-    <ul>
-        <li>
-            <a class="side-title">{$menu.name}</a>
-            <dl>
-                {volist name="menu.child" id="vo"}
-                <dd><a href="{$vo.url}">{$vo.name}</a></dd>
-                {/volist}
-            </dl>
-        </li>
-    </ul>
-    {/if}
-</menu>
+        <div id="main" class="layui-col-md10">
+            <div class="layui-row">
+                <menu id="breadcrumb" class="layui-col-md12">
+                    <span class="layui-breadcrumb" lay-separator="|">
+                        <a href="">首页</a>
+                        {label:bread}
+                        <span>/</span><a href="{$vo.url}">{$vo.name}</a>
+                        {/label:bread}
+                    </span>
+                </menu>
+            </div>
 
-
-<div class="layui-row">
-
+            {__CONTENT__}
+        </div>
+    </div>
 </div>
 
-
-
-
-
-
-
-{__CONTENT__}
-
-<footer>
+<footer id="footer">
     <div>__BOTTOM_MSG__</div>
     <div>__COPYRIGHT__</div>
 </footer>
