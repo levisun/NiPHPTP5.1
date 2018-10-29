@@ -189,7 +189,7 @@ class Visit
             'YISOU'          => 'yisouspider',
         ];
 
-        $user_agent = request()->server('HTTP_USER_AGENT');
+        $user_agent = strtolower(request()->server('HTTP_USER_AGENT'));
         foreach ($searchengine as $key => $value) {
             if (preg_match('/(' . $value . ')/si', $user_agent)) {
                 return $key;

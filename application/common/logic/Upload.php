@@ -119,7 +119,7 @@ class Upload
                 $water_image .= $water_config['water_image'];
 
                 $image = Image::open($this->savePath . $_file_name);
-                $image->water($water_image, $water_config['water_location'], 50);
+                $image->water($water_image, $water_config['water_location'], 70);
                 $image->save($this->savePath . $_file_name);
             } else {
                 // 文字水印

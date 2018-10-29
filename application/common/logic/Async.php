@@ -17,21 +17,21 @@ use think\exception\HttpResponseException;
 
 class Async
 {
-    protected $moduleName;              // 模块名
+    protected $moduleName;                                                      // 模块名
 
-    protected $sign;                    // 签名
-    protected $timestamp;               // 请求时间
-    protected $format      = 'json';    // 返回数据类型[json|pjson|xml]
+    protected $sign;                                                            // 签名
+    protected $timestamp;                                                       // 请求时间
+    protected $format      = 'json';                                            // 返回数据类型[json|pjson|xml]
 
-    protected $methodName;
-    protected $layer       = 'logic';
-    protected $class       = 'index';
-    protected $action      = 'index';
+    protected $methodName;                                                      // 执行方法名
+    protected $layer       = 'logic';                                           // 业务名
+    protected $class       = 'index';                                           // 类名
+    protected $action      = 'index';                                           // 方法名
 
-    private   $logicObject = null;      // 业务类对象
+    private   $logicObject = null;                                              // 业务类对象
 
-    protected $apiDebug    = false;     // 调试模式
-    protected $debugMsg    = [];        // 错误信息
+    protected $apiDebug    = false;                                             // 调试模式
+    protected $debugMsg    = [];                                                // 错误信息
 
     public function __construct()
     {
@@ -58,9 +58,9 @@ class Async
         $this->apiDebug   = APP_DEBUG;                                          // 显示调试信息
 
 
-        $this->analysisMethod();    // 解析method参数
-        $this->auth();              // 请求权限校验
-        $this->sign();              // 请求数据签名校验
+        $this->analysisMethod();                                                // 解析method参数
+        $this->auth();                                                          // 请求权限校验
+        $this->sign();                                                          // 请求数据签名校验
 
         return call_user_func_array([$this->logicObject, $this->action], []);
     }
@@ -134,7 +134,7 @@ class Async
         }
 
         // 检查业务分层文件是否存在
-        $file_path  = env('app_path') . $this->moduleName . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
+        $file_path = env('app_path') . $this->moduleName . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
 
         if ($this->layer !== 'logic') {
             $file_path .= $this->layer . DIRECTORY_SEPARATOR;

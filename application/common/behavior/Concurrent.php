@@ -35,13 +35,19 @@ class Concurrent
             return true;
         }
 
+        // 清空缓存
+        $this->restart();
+
         // trace('[behavior] concurrent', 'warning');
 
         // 万分之一抛出异常
         if (!APP_DEBUG && rand(1, 10000) === 1) {
             abort(502);
         }
+    }
 
+    private function restart()
+    {
         // 通过cmd参数清空缓存
         if (input('param.cmd', false) === '01bc6f8efa4202821e95f4fdf6298b30') {
             \think\Facade\Cache::clear();
@@ -87,10 +93,5 @@ class Concurrent
         cache($ip, $result, 0);
 
         return false;
-    }
-
-    public function restart()
-    {
-        # code...
     }
 }

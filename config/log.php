@@ -18,14 +18,13 @@ return [
     // 日志记录级别
     'level'       => [
         'error',
-        'warning',
-        'notice',
+        'critical',
+        'alert',
+        'emergency',
         'sql'
     ],
     'apart_level' => [
         'error',
-        'warning',
-        'notice',
-        'sql',
+        'sql'
     ],
 ];
