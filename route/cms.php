@@ -12,13 +12,15 @@
  */
 
 Route::domain(['www', 'm'], function(){
+    Route::rule('/', 'index/index');
     Route::rule('index', 'index/index');
 
-    Route::rule('list/:cid$',   'index/entry');
-    Route::rule('link/:cid$',   'index/entry');
+    Route::rule('list/:cid$', 'index/entry');
+    Route::rule('link/:cid$', 'index/entry');
+
     Route::rule('go/:cid/[:id]$',  'index/go');
 
-    Route::rule('search/:cid$',   'index/search');
+    Route::rule('search/:q$',     'index/search');
     Route::rule('channel/:cid$',  'index/channel');
     Route::rule('feedback/:cid$', 'index/feedback');
     Route::rule('message/:cid$',  'index/message');
@@ -41,5 +43,4 @@ Route::domain(['www', 'm'], function(){
     })->prefix('api/');
 })
 ->bind('cms')
-->cache(APP_DEBUG ? false : 28800)
-->ext('html');
+->cache(APP_DEBUG ? false : 28800);

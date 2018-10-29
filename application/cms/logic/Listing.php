@@ -81,7 +81,7 @@ class Listing
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
 
-            $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
+            $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
 
             // 查询自定义字段
@@ -174,9 +174,9 @@ class Listing
             $result[$key]->flag   = encrypt($value->id);
 
             if ($value->is_link) {
-                $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
+                $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
             } else {
-                $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
+                $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             }
 
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
@@ -295,9 +295,9 @@ class Listing
             $result[$key]->flag   = encrypt($value->id);
 
             if ($value->is_link) {
-                $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
+                $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
             } else {
-                $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id, [], 'html', true);
+                $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             }
 
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
@@ -377,11 +377,20 @@ class Listing
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
 
-            $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id, [], 'html', true);
+            $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
         }
 
-        return $result->toArray();
+        $result = $result->toArray();
+
+        return [
+            'list'         => $result,
+            'total'        => count($result),
+            'per_page'     => 1,
+            'current_page' => 1,
+            'last_page'    => 1,
+            'page'         => '',
+        ];
     }
 
     /**

@@ -13,6 +13,7 @@
 use think\facade\Cookie;
 use think\facade\Lang;
 use think\facade\Session;
+use think\facade\Url;
 
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 
@@ -148,7 +149,7 @@ function request_block()
 
     // 阻挡空模块请求
     // 阻挡验证码请求
-    if (empty($module) && request()->path() == 'captcha.' . request()->ext()) {
+    if (empty($module) && request()->path() == 'captcha') {
         return true;
     }
 
@@ -163,6 +164,18 @@ function request_block()
 function is_wechat_request()
 {
     return strpos(request()->server('HTTP_USER_AGENT'), 'MicroMessenger') !== false ? true : false;
+}
+
+/**
+ * Url生成
+ * @param string        $url 路由地址
+ * @param string|array  $vars 变量
+ * @param bool|string   $domain 域名
+ * @return string
+ */
+function url($_url = '', $_vars = '', $_domain = true)
+{
+    return Url::build($_url, $_vars, true, $_domain);
 }
 
 /**

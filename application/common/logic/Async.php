@@ -205,12 +205,21 @@ class Async
         ];
 
         if ($this->apiDebug) {
+            $runtime = number_format(microtime(true) - app()->getBeginTime(), 10);
+
             $result['debug'] = [
-                'async'          => $this->debugMsg,
-                'request_params' => input('param.', [], 'trim'),
-                'method'         => $this->methodName,
-                'headers'        => [
-                    'cookie'          => $_COOKIE,
+                'server' => [
+                    'sql query' => \think\Db::$queryTimes . '条查询 ' . \think\Db::$executeTimes . '条写入',
+                    'cache'     => app('cache')->getReadTimes() . '次读取 ' . app('cache')->getWriteTimes() . '次写入',
+                    'include'   => count(get_included_files()) . '个文件',
+                    'cookie'    => $_COOKIE,
+                ],
+                'run time' => number_format($runtime, 6) . '秒',
+                'memory'   => number_format((memory_get_usage() - app()->getBeginMem()) / 1024, 2) . 'KB',
+                'async'    => $this->debugMsg,
+                'params'   => input('param.', [], 'trim'),
+                'method'   => $this->methodName,
+                'headers'  => [
                     'http_referer'    => request()->server('HTTP_REFERER'),
                     'http_user_agent' => request()->server('HTTP_USER_AGENT'),
                     'ip_info'         => logic('common/IpInfo')->getInfo(),

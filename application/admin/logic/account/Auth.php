@@ -45,7 +45,7 @@ class Auth
                     $auth_menu[$controller]['name'] = $nav[$controller]['name'];
                     $auth_menu[$controller]['menu'][] = [
                         'action' => $action,
-                        'url'    => url($controller . '/' . $action),
+                        'url'    => url($controller . '/' . $action, [], true, true),
                         'lang'   => $nav[$controller]['child'][$action],
                     ];
                 }
@@ -103,7 +103,7 @@ class Auth
            $title = lang('upload file') . ' - NIPHPCMS';
         } else {
             $title = $nav[$controller]['child'][$action];
-            $title .= ' - ' . $nav[$controller]['name'] . ' - NIPHPCMS';
+            $title .= ' - ' . $nav[$controller]['name'] . ' - NIPHP';
         }
 
         return $title;

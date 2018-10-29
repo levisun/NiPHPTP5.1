@@ -22,7 +22,6 @@ class Label extends TagLib
         'tags'    => ['close' => 1, 'attr' => '', 'alias' => 'tag'],
         'article' => ['close' => 1, 'attr' => '', 'alias' => 'page'],
         'list'    => ['close' => 1, 'attr' => '', 'alias' => 'list'],
-        'link'    => ['close' => 1, 'attr' => '', 'alias' => 'link'],
         'nav'     => ['close' => 1, 'attr' => 'type', 'alias' => 'category'],
         'bread'   => ['close' => 1, 'attr' => '', 'alias' => 'breadcrumb'],
         'menu'    => ['close' => 0, 'attr' => '', 'alias' => 'sidebar'],
@@ -129,7 +128,7 @@ class Label extends TagLib
                         }
                     }, function(result){
                         if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                            jQuery.redirect("' . url('error/404') . '");
                         } else if (result.code !== "SUCCESS") {
                             return false;
                         }
@@ -209,7 +208,7 @@ class Label extends TagLib
                         }
                     }, function(result){
                         if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                            jQuery.redirect("' . url('error/404') . '");
                         } else if (result.code !== "SUCCESS") {
                             return false;
                         }
@@ -232,50 +231,6 @@ class Label extends TagLib
             $parseStr .= 'if (is_null($list)) {abort(404);}';
             $parseStr .= '$count = count($list["list"]);';
             $parseStr .= 'foreach ($list["list"] as $key => $vo) { ?>';
-            $parseStr .= $_content;
-            $parseStr .= '<?php } unset($list, $count, $key, $vo); ?>';
-        }
-
-        return $parseStr;
-    }
-
-    public function tagLink($_tag, $_content)
-    {
-        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
-
-        if ($_tag['async'] == 'true') {
-            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input("param.cid/f")}';
-            $parseStr = '<script type="text/javascript">
-                jQuery(function(){
-                    jQuery.loading({
-                        url: request.api.query,
-                        type: "get",
-                        data: {
-                            method: "link.query",
-                            cid:    "' . $_tag['cid'] . '",
-                            sign:   jQuery.sign({
-                                method: "link.query",
-                                cid:    "' . $_tag['cid'] . '"
-                            })
-                        }
-                    }, function(result){
-                        if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
-                        } else if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            ' . $_content . '
-                        }
-                    });
-                });
-                </script>';
-        } else {
-            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input("param.cid/f")';
-            $parseStr  = '<?php $list = logic("cms/link")->query(' . $_tag['cid'] . ');';
-            $parseStr .= 'if (is_null($list)) {abort(404);}';
-            $parseStr .= '$count = count($list);';
-            $parseStr .= 'foreach ($list as $key => $vo) { ?>';
             $parseStr .= $_content;
             $parseStr .= '<?php } unset($list, $count, $key, $vo); ?>';
         }
@@ -311,7 +266,7 @@ class Label extends TagLib
                         }
                     }, function(result){
                         if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404', [], 'html', true) . '");
+                            jQuery.redirect("' . url('error/404') . '");
                         } else if (result.code !== "SUCCESS") {
                             return false;
                         }

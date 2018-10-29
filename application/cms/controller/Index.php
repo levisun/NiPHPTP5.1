@@ -111,6 +111,17 @@ class Index extends Base
         return $this->fetch('tags');
     }
 
+    /**
+     * 搜索
+     * @access public
+     * @param
+     * @return mixed
+     */
+    public function search()
+    {
+        return $this->fetch('search');
+    }
+
     /**/
     public function go()
     {

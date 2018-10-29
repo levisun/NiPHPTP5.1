@@ -45,7 +45,7 @@ class ViewFilter
         $_content = $this->head($_content);
         $_content = $this->foot($_content);
 
-        logic('common/html')->write($_content);
+        // logic('common/html')->write($_content);
 
         return $_content;
     }
@@ -124,9 +124,9 @@ class ViewFilter
                  'var request = {' .
                      'domain: "' . $this->template['tpl_replace_string']['__DOMAIN__'] . '",' .
                      'api: {' .
-                        'query: "' . url('api/query', '', true, true) . '",' .
-                        'settle: "' . url('api/settle', '', true, true) . '",' .
-                        'upload: "' . url('api/upload', '', true, true) . '",' .
+                        'query: "' . url('api/query') . '",' .
+                        'settle: "' . url('api/settle') . '",' .
+                        'upload: "' . url('api/upload') . '",' .
                      '},' .
                      'static: "' . $this->template['tpl_replace_string']['__STATIC__'] . '",' .
                      'css: "' . $this->template['tpl_replace_string']['__CSS__'] . '",' .

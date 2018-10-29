@@ -41,6 +41,13 @@ class Concurrent
         if (!APP_DEBUG && rand(1, 10000) === 1) {
             abort(502);
         }
+
+        // 通过cmd参数清空缓存
+        if (input('param.cmd', false) === '01bc6f8efa4202821e95f4fdf6298b30') {
+            \think\Facade\Cache::clear();
+            echo redirect(request()->root(true))->send();
+            die();
+        }
     }
 
     /**

@@ -26,12 +26,12 @@ class Content extends Base
         if (in_array($operate, ['', 'category', 'child'])) {
             $tpl = 'content_category';
         } else {
-            $tpl = 'content_' . $operate;
-        }
-
-        // 安模型表名拼接模板名
-        if (input('param.model', false)) {
-            $tpl .= '_' . input('param.model');
+            // 安模型表名拼接模板名
+            if (input('param.model', false)) {
+                $tpl = 'content_' . input('param.model') . '_' . $operate;
+            } else {
+                $tpl = 'content_' . $operate;
+            }
         }
 
         return $this->fetch($tpl);

@@ -51,13 +51,13 @@ class Content extends Upload
             $url = [];
 
             if ($value['child']) {
-                $url['child'] = url('content/content', array('operate' => 'child', 'pid' => $value['id']));
+                $url['child'] = url('content/content', ['operate' => 'child', 'pid' => $value['id']]);
             }
 
             if ($value['model_id'] == 4) {
-                $url['manage'] = url('content/content', array('operate' => 'page', 'cid' => $value['id']));
+                $url['manage'] = url('content/content', ['operate' => 'editor', 'model' => 'page', 'cid' => $value['id']]);
             } else {
-                $url['manage'] = url('content/content', array('operate' => 'manage', 'cid' => $value['id']));
+                $url['manage'] = url('content/content', ['operate' => 'manage', 'cid' => $value['id']]);
             }
 
             $result[$key]['url'] = $url;

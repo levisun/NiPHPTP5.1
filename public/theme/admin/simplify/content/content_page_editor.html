@@ -1,0 +1,171 @@
+{js href="__STATIC__library/ckeditor/ckeditor.js"}
+{js href="__STATIC__library/ckeditor/config.js"}
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <ul class="nav nav-tabs nav-justified" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#CT-basic" id="tab-CT-basic" aria-controls="CT-basic" role="tab" data-toggle="tab">{:lang('basic')}</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#CT-content" id="tab-CT-content" aria-controls="CT-content" role="tab" data-toggle="tab">{:lang('content')}</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#CT-fields" id="tab-CT-fields" aria-controls="CT-fields" role="tab" data-toggle="tab">{:lang('fields')}</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="CT-basic">
+                        <div class="form-group">
+                            <label for="title" class="col-lg-2 control-label">{:lang('title')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="title" id="title" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="keywords" class="col-lg-2 control-label">{:lang('keywords')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="keywords" id="keywords" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="col-lg-2 control-label">{:lang('description')}</label>
+                            <div class="col-lg-10">
+                                <textarea name="description" id="description" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="thumb" class="col-lg-2 control-label">{:lang('thumb')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="thumb" id="thumb" class="form-control" value="">
+                                <button type="button" class="btn btn-info btn-sm np-upload" id="upload">{:lang('button upload')}</button>
+                                <img src="" id="img-thumb" width="100" style="display:none">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type_id" class="col-lg-2 control-label">{:lang('type')}</label>
+                            <div class="col-lg-10">
+                                <select name="type_id" id="type_id" class="form-control">
+                                    <option value="0">{:lang('select type')}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="col-lg-2 control-label">{:lang('username')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="username" id="username" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="origin" class="col-lg-2 control-label">{:lang('origin')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="origin" id="origin" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tags" class="col-lg-2 control-label">{:lang('tags')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="tags" id="tags" class="form-control" placeholder="" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="access_id" class="col-lg-2 control-label">{:lang('access')}</label>
+                            <div class="col-lg-10">
+                                <select name="access_id" id="access_id" class="form-control">
+                                    <option value="0">{:lang('select access')}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="CT-content">
+                        <div class="form-group">
+                            <label for="website_description" class="col-lg-2 control-label">{:lang('content')}</label>
+                            <div class="col-md-10">
+                                <textarea name="content" class="form-control ckeditor"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="CT-fields">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="category_id" value="">
+                        <input type="hidden" name="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.loading({
+    url: request.api.query,
+    async: false,
+    animation: true,
+    data: {
+        timestamp: "{:time()}",
+        method: "content.content.type",
+        cid: "{$Request.param.cid}"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
+        $("#type_id").append(type_option);
+    }
+});
+$.loading({
+    url: request.api.query,
+    animation: true,
+    data: {
+        timestamp: "{:time()}",
+        method: "category.category.level"
+    }
+}, function(result){
+    if (result.code === "SUCCESS") {
+        var level_option = eachToOption(result.data, "id", "name");
+        $("#access_id").append(level_option);
+    }
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    $.upload({
+        url: request.api.upload+"?method=content.content.upload&timestamp={:time()}&type={$Request.param.model}",
+        file: $("#uploadForm")[0],
+    }, function(result){
+        var dir = result.data.save_dir + result.data.file_name;
+        $("#image").val(dir);
+        $("#img-image").attr("src",  result.data.domain + dir);
+        $.uiPopup({}, "hide");
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=content.content.editor";
+     form_data += "&timestamp={:time()}";
+    form_data += "&"+$(this).serialize();
+    $.loading({
+        url: request.api.settle,
+        async: false,
+        data: form_data,
+    }, function(result){
+        handle(result, "{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}");
+    });
+    return false;
+});
+</script>

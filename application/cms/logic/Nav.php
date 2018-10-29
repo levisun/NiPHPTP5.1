@@ -122,6 +122,6 @@ class Nav
             }
         }
 
-        return url($url, [], 'html', true);
+        return url($url);
     }
 }

@@ -58,6 +58,9 @@ class Visit
         }
 
         $ip_info = logic('common/logic/IpInfo')->getInfo();
+        if (in_array($ip_info['ip'], ['127.0.0.1'])) {
+            return false;
+        }
 
         $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
 

@@ -157,10 +157,10 @@ class Article
             $result->flag = encrypt($result->id);
 
             if (!empty($result->is_link) && $result->is_link) {
-                $result->url  = url('go/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url  = url('go/' . $result->category_id . '/' . $result->id);
                 $result->url .= '?go=' . urlencode($result->url);
             } else {
-                $result->url = url($table_name . '/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url = url($_table_name . '/' . $result->category_id . '/' . $result->id);
             }
 
             $result->url = str_replace('/index/', '/', $result->url);
@@ -207,10 +207,10 @@ class Article
             $result->flag = encrypt($result->id);
 
             if (!empty($result->is_link) && $result->is_link) {
-                $result->url  = url('go/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url  = url('go/' . $result->category_id . '/' . $result->id);
                 $result->url .= '?go=' . urlencode($result->url);
             } else {
-                $result->url = url($_table_name . '/' . $result->category_id . '/' . $result->id, [], 'html', true);
+                $result->url = url($_table_name . '/' . $result->category_id . '/' . $result->id);
             }
 
             $result->url = str_replace('/index/', '/', $result->url);

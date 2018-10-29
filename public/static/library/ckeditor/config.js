@@ -38,25 +38,5 @@ CKEDITOR.editorConfig = function( config ) {
 	config.language = 'zh-cn';
 	config.skin ='bootstrapck';
 
-
-	// config.filebrowserImageUploadUrl = '?m=admin&c=account&a=upload&type=ckeditor&id=&model=';
-	/*var pathName = location.pathname;
-	var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-	var phpself = pathName.substring(pathName.substr(1).indexOf('/') + 1, pathName.substr(1).indexOf('.php') + 5);
-
-	var domain = location.protocol + '//' + window.location.host + projectName + phpself + '/';*/
-
-	var pathName = location.pathname;
-	var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-	var phpself = pathName.substring(
-	    pathName.substr(1).indexOf('/') + 1,
-	    pathName.substr(1).indexOf('.php') + 5
-	    ) + '/';
-	if (window.location.host == 'localhost') {
-	    var domain = location.protocol + '//' + window.location.host + projectName + phpself;
-	} else {
-	    var domain = location.protocol + '//' + window.location.host + '/';
-	}
-
-	config.filebrowserImageUploadUrl = domain + 'account/upload.shtml?type=ckeditor&id=&model=';
+	config.filebrowserImageUploadUrl = request.api.upload + '?method='+request.controller+'.'+request.action+'.upload&type=ckeditor';
 };

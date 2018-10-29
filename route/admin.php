@@ -12,6 +12,7 @@
  */
 
 Route::domain('admin', function(){
+    // Route::rule('/', 'account/login');
     Route::rule('index', 'account/login');
 
     Route::group('api', function(){
@@ -40,13 +41,16 @@ Route::domain('admin', function(){
         Route::rule('model',    'model');
         Route::rule('fields',   'fields');
         Route::rule('type',     'type');
+    })->prefix('category/');
+
+    Route::group('content', function(){
         Route::rule('content',  'content');
         Route::rule('banner',   'banner');
         Route::rule('ads',       'ads');
         Route::rule('comment',  'comment');
         Route::rule('cache',    'cache');
         Route::rule('recycle',  'recycle');
-    })->prefix('category/');
+    })->prefix('content/');
 
     Route::group('user', function(){
         Route::rule('member', 'member');
@@ -97,6 +101,5 @@ Route::domain('admin', function(){
     })->prefix('api/');
 })
 ->bind('admin')
-->cache(false)
-->ext('do');
+->cache(false);
 

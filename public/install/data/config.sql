@@ -10,9 +10,6 @@ CREATE TABLE IF NOT EXISTS `np_config` (
   KEY `lang` (`lang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '设置表';
 INSERT INTO `np_config` (`name`, `value`, `lang`) VALUES
-
-('ajax_token', 'c2630911e31549d4ddb556daba9c20d9c910d396', 'niphp'),
-
 -- 安全与效率
 ('system_portal', 'hor', 'niphp'),
 ('content_check', '1', 'niphp'),
