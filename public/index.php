@@ -18,10 +18,11 @@
 namespace think;
 
 // 调试开关
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 // 版本
 define('NP_VERSION', '2.0.1 Alpha');
+define('DS', DIRECTORY_SEPARATOR);
 header('X-Powered-By: NiPHP ' . NP_VERSION);
 
 // PHP版本支持

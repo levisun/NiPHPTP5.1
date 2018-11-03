@@ -109,7 +109,7 @@ class Article
                 ['category_id', '=', $_cid],
                 ['id', '=', $_id]
             ])
-            ->setInc('hits', APP_DEBUG ? 1 : rand(1, 3));
+            ->setInc('hits', 1);
 
             if (!$this->checkAccess($result['access_id'])) {
                 $result = 'not access';
@@ -245,7 +245,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $_id]
         ])
-        ->setInc('hits', APP_DEBUG ? 1 : rand(1, 3));
+        ->setInc('hits', 1);
 
         return
         model('common/' . $table_name)
@@ -256,7 +256,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE HCI' . $_cid . $_id : false, rand(30, 60))
+        ->cache(!APP_DEBUG ? 'ARTICLE HCI' . $_cid . $_id : false, 60)
         ->find();
     }
 

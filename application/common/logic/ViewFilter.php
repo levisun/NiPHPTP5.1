@@ -70,7 +70,6 @@ class ViewFilter
         }
 
         $foot .= '<script type="text/javascript">';
-        $foot .= '';
         $foot .= 'console.log("Author NiPHP\nCopyright © 2013-' . date('Y') . ' by NiPHP");';
         $foot .= '</script>';
         $foot .= '</body><html>';
@@ -86,27 +85,30 @@ class ViewFilter
      */
     private function head($_content)
     {
-        $head = '<!DOCTYPE html><html lang="en"><head>' .
-                '<meta charset="utf-8">' .
-                '<meta name="author" content="NiPHP">' .
-                '<meta name="generator" content="NiPHP">' .
-                '<meta name="robots" content="all">' .
-                '<meta name="renderer" content="webkit">' .
-                '<meta http-equiv="Cache-Control" content="no-siteapp">' .
-                '<title>' . $this->siteInfo['website_name'] . ' Powered by NiPHP</title>' .
-                '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '">' .
-                '<meta name="description" content="' . $this->siteInfo['website_description'] . '">' .
-                '<link rel="dns-prefetch" href="' . request()->domain() . '" />';
+        $head = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" />';
 
         if (request()->isMobile()) {
-            $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">';
-            $head .= '<meta name="apple-mobile-web-app-capable" content="yes">';
-            $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black">';
-            $head .= '<meta name="format-detection" content="telephone=yes">';
-            $head .= '<meta name="format-detection" content="email=yes">';
+            $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />';
+            $head .= '<meta name="apple-mobile-web-app-capable" content="yes" />';
+            $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black" />';
+            $head .= '<meta name="format-detection" content="telephone=yes" />';
+            $head .= '<meta name="format-detection" content="email=yes" />';
         } else {
-            $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">';
+            $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />';
         }
+
+        $head .= '<meta name="author" content="NiPHP" />' .
+                 '<meta name="generator" content="NiPHP" />' .
+                 '<meta name="copyright" content="NiPHP" />' .
+                 '<meta name="robots" content="all" />' .
+                 '<meta name="renderer" content="webkit" />' .
+                 // '<meta http-equiv="Cache-Control" content="no-siteapp" />' .
+                 '<title>' . $this->siteInfo['website_name'] . ' Powered by NiPHP</title>' .
+                 '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' .
+                 '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' .
+                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />';
+
+
 
         if (!empty($this->config['css'])) {
             foreach ($this->config['css'] as $css) {

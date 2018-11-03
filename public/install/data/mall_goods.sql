@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `np_mall_goods` (
   `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
   `comment_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '评论量',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `delete_time` int(11) unsigned DEFAULT NULL COMMENT '删除时间',
+  `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `lang` varchar(20) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
   PRIMARY KEY (`id`),

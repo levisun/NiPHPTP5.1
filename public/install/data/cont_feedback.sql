@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `np_feedback` (
   `ip` varchar(15) NOT NULL DEFAULT '' COMMENT '评论IP',
   `ip_attr` varchar(255) NOT NULL DEFAULT '' COMMENT '评论IP地区',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `delete_time` int(11) unsigned DEFAULT NULL COMMENT '删除时间',
+  `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `lang` varchar(20) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
   PRIMARY KEY (`id`),

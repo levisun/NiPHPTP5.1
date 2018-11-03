@@ -97,7 +97,7 @@ class Rbac
     /**
      * 审核用户操作权限
      * @access public
-     * @param  int     $_auth_id
+     * @param  integer $_auth_id
      * @return boolean
      */
     public function checkAuth($_auth_id, $_module = '', $_controller = '', $_method = '', $_action = 'query')
@@ -186,7 +186,7 @@ class Rbac
     /**
      * 权限认证的过滤器方法
      * @access private
-     * @param  int     $_auth_id
+     * @param  integer $_auth_id
      * @return boolean 权限是否存在
      */
     private function accessDecision($_auth_id)
@@ -210,7 +210,7 @@ class Rbac
     /**
      * 取得当前认证号的所有权限列表
      * @access private
-     * @param  int     $_auth_id
+     * @param  integer $_auth_id
      * @return array
      */
     private function getAccessList($_auth_id)
@@ -250,9 +250,9 @@ class Rbac
     /**
      * 获得当前认证号对应权限
      * @access private
-     * @param  int     $_auth_id
-     * @param  int     $_level
-     * @param  int     $_pid
+     * @param  integer $_auth_id
+     * @param  integer $_level
+     * @param  integer $_pid
      * @return array
      */
     private function getAuth($_auth_id, $_level = 1, $_pid = 0)

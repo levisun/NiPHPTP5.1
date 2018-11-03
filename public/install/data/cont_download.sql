@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `np_download` (
   `is_link` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '跳转',
   `show_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '显示时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `delete_time` int(11) unsigned DEFAULT NULL COMMENT '删除时间',
+  `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `access_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '访问权限',
   `down_url` varchar(500) NOT NULL DEFAULT '' COMMENT '下载链接',

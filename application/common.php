@@ -140,6 +140,11 @@ function request_block()
         return true;
     }
 
+    // 阻挡资源类型请求
+    if (!in_array(request()->ext(), ['do', 'html', 'htm'])) {
+        return true;
+    }
+
     // common模块抛出404
     $module = strtolower(request()->module());
 
@@ -444,16 +449,7 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql 
         '™' => '&trade;', '®' => '&reg;', '©' => '&copy;', '￥' => '&yen;', '℃' => '&#8451;', '℉' => '&#8457;',
         '+' => '&#43;', '—' => '&ndash;', '×' => '&times;', '÷' => '&divide;',
 
-        // 安全字符
-        '|'  => '&#124;',
-        '*'  => '&#42;',
-        '`'  => '&acute;',
-        '\\' => '&#92;',
-        '~'  => '&#126;',
-        '‚'  => '&sbquo;',
-        // ','  => '&#44;',
-        // '.'  => '&#46;',
-        '^'  => '&#94;',
+
 
         // HTML中的JS无法执行
         // '\'' => '&#039;',
@@ -517,9 +513,18 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql 
             // '/(select)/si'   => '&#115;elect',
             // '/(truncate)/si' => '&#116;runcate',
             // '/(where)/si'    => '&#119;here',
-            '/(#)+/si'       => '&#35;',
-            '/(\!)+/si'      => '&#33;',
-            '/(=)+/si'       => '&#61;'
+
+            // 安全字符
+            '/(#)+/si'   => '&#35;',
+            '/(\!)+/si'  => '&#33;',
+            '/(=)+/si'   => '&#61;',
+            '/(\|)+/si'  => '&#124;',
+            '/(\*)+/si'  => '&#42;',
+            '/(`)+/si'   => '&acute;',
+            '/(\\\)+/si' => '&#92;',
+            '/(~)+/si'   => '&#126;',
+            '/(‚)+/si'   => '&sbquo;',
+            '/(\^)+/si'  => '&#94;',
         ];
         $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
     }

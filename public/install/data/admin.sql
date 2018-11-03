@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `np_access` (
   `node_id` smallint(6) unsigned NOT NULL COMMENT '节点ID',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
   `level` tinyint(1) NOT NULL COMMENT '节点等级',
-  `module` varchar(50) DEFAULT NULL COMMENT '节点名',
+  `module` varchar(50) NOT NULL DEFAULT '' COMMENT '节点名',
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`),
   KEY `node_id` (`node_id`),
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `np_node` (
   `pid` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
   `level` tinyint(1) unsigned NOT NULL COMMENT '等级',
   `name` varchar(20) NOT NULL COMMENT '节点操作名',
-  `title` varchar(50) DEFAULT NULL COMMENT '节点说明',
+  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '节点说明',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
   `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
@@ -332,8 +332,8 @@ INSERT INTO np_role(`name`, `pid`, `status`, `remark`) VALUES('创始人', 0, 1,
 DROP TABLE IF EXISTS `np_role_admin`;
 CREATE TABLE IF NOT EXISTS `np_role_admin` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL COMMENT '管理员ID',
-  `role_id` smallint(6) unsigned DEFAULT NULL COMMENT '组ID',
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '管理员ID',
+  `role_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '组ID',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `group_id` (`role_id`)
