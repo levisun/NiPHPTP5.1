@@ -21,6 +21,7 @@ class Label extends TagLib
     protected $tags = [
         'article' => ['close' => 1, 'attr' => '', 'alias' => 'page'],
         'list'    => ['close' => 1, 'attr' => '', 'alias' => 'list'],
+        'more'    => ['close' => 1, 'attr' => '', 'alias' => 'more'],
     ];
 
     /**
@@ -80,10 +81,10 @@ class Label extends TagLib
                             var data = result.data;
                             jQuery("title").text(data.title+" - "+jQuery("title").text());
                             if (data.keywords) {
-                                jQuery("meta[name=\'keywords\']").attr("content", data.keywords);
+                                jQuery("meta[name=\'keywords\']").attr("content", data.title);
                             }
                             if (data.description) {
-                                jQuery("meta[name=\'description\']").attr("content", data.description);
+                                jQuery("meta[name=\'description\']").attr("content", data.title);
                             }
                             ' . $_content . '
                         }
@@ -122,6 +123,52 @@ class Label extends TagLib
     }
 
     /**
+     * AJAX加载更多
+     * @access public
+     * @param  array  $_tag     标签属性
+     * @param  string $_content 标签内容
+     * @return string|void
+     */
+    public function tagMore($_tag, $_content)
+    {
+        $_tag['bid'] = !empty($_tag['bid']) ? (float) $_tag['bid'] : '{:input("param.bid/f")}';
+        $cont = $_content;
+        $parseStr = '<script type="text/javascript">
+            jQuery(function(){
+                jQuery.loadMore({
+                    url: request.api.query,
+                    type: "get",
+                    data: {
+                        method: "listing.query",
+                        bid:    "' . $_tag['bid'] . '",
+                        sign:   jQuery.sign({
+                            method: "listing.query",
+                            bid:    "' . $_tag['bid'] . '",
+                        })
+                    }
+                }, function(result){
+                    if (result.code === "404") {
+                        jQuery.redirect("' . url('error/404') . '");
+                    } else if (result.code !== "SUCCESS") {
+                        return false;
+                    }
+                    if (result.data) {
+                        var data = result.data;
+                        var list = result.data.list;
+                        var page = result.data.page;
+                        var total = result.data.total;
+                        var current_page = result.data.current_page;
+                        var last_page = result.data.last_page;
+                        var per_page = result.data.per_page;
+                        ' . $_content . '
+                    }
+                });
+            });
+            </script>';
+        return $parseStr;
+    }
+
+    /**
      * 文章列表
      * @access public
      * @param  array  $_tag     标签属性
@@ -134,8 +181,11 @@ class Label extends TagLib
 
         if ($_tag['async'] == 'true') {
             $_tag['bid'] = !empty($_tag['bid']) ? (float) $_tag['bid'] : '{:input("param.bid/f")}';
+            $cont = $_content;
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
+                    var page = window.location.hash;
+                    page = page.substr(1, page.length);
                     jQuery.loading({
                         url: request.api.query,
                         type: "get",
@@ -144,7 +194,7 @@ class Label extends TagLib
                             bid:    "' . $_tag['bid'] . '",
                             sign:   jQuery.sign({
                                 method: "listing.query",
-                                bid:    "' . $_tag['bid'] . '"
+                                bid:    "' . $_tag['bid'] . '",
                             })
                         }
                     }, function(result){

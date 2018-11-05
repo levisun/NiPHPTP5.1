@@ -31,6 +31,7 @@ class Visit
 
         $this->addedVisit();
         $this->addedSearchengine();
+        // $this->createSitemap();
     }
 
     /**
@@ -45,7 +46,7 @@ class Visit
     }
 
     /**
-     * 写入访问日志
+     * 记录访问日志
      * @access public
      * @param
      * @return void
@@ -99,8 +100,89 @@ class Visit
         // trace('[behavior] visit', 'warning');
     }
 
+    public function createSitemap()
+    {
+        $xml  = '<?xml version="1.0" encoding="UTF-8"?>
+                    <urlset>
+                        <url>
+                            <loc>' . request()->root(true) . '</loc>
+                            <priority>1.00</priority>
+                            <lastmod>' . date('Y-m-d H:i:s') . '</lastmod>
+                            <changefreq>weekly</changefreq>
+                        </url>';
+
+        $result =
+        db()->field(['id', 'category_id', 'update_time', 'create_time'])
+        ->table('np_article')
+        ->union(function($query){
+            $query->field(['id', 'category_id', 'update_time', 'create_time'])
+            ->table('np_picture')
+            ->where([
+                ['is_pass', '=', 1],
+                ['show_time', '<=', time()]
+            ]);
+        })
+        ->union(function($query){
+            $query->field(['id', 'category_id', 'update_time', 'create_time'])
+            ->table('np_download')
+            ->where([
+                ['is_pass', '=', 1],
+                ['show_time', '<=', time()]
+            ]);
+        })
+        ->union(function($query){
+            $query->field(['id', 'category_id', 'update_time', 'create_time'])
+            ->table('np_product')
+            ->where([
+                ['is_pass', '=', 1],
+                ['show_time', '<=', time()]
+            ]);
+        })
+        ->select();
+        print_r($result);die();
+
+        $map = [
+            ['a.is_pass', '=', 1],
+            ['a.show_time', '<=', time()]
+        ];
+
+        $result =
+        model('common/article')
+        ->view('article a', ['id', 'category_id', 'update_time', 'create_time'])
+        ->view('category c', ['name' => 'category_name'], 'c.id=a.category_id')
+        ->view('model m', ['name' => 'model_tablename'], 'm.id=c.model_id')
+        ->where($map)
+        ->order('id DESC')
+        ->select();
+        foreach ($result as $key => $value) {
+            $url = url($value->model_tablename . '/' . $value->category_id . '/' . $value->id);
+            $url = str_replace('/index/', '/', $url);
+
+            if ($value->update_time) {
+                $lastmod = $value->update_time;
+            } elseif ($value->create_time) {
+                $lastmod = date('Y-m-d H:i:s', $value->create_time);
+            } else {
+                $lastmod = date('Y-m-d H:i:s', time());
+            }
+
+            $xml .= '<url>
+                        <loc>' . $url . '</loc>
+                        <priority>0.50</priority>
+                        <lastmod>' . $lastmod . '</lastmod>
+                        <changefreq>weekly</changefreq>
+                    </url>';
+        }
+
+
+
+        $xml .= '</urlset>';
+
+        print_r($xml);die();
+    }
+
     /**
-     * 写入搜索日志
+     * 记录搜索蜘蛛访问日志
      * @access public
      * @param
      * @return void

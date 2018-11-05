@@ -39,19 +39,39 @@ class Siteinfo
             $data[$value['name']] = $value['value'];
         }
 
-        $result = logic('cms/breadcrumb')->query();
-        foreach ($result as $key => $value) {
-            $data['website_name'] = $value['name'] . ' - ' . $data['website_name'];
-        }
-        $result = end($result);
-        if (!empty($result['seo_title'])) {
-            $data['website_name'] = $result['seo_title'] . ' - ' . $data['website_name'];
-        }
-        if (!empty($result['seo_keywords'])) {
-            $data['website_keywords'] = $result['seo_keywords'];
-        }
-        if (!empty($result['seo_description'])) {
-            $data['website_description'] = $result['seo_description'];
+        if ($result = logic('book/article')->query()) {
+            $res =
+            model('common/book')
+            ->field(['name', 'seo_title', 'seo_keywords', 'seo_description'])
+            ->where([
+                ['id', '=', input('param.bid/f')],
+                ['is_show', '=', 1],
+                ['is_pass', '=', 1],
+            ])
+            ->find()
+            ->toArray();
+
+            $data['website_name'] = $data['website_name'];
+
+            if ($res['seo_title']) {
+                $data['website_name'] = $res['seo_title'] . ' - ' . $data['website_name'];
+            } else {
+                $data['website_name'] = $res['name'] . ' - ' . $data['website_name'];
+            }
+
+            $data['website_name'] = $result['title'] . ' - ' . $data['website_name'];
+
+            if ($res['seo_keywords']) {
+                $data['website_keywords'] = $res['seo_keywords'];
+            } else {
+                $data['website_keywords'] = $result['title'] . ',' . $res['name'];
+            }
+
+            if ($res['seo_description']) {
+                $data['website_description'] = $res['seo_description'];
+            } else {
+                $data['website_description'] = $result['title'] . ',' . $res['name'];
+            }
         }
 
         return $data;

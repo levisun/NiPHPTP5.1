@@ -122,7 +122,7 @@ class Databack extends Model
      * @param  integer $_limit
      * @return boolean
      */
-    public function backup($_limit = 1000)
+    public function backup($_limit = 500)
     {
         set_time_limit(0);
         ini_set('memory_limit', '128M');

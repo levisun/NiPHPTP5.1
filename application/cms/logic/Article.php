@@ -48,9 +48,11 @@ class Article
         ->find();
 
         if ($result) {
-            $result = $result->toArray();
-            $result['content'] = htmlspecialchars_decode($result['content']);
-            $result['flag'] = encrypt($result['id']);
+            $result->flag = encrypt($result->id);
+            $result->title = htmlspecialchars_decode($result->title);
+            $result->content = htmlspecialchars_decode($result->content);
+
+
 
             // 查询自定义字段
             $fields =
@@ -58,47 +60,49 @@ class Article
             ->view($table_name . '_data d', 'data')
             ->view('fields f', ['name' => 'fields_name'], 'f.id=d.fields_id')
             ->where([
-                ['d.main_id', '=', $result['id']],
+                ['d.main_id', '=', $result->id],
             ])
-            ->cache(!APP_DEBUG ? 'ARTICLE FDM' . $result['id'] : false)
+            ->cache(!APP_DEBUG ? 'ARTICLE FDM' . $result->id : false)
             ->select()
             ->toArray();
             foreach ($fields as $val) {
-                $result[$val['fields_name']] = $val['data'];
+                $result->$val['fields_name'] = $val['data'];
             }
+
+
 
             // 查询相册
             if (in_array($table_name, ['picture', 'product'])) {
-                $result['albums'] =
+                $result->albums =
                 model('common/' . $table_name . 'Album')
                 ->field(true)
                 ->where([
-                    ['main_id', '=', $result['id']],
+                    ['main_id', '=', $result->id],
                 ])
-                ->cache(!APP_DEBUG ? 'ARTICLE FAM' . $result['id'] : false)
+                ->cache(!APP_DEBUG ? 'ARTICLE FAM' . $result->id : false)
                 ->select()
                 ->toArray();
             }
 
+
+
             // 查询标签
-            $result['tags'] =
+            $result->tags =
             model('common/tagsArticle')
             ->view('tags_article a', ['tags_id'])
             ->view('tags t', ['name'], 't.id=a.tags_id')
             ->where([
-                ['a.category_id', '=', $result['category_id']],
-                ['a.article_id', '=', $result['id']],
+                ['a.category_id', '=', $result->category_id],
+                ['a.article_id', '=', $result->id],
             ])
-            ->cache(!APP_DEBUG ? 'ARTICLE FTCA' . $result['category_id'] . $result['id'] : false)
+            ->cache(!APP_DEBUG ? 'ARTICLE FTCA' . $result['category_id'] . $result->id : false)
             ->select()
             ->toArray();
 
             // 上一篇
             if (in_array($table_name, ['article', 'download', 'picture', 'product'])) {
-                $result['oth'] = [
-                    'prev' => $this->previous($_id, $_cid, $table_name),
-                    'next' => $this->next($_id, $_cid, $table_name),
-                ];
+                $result->prev = $this->previous($_id, $_cid, $table_name);
+                $result->next = $this->next($_id, $_cid, $table_name);
             }
 
             // 更新浏览数
@@ -111,11 +115,11 @@ class Article
             ])
             ->setInc('hits', 1);
 
-            if (!$this->checkAccess($result['access_id'])) {
+            if (!$this->checkAccess($result->access_id)) {
                 $result = 'not access';
             }
 
-            return $result;
+            return $result->toArray();;
         } else {
             return false;
         }

@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS `np_book_author`;
+CREATE TABLE IF NOT EXISTS `np_book` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL DEFAULT '' COMMENT '笔名',
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='作者';
+
 DROP TABLE IF EXISTS `np_book`;
 CREATE TABLE IF NOT EXISTS `np_book` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -7,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `np_book` (
   `seo_description` varchar(555) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '封面',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
-  `user_id` smallint(6) unsigned NOT NULL COMMENT '作者ID',
+  `author_id` smallint(6) unsigned NOT NULL COMMENT '作者ID',
   `is_show` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '显示',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `is_com` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐',
@@ -23,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `np_book` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `type_id` (`type_id`),
-  KEY `user_id` (`user_id`),
+  KEY `author_id` (`author_id`),
   KEY `is_show` (`is_show`),
   KEY `is_pass` (`is_pass`),
   KEY `is_com` (`is_com`),

@@ -36,6 +36,7 @@ class Article
 
         if ($result) {
             $result->flag = encrypt($result->id);
+            $result->title = htmlspecialchars_decode($result->title);
             $result->content = htmlspecialchars_decode($result->content);
 
             $result->prev = $this->previous(input('param.id/f'), input('param.bid/f'));
@@ -80,7 +81,7 @@ class Article
 
         if ($result) {
             $result->flag = encrypt($result->id);
-
+            $result->title = htmlspecialchars_decode($result->title);
             $result->url = url('article/' . $result->book_id . '/' . $result->id);
             $result->url = str_replace('/index/', '/', $result->url);
 
@@ -123,7 +124,7 @@ class Article
 
         if ($result) {
             $result->flag = encrypt($result->id);
-
+            $result->title = htmlspecialchars_decode($result->title);
             $result->url = url('article/' . $result->book_id . '/' . $result->id);
             $result->url = str_replace('/index/', '/', $result->url);
 

@@ -15,6 +15,7 @@ Route::pattern([
     'operate' => '\w+',
     'code'    => '\d+',
     'cid'     => '\d+',
+    'bid'     => '\d+',
     'pid'     => '\d+',
     'id'      => '\d+',
     'p'       => '\d+',

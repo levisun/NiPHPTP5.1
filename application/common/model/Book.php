@@ -13,6 +13,7 @@
 namespace app\common\model;
 
 use think\Model;
+use think\model\concern\SoftDelete;
 
 class Book extends Model
 {

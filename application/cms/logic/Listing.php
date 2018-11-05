@@ -47,10 +47,6 @@ class Listing
      */
     private function feedbackAndMessage($_cid, $_table_name)
     {
-        if ($data = cache('ARTICLE QCI' . $_cid)) {
-            return $data;
-        }
-
         $fields = [
             'id',
             'category_id',
@@ -80,6 +76,7 @@ class Listing
 
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
+            $result[$key]->title = htmlspecialchars_decode($value->title);
 
             $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
@@ -102,7 +99,7 @@ class Listing
 
         $list = $result->toArray();
 
-        $data = [
+        return [
             'list'         => $list['data'],
             'total'        => $list['total'],
             'per_page'     => $list['per_page'],
@@ -110,12 +107,6 @@ class Listing
             'last_page'    => $list['last_page'],
             'page'         => $result->render(),
         ];
-
-        if (!APP_DEBUG) {
-            cache('ARTICLE QCI' . $_cid, $data);
-        }
-
-        return $data;
     }
 
     /**
@@ -127,10 +118,6 @@ class Listing
      */
     private function pictureAndProduct($_cid, $_table_name)
     {
-        if ($data = cache('ARTICLE QCI' . $_cid)) {
-            return $data;
-        }
-
         $fields = [
             'id',
             'category_id',
@@ -172,6 +159,7 @@ class Listing
 
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
+            $result[$key]->title = htmlspecialchars_decode($value->title);
 
             if ($value->is_link) {
                 $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
@@ -223,7 +211,7 @@ class Listing
 
         $list = $result->toArray();
 
-        $data = [
+        return [
             'list'         => $list['data'],
             'total'        => $list['total'],
             'per_page'     => $list['per_page'],
@@ -231,12 +219,6 @@ class Listing
             'last_page'    => $list['last_page'],
             'page'         => $result->render(),
         ];
-
-        if (!APP_DEBUG) {
-            cache('ARTICLE QCI' . $_cid, $data);
-        }
-
-        return $data;
     }
 
     /**
@@ -248,10 +230,6 @@ class Listing
      */
     private function articleAndDownload($_cid, $_table_name)
     {
-        if ($data = cache('ARTICLE QCI' . $_cid)) {
-            return $data;
-        }
-
         $fields = [
             'id',
             'category_id',
@@ -293,6 +271,7 @@ class Listing
 
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
+            $result[$key]->title = htmlspecialchars_decode($value->title);
 
             if ($value->is_link) {
                 $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
@@ -333,7 +312,7 @@ class Listing
 
         $list = $result->toArray();
 
-        $data = [
+        return [
             'list'         => $list['data'],
             'total'        => $list['total'],
             'per_page'     => $list['per_page'],
@@ -341,12 +320,6 @@ class Listing
             'last_page'    => $list['last_page'],
             'page'         => $result->render(),
         ];
-
-        if (!APP_DEBUG) {
-            cache('ARTICLE QCI' . $_cid, $data);
-        }
-
-        return $data;
     }
 
     /**
@@ -376,6 +349,7 @@ class Listing
 
         foreach ($result as $key => $value) {
             $result[$key]->flag   = encrypt($value->id);
+            $result[$key]->title = htmlspecialchars_decode($value->title);
 
             $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);

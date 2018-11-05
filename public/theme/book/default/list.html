@@ -1,5 +1,27 @@
-{foreach $data.list as $key => $vo}
-<li><a href="{$vo.url}">{$vo.title}</a></li>
-{/foreach}
+<table id="listing" class="table table-striped">
 
-{$data.page|raw}
+</table>
+<div id="paging"></div>
+{label:list}
+var html = "";
+for(index in list){
+    var data = list[index];
+    html += "<tr>";
+    html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
+    html += "<td>" + data.create_time + "</td>";
+    html += "</tr>";
+}
+$("#listing").append(html);
+{/label:list}
+
+{label:more}
+var html = "";
+for(index in list){
+    var data = list[index];
+    html += "<tr>";
+    html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
+    html += "<td>" + data.create_time + "</td>";
+    html += "</tr>";
+}
+$("#listing").append(html);
+{/label:more}

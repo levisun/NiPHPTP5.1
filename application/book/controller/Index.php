@@ -33,7 +33,7 @@ class Index extends Base
      */
     public function entry()
     {
-        $this->assign('data', logic('book/listing')->query());
+        // $this->assign('data', logic('book/listing')->query());
         return $this->fetch('list');
     }
 

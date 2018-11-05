@@ -22,7 +22,7 @@ class ViewFilter
 
     function __construct()
     {
-        $this->siteInfo = logic('cms/siteinfo')->query();
+        $this->siteInfo = logic(request()->module() . '/siteinfo')->query();
         $this->template = config('template.');
 
         $this->analysisConfig();
