@@ -141,7 +141,7 @@ function request_block()
     }
 
     // 阻挡资源类型请求
-    if (!in_array(request()->ext(), ['do', 'html', 'htm'])) {
+    if (!in_array(request()->ext(), ['', 'do', 'html', 'htm'])) {
         return true;
     }
 
@@ -517,6 +517,7 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql 
             // 安全字符
             '/(#)+/si'   => '&#35;',
             '/(\!)+/si'  => '&#33;',
+            '/(\?)+/si'  => '&#129;',
             '/(=)+/si'   => '&#61;',
             '/(\|)+/si'  => '&#124;',
             '/(\*)+/si'  => '&#42;',
@@ -525,6 +526,7 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql 
             '/(~)+/si'   => '&#126;',
             '/(‚)+/si'   => '&sbquo;',
             '/(\^)+/si'  => '&#94;',
+            '/(\@)+/si'  => '&#64;',
         ];
         $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
     }

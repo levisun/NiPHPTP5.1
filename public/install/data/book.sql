@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `np_book` (
   `seo_description` varchar(555) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '封面',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
-  `author_id` smallint(6) unsigned NOT NULL COMMENT '作者ID',
+  `author_id` int(6) unsigned NOT NULL DEFAULT '0' COMMENT '作者ID',
   `is_show` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '显示',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `is_com` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐',
@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS `np_book_type` (
 DROP TABLE IF EXISTS `np_book_article`;
 CREATE TABLE IF NOT EXISTS `np_book_article` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `book_id` int(11) unsigned NOT NULL COMMENT '书ID',
   `title` varchar(255) NOT NULL COMMENT '标题',
   `content` mediumtext NOT NULL COMMENT '内容',
-  `book_id` smallint(6) unsigned NOT NULL COMMENT '书ID',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
@@ -64,7 +64,6 @@ CREATE TABLE IF NOT EXISTS `np_book_article` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   `delete_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '删除时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `access_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '访问权限',
   PRIMARY KEY (`id`),
   KEY `book_id` (`book_id`),
   KEY `is_pass` (`is_pass`),

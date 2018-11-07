@@ -24,6 +24,7 @@ class Book
     {
         $result =
         model('common/book')
+        ->field(['id', 'name', 'hits', 'update_time'])
         ->where([
             ['is_show', '=', 1],
             ['is_pass', '=', 1],

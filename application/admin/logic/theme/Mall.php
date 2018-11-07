@@ -12,7 +12,7 @@
  */
 namespace app\admin\logic\theme;
 
-class Theme
+class Mall
 {
 
     /**

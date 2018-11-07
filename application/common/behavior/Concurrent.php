@@ -30,6 +30,7 @@ class Concurrent
             // 拦截频繁请求
             // 拦截非法请求
             if ($this->intercept()) {
+                trace('[INTERCEPT]', 'alert');
                 abort(502);
             }
             return true;
@@ -71,9 +72,9 @@ class Concurrent
         if (cache('?' . $ip)) {
             $result = cache($ip);
 
-            if ($result['total'] > 100) {
+            if ($result['total'] > 50) {
                 return true;
-            } elseif ($result['total'] >= 100) {
+            } elseif ($result['total'] >= 50) {
                 $result['total'] = $result['total'] + 1;
                 $result['time']  = strtotime(date('Y-m-d 23:59:59'));
             } elseif (time() <= $result['time']) {

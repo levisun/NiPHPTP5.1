@@ -8,7 +8,7 @@ for(index in list){
     var data = list[index];
     html += "<tr>";
     html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
-    html += "<td>" + data.create_time + "</td>";
+    html += "<td>" + data.update_time + "</td>";
     html += "</tr>";
 }
 $("#listing").append(html);
@@ -20,7 +20,7 @@ for(index in list){
     var data = list[index];
     html += "<tr>";
     html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
-    html += "<td>" + data.create_time + "</td>";
+    html += "<td>" + data.update_time + "</td>";
     html += "</tr>";
 }
 $("#listing").append(html);

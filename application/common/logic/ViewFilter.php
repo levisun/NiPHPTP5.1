@@ -33,13 +33,17 @@ class ViewFilter
         $replace = [
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
-            '/<\!--.*?-->/si',                          // HTML注释
-            '/(\/\*).*?(\*\/)/si',                      // JS注释
-            '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',          // JS注释
         ];
         if (!APP_DEBUG) {
-            $replace[] = '/( ){2,}/si';         // 空格
-            $replace[] = '/(\r|\n|\f)/si';      // 回车
+            // $replace[] = '/<\!--.*?-->/si';                                     // HTML注释
+            // $replace[] = '/(\/\*).*?(\*\/)/si';                                 // JS注释
+            // $replace[] = '/(\r|\n| )+(\/\/).*?(\r|\n)+/si';                     // JS注释
+            $replace[] = '/( ){2,}/si';                                         // 空格
+            // $replace[] = '/(\r|\n|\f)/si';                                      // 回车
+            $replace[] = '/(\f)/si';
+            $replace[] = '/(\r\n){2,}/si';
+            $replace[] = '/(\r){2,}/si';
+            $replace[] = '/(\n){2,}/si';
         }
         $_content = preg_replace($replace, '', $_content);
         $_content = $this->head($_content);
@@ -60,7 +64,6 @@ class ViewFilter
     private function foot($_content)
     {
         $foot  = '';
-        $foot .= '<div style="text-align: center;"><a href="http://www.NiPHP.com" target="_blank">Powered by NiPHP' . NP_VERSION . '</a></div>';
 
         // 插件加载
         if (!empty($this->config['hook'])) {
@@ -70,7 +73,8 @@ class ViewFilter
         }
 
         $foot .= '<script type="text/javascript">';
-        $foot .= 'console.log("Author NiPHP\nCopyright © 2013-' . date('Y') . ' by NiPHP");';
+        $foot .= 'console.log("Powered by NiPHP ' . NP_VERSION . ' Copyright © 2013-' . date('Y') . '");';
+        $foot .= 'console.log("http://www.NiPHP.com");';
         $foot .= '</script>';
         $foot .= '</body><html>';
 
@@ -103,7 +107,7 @@ class ViewFilter
                  '<meta name="robots" content="all" />' .
                  '<meta name="renderer" content="webkit" />' .
                  // '<meta http-equiv="Cache-Control" content="no-siteapp" />' .
-                 '<title>' . $this->siteInfo['website_name'] . ' Powered by NiPHP</title>' .
+                 '<title>' . $this->siteInfo['website_name'] . ' - Powered by NiPHP</title>' .
                  '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' .
                  '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' .
                  '<link rel="dns-prefetch" href="' . request()->domain() . '" />';

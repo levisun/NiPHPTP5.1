@@ -101,6 +101,7 @@ class Api extends Async
                 $this->class,
                 $this->action
             )) {
+                trace('[NO AUTHORITY] ' . $this->layer . $this->class . $this->action, 'warning');
                 abort(404);
             }
         }

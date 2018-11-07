@@ -25,6 +25,7 @@ class Article
     {
         $result =
         model('common/BookArticle')
+        ->field(['id', 'book_id', 'title', 'content', 'hits', 'update_time'])
         ->where([
             ['id', '=', input('param.id/f')],
             ['book_id', '=', input('param.bid/f')],
@@ -106,7 +107,7 @@ class Article
             ['is_pass', '=', 1],
             ['show_time', '<=', time()],
             ['book_id', '=', $_bid],
-            ['id', '>', $_id]
+            ['id', '<', $_id]
         ])
         ->order('id DESC')
         ->max('id');

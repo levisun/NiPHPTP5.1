@@ -132,18 +132,20 @@ class Label extends TagLib
     public function tagMore($_tag, $_content)
     {
         $_tag['bid'] = !empty($_tag['bid']) ? (float) $_tag['bid'] : '{:input("param.bid/f")}';
-        $cont = $_content;
+        $time = time();
         $parseStr = '<script type="text/javascript">
             jQuery(function(){
                 jQuery.loadMore({
                     url: request.api.query,
                     type: "get",
                     data: {
-                        method: "listing.query",
-                        bid:    "' . $_tag['bid'] . '",
+                        method:    "listing.query",
+                        timestamp: "' . $time . '",
+                        bid:       "' . $_tag['bid'] . '",
                         sign:   jQuery.sign({
-                            method: "listing.query",
-                            bid:    "' . $_tag['bid'] . '",
+                            method:    "listing.query",
+                            timestamp: "' . $time . '",
+                            bid:       "' . $_tag['bid'] . '",
                         })
                     }
                 }, function(result){

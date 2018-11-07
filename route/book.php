@@ -28,4 +28,4 @@ Route::domain('book', function(){
     })->prefix('api/');
 })
 ->bind('book')
-->cache(APP_DEBUG ? false : 28800);
+->cache(APP_DEBUG ? false : 1200);

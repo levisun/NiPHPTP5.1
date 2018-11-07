@@ -39,7 +39,7 @@ class Sidebar
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort ASC, id DESC')
-        ->cache(!APP_DEBUG ? 'SIDEBAR QI' . $id : false)
+        ->cache(!APP_DEBUG ? 'SIDEBAR QUERY' . $id : false)
         ->select()
         ->toArray();
 
@@ -70,7 +70,7 @@ class Sidebar
                 ['pid', '=', $value['id']]
             ])
             ->order('sort ASC, id DESC')
-            ->cache(!APP_DEBUG ? 'SIDEBAR QCP' . $value['id'] : false)
+            ->cache(!APP_DEBUG ? 'SIDEBAR QUERYCHILD' . $value['id'] : false)
             ->select()
             ->toArray();
 
@@ -101,7 +101,7 @@ class Sidebar
             ['lang', '=', lang(':detect')],
         ])
         ->order('sort ASC, id DESC')
-        ->cache(!APP_DEBUG ? 'SIDEBAR QPI' . $_id : false)
+        ->cache(!APP_DEBUG ? 'SIDEBAR QUERYPARENT' . $_id : false)
         ->find();
 
         $result = $result ? $result->toArray() : [];

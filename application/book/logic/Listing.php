@@ -23,12 +23,9 @@ class Listing
      */
     public function query()
     {
-        if ($data = cache('BOOKARTICLE QBI' . input('param.bid/f'))) {
-            return $data;
-        }
-
         $result =
         model('common/BookArticle')
+        ->field(['id', 'title', 'book_id', 'update_time'])
         ->where([
             ['book_id', '=', input('param.bid/f')],
             ['is_pass', '=', 1],
@@ -54,10 +51,6 @@ class Listing
             'last_page'    => $list['last_page'],
             'page'         => $result->render(),
         ];
-
-        if (!APP_DEBUG) {
-            cache('BOOKARTICLE QBI' . input('param.bid/f'), $data);
-        }
 
         return $data;
     }

@@ -39,7 +39,7 @@ class Siteinfo
             $data[$value['name']] = $value['value'];
         }
 
-        if ($result = logic('book/article')->query()) {
+        if (input('param.bid/f')) {
             $res =
             model('common/book')
             ->field(['name', 'seo_title', 'seo_keywords', 'seo_description'])
@@ -58,7 +58,9 @@ class Siteinfo
             } else {
                 $data['website_name'] = $res['name'] . ' - ' . $data['website_name'];
             }
+        }
 
+        if (input('param.id/f') && $result = logic('book/article')->query()) {
             $data['website_name'] = $result['title'] . ' - ' . $data['website_name'];
 
             if ($res['seo_keywords']) {

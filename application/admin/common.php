@@ -104,3 +104,27 @@ function create_action_log($_msg, $_action = '')
     ->where($map)
     ->delete();
 }
+
+/**
+ * 过滤模板多余回车,空格与注释
+ * @param  string $_content
+ * @return string
+ */
+function view_filter($_content)
+{
+    if (!APP_DEBUG) {
+        $_content = preg_replace([
+            // '/<\!--.*?-->/si',
+            // '/(\/\*).*?(\*\/)/si',
+            // '/(\r|\n| )+(\/\/).*?(\r|\n)+/si',
+            '/( ){2,}/si',
+            '/(\f)/si',
+            '/(\r\n){2,}/si',
+            '/(\r){2,}/si',
+            '/(\n){2,}/si',
+            // '/(\r|\n|\f)/si'
+        ], '', $_content);
+    }
+
+    return $_content;
+}

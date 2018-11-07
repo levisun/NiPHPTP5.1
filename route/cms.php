@@ -44,4 +44,4 @@ Route::domain(['www', 'm'], function(){
     })->prefix('api/');
 })
 ->bind('cms')
-->cache(APP_DEBUG ? false : 28800);
+->cache(APP_DEBUG ? false : 1200);

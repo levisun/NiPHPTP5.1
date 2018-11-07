@@ -19,6 +19,8 @@ class Async
 {
     protected $moduleName;                                                      // 模块名
 
+    protected $api_key;
+    protected $secrity_key;
     protected $sign;                                                            // 签名
     protected $timestamp;                                                       // 请求时间
     protected $format      = 'json';                                            // 返回数据类型[json|pjson|xml]
@@ -101,8 +103,8 @@ class Async
 
         if (!hash_equals($str, $this->sign)) {
             $this->debugMsg['sign'] = $str;
-
-            $this->error('sign error');
+            trace('[SIGN ERROR] ' . $this->sign . '::' . $str, 'alert');
+            $this->error('SIGN ERROR');
         }
     }
 
@@ -144,16 +146,16 @@ class Async
 
         if (!is_file($file_path)) {
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-
-            $this->error('[METHOD] parameter error');
+            trace('[METHOD PARAMETER ERROR] ' . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist', 'alert');
+            $this->error('[METHOD PARAMETER ERROR]');
         }
 
         // 检查方法是否存在
         $this->logicObject = logic($this->moduleName . '/' . $this->layer . '/' . $this->class);
         if (!method_exists($this->logicObject, $this->action)) {
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-
-            $this->error('[METHOD] parameter error');
+            trace('[METHOD PARAMETER ERROR] ' . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist', 'alert');
+            $this->error('[METHOD PARAMETER ERROR]');
         }
     }
 
@@ -200,7 +202,7 @@ class Async
         $result = [
             'code' => $_code,
             'msg'  => $_msg,
-            'time' => request()->server('REQUEST_TIME'),
+            'time' => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
             'data' => $_data,
         ];
 
@@ -228,18 +230,8 @@ class Async
             ];
         }
 
-        // 浏览器页面缓存数据
-        // 有时间戳并且非调试模式开启
-        elseif (!$this->timestamp && !$this->apiDebug) {
-            $header = [
-                'pragma'        => 'cache',
-                'cache-control' => 'max-age=1200,must-revalidate',
-                'expires'       => gmdate('D, d M Y H:i:s', request()->server('REQUEST_TIME') + 1200) . ' GMT',
-                'last-modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-            ];
-        }
+        $response = Response::create($result, $this->format, 200)->allowCache(!APP_DEBUG);
 
-        $response = Response::create($result, $this->format, 200, $header)->allowCache(false);
         throw new HttpResponseException($response);
     }
 
@@ -287,6 +279,8 @@ class Async
         );
 
         if (!cookie('?_ASYNCTOKEN' . $salt) or !hash_equals($http_referer, cookie('_ASYNCTOKEN' . $salt))) {
+            trace('[_ASYNCTOKEN' . $salt . '] ' . $http_referer, 'alert');
+            trace('[COOKIE::_ASYNCTOKEN' . $salt . '] ' . cookie('_ASYNCTOKEN' . $salt), 'alert');
             abort(404);
         }
     }

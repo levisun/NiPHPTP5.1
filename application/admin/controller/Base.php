@@ -25,6 +25,7 @@ class Base extends Controller
         $template = get_template_config(config('default_theme'));
         config('template.view_path', $template['view_path']);
         $this->engine($template);
+        $this->filter('view_filter');
 
         if (session('?' . config('user_auth_key'))) {
             // 用户信息

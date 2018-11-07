@@ -32,6 +32,8 @@ class Visit
         $this->addedVisit();
         $this->addedSearchengine();
         // $this->createSitemap();
+
+        // file_get_contents(url('api/getipinfo', ['ip' => '8.8.8.8']));
     }
 
     /**

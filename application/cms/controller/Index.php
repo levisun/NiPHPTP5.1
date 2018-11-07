@@ -152,7 +152,7 @@ class Index extends Base
         return false;
     }
 
-    public function caiji($_url = '/wapbook/4301_5132245.html', $_num = 0)
+    public function caiji($_url = '/wapbook/326_260820.html', $_num = 0)
     {
         if ($_num >= 50) {
             die();
@@ -198,10 +198,12 @@ class Index extends Base
         ], ['', '', '</p><p>'], $content);
         $content = str_replace('<br/>', '', $content);
 
+        $book_id = 2;
+
         $add_data = [
             'title'   => $title,
             'content' => $content,
-            'book_id' => 1,
+            'book_id' => $book_id,
             'is_pass' => 1,
             'show_time' => time(),
         ];
@@ -217,7 +219,8 @@ class Index extends Base
         model('common/BookArticle')
         ->field(['id'])
         ->where([
-            ['title', '=', $add_data['title']]
+            ['title', '=', $add_data['title']],
+            ['book_id', '=', $book_id]
         ])
         ->find();
         if (!$has) {

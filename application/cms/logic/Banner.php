@@ -31,7 +31,7 @@ class Banner
             ['id', '=', $_slide_id],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'BANNER QI' . $_slide_id : false)
+        ->cache(!APP_DEBUG ? 'BANNER QUERY' . $_slide_id : false)
         ->find();
 
         if (is_null($parent)) {
@@ -45,7 +45,7 @@ class Banner
             ['pid', '=', $parent['id']],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'BANNER QP' . $parent['id'] : false)
+        ->cache(!APP_DEBUG ? 'BANNER QUERY PARENT' . $parent['id'] : false)
         ->select()
         ->toArray();
 
