@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS `np_banner`;
 CREATE TABLE IF NOT EXISTS `np_banner` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
-  `name` varchar(255) NOT NULL COMMENT '幻灯片名',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '幻灯片名',
   `title` varchar(255) NOT NULL DEFAULT '' COMMENT '图片标题',
   `width` smallint(4) NOT NULL DEFAULT '0' COMMENT '图片宽',
   `height` smallint(4) NOT NULL DEFAULT '0' COMMENT '图片高',

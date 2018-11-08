@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS `np_searchengine`;
 CREATE TABLE IF NOT EXISTS `np_searchengine` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `date` int(11) NOT NULL COMMENT '日期',
-  `name` varchar(20) NOT NULL COMMENT '搜索引擎名',
+  `date` int(11) NOT NULL DEFAULT '' COMMENT '日期',
+  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '搜索引擎名',
   `user_agent` varchar(255) NOT NULL DEFAULT '' COMMENT '访问agent',
   `count` int(11) unsigned NOT NULL DEFAULT '1' COMMENT '统计数量',
   PRIMARY KEY (`id`),
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `np_searchengine` (
 DROP TABLE IF EXISTS `np_visit`;
 CREATE TABLE IF NOT EXISTS `np_visit` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `date` int(11) NOT NULL COMMENT '日期',
+  `date` int(11) NOT NULL DEFAULT '' COMMENT '日期',
   `ip` varchar(15) NOT NULL DEFAULT '' COMMENT '访问IP',
   `ip_attr` varchar(255) NOT NULL DEFAULT '' COMMENT '访问IP地区',
   `user_agent` varchar(255) NOT NULL DEFAULT '' COMMENT '访问agent',

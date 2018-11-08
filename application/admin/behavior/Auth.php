@@ -24,6 +24,8 @@ class Auth
      */
     public function run()
     {
+        if (request()->ext() !== 'do') abort(404);
+
         $module     = strtolower(request()->module());
         $controller = strtolower(request()->controller());
         $action     = strtolower(request()->action());

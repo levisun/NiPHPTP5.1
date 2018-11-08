@@ -427,9 +427,10 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql 
 {
     if (is_array($_content)) {
         foreach ($_content as $key => $value) {
-            if (!empty($value)) {
-                $_content[trim($key)] = safe_filter($value, $_hs, $_hxp, $_rn, $_sql, $_script);
-            }
+            $key = trim($key);
+            $value = !empty($value) ? safe_filter($value, $_hs, $_hxp, $_rn, $_sql, $_script) : $value;
+
+            $_content[$key] = $value;
         }
         return $_content;
     }
@@ -475,127 +476,70 @@ function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql 
     ], '', $_content);
 
     // 过滤JS脚本
-    if ($_script === true) {
-        $_content = preg_replace([
-            '/on([a-zA-Z0-9]*?)(=)["|\'](.*?)["|\']/si',
-            '/(javascript:)(.*?)(\))/si',
-            '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si',
-            '/<(\/?javascript.*?)>/si',
-            '/<(script.*?)>(.*?)<(\/script.*?)>/si',
-            '/<(\/?script.*?)>/si',
-            '/<(applet.*?)>(.*?)<(\/applet.*?)>/si',
-            '/<(\/?applet.*?)>/si',
-            '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si',
-            '/<(\/?vbscript.*?)>/si',
-            '/<(expression.*?)>(.*?)<(\/expression.*?)>/si',
-            '/<(\/?expression.*?)>/si',
-        ], '', $_content);
-    }
+    $_content = $_script === true ? preg_replace([
+        '/on([a-zA-Z0-9]*?)(=)["|\'](.*?)["|\']/si',
+        '/(javascript:)(.*?)(\))/si',
+        '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si', '/<(\/?javascript.*?)>/si',
+        '/<(script.*?)>(.*?)<(\/script.*?)>/si',         '/<(\/?script.*?)>/si',
+        '/<(applet.*?)>(.*?)<(\/applet.*?)>/si',         '/<(\/?applet.*?)>/si',
+        '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si',     '/<(\/?vbscript.*?)>/si',
+        '/<(expression.*?)>(.*?)<(\/expression.*?)>/si', '/<(\/?expression.*?)>/si',
+    ], '', $_content) : $_content;
 
     // 过滤SQL关键词
-    if ($_sql === true) {
-        $pattern = [
-            '/(and )/si'     => '&#97;nd ',
-            // '/(between)/si'  => '&#98;etween',
-            // '/(chr)/si'      => '&#99;hr',
-            // '/(char)/si'     => '&#99;har',
-            // '/(count )/si'   => '&#99;ount ',
-            '/(create)/si'   => '&#99;reate',
-            // '/(declare)/si'  => '&#100;eclare',
-            '/(delete)/si'   => '&#100;elete',
-            // '/(execute)/si'  => '&#101;xecute',
-            // '/(insert)/si'   => '&#105;nsert',
-            // '/(join)/si'     => '&#106;oin',
-            '/(update)/si'   => '&#117;pdate',
-            // '/(master)/si'   => '&#109;aster',
-            // '/(mid )/si'     => '&#109;id ',
-            '/(or )/si'      => '&#111;r ',
-            // '/(select)/si'   => '&#115;elect',
-            // '/(truncate)/si' => '&#116;runcate',
-            // '/(where)/si'    => '&#119;here',
+    $pattern = [
+        '/(and )/si'     => '&#97;nd ',    '/(create)/si'   => '&#99;reate',
+        '/(delete)/si'   => '&#100;elete', '/(update)/si'   => '&#117;pdate',
+        '/(or )/si'      => '&#111;r ',
 
-            // 安全字符
-            '/(#)+/si'   => '&#35;',
-            '/(\!)+/si'  => '&#33;',
-            '/(\?)+/si'  => '&#129;',
-            '/(=)+/si'   => '&#61;',
-            '/(\|)+/si'  => '&#124;',
-            '/(\*)+/si'  => '&#42;',
-            '/(`)+/si'   => '&acute;',
-            '/(\\\)+/si' => '&#92;',
-            '/(~)+/si'   => '&#126;',
-            '/(‚)+/si'   => '&sbquo;',
-            '/(\^)+/si'  => '&#94;',
-            '/(\@)+/si'  => '&#64;',
-        ];
-        $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
-    }
+        // 安全字符
+        '/(#)+/si'   => '&#35;',   '/(\!)+/si'  => '&#33;',
+        '/(\?)+/si'  => '&#129;',  '/(=)+/si'   => '&#61;',
+        '/(\|)+/si'  => '&#124;',  '/(\*)+/si'  => '&#42;',
+        '/(`)+/si'   => '&acute;', '/(\\\)+/si' => '&#92;',
+        '/(~)+/si'   => '&#126;',  '/(‚)+/si'   => '&sbquo;',
+        '/(\^)+/si'  => '&#94;',   '/(\@)+/si'  => '&#64;',
+    ];
+    $_content = $_sql === true ? preg_replace(array_keys($pattern), array_values($pattern), $_content) : $_content;
 
     // 回车换行空格
-    if ($_rn === true) {
-        $pattern = [
-            '/( ){2,}/si'    => '',
-            '/[\r\n\f]+</si' => '<',
-            '/>[\r\n\f]+/si' => '>',
-        ];
-        $_content = preg_replace(array_keys($pattern), array_values($pattern), $_content);
-    }
+    $pattern = [
+        '/( ){2,}/si'    => '',
+        '/[\r\n\f]+</si' => '<',
+        '/>[\r\n\f]+/si' => '>',
+    ];
+    $_content = $_rn === true ? preg_replace(array_keys($pattern), array_values($pattern), $_content) : $_content;
 
     // 过滤HTML XML PHP标签
-    if ($_hxp === true) {
-        $_content = strip_tags($_content);
-    } else {
-        $_content = preg_replace([
-            // 过滤HTML嵌入
-            '/<(html.*?)>(.*?)<(\/html.*?)>/si',
-            '/<(\/?html.*?)>/si',
-            '/<(head.*?)>(.*?)<(\/head.*?)>/si',
-            '/<(\/?head.*?)>/si',
-            '/<(title.*?)>(.*?)<(\/title.*?)>/si',
-            '/<(\/?title.*?)>/si',
-            '/<(meta.*?)>(.*?)<(\/meta.*?)>/si',
-            '/<(\/?meta.*?)>/si',
-            '/<(body.*?)>(.*?)<(\/body.*?)>/si',
-            '/<(\/?body.*?)>/si',
-            '/<(style.*?)>(.*?)<(\/style.*?)>/si',
-            '/<(\/?style.*?)>/si',
-            '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si',
-            '/<(\/?iframe.*?)>/si',
-            '/<(frame.*?)>(.*?)<(\/frame.*?)>/si',
-            '/<(\/?frame.*?)>/si',
-            '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si',
-            '/<(\/?frameset.*?)>/si',
-            '/<(base.*?)>(.*?)<(\/base.*?)>/si',
-            '/<(\/?base.*?)>/si',
+    $_content = $_hxp === true ? strip_tags($_content) : preg_replace([
+        // 过滤HTML嵌入
+        '/<(html.*?)>(.*?)<(\/html.*?)>/si',         '/<(\/?html.*?)>/si',
+        '/<(head.*?)>(.*?)<(\/head.*?)>/si',         '/<(\/?head.*?)>/si',
+        '/<(title.*?)>(.*?)<(\/title.*?)>/si',       '/<(\/?title.*?)>/si',
+        '/<(meta.*?)>(.*?)<(\/meta.*?)>/si',         '/<(\/?meta.*?)>/si',
+        '/<(body.*?)>(.*?)<(\/body.*?)>/si',         '/<(\/?body.*?)>/si',
+        '/<(style.*?)>(.*?)<(\/style.*?)>/si',       '/<(\/?style.*?)>/si',
+        '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si',     '/<(\/?iframe.*?)>/si',
+        '/<(frame.*?)>(.*?)<(\/frame.*?)>/si',       '/<(\/?frame.*?)>/si',
+        '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si', '/<(\/?frameset.*?)>/si',
+        '/<(base.*?)>(.*?)<(\/base.*?)>/si',         '/<(\/?base.*?)>/si',
 
-            // 过滤HTML危害标签信息
-            '/<(object.*?)>(.*?)<(\/object.*?)>/si',
-            '/<(\/?object.*?)>/si',
-            '/<(xml.*?)>(.*?)<(\/xml.*?)>/si',
-            '/<(\/?xml.*?)>/si',
-            '/<(blink.*?)>(.*?)<(\/blink.*?)>/si',
-            '/<(\/?blink.*?)>/si',
-            '/<(link.*?)>(.*?)<(\/link.*?)>/si',
-            '/<(\/?link.*?)>/si',
-            '/<(embed.*?)>(.*?)<(\/embed.*?)>/si',
-            '/<(\/?embed.*?)>/si',
-            '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',
-            '/<(\/?ilayer.*?)>/si',
-            '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',
-            '/<(\/?layer.*?)>/si',
-            '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',
-            '/<(\/?bgsound.*?)>/si',
-            '/<(form.*?)>(.*?)<(\/form.*?)>/si',
-            '/<(\/?form.*?)>/si',
+        // 过滤HTML危害标签信息
+        '/<(object.*?)>(.*?)<(\/object.*?)>/si',     '/<(\/?object.*?)>/si',
+        '/<(xml.*?)>(.*?)<(\/xml.*?)>/si',           '/<(\/?xml.*?)>/si',
+        '/<(blink.*?)>(.*?)<(\/blink.*?)>/si',       '/<(\/?blink.*?)>/si',
+        '/<(link.*?)>(.*?)<(\/link.*?)>/si',         '/<(\/?link.*?)>/si',
+        '/<(embed.*?)>(.*?)<(\/embed.*?)>/si',       '/<(\/?embed.*?)>/si',
+        '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',     '/<(\/?ilayer.*?)>/si',
+        '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',       '/<(\/?layer.*?)>/si',
+        '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',   '/<(\/?bgsound.*?)>/si',
+        '/<(form.*?)>(.*?)<(\/form.*?)>/si',         '/<(\/?form.*?)>/si',
 
-            '/<\!--.*?-->/si',
-        ], '', $_content);
-    }
+        '/<\!--.*?-->/si',
+    ], '', $_content);
 
     // HTML转义
-    if ($_hs === true) {
-        $_content = htmlspecialchars($_content);
-    }
+    $_content = $_hs === true ? htmlspecialchars($_content) : $_content;
 
     return $_content;
 }

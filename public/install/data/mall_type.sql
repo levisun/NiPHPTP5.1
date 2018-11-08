@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `np_mall_type`;
 CREATE TABLE IF NOT EXISTS `np_mall_type` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
-  `name` varchar(255) NOT NULL COMMENT '分类名',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '图标',
   `is_show` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '显示',
   `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS `np_mall_type` (
 DROP TABLE IF EXISTS `np_mall_brand`;
 CREATE TABLE IF NOT EXISTS `np_mall_brand` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type_id` smallint(6) unsigned NOT NULL COMMENT '分类ID',
-  `name` varchar(255) NOT NULL COMMENT '品牌名',
+  `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '品牌名',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT 'LOGO',
   `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS `np_mall_category`;
 CREATE TABLE IF NOT EXISTS `np_mall_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
-  `name` varchar(255) NOT NULL COMMENT '栏目名',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '栏目名',
   `seo_title` varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO标题',
   `seo_keywords` varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
   `seo_description` varchar(555) NOT NULL DEFAULT '' COMMENT 'SEO描述',

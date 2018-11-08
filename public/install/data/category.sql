@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS `np_category`;
 CREATE TABLE IF NOT EXISTS `np_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
-  `name` varchar(255) NOT NULL COMMENT '栏目名',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '栏目名',
   `aliases` varchar(255) NOT NULL DEFAULT '' COMMENT '别名',
   `seo_title` varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO标题',
   `seo_keywords` varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO关键词',

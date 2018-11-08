@@ -1,12 +1,12 @@
 DROP TABLE IF EXISTS `np_product`;
 CREATE TABLE IF NOT EXISTS `np_product` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL COMMENT '标题',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
   `keywords` varchar(255) NOT NULL DEFAULT '' COMMENT '关键词',
   `description` varchar(500) NOT NULL DEFAULT '' COMMENT '描述',
-  `content` mediumtext NOT NULL COMMENT '内容',
+  `content` mediumtext NOT NULL DEFAULT '' COMMENT '内容',
   `thumb` varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图',
-  `category_id` smallint(6) unsigned NOT NULL COMMENT '栏目ID',
+  `category_id` smallint(6) unsigned NOT NULL DEFAULT '' COMMENT '栏目ID',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `is_com` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐',
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `np_product` (
 DROP TABLE IF EXISTS `np_product_album`;
 CREATE TABLE IF NOT EXISTS `np_product_album` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `main_id` int(11) unsigned NOT NULL COMMENT '图文ID',
+  `main_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '图文ID',
   `thumb` varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '原图',
   PRIMARY KEY (`id`),
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `np_product_album` (
 DROP TABLE IF EXISTS `np_product_data`;
 CREATE TABLE IF NOT EXISTS `np_product_data` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `main_id` int(11) unsigned NOT NULL COMMENT '产品ID',
+  `main_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '产品ID',
   `fields_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `data` text NOT NULL COMMENT '内容',
   PRIMARY KEY (`id`),

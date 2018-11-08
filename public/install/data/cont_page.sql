@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS `np_page`;
 CREATE TABLE IF NOT EXISTS `np_page` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL COMMENT '标题',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
   `keywords` varchar(255) NOT NULL DEFAULT '' COMMENT '关键词',
   `description` varchar(500) NOT NULL DEFAULT '' COMMENT '描述',
-  `content` mediumtext NOT NULL COMMENT '内容',
+  `content` mediumtext NOT NULL DEFAULT '' COMMENT '内容',
   `thumb` varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图',
   `category_id` smallint(6) unsigned NOT NULL COMMENT '栏目ID',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `np_page` (
   `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',
   `comment_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '评论量',
-  `username` varchar(20) NOT NULL COMMENT '作者名',
+  `username` varchar(20) NOT NULL DEFAULT '' COMMENT '作者名',
   `origin` varchar(255) NOT NULL DEFAULT '' COMMENT '来源',
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '发布人ID',
   `url` varchar(500) NOT NULL DEFAULT '' COMMENT '跳转链接',
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `np_page` (
 DROP TABLE IF EXISTS `np_page_data`;
 CREATE TABLE IF NOT EXISTS `np_page_data` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `main_id` int(11) unsigned NOT NULL COMMENT '单页ID',
+  `main_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '单页ID',
   `fields_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `data` text NOT NULL COMMENT '内容',
   PRIMARY KEY (`id`),

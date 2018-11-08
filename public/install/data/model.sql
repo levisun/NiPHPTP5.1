@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `np_fields`;
 CREATE TABLE IF NOT EXISTS `np_fields` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `category_id` smallint(6) unsigned NOT NULL COMMENT '栏目ID',
+  `category_id` smallint(6) unsigned NOT NULL DEFAULT '' COMMENT '栏目ID',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '字段名',
   `description` varchar(555) NOT NULL DEFAULT '' COMMENT '描述',
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `np_fields` (
 
 DROP TABLE IF EXISTS `np_fields_type`;
 CREATE TABLE IF NOT EXISTS `np_fields_type` (
-  `id` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '类型名',
   `description` varchar(555) NOT NULL DEFAULT '' COMMENT '描述',
   `regex` varchar(255) NOT NULL DEFAULT '' COMMENT '验证方式',
@@ -36,8 +36,8 @@ INSERT INTO `np_fields_type` (`id`, `name`, `description`, `regex`) VALUES
 DROP TABLE IF EXISTS `np_model`;
 CREATE TABLE IF NOT EXISTS `np_model` (
   `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL COMMENT '模型名',
-  `table_name` varchar(255) NOT NULL COMMENT '表名',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '模型名',
+  `table_name` varchar(255) NOT NULL DEFAULT '' COMMENT '表名',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
   `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',

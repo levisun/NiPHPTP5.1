@@ -14,10 +14,10 @@
                 <table class="table table-striped" id="dataTable">
                     <thead>
                         <tr>
-                            <th>{:lang('fieldsname')}</th>
-                            <th>{:lang('fieldscategory')}</th>
-                            <th>{:lang('fieldstype')}</th>
-                            <th>{:lang('isrequire')}</th>
+                            <th>{:lang('id')}</th>
+                            <th>{:lang('book title')}</th>
+                            <th>{:lang('status')}</th>
+                            <th>{:lang('update time')}</th>
                             <th>{:lang('operation')}</th>
                         </tr>
                     </thead>
@@ -40,7 +40,8 @@ $.loading({
     animation: true,
     data: {
         timestamp: "{:time()}",
-        method: "category.fields.query",
+        method: "book.book.manage",
+        bid: "{$Request.param.id}",
         p: page
     }
 }, function(result){
@@ -51,10 +52,10 @@ $.loading({
     var list = "";
     for (var index in result.data.list) {
         list = list + "<tr>";
-        list = list + "<td>"+result.data.list[index].name+"</td>";
-        list = list + "<td>"+result.data.list[index].cat_name+"</td>";
-        list = list + "<td>"+result.data.list[index].type_name+"</td>";
-        list = list + "<td>"+result.data.list[index].require+"</td>";
+        list = list + "<td>"+result.data.list[index].id+"</td>";
+        list = list + "<td>"+result.data.list[index].title+"</td>";
+        list = list + "<td>"+result.data.list[index].status+"</td>";
+        list = list + "<td>"+result.data.list[index].update_time+"</td>";
 
         list = list + "<td>";
         list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
@@ -74,7 +75,8 @@ function paging(_page) {
         animation: true,
         data: {
             timestamp: "{:time()}",
-            method: "category.fields.query",
+            method: "book.book.manage",
+            bid: "{$Request.param.id}",
             p: _page
         }
     }, function(result){
@@ -87,14 +89,14 @@ function paging(_page) {
         var list = "";
         for (var index in result.data.list) {
             list = list + "<tr>";
-            list = list + "<td>"+result.data.list[index].name+"</td>";
-            list = list + "<td>"+result.data.list[index].cat_name+"</td>";
-            list = list + "<td>"+result.data.list[index].type_name+"</td>";
-            list = list + "<td>"+result.data.list[index].require+"</td>";
+            list = list + "<td>"+result.data.list[index].id+"</td>";
+            list = list + "<td>"+result.data.list[index].title+"</td>";
+            list = list + "<td>"+result.data.list[index].status+"</td>";
+            list = list + "<td>"+result.data.list[index].update_time+"</td>";
 
             list = list + "<td>";
             list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
             list = list + "</td>";
 
             list = list + "</tr>";
@@ -103,23 +105,4 @@ function paging(_page) {
         $("#paging").prepend(result.data.page);
     });
 };
-
-$(document).on("click", ".np-btn-remove", function(){
-    var id = $(this).attr("data-id");
-    $.loading({
-        url: request.api.settle,
-        async: false,
-        data: {
-            timestamp: "{:time()}",
-            method: "category.fields.remove",
-            id: id
-        },
-    }, function(result){
-        handle(result, false, false);
-        if (result.code === "SUCCESS") {
-            $.reload();
-        }
-    });
-    return false;
-});
 </script>

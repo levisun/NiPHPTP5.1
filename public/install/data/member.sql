@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS `np_member`;
 CREATE TABLE IF NOT EXISTS `np_member` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) NOT NULL COMMENT '用户名',
-  `password` varchar(32) NOT NULL COMMENT '密码',
+  `username` varchar(20) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
   `email` varchar(40) NOT NULL DEFAULT '' COMMENT '邮箱',
   `realname` varchar(50) NOT NULL DEFAULT '' COMMENT '真实姓名',
   `nickname` varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS `np_member` (
   `phone` varchar(11) NOT NULL DEFAULT '' COMMENT '电话',
   `salt` char(6) NOT NULL COMMENT '佐料',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
-  `last_login_ip` varchar(15) NOT NULL COMMENT '登录IP',
-  `last_login_ip_attr` varchar(255) NOT NULL COMMENT '登录IP地区',
+  `last_login_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '登录IP',
+  `last_login_ip_attr` varchar(255) NOT NULL DEFAULT '' COMMENT '登录IP地区',
   `last_login_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
@@ -51,8 +51,8 @@ DROP TABLE IF EXISTS `np_member_wechat`;
 CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
-  `appid` varchar(32) NOT NULL COMMENT 'APPID',
-  `appname` varchar(32) NOT NULL COMMENT 'APP NAME'
+  `appid` varchar(32) NOT NULL DEFAULT '' COMMENT 'APPID',
+  `appname` varchar(32) NOT NULL DEFAULT '' COMMENT 'APP NAME'
   `subscribe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '关注状态',
   `openid` varchar(32) NOT NULL DEFAULT '' COMMENT '用户标识',
   `nickname` varchar(50) NOT NULL DEFAULT '' COMMENT '昵称',
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
   `province` varchar(10) NOT NULL DEFAULT '' COMMENT '省份',
   `language` varchar(10) NOT NULL DEFAULT '' COMMENT '语言',
   `avatar_url` varchar(500) NOT NULL DEFAULT '' COMMENT '头像',
-  `subscribe_time` int(11) NOT NULL COMMENT '关注时间',
+  `subscribe_time` int(11) NOT NULL DEFAULT '' COMMENT '关注时间',
   `unionid` varchar(32) NOT NULL DEFAULT '' COMMENT '',
   `remark` varchar(50) NOT NULL DEFAULT '' COMMENT '备注',
   `groupid` varchar(50) NOT NULL DEFAULT '' COMMENT '分组ID',
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `np_member_wechat` (
 DROP TABLE IF EXISTS `np_level_member`;
 CREATE TABLE IF NOT EXISTS `np_level_member` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL COMMENT '会员ID',
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
   `level_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '组ID',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `np_level_member` (
 DROP TABLE IF EXISTS `np_level`;
 CREATE TABLE IF NOT EXISTS `np_level` (
   `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL COMMENT '组名',
+  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '组名',
   `integral` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `np_comment` (
   `content_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
   `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
-  `content` varchar(1000) NOT NULL COMMENT '评论内容',
+  `content` varchar(1000) NOT NULL DEFAULT '' COMMENT '评论内容',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `is_report` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '举报',
   `support` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '支持',

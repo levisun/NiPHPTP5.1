@@ -55,42 +55,42 @@ class Rbac
 
         // 需要认证模块
         if (config('?req_auth_module')) {
-            $this->req_auth_module = explode(',', strtoupper(config('req_auth_module')));
+            $this->req_auth_module = array_map('strtoupper', config('req_auth_module'));
         }
 
         // 无需认证模块
         if (config('?not_auth_module')) {
-            $this->not_auth_module = explode(',', strtoupper(config('not_auth_module')));
+            $this->not_auth_module = array_map('strtoupper', config('not_auth_module'));
         }
 
         // 需要认证的控制器
         if (config('?req_auth_controller')) {
-            $this->req_auth_controller = explode(',', strtoupper(config('req_auth_controller')));
+            $this->req_auth_controller = array_map('strtoupper', config('req_auth_controller'));
         }
 
         // 无需认证的控制器
         if (config('?not_auth_controller')) {
-            $this->not_auth_controller = explode(',', strtoupper(config('not_auth_controller')));
+            $this->not_auth_controller = array_map('strtoupper', config('not_auth_controller'));
         }
 
         // 需要认证的方法
         if (config('?req_auth_method')) {
-            $this->req_auth_method = explode(',', strtoupper(config('req_auth_method')));
+            $this->req_auth_method = array_map('strtoupper', config('req_auth_method'));
         }
 
         // 无需认证的方法
         if (config('?not_auth_method')) {
-            $this->not_auth_method = explode(',', strtoupper(config('not_auth_method')));
+            $this->not_auth_method = array_map('strtoupper', config('not_auth_method'));
         }
 
         // 需要认证的操作
         if (config('?req_auth_action')) {
-            $this->req_auth_action = explode(',', strtoupper(config('req_auth_action')));
+            $this->req_auth_action = array_map('strtoupper', config('req_auth_action'));
         }
 
         // 无需认证的操作
         if (config('?not_auth_action')) {
-            $this->not_auth_action = explode(',', strtoupper(config('not_auth_action')));
+            $this->not_auth_action = array_map('strtoupper', config('not_auth_action'));
         }
     }
 

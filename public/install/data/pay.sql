@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `np_pay`;
 CREATE TABLE IF NOT EXISTS `np_pay` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '支付名称',
-  `config` text NOT NULL COMMENT '配置',
+  `config` text NOT NULL DEFAULT '' COMMENT '配置',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`),
   KEY `status` (`status`)

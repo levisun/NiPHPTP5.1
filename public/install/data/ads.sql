@@ -2,7 +2,7 @@
 DROP TABLE IF EXISTS `np_ads`;
 CREATE TABLE IF NOT EXISTS `np_ads` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL COMMENT '广告名',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '广告名',
   `width` smallint(4) NOT NULL DEFAULT '0' COMMENT '图片宽',
   `height` smallint(4) NOT NULL DEFAULT '0' COMMENT '图片高',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',

@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS `np_config`;
 CREATE TABLE IF NOT EXISTS `np_config` (
   `id` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL COMMENT '名称',
-  `value` varchar(500) NOT NULL COMMENT '值',
-  `lang` varchar(20) NOT NULL COMMENT '语言 niphp为全局设置',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '名称',
+  `value` varchar(500) NOT NULL DEFAULT '' COMMENT '值',
+  `lang` varchar(20) NOT NULL DEFAULT '' COMMENT '语言 niphp为全局设置',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `value` (`value`),

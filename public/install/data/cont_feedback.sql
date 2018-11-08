@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS `np_feedback`;
 CREATE TABLE IF NOT EXISTS `np_feedback` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL COMMENT '标题',
-  `username` varchar(20) NOT NULL COMMENT '作者名',
-  `content` varchar(500) NOT NULL COMMENT '内容',
-  `category_id` smallint(6) unsigned NOT NULL COMMENT '栏目ID',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `username` varchar(20) NOT NULL DEFAULT '' COMMENT '作者名',
+  `content` varchar(500) NOT NULL DEFAULT '' COMMENT '内容',
+  `category_id` smallint(6) unsigned NOT NULL DEFAULT '' COMMENT '栏目ID',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `mebmer_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `np_feedback` (
 DROP TABLE IF EXISTS `np_feedback_data`;
 CREATE TABLE IF NOT EXISTS `np_feedback_data` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `main_id` int(11) unsigned NOT NULL COMMENT '反馈ID',
+  `main_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '反馈ID',
   `fields_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `data` text NOT NULL COMMENT '内容',
   PRIMARY KEY (`id`),

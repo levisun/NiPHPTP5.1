@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS `np_book_author`;
-CREATE TABLE IF NOT EXISTS `np_book` (
+CREATE TABLE IF NOT EXISTS `np_book_author` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL DEFAULT '' COMMENT '笔名',
   `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '会员ID',
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='作者';
 
 DROP TABLE IF EXISTS `np_book`;
@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS `np_book_type` (
 DROP TABLE IF EXISTS `np_book_article`;
 CREATE TABLE IF NOT EXISTS `np_book_article` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `book_id` int(11) unsigned NOT NULL COMMENT '书ID',
-  `title` varchar(255) NOT NULL COMMENT '标题',
-  `content` mediumtext NOT NULL COMMENT '内容',
+  `book_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '书ID',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
+  `content` mediumtext NOT NULL DEFAULT '' COMMENT '内容',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `hits` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点击量',

@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS `np_mall_goods`;
 CREATE TABLE IF NOT EXISTS `np_mall_goods` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type_id` smallint(6) unsigned NOT NULL COMMENT '分类ID',
+  `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
   `brand_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '品牌ID',
-  `name` varchar(255) NOT NULL COMMENT '商品名',
-  `content` mediumtext NOT NULL COMMENT '描述',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '商品名',
+  `content` mediumtext NOT NULL DEFAULT '' COMMENT '描述',
   `thumb` varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图',
   `price` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '价格',
   `market_price` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '市场价格',
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `np_mall_goods_promote` (
 DROP TABLE IF EXISTS `np_mall_goods_album`;
 CREATE TABLE IF NOT EXISTS `np_mall_goods_album` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `goods_id` int(11) unsigned NOT NULL COMMENT '图文ID',
+  `goods_id` int(11) unsigned NOT NULL DEFAULT '' COMMENT '图文ID',
   `thumb` varchar(255) NOT NULL DEFAULT '' COMMENT '缩略图',
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '原图',
   PRIMARY KEY (`id`),
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `np_mall_goods_album` (
 DROP TABLE IF EXISTS `np_mall_goods_attr`;
 CREATE TABLE IF NOT EXISTS `np_mall_goods_attr` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `pid` int(6) unsigned NOT NULL COMMENT '父ID',
+  `pid` int(6) unsigned NOT NULL DEFAULT '' COMMENT '父ID',
   `goods_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '商品ID',
   `name` varchar(30) NOT NULL DEFAULT '' COMMENT '名称',
   `img` varchar(255) NOT NULL DEFAULT '' COMMENT '小图标',

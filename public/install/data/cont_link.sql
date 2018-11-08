@@ -1,10 +1,10 @@
 DROP TABLE IF EXISTS `np_link`;
 CREATE TABLE IF NOT EXISTS `np_link` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL COMMENT '标题',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
   `logo` varchar(255) NOT NULL DEFAULT '' COMMENT '标志',
   `description` varchar(555) NOT NULL DEFAULT '' COMMENT '描述',
-  `category_id` smallint(6) unsigned NOT NULL COMMENT '栏目ID',
+  `category_id` smallint(6) unsigned NOT NULL DEFAULT '' COMMENT '栏目ID',
   `type_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '类型ID',
   `is_pass` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '审核',
   `sort` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '排序',

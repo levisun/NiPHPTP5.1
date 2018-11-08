@@ -83,7 +83,7 @@ $.loading({
 });
 
 function paging(_page) {
-    $.rewriteUrl("{:url()}#"+_page);
+    $.rewriteUrl("{:request()->url(true)}#"+_page);
     $.loading({
         url: request.api.query,
         animation: true,
@@ -91,7 +91,7 @@ function paging(_page) {
             timestamp: "{:time()}",
             method: "wechat.keyword.query",
             type: "{$type}",
-            p: page
+            p: _page
         }
     }, function(result){
         if (result.code !== "SUCCESS") {

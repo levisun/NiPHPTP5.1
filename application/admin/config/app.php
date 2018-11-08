@@ -44,7 +44,21 @@ return [
     'user_auth_key'       => 'auth_id',                                         // 认证key
     'user_auth_on'        => true,                                              // 是否需要认证
     'user_auth_type'      => 2,                                                 // 验证类型
-    'not_auth_controller' => 'account',                                         // 无需认证的控制器
-    'not_auth_method'     => 'login,logout,verify',                             // 无需认证的方法
-    'not_auth_action'     => 'type,category,getTablesName,parent,models,level', // 无需认证的操作
+    'not_auth_controller' => ['account'],                                       // 无需认证的控制器
+    // 无需认证的方法
+    'not_auth_method'     => [
+        'login',
+        'logout',
+        'verify'
+    ],
+    // 无需认证的操作
+    'not_auth_action'     => [
+        'type',
+        'category',
+        'getTablesName',
+        'parent',
+        'models',
+        'level',
+        'manage'
+    ],
 ];

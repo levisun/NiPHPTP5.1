@@ -48,4 +48,118 @@ class Book extends Model
         'create_time',
         'lang'
     ];
+
+    /**
+     * 新增
+     * @access public
+     * @param  array  $_receive_data
+     * @return mixed
+     */
+    public function added($_receive_data)
+    {
+        unset($_receive_data['id'], $_receive_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->create($_receive_data);
+
+        return $result->id;
+    }
+
+    /**
+     * 删除
+     * @access public
+     * @param  array  $_receive_data
+     * @return boolean
+     */
+    public function remove($_receive_data)
+    {
+        $result =
+        $this->where([
+            ['id', '=', $_receive_data['id']],
+        ])
+        ->delete();
+
+        return !!$result;
+    }
+
+    /**
+     * 修改
+     * @access public
+     * @param  array  $_receive_data
+     * @return boolean
+     */
+    public function editor($_receive_data)
+    {
+        unset($_receive_data['__token__']);
+
+        $result =
+        $this->allowField(true)
+        ->where([
+            ['id', '=', $_receive_data['id']],
+        ])
+        ->update($_receive_data);
+
+        return !!$result;
+    }
+
+    /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort($_receive_data)
+    {
+        $data = [];
+        foreach ($_receive_data['id'] as $key => $value) {
+            $data[] = [
+                'id'   => (float) $key,
+                'sort' => (float) $value,
+            ];
+        }
+
+        $result =
+        $this->saveAll($data);
+
+        return !!$result;
+    }
+
+    /**
+     * 获取器
+     * 栏目是否显示
+     * @access protected
+     * @param  int    $_value
+     * @return string
+     */
+    protected function getShowAttr($_value, $_data)
+    {
+        return $_data['is_show'] ? lang('show') : lang('hide');
+    }
+
+    /**
+     * 获取器
+     * 审核名称
+     * @access protected
+     * @param  string $_value
+     * @param  array  $_data
+     * @return string
+     */
+    protected function getPassAttr($_value, $_data)
+    {
+        return lang('pass ' . $_data['is_pass']);
+    }
+
+    /**
+     * 获取器
+     * 审核名称
+     * @access protected
+     * @param  string $_value
+     * @param  array  $_data
+     * @return string
+     */
+    protected function getStatusAttr($_value, $_data)
+    {
+        return lang('book status ' . $_data['status']);
+    }
 }

@@ -69,14 +69,14 @@ $.loading({
 });
 
 function paging(_page) {
-    $.rewriteUrl("{:url()}#"+_page);
+    $.rewriteUrl("{:request()->url(true)}#"+_page);
     $.loading({
         url: request.api.query,
         animation: true,
         data: {
             timestamp: "{:time()}",
             method: "user.role.query",
-            p: page
+            p: _page
         }
     }, function(result){
         if (result.code !== "SUCCESS") {
