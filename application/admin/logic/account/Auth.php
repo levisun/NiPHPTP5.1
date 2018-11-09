@@ -43,11 +43,13 @@ class Auth
 
                     $auth_menu[$controller]['icon'] = config('app.icon.' . $controller);
                     $auth_menu[$controller]['name'] = $nav[$controller]['name'];
-                    $auth_menu[$controller]['menu'][] = [
-                        'action' => $action,
-                        'url'    => url($controller . '/' . $action, [], true, true),
-                        'lang'   => $nav[$controller]['child'][$action],
-                    ];
+                    if (!empty($nav[$controller]['child'][$action])) {
+                        $auth_menu[$controller]['menu'][] = [
+                            'action' => $action,
+                            'url'    => url($controller . '/' . $action, [], true, true),
+                            'lang'   => $nav[$controller]['child'][$action],
+                        ];
+                    }
                 }
             }
         }

@@ -40,7 +40,7 @@ $.loading({
     animation: true,
     data: {
         timestamp: "{:time()}",
-        method: "book.book.manage",
+        method: "book.article.query",
         bid: "{$Request.param.id}",
         p: page
     }
@@ -75,7 +75,7 @@ function paging(_page) {
         animation: true,
         data: {
             timestamp: "{:time()}",
-            method: "book.book.manage",
+            method: "book.article.query",
             bid: "{$Request.param.id}",
             p: _page
         }

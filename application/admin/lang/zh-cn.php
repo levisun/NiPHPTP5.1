@@ -274,9 +274,9 @@ return [
         'book' => [
             'name'  => '书库',
             'child' => [
-                'book' => '管理书库',
-                'type' => '管理分类',
-                'user' => '管理作者',
+                'book'   => '管理书库',
+                'type'   => '管理分类',
+                'author' => '管理作者',
             ],
         ],
         'expand' => [

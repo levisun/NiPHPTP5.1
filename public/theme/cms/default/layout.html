@@ -1,25 +1,51 @@
-<header id="header" class="layui-fluid">
-    <div id="top" class="layui-row">
-        <menu id="top-menu" class="layui-col-md4 layui-col-md-offset8" style="text-align: right;">
-            <ul>
-                {label:nav type="1"}
-                <li><a href="{$vo.url}">{$vo.name}</a></li>
-                {/label:nav}
-            </ul>
-        </menu>
-    </div>
+<header class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="__DOMAIN__">小枕头</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <nav id="nav">
-        <ul class="layui-nav">
-            <li class="layui-nav-item"><a href="">首页</a></li>
+    <nav class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="__DOMAIN__">首页 <span class="sr-only">(current)</span></a>
+            </li>
             {label:nav type="2"}
-            <li class="layui-nav-item"><a href="{$vo.url}">{$vo.name}</a></li>
+            {if !empty($vo.child)}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown{$vo.id}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {$vo.name}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown{$vo.id}">
+                    {foreach $vo.child as $v}
+                    <a class="dropdown-item" href="{$v.url}">{$v.name}</a>
+                    {/foreach}
+                </div>
+            </li>
+            {else /}
+            <li class="nav-item">
+                <a class="nav-link" href="{$vo.url}">{$vo.name}</a>
+            </li>
+            {/if}
+            {/label:nav}
+
+            {label:nav type="1"}
+            <li class="nav-item">
+                <a class="nav-link disabled" href="{$vo.url}">{$vo.name}</a>
+            </li>
             {/label:nav}
         </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
     </nav>
 </header>
 
-<div id="body" class="layui-fluid">
+<main class="container-fluid">
+
+</main>
+
+<div id="body" class="container">
     <div class="layui-row">
         <aside id="sidebar" class="layui-col-md2">
             <menu>
@@ -56,7 +82,7 @@
     </div>
 </div>
 
-<footer id="footer">
+<footer>
     <div>__BOTTOM_MSG__</div>
     <div>__COPYRIGHT__</div>
 </footer>

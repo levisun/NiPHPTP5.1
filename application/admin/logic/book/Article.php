@@ -12,14 +12,12 @@
  */
 namespace app\admin\logic\book;
 
-use app\admin\logic\Upload;
-
-class Book extends Upload
+class Article
 {
 
     /**
      * 查询
-     * 书籍列表
+     * 章节列表
      * @access public
      * @param
      * @return array
@@ -27,23 +25,19 @@ class Book extends Upload
     public function query()
     {
         $result =
-        model('common/book')
-        ->view('book b', ['id', 'name', 'author_id', 'is_show', 'is_pass', 'is_com', 'is_top', 'is_hot', 'sort', 'hits', 'status'])
-        ->view('book_type bt', ['name' => 'type_name'], 'bt.id=b.type_id')
-        ->view('book_author ba', ['username' => 'author'], 'ba.id=b.author_id', 'LEFT')
-        ->order('b.sort DESC, b.id DESC')
-        ->append([
-            'show',
-            'pass',
-            'status'
+        model('common/bookArticle')
+        ->field(true)
+        ->order('sort DESC, id DESC')
+        ->where([
+            ['book_id', '=', input('post.bid')]
         ])
+        ->append(['pass'])
         ->paginate();
 
         foreach ($result as $key => $value) {
             $result[$key]->url = [
-                'manage' => url('book/book', ['operate' => 'manage', 'id' => $value->id]),
-                'editor' => url('book/book', ['operate' => 'editor', 'id' => $value->id]),
-                'remove' => url('book/book', ['operate' => 'remove', 'id' => $value->id]),
+                'editor' => url('book/book', ['operate' => 'article_editor', 'bid' => $value->book_id, 'id' => $value->id]),
+                'remove' => url('book/book', ['operate' => 'article_remove', 'bid' => $value->book_id, 'id' => $value->id]),
             ];
         }
 
