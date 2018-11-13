@@ -1,14 +1,20 @@
-<table id="listing" class="layui-table" lay-even lay-skin="nob">
-
-</table>
+<div class="col-sm-12">
+    <ul class="list-unstyled"></ul>
+</div>
 {label:list}
 var html = "";
 for(index in list){
     var data = list[index];
-    html += "<tr>";
-    html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
-    html += "<td>" + data.create_time + "</td>";
-    html += "</tr>";
+    if (index > 0) {
+        html += "<li class='media my-3'>";
+    } else {
+        html += "<li class='media'>";
+    }
+    html += "<div class='media-body'>";
+    html += "<h6 class='mt-0 mb-1'><a class='badge badge-secondary' href='"+data.cat_url+"'>"+data.category_name+"</a> <a href='"+data.url+"'>"+data.title+"</a></h6>";
+    html += data.create_time;
+    html += "</div>";
+    html += "</li>";
 }
-$("#listing").append(html);
+$(".list-unstyled").append(html);
 {/label:list}

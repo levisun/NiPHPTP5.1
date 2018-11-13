@@ -42,47 +42,38 @@
 </header>
 
 <main class="container-fluid">
-
+    <div class="row">
+        {label:menu /}
+        {if isset($menu['child'])}
+        <aside id="sidebar" class="col-sm-2">
+            <nav class="row nav flex-column nav-pills">
+                <h5 class="nav-link side-title">{$menu.name}</h5>
+                {foreach $menu.child as $vo}
+                <a class="nav-link" href="{$vo.url}">{$vo.name}</a>
+                {/foreach}
+            </nav>
+        </aside>
+        <div class="col-sm-10">
+            <nav class="row">
+                <ol class="breadcrumb col-sm-12">
+                    <li class="breadcrumb-item"><a href="__DOMAIN__">首页</a></li>
+                    {label:bread}
+                    <li class="breadcrumb-item"><a href="{$vo.url}">{$vo.name}</a></li>
+                    {/label:bread}
+                </ol>
+            </nav>
+            <div class="row main">
+                {__CONTENT__}
+            </div>
+        </div>
+        {else /}{__CONTENT__}
+        {/if}
+    </div>
 </main>
 
-<div id="body" class="container">
-    <div class="layui-row">
-        <aside id="sidebar" class="layui-col-md2">
-            <menu>
-                {label:menu /}
-                {if isset($menu['child'])}
-                <ul class="layui-nav layui-nav-tree">
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a class="side-title">{$menu.name}</a>
-                        <dl class="layui-nav-child">
-                            {volist name="menu.child" id="vo"}
-                            <dd><a href="{$vo.url}">{$vo.name}</a></dd>
-                            {/volist}
-                        </dl>
-                    </li>
-                </ul>
-                {/if}
-            </menu>
-        </aside>
-
-        <div id="main" class="layui-col-md10">
-            <div class="layui-row">
-                <menu id="breadcrumb" class="layui-col-md12">
-                    <span class="layui-breadcrumb" lay-separator="|">
-                        <a href="">首页</a>
-                        {label:bread}
-                        <span>/</span><a href="{$vo.url}">{$vo.name}</a>
-                        {/label:bread}
-                    </span>
-                </menu>
-            </div>
-
-            {__CONTENT__}
-        </div>
+<footer class="container-fluid p-3 p-md-5 text-muted">
+    <div class="">
+        <div>__BOTTOM_MSG__</div>
+        <div>__COPYRIGHT__</div>
     </div>
-</div>
-
-<footer>
-    <div>__BOTTOM_MSG__</div>
-    <div>__COPYRIGHT__</div>
 </footer>

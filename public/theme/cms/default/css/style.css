@@ -1,7 +1,38 @@
-#header {
-    background-color: #fff;
+a {
+    font-weight: 500;
+    color: #495057;
 }
 footer {
-    background-color: #fff;
+    font-size: 85%;
+    background-color: #f7f7f7;
+}
+#sidebar a {
+    font-size: 85%;
+}
+#sidebar .side-title {
+    padding: .86rem 1rem;
+    background-color: #f7f7f7;
+    border-top: 1px solid #fff;
+    border-radius: 0;
+    font-size: 85%;
+}
+.breadcrumb {
+    background-color: #f7f7f7;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-radius: 0;
+    font-size: 85%;
+}
+.main {
+    border-left: 1px solid #f7f7f7;
+}
+
+.article-title {
     text-align: center;
+}
+.article-title a {
+    text-decoration: none;
+}
+.article-meta {
+    font-size: 75%;
 }

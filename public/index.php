@@ -36,8 +36,6 @@ if (APP_DEBUG) {
     ini_set('memory_limit', '64M');
 }
 
-libxml_disable_entity_loader(true);
-
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 

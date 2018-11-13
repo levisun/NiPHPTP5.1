@@ -81,6 +81,9 @@ class Listing
             $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
 
+            $result[$key]->cat_url = url('list/' . $value->category_id);
+            $result[$key]->cat_url = str_replace('/index/', '/', $result[$key]->cat_url);
+
             // 查询自定义字段
             $fields =
             model('common/' . $_table_name . 'Data')
@@ -168,6 +171,9 @@ class Listing
             }
 
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
+
+            $result[$key]->cat_url = url('list/' . $value->category_id);
+            $result[$key]->cat_url = str_replace('/index/', '/', $result[$key]->cat_url);
 
             // 查询自定义字段
             $fields =
@@ -280,6 +286,9 @@ class Listing
             }
 
             $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
+
+            $result[$key]->cat_url = url('list/' . $value->category_id);
+            $result[$key]->cat_url = str_replace('/index/', '/', $result[$key]->cat_url);
 
             // 查询自定义字段
             $fields =

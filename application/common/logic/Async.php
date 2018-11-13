@@ -4,7 +4,7 @@
  * 异步请求实现 - 业务层
  *
  * @package   NiPHPCMS
- * @category  common\logic
+ * @category  application\common\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -146,7 +146,12 @@ class Async
 
         if (!is_file($file_path)) {
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-            trace('[METHOD PARAMETER ERROR] ' . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist', 'alert');
+            trace(
+                '[METHOD PARAMETER ERROR] ' .
+                '$' . $this->class . '->' .
+                $this->action . '() logic doesn\'t exist',
+                'alert'
+            );
             $this->error('[METHOD PARAMETER ERROR]');
         }
 
@@ -154,7 +159,12 @@ class Async
         $this->logicObject = logic($this->moduleName . '/' . $this->layer . '/' . $this->class);
         if (!method_exists($this->logicObject, $this->action)) {
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-            trace('[METHOD PARAMETER ERROR] ' . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist', 'alert');
+            trace(
+                '[METHOD PARAMETER ERROR] ' .
+                '$' . $this->class . '->' .
+                $this->action . '() logic doesn\'t exist',
+                'alert'
+            );
             $this->error('[METHOD PARAMETER ERROR]');
         }
     }

@@ -60,13 +60,13 @@ class Lang
         $config = include($config_file);
         $config['default_lang'] = $receive_data['system'];
         $config['lang_switch_on'] = $receive_data['lang_switch_on'] ? true : false;
-        file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
+        file_put_contents($config_file, '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 
         $config_file = env('app_path') . 'cms' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
         $config = include($config_file);
         $config['default_lang'] = $receive_data['website'];
         $config['lang_switch_on'] = $receive_data['lang_switch_on'] ? true : false;
-        file_put_contents($config_file, '<?php return ' . var_export($config, true) . ';');
+        file_put_contents($config_file, '<?php' . PHP_EOL . 'return ' . var_export($config, true) . ';');
 
         $lang = lang('__nav');
         create_action_log($lang['settings']['child']['lang'], 'config_editor');

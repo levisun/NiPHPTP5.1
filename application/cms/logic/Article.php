@@ -48,10 +48,14 @@ class Article
         ->find();
 
         if ($result) {
-            $result->flag = encrypt($result->id);
-            $result->title = htmlspecialchars_decode($result->title);
+            $result->flag    = encrypt($result->id);
+            $result->title   = htmlspecialchars_decode($result->title);
             $result->content = htmlspecialchars_decode($result->content);
+            $result->url     = url($table_name . '/' . $result->category_id . '/' . $result->id);
+            $result->url     = str_replace('/index/', '/', $result->url);
 
+            $result->cat_url     = url('list/' . $result->category_id);
+            $result->cat_url     = str_replace('/index/', '/', $result->cat_url);
 
 
             // 查询自定义字段
@@ -99,11 +103,15 @@ class Article
             ->select()
             ->toArray();
 
+
+
             // 上一篇
             if (in_array($table_name, ['article', 'download', 'picture', 'product'])) {
                 $result->prev = $this->previous($_id, $_cid, $table_name);
                 $result->next = $this->next($_id, $_cid, $table_name);
             }
+
+
 
             // 更新浏览数
             model('common/' . $table_name)

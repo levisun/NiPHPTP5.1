@@ -16,6 +16,9 @@ use think\Controller;
 
 class Base extends Controller
 {
+    protected $middleware = [
+        'app\admin\middleware\Auth'
+    ];
 
     protected function initialize()
     {
@@ -25,13 +28,15 @@ class Base extends Controller
         $this->engine($template);
         $this->filter('view_filter');
 
+        $assign = [];
+
         if (session('?' . config('user_auth_key'))) {
             // 用户信息
-            $this->assign('ADMIN_DATA', session('admin_data'));
+            $assign['ADMIN_DATA'] = session('admin_data');
 
             // 权限菜单
             $auth_menu = logic('admin/account/auth')->getMenu();
-            $this->assign('AUTH_MENU', json_encode($auth_menu));
+            $assign['AUTH_MENU'] = json_encode($auth_menu);
 
             // 搜索按钮状态
             $this->assign('button_search', 0);
@@ -39,8 +44,11 @@ class Base extends Controller
 
         // 网站标题与面包屑
         $tit_bre = logic('admin/account/auth')->getTitBre();
-        $this->assign('TITLE', $tit_bre['title']);
-        $this->assign('BREADCRUMB', $tit_bre['breadcrumb']);
-        $this->assign('SUB_TITLE', $tit_bre['sub_title']);
+
+        $assign['TITLE']      = $tit_bre['title'];
+        $assign['BREADCRUMB'] = $tit_bre['breadcrumb'];
+        $assign['SUB_TITLE']  = $tit_bre['sub_title'];
+
+        $this->assign('SITE_DATA', $assign);
     }
 }

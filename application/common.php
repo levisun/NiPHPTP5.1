@@ -416,130 +416,19 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
 /**
  * 安全过滤
  * @param  mixed   $_content
- * @param  boolean $_hs      HTML转义 默认false
- * @param  boolean $_hxp     HTML XML PHP标签过滤 默认false
- * @param  boolean $_rn      回车换行空格过滤 默认true
- * @param  boolean $_script  JS脚本过滤 默认true
- * @param  boolean $_sql     SQL关键词过滤 默认true
  * @return mixed
  */
-function safe_filter($_content, $_hs = false, $_hxp = false, $_rn = true, $_sql = true, $_script = true)
+function safe_filter($_content)
 {
-    if (is_array($_content)) {
-        foreach ($_content as $key => $value) {
-            $key = trim($key);
-            $value = !empty($value) ? safe_filter($value, $_hs, $_hxp, $_rn, $_sql, $_script) : $value;
+    return logic('common/SafeFilter')->filter($_content);
+}
 
-            $_content[$key] = $value;
-        }
-        return $_content;
-    }
-
-    // 过滤前后空格
-    $_content = trim($_content);
-
-    //特殊字符过滤
-    $pattern = [
-        // 全角转半角
-        '０'=>'0','１'=>'1','２'=>'2','３'=>'3','４'=>'4','５'=>'5','６'=>'6','７'=>'7','８'=>'8','９'=>'9','Ａ'=>'A','Ｂ'=>'B','Ｃ'=>'C','Ｄ'=>'D','Ｅ'=>'E','Ｆ'=>'F','Ｇ'=>'G','Ｈ'=>'H','Ｉ'=>'I','Ｊ'=>'J','Ｋ'=>'K','Ｌ'=>'L','Ｍ'=>'M','Ｎ'=>'N','Ｏ'=>'O','Ｐ'=>'P','Ｑ'=>'Q','Ｒ'=>'R','Ｓ'=>'S','Ｔ'=>'T','Ｕ'=>'U','Ｖ'=>'V','Ｗ'=>'W','Ｘ'=>'X','Ｙ'=>'Y','Ｚ'=>'Z','ａ'=>'a','ｂ'=>'b','ｃ'=>'c','ｄ'=>'d','ｅ'=>'e','ｆ'=>'f','ｇ'=>'g','ｈ'=>'h','ｉ'=>'i','ｊ'=>'j','ｋ'=>'k','ｌ'=>'l','ｍ'=>'m','ｎ'=>'n','ｏ'=>'o','ｐ'=>'p','ｑ'=>'q','ｒ'=>'r','ｓ'=>'s','ｔ'=>'t','ｕ'=>'u','ｖ'=>'v','ｗ'=>'w','ｘ'=>'x','ｙ'=>'y','ｚ'=>'z','〔'=>'[','【'=>'[','〖'=>'[','〕'=>']','】'=>']','〗'=>']','＋' => '+','！' => '!','｜' => '|','〃' => '"','＂' => '"','－' => '-','～' => '~','…' => '...','（' => '(','）' => ')','｛' => '{','｝' => '}','？' => '?','％' => '%','：' => ':',
-
-        // 特殊字符
-        '‖' => '&#124;',
-        '“' => '&ldquo;', '”' => '&rdquo;',
-        '‘' => '&lsquo;', '’' => '&rsquo;',
-        '™' => '&trade;', '®' => '&reg;', '©' => '&copy;', '￥' => '&yen;', '℃' => '&#8451;', '℉' => '&#8457;',
-        '+' => '&#43;', '—' => '&ndash;', '×' => '&times;', '÷' => '&divide;',
-
-
-
-        // HTML中的JS无法执行
-        // '\'' => '&#039;',
-        // '%'  => '&#37;',
-        // '!'  => '&#33;',
-        // '@'  => '&#64;',
-        // '-'  => '&ndash;',
-        // '?'  => '&#129;',
-        // '+'  => '&#43;',
-        // ':'  => '&#58;',
-        // '='  => '&#61;',
-        // '('  => '&#40;',
-        // ')'  => '&#41;',
-    ];
-    $_content = str_replace(array_keys($pattern), array_values($pattern), $_content);
-
-    // 过滤非法标签
-    $_content = preg_replace([
-        '/<\?php(.*?)\?>/si',
-        '/<\?(.*?)\?>/si',
-        '/<%(.*?)%>/si',
-        '/<\?php|<\?|\?>|<%|%>/si',
-    ], '', $_content);
-
-    // 过滤JS脚本
-    $_content = $_script === true ? preg_replace([
-        '/on([a-zA-Z0-9]*?)(=)["|\'](.*?)["|\']/si',
-        '/(javascript:)(.*?)(\))/si',
-        '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si', '/<(\/?javascript.*?)>/si',
-        '/<(script.*?)>(.*?)<(\/script.*?)>/si',         '/<(\/?script.*?)>/si',
-        '/<(applet.*?)>(.*?)<(\/applet.*?)>/si',         '/<(\/?applet.*?)>/si',
-        '/<(vbscript.*?)>(.*?)<(\/vbscript.*?)>/si',     '/<(\/?vbscript.*?)>/si',
-        '/<(expression.*?)>(.*?)<(\/expression.*?)>/si', '/<(\/?expression.*?)>/si',
-    ], '', $_content) : $_content;
-
-    // 过滤SQL关键词
-    $pattern = [
-        '/(and )/si'     => '&#97;nd ',    '/(create)/si'   => '&#99;reate',
-        '/(delete)/si'   => '&#100;elete', '/(update)/si'   => '&#117;pdate',
-        '/(or )/si'      => '&#111;r ',
-
-        // 安全字符
-        '/(#)+/si'   => '&#35;',   '/(\!)+/si'  => '&#33;',
-        '/(\?)+/si'  => '&#129;',  '/(=)+/si'   => '&#61;',
-        '/(\|)+/si'  => '&#124;',  '/(\*)+/si'  => '&#42;',
-        '/(`)+/si'   => '&acute;', '/(\\\)+/si' => '&#92;',
-        '/(~)+/si'   => '&#126;',  '/(‚)+/si'   => '&sbquo;',
-        '/(\^)+/si'  => '&#94;',   '/(\@)+/si'  => '&#64;',
-    ];
-    $_content = $_sql === true ? preg_replace(array_keys($pattern), array_values($pattern), $_content) : $_content;
-
-    // 回车换行空格
-    $pattern = [
-        '/( ){2,}/si'    => '',
-        '/[\r\n\f]+</si' => '<',
-        '/>[\r\n\f]+/si' => '>',
-    ];
-    $_content = $_rn === true ? preg_replace(array_keys($pattern), array_values($pattern), $_content) : $_content;
-
-    // 过滤HTML XML PHP标签
-    $_content = $_hxp === true ? strip_tags($_content) : preg_replace([
-        // 过滤HTML嵌入
-        '/<(html.*?)>(.*?)<(\/html.*?)>/si',         '/<(\/?html.*?)>/si',
-        '/<(head.*?)>(.*?)<(\/head.*?)>/si',         '/<(\/?head.*?)>/si',
-        '/<(title.*?)>(.*?)<(\/title.*?)>/si',       '/<(\/?title.*?)>/si',
-        '/<(meta.*?)>(.*?)<(\/meta.*?)>/si',         '/<(\/?meta.*?)>/si',
-        '/<(body.*?)>(.*?)<(\/body.*?)>/si',         '/<(\/?body.*?)>/si',
-        '/<(style.*?)>(.*?)<(\/style.*?)>/si',       '/<(\/?style.*?)>/si',
-        '/<(iframe.*?)>(.*?)<(\/iframe.*?)>/si',     '/<(\/?iframe.*?)>/si',
-        '/<(frame.*?)>(.*?)<(\/frame.*?)>/si',       '/<(\/?frame.*?)>/si',
-        '/<(frameset.*?)>(.*?)<(\/frameset.*?)>/si', '/<(\/?frameset.*?)>/si',
-        '/<(base.*?)>(.*?)<(\/base.*?)>/si',         '/<(\/?base.*?)>/si',
-
-        // 过滤HTML危害标签信息
-        '/<(object.*?)>(.*?)<(\/object.*?)>/si',     '/<(\/?object.*?)>/si',
-        '/<(xml.*?)>(.*?)<(\/xml.*?)>/si',           '/<(\/?xml.*?)>/si',
-        '/<(blink.*?)>(.*?)<(\/blink.*?)>/si',       '/<(\/?blink.*?)>/si',
-        '/<(link.*?)>(.*?)<(\/link.*?)>/si',         '/<(\/?link.*?)>/si',
-        '/<(embed.*?)>(.*?)<(\/embed.*?)>/si',       '/<(\/?embed.*?)>/si',
-        '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',     '/<(\/?ilayer.*?)>/si',
-        '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',       '/<(\/?layer.*?)>/si',
-        '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',   '/<(\/?bgsound.*?)>/si',
-        '/<(form.*?)>(.*?)<(\/form.*?)>/si',         '/<(\/?form.*?)>/si',
-
-        '/<\!--.*?-->/si',
-    ], '', $_content);
-
-    // HTML转义
-    $_content = $_hs === true ? htmlspecialchars($_content) : $_content;
-
-    return $_content;
+/**
+ * 严格安全过滤
+ * @param  mixed   $_content
+ * @return mixed
+ */
+function safe_filter_strict($_content)
+{
+    return logic('common/SafeFilter')->filter_strict($_content);
 }

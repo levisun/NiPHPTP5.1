@@ -39,7 +39,7 @@ class IpInfo
         ->where([
             ['i.ip', '=', $request_ip]
         ])
-        ->cache('IPINFO GETINFO' . $request_ip)
+        ->cache('IPINFO GETINFO' . $request_ip, 1200)
         ->find();
 
         $result = $result ? $result->toArray() : [];
@@ -143,10 +143,10 @@ class IpInfo
                 ['ip', '=', $_request_ip],
             ])
             ->update([
-                'country_id'  => safe_filter($country, true, true),
-                'province_id' => safe_filter($province, true, true),
-                'city_id'     => safe_filter($city, true, true),
-                'area_id'     => safe_filter($area, true, true),
+                'country_id'  => safe_filter_strict($country),
+                'province_id' => safe_filter_strict($province),
+                'city_id'     => safe_filter_strict($city),
+                'area_id'     => safe_filter_strict($area),
                 'update_time' => time()
             ]);
         }

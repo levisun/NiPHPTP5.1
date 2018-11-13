@@ -31,7 +31,7 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="{:url('user/admin', array('method' => 'editor', 'id' => $ADMIN_DATA.id))}">
+                        <a href="{:url('user/admin', array('method' => 'editor', 'id' => $SITE_DATA.ADMIN_DATA.id))}">
                             {:lang('update admin')}
                         </a>
                     </li>
@@ -43,7 +43,7 @@
 </aside>
 
 <script type="text/javascript">
-var json_data = {$AUTH_MENU|raw};
+var json_data = {$SITE_DATA.AUTH_MENU|raw};
 var sidebar = "";
 for (var index in json_data) {
     var opens = "";

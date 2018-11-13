@@ -36,7 +36,7 @@ class Siteinfo
 
         $data = [];
         foreach ($result as $value) {
-            $data[$value['name']] = $value['value'];
+            $data[$value['name']] = htmlspecialchars_decode($value['value']);
         }
 
         $result = logic('cms/breadcrumb')->query();

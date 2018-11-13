@@ -19,8 +19,8 @@ return [
     // 默认时区
     'default_timezone'     => 'PRC',
     // 默认全局过滤方法 用逗号分隔多个
-    'default_filter'       => 'trim,strip_tags,safe_filter',
-    'content_filter'       => 'trim,safe_filter,htmlspecialchars',
+    'default_filter'       => 'safe_filter',
+    'content_filter'       => 'safe_filter_strict',
     // 是否开启多语言
     'lang_switch_on'       => true,
     // 默认语言

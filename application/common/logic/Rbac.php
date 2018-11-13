@@ -266,6 +266,7 @@ class Rbac
                 ['level', '=', $_level],
                 ['pid', '=', $_pid],
             ])
+            ->cache('RBAC GETAUTH' . $_auth_id . $_level . $_pid, 60)
             ->select();
         } else {
             $result =
@@ -281,6 +282,7 @@ class Rbac
                 ['node.pid', '=', $_pid],
                 ['role_admin.user_id', '=', $_auth_id],
             ])
+            ->cache('RBAC GETAUTH' . $_auth_id . $_level . $_pid, 60)
             ->select();
         }
 

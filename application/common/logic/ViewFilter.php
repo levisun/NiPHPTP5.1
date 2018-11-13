@@ -4,7 +4,7 @@
  * 模板过滤 - 业务层
  *
  * @package   NiPHPCMS
- * @category  common\logic
+ * @category  application\common\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -72,11 +72,12 @@ class ViewFilter
             }
         }
 
+        $foot .= PHP_EOL;
         $foot .= '<script type="text/javascript">';
         $foot .= 'console.log("Powered by NiPHP ' . NP_VERSION . ' Copyright © 2013-' . date('Y') . '");';
         $foot .= 'console.log("http://www.NiPHP.com");';
         $foot .= '</script>';
-        $foot .= '</body><html>';
+        $foot .= PHP_EOL . '</body>' . PHP_EOL . '<html>';
 
         return $_content . $foot;
     }
@@ -89,40 +90,41 @@ class ViewFilter
      */
     private function head($_content)
     {
-        $head = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" />';
+        $head = '<!DOCTYPE html>' . PHP_EOL .
+                '<html lang="en">' . PHP_EOL .
+                '<head>' . PHP_EOL .
+                '<meta charset="utf-8" />' . PHP_EOL;
 
         if (request()->isMobile()) {
-            $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />';
-            $head .= '<meta name="apple-mobile-web-app-capable" content="yes" />';
-            $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black" />';
-            $head .= '<meta name="format-detection" content="telephone=yes" />';
-            $head .= '<meta name="format-detection" content="email=yes" />';
+            $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' . PHP_EOL;
+            $head .= '<meta name="apple-mobile-web-app-capable" content="yes" />' . PHP_EOL;
+            $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black" />' . PHP_EOL;
+            $head .= '<meta name="format-detection" content="telephone=yes" />' . PHP_EOL;
+            $head .= '<meta name="format-detection" content="email=yes" />' . PHP_EOL;
         } else {
-            $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />';
+            $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL;
         }
 
-        $head .= '<meta name="author" content="NiPHP" />' .
-                 '<meta name="generator" content="NiPHP" />' .
-                 '<meta name="copyright" content="NiPHP" />' .
-                 '<meta name="robots" content="all" />' .
-                 '<meta name="renderer" content="webkit" />' .
-                 // '<meta http-equiv="Cache-Control" content="no-siteapp" />' .
-                 '<title>' . $this->siteInfo['website_name'] . ' - Powered by NiPHP</title>' .
-                 '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' .
-                 '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' .
-                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />';
-
-
+        $head .= '<meta name="author" content="NiPHP" />' . PHP_EOL .
+                 '<meta name="generator" content="NiPHP" />' . PHP_EOL .
+                 '<meta name="copyright" content="NiPHP" />' . PHP_EOL .
+                 '<meta name="robots" content="all" />' . PHP_EOL .
+                 '<meta name="renderer" content="webkit" />' . PHP_EOL .
+                 // '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
+                 '<title>' . $this->siteInfo['website_name'] . ' - Powered by NiPHP</title>' . PHP_EOL .
+                 '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' . PHP_EOL .
+                 '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' . PHP_EOL .
+                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />' . PHP_EOL;
 
         if (!empty($this->config['css'])) {
             foreach ($this->config['css'] as $css) {
-                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
+                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />' . PHP_EOL;
             }
         }
 
         if (!empty($this->config['js'])) {
             foreach ($this->config['js'] as $js) {
-                $head .= '<script type="text/javascript" src="' . $js . '"></script>';
+                $head .= '<script type="text/javascript" src="' . $js . '"></script>' . PHP_EOL;
             }
         }
 
@@ -141,7 +143,7 @@ class ViewFilter
                  '};' .
                  '</script>';
 
-        $head .= '</head><body>';
+        $head .= PHP_EOL . '</head>' . PHP_EOL . '<body>' . PHP_EOL;
 
         return $head . $_content;
     }

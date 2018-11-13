@@ -1,17 +1,17 @@
 <?php
 /**
  *
- * 权限校验 - 行为
+ * 权限校验 - 中间件
  *
  * @package   NiPHPCMS
- * @category  admin\behavior
+ * @category  application\admin\middleware
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2018/9
+ * @since     2018/11
  */
 
-namespace app\admin\behavior;
+namespace app\admin\middleware;
 
 class Auth
 {
@@ -22,21 +22,13 @@ class Auth
      * @param
      * @return void
      */
-    public function run()
+    public function handle($_request, \Closure $_next)
     {
-        if (request()->ext() !== 'do') abort(404);
+        if ($_request->ext() !== 'do') abort(404);
 
-        $module     = strtolower(request()->module());
-        $controller = strtolower(request()->controller());
-        $action     = strtolower(request()->action());
-
-        // API不校验权限信息
-        // API有自己的私有校验方法
-        if ($controller === 'api') {
-            return true;
-        }
-
-        $redirect = '';
+        $module     = strtolower($_request->module());
+        $controller = strtolower($_request->controller());
+        $action     = strtolower($_request->action());
 
         // 用户权限校验
         if (session('?' . config('user_auth_key'))) {
@@ -47,23 +39,18 @@ class Auth
                     $controller,
                     $action
             )) {
-                $redirect = url('settings/info');
+                return redirect(url('settings/info'));
             }
 
             // 登录页重定向
             if ($action === 'login') {
-                $redirect = url('settings/info');
+                return redirect(url('settings/info'));
             }
         } elseif ($controller !== 'account') {
             // 未登录跳转登录页
-            $redirect = url('account/login') . '?back=' . urlencode(request()->url(true));
+            return redirect(url('account/login') . '?back=' . urlencode($_request->url(true)));
         }
 
-        if ($redirect) {
-            echo redirect($redirect)->send();
-            die();
-        }
-
-        return true;
+        return $_next($_request);
     }
 }
