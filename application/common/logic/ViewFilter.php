@@ -102,6 +102,8 @@ class ViewFilter
             $head .= '<meta name="format-detection" content="telephone=yes" />' . PHP_EOL;
             $head .= '<meta name="format-detection" content="email=yes" />' . PHP_EOL;
         } else {
+            $head .= '<meta name="renderer" content="webkit" />' . PHP_EOL;
+            $head .= '<meta name="force-rendering" content="webkit" />' . PHP_EOL;
             $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL;
         }
 
@@ -109,12 +111,18 @@ class ViewFilter
                  '<meta name="generator" content="NiPHP" />' . PHP_EOL .
                  '<meta name="copyright" content="NiPHP" />' . PHP_EOL .
                  '<meta name="robots" content="all" />' . PHP_EOL .
-                 '<meta name="renderer" content="webkit" />' . PHP_EOL .
-                 // '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
-                 '<title>' . $this->siteInfo['website_name'] . ' - Powered by NiPHP</title>' . PHP_EOL .
+
+                 '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
+                 '<title>' . $this->siteInfo['title'] . ' - Powered by NiPHP</title>' . PHP_EOL .
                  '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' . PHP_EOL .
                  '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' . PHP_EOL .
-                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />' . PHP_EOL;
+                 '<meta property="og:site_name" content="' . $this->siteInfo['website_name'] . '" />' . PHP_EOL .
+                 '<meta property="og:type" content="blog" />' . PHP_EOL .
+                 '<meta property="og:title" content="' . $this->siteInfo['title'] . ' - Powered by NiPHP" />' . PHP_EOL .
+                 '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
+                 '<meta property="og:description" content="' . $this->siteInfo['website_description'] . '" />' . PHP_EOL .
+                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />' . PHP_EOL .
+                 '<link href="' . request()->domain() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
         if (!empty($this->config['css'])) {
             foreach ($this->config['css'] as $css) {

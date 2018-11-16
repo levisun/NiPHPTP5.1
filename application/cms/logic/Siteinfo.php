@@ -38,14 +38,15 @@ class Siteinfo
         foreach ($result as $value) {
             $data[$value['name']] = htmlspecialchars_decode($value['value']);
         }
+        $data['title'] = $data['website_name'];
 
         $result = logic('cms/breadcrumb')->query();
         foreach ($result as $key => $value) {
-            $data['website_name'] = $value['name'] . ' - ' . $data['website_name'];
+            $data['title'] = $value['name'] . ' - ' . $data['title'];
         }
         $result = end($result);
         if (!empty($result['seo_title'])) {
-            $data['website_name'] = $result['seo_title'] . ' - ' . $data['website_name'];
+            $data['title'] = $result['seo_title'] . ' - ' . $data['title'];
         }
         if (!empty($result['seo_keywords'])) {
             $data['website_keywords'] = $result['seo_keywords'];
