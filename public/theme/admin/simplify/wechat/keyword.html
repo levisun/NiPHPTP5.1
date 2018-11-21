@@ -53,7 +53,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "wechat.keyword.query",
         type: "{$type}",
         p: page
@@ -88,7 +88,7 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "wechat.keyword.query",
             type: "{$type}",
             p: _page
@@ -122,7 +122,7 @@ function paging(_page) {
 
 $("form").submit(function(){
     var form_data = "method=wechat.keyword.sort";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
@@ -140,7 +140,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "wechat.keyword.remove",
             id: id
         },

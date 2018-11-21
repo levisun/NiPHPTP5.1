@@ -33,76 +33,51 @@
     </div>
 </div>
 <script type="text/javascript">
-var page = window.location.hash;
-page = page.substr(1, page.length);
-$.loading({
-    url: request.api.query,
-    animation: true,
-    data: {
-        timestamp: "{:time()}",
-        method: "book.article.query",
-        bid: "{$Request.param.id}",
-        p: page
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
+var p = $.url("p", 1);
+paging(p, true);
 
-    var list = "";
-    for (var index in result.data.list) {
-        list = list + "<tr>";
-        list = list + "<td>"+result.data.list[index].id+"</td>";
-        list = list + "<td>"+result.data.list[index].title+"</td>";
-        list = list + "<td>"+result.data.list[index].status+"</td>";
-        list = list + "<td>"+result.data.list[index].update_time+"</td>";
-
-        list = list + "<td>";
-        list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-        list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
-        list = list + "</td>";
-
-        list = list + "</tr>";
-    }
-    $("#dataTable tbody").prepend(list);
-    $("#paging").prepend(result.data.page);
-});
-
-function paging(_page) {
-    $.rewriteUrl("{:request()->url(true)}#"+_page);
-    $.loading({
+function paging(_page, _push) {
+    _push = typeof(_push) == "undefined" ? true : false;
+    $.pjax({
         url: request.api.query,
-        animation: true,
+        type: "post",
+        push: _push,
+        requestUrl: $.domain(true) + "?p=" + _page,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "book.article.query",
             bid: "{$Request.param.id}",
             p: _page
-        }
-    }, function(result){
-        if (result.code !== "SUCCESS") {
-            return false;
-        }
-        $("#dataTable tbody tr").remove();
-        $("#paging ul").remove();
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
+            }
+            $("#dataTable tbody tr").remove();
+            $("#paging ul").remove();
 
-        var list = "";
-        for (var index in result.data.list) {
-            list = list + "<tr>";
-            list = list + "<td>"+result.data.list[index].id+"</td>";
-            list = list + "<td>"+result.data.list[index].title+"</td>";
-            list = list + "<td>"+result.data.list[index].status+"</td>";
-            list = list + "<td>"+result.data.list[index].update_time+"</td>";
+            var list = "";
+            for (var index in result.data.list) {
+                list = list + "<tr>";
+                list = list + "<td>"+result.data.list[index].id+"</td>";
+                list = list + "<td>"+result.data.list[index].title+"</td>";
+                list = list + "<td>"+result.data.list[index].status+"</td>";
+                list = list + "<td>"+result.data.list[index].update_time+"</td>";
 
-            list = list + "<td>";
-            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
-            list = list + "</td>";
+                list = list + "<td>";
+                list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+                list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
+                list = list + "</td>";
 
-            list = list + "</tr>";
+                list = list + "</tr>";
+            }
+            $("#dataTable tbody").prepend(list);
+            $("#paging").prepend(result.data.page);
         }
-        $("#dataTable tbody").prepend(list);
-        $("#paging").prepend(result.data.page);
     });
-};
+}
+$(window).bind("popstate", function(result) {
+    var p = $.url("p", 1);
+    paging(p, false);
+});
 </script>

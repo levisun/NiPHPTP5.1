@@ -81,7 +81,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "wechat.keyword.find",
         id: "{$Request.param.id}"
     }
@@ -114,7 +114,7 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=wechat.keyword.editor";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

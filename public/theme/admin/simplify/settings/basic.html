@@ -54,31 +54,35 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "settings.basic.query",
         timestamp: "{:time()}"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        for (var index in result.data) {
-            $("#"+index).val($.htmlDecode(result.data[index]));
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            for (var index in result.data) {
+                $("#"+index).val($.htmlDecode(result.data[index]));
+            }
         }
     }
 });
+
 $("form").submit(function(){
     var form_data = "method=settings.basic.editor";
-     form_data += "&timestamp={:time()}";
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
+        type: "post",
         async: false,
         data: form_data,
-    }, function(result){
-        handle(result);
+        success: function(result){
+            handle(result);
+        }
     });
     return false;
 });

@@ -19,7 +19,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "theme.cms.query",
         type: "cms",
     }
@@ -50,7 +50,7 @@ $("body").on("click", "#set", function(){
     $.loading({
         url: request.api.settle,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "theme.member.editor",
             type: "cms",
             name: data

@@ -47,7 +47,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.banner.query",
         pid: "{$Request.param.pid}",
         p: page
@@ -80,7 +80,7 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.banner.query",
             pid: "{$Request.param.pid}",
             p: page
@@ -117,7 +117,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.banner.remove",
             id: id
         },
@@ -132,7 +132,7 @@ $(document).on("click", ".np-btn-remove", function(){
 
 $("form").submit(function(){
     var form_data = "method=content.banner.sort";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

@@ -28,7 +28,7 @@ class Admin extends Upload
         $map = [
             ['a.id', '<>', 1]
         ];
-        if ($q = input('get.q')) {
+        if ($q = input('param.q')) {
             $map[] = ['a.usernmae', 'like', '%' . $q . '%'];
         }
 

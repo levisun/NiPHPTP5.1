@@ -75,6 +75,7 @@ class ViewFilter
         $foot .= PHP_EOL;
         $foot .= '<script type="text/javascript">';
         $foot .= 'console.log("Powered by NiPHP ' . NP_VERSION . ' Copyright © 2013-' . date('Y') . '");';
+        $foot .= 'console.log("Author 失眠小枕头");';
         $foot .= 'console.log("http://www.NiPHP.com");';
         $foot .= '</script>';
         $foot .= PHP_EOL . '</body>' . PHP_EOL . '<html>';
@@ -107,9 +108,9 @@ class ViewFilter
             $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL;
         }
 
-        $head .= '<meta name="author" content="NiPHP" />' . PHP_EOL .
-                 '<meta name="generator" content="NiPHP" />' . PHP_EOL .
-                 '<meta name="copyright" content="NiPHP" />' . PHP_EOL .
+        $head .= '<meta name="author" content="失眠小枕头" />' . PHP_EOL .
+                 '<meta name="generator" content="失眠小枕头" />' . PHP_EOL .
+                 '<meta name="copyright" content="失眠小枕头" />' . PHP_EOL .
                  '<meta name="robots" content="all" />' . PHP_EOL .
 
                  '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .

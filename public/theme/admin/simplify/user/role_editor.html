@@ -68,7 +68,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "user.role.find",
         id: "{$Request.param.id}"
     }
@@ -85,7 +85,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "user.role.node",
     }
 }, function(result){
@@ -148,7 +148,7 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=user.role.editor";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

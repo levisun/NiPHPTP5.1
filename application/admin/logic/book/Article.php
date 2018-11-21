@@ -29,7 +29,7 @@ class Article
         ->field(true)
         ->order('sort DESC, id DESC')
         ->where([
-            ['book_id', '=', input('post.bid')]
+            ['book_id', '=', input('param.bid')]
         ])
         ->append(['pass'])
         ->paginate();

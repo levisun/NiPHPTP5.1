@@ -53,7 +53,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "expand.databack.getTablesName"
     }
 }, function(result){
@@ -93,7 +93,7 @@ $(".backup_type").click(function(){
 $("form").submit(function(){
     var table_name = $(this).serialize();
     var form_data = "method=expand.databack.backup";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

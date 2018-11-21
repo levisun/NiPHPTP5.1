@@ -75,7 +75,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "category.fields.find",
         id: "{$Request.param.id}"
     }
@@ -95,7 +95,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "category.fields.type"
     }
 }, function(result){
@@ -108,7 +108,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "category.fields.category"
     }
 }, function(result){
@@ -120,7 +120,7 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=category.fields.editor";
-    form_data += "&timestamp={:time()}";
+    form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

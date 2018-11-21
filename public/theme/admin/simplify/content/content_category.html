@@ -31,7 +31,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.content.category",
         pid: "{$Request.param.pid|default='0'}"
     }

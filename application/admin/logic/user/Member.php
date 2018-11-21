@@ -26,7 +26,7 @@ class Member extends Upload
     public function query()
     {
         $map = [];
-        if ($q = input('get.q')) {
+        if ($q = input('param.q')) {
             $map[] = ['m.usernmae', 'like', '%' . $q . '%'];
         }
 

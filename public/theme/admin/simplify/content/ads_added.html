@@ -100,7 +100,7 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=content.ads.added";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

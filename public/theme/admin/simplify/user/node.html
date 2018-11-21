@@ -46,7 +46,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "user.node.query",
     }
 }, function(result){
@@ -80,7 +80,7 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=user.node.sort";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,
@@ -98,7 +98,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "user.node.remove",
             id: id
         },

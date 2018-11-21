@@ -35,40 +35,51 @@
     </div>
 </div>
 <script type="text/javascript">
-var page = window.location.hash;
-page = page.substr(1, page.length);
-$.loading({
-    url: request.api.query,
-    animation: true,
-    data: {
-        timestamp: "{:time()}",
-        method: "book.book.query",
-        p: page
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
+var p = $.url("p", 1);
+paging(p, true);
 
-    var list = "";
-    for (var index in result.data.list) {
-        list = list + "<tr>";
-        list = list + "<td>"+result.data.list[index].id+"</td>";
-        list = list + "<td>"+result.data.list[index].name+"</td>";
-        list = list + "<td>"+result.data.list[index].type_name+"</td>";
-        list = list + "<td>"+result.data.list[index].author+"</td>";
-        list = list + "<td>"+result.data.list[index].show+"</td>";
-        list = list + "<td>"+result.data.list[index].pass+result.data.list[index].status+"</td>";
+function paging(_page, _push) {
+    _push = typeof(_push) == "undefined" ? true : false;
+    $.pjax({
+        url: request.api.query,
+        type: "post",
+        push: _push,
+        requestUrl: $.domain(true) + "?p=" + _page,
+        data: {
+            timestamp: $.timestamp(),
+            method: "book.book.query",
+            p: _page
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
+            }
 
-        list = list + "<td>";
-        list = list + "<a href='"+result.data.list[index].url.manage+"'><span class='fa fa-eye'></span>{:lang('button manage')}</a>";
-        list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-        list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
-        list = list + "</td>";
+            var list = "";
+            for (var index in result.data.list) {
+                list = list + "<tr>";
+                list = list + "<td>"+result.data.list[index].id+"</td>";
+                list = list + "<td>"+result.data.list[index].name+"</td>";
+                list = list + "<td>"+result.data.list[index].type_name+"</td>";
+                list = list + "<td>"+result.data.list[index].author+"</td>";
+                list = list + "<td>"+result.data.list[index].show+"</td>";
+                list = list + "<td>"+result.data.list[index].pass+result.data.list[index].status+"</td>";
 
-        list = list + "</tr>";
-    }
-    $("#dataTable tbody").prepend(list);
-    $("#paging").prepend(result.data.page);
+                list = list + "<td>";
+                list = list + "<a href='"+result.data.list[index].url.manage+"'><span class='fa fa-eye'></span>{:lang('button manage')}</a>";
+                list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+                list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
+                list = list + "</td>";
+
+                list = list + "</tr>";
+            }
+            $("#dataTable tbody").prepend(list);
+            $("#paging").prepend(result.data.page);
+        }
+    });
+}
+$(window).bind("popstate", function(result) {
+    var p = $.url("p", 1);
+    paging(p, false);
 });
 </script>

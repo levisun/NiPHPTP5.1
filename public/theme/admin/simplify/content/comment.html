@@ -5,7 +5,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.comment.query",
         p: page
     }
@@ -23,7 +23,7 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.comment.query",
             pid: "{$Request.param.pid}",
             p: page
@@ -45,7 +45,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.comment.remove",
             id: id
         },

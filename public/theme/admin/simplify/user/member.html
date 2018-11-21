@@ -40,7 +40,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "user.member.query",
     }
 }, function(result){
@@ -83,7 +83,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "user.member.remove",
             id: id
         },

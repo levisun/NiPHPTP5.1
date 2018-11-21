@@ -25,7 +25,7 @@ class Keyword extends Upload
      */
     public function query()
     {
-        $type = input('post.type/f', 0);
+        $type = input('param.type/f', 0);
 
         $map = [
             ['type', '=', $type],

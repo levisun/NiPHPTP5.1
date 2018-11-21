@@ -37,7 +37,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "user.level.query",
         p: page
     }
@@ -74,7 +74,7 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "user.level.query",
             p: _page
         }
@@ -114,7 +114,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "user.level.remove",
             id: id
         },

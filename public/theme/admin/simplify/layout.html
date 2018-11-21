@@ -23,7 +23,7 @@
     {js href="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js" /}
     {js href="__JS__jquery.popupoverlay.min.js" /}
     {js href="__JS__simplify/simplify.js" /}
-    {js href="__STATIC__nipui/js/nipui-2.1.1.js" /}
+    {js href="__STATIC__nipui/js/nipui-2.2.1.js" /}
     <script type="text/javascript">
     var request = {
         domain:     "__DOMAIN__",
@@ -148,7 +148,7 @@ $("._handle_logout").click(function(){
     $.loading({
         url: request.api.settle,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "account.logout.logout"
         }
     }, function(result){

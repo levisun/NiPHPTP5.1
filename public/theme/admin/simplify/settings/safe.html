@@ -127,34 +127,37 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "settings.safe.query"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        for (var index in result.data) {
-            if (index != "upload_file_max" && index != "upload_file_type") {
-                $("#"+index+result.data[index]).attr("checked", "checked");
-            } else {
-                $("#"+index).val(result.data[index]);
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            for (var index in result.data) {
+                if (index != "upload_file_max" && index != "upload_file_type") {
+                    $("#"+index+result.data[index]).attr("checked", "checked");
+                } else {
+                    $("#"+index).val(result.data[index]);
+                }
             }
         }
     }
 });
 $("form").submit(function(){
     var form_data = "method=settings.safe.editor";
-     form_data += "&timestamp={:time()}";
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result);
+        success: function(result){
+            handle(result);
+        }
     });
     return false;
 });

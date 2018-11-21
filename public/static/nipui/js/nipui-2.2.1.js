@@ -12,6 +12,63 @@
 }(function (jQuery) {
 
     /**
+     * 弹出层
+     */
+    jQuery.uiPopup = function (_params, _status) {
+        _status = _status ? _status : "init";
+
+        if (_status === "init") {
+            var style = _params.style ? "layoutUi-popup-" + _params.style : "layoutUi-popup-popup";
+
+            var html = "<div class='layoutUi-popup "+style+"'><div class='layoutUi-popup-mask'></div><div class='layoutUi-popup-container'><div class='layoutUi-pull-right layoutUi-close' style='margin: 10px' bindtap=''></div>";
+            if (_params.title) {
+                html += "<div class='layoutUi-popup-header'>"+_params.title+"</div>";
+            }
+            if (_params.content) {
+                html += "<div class='layoutUi-popup-content'>"+_params.content+"</div>";
+            }
+            if (_params.footer) {
+                html += "<div class='layoutUi-popup-footer'>"+_params.footer+"</div>";
+            }
+            html += "</div></div>";
+            html += "<script type='text/javascript'>$('.layoutUi-close').click(function(){$.uiPopup({}, 'hide');});$('.layoutUi-popup-mask').click(function(){$.uiPopup({}, 'hide');});$('"+_params.element+"').click(function(){$.uiPopup({}, 'show');});</script>";
+            jQuery("body").append(html);
+        } else if (_status === "show") {
+            jQuery(".layoutUi-popup").addClass("layoutUi-popup-show");
+        } else if (_status === "hide") {
+            jQuery(".layoutUi-popup").removeClass("layoutUi-popup-show");
+        }
+    }
+
+    /**
+     * 加载弹框提示
+     */
+    jQuery.uiLoadpopup = function (_tips, _timeout, _element) {
+        _tips = _tips !== "" ? _tips : "加载中...";
+        _timeout = _timeout ? _timeout : 15;
+        _element = _element ? _element : "body";
+
+        if (_tips === false) {
+            jQuery("div.layoutUi-loadpopup").remove();
+            jQuery("body").removeAttr("style");
+        } else {
+            var html = "";
+            jQuery("body").css({"height": "100%", "overflow": "hidden"});
+            html  = "<div class='layoutUi-loadpopup'>";
+            html += "<div class='layoutUi-loadpopup-mask'></div>";
+            html += "<div class='layoutUi-loadpopup-tips'>";
+            html += "<div class='layoutUi-loadpopup-loading'></div>"+_tips;
+            html += "</div>";
+            html += "</div>";
+            jQuery(_element).append(html);
+
+            setTimeout(function(){
+                jQuery.uiLoadpopup(false);
+            }, _timeout * 1000);
+        }
+    }
+
+    /**
      * 轻加载提示
      */
     jQuery.uiLoadmore = function (_tips, _element) {
@@ -53,6 +110,20 @@
     }
 
     /**
+     * HTML转义
+     */
+    jQuery.htmlDecode = function (_string) {
+        _string = _string.toString();
+        _string = _string.replace(/&amp;/g, '&');
+        _string = _string.replace(/&lt;/g, '<');
+        _string = _string.replace(/&gt;/g, '>');
+        _string = _string.replace(/&quot;/g, '"');
+        _string = _string.replace(/&#039;/g, '\'');
+
+        return _string;
+    }
+
+    /**
      * 滚动到指定位置
      */
     jQuery.scrollElement = function (_element, _time) {
@@ -86,16 +157,44 @@
     }
 
     /**
+     * 安卓端访问
+     */
+    jQuery.isAndroid = function () {
+        var reg = /(android)/i;
+        var user_agent = navigator.userAgent.toLowerCase();
+        var result = user_agent.match(reg);
+        if (result !== null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 苹果端访问
+     */
+    jQuery.isIos = function () {
+        var reg = /(iphone|ipad|ipod|ios)/i;
+        var user_agent = navigator.userAgent.toLowerCase();
+        var result = user_agent.match(reg);
+        if (result !== null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 判断是否微信端访问
      */
     jQuery.isWechat = function () {
-        var reg = /(MicroMessenger)/i;
+        var reg = /(micromessenger)/i;
         var user_agent = navigator.userAgent.toLowerCase();
         var result = user_agent.match(reg);
-        if (result == null) {
-            return false;
-        } else {
+        if (result !== null) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -103,13 +202,13 @@
      * 判断是否移动端访问
      */
     jQuery.isMobile = function () {
-        var reg = /(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i;
+        var reg = /(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |googlebot-mobile|yahooseeker\/m1a1-r2d2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i;
         var user_agent = navigator.userAgent.toLowerCase();
         var result = user_agent.match(reg);
-        if (result == null) {
-            return false;
-        } else {
+        if (result !== null) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -204,6 +303,25 @@
         return value ? value : _default;
     }
 
+    jQuery.timestamp = function () {
+        var timestamp = Date.parse(new Date());
+        return timestamp /1000;
+    }
+
+    /**
+     * 域名
+     */
+    jQuery.domain = function (_url) {
+        _url = _url ? _url : false;
+        var domain  = window.location.protocol + "//";
+            domain += window.location.hostname;
+
+        if (_url) {
+            domain += window.location.pathname;
+        }
+        return domain;
+    }
+
     /**
      * 上传
      */
@@ -259,12 +377,12 @@
 
                     // 添加历史记录
                     if (_options.push === true) {
-                        window.history.pushState(null, "", window.location.href);
+                        window.history.pushState(null, "", _options.requestUrl);
                     }
 
                     // 替换历史记录
                     else if (_options.replace === true) {
-                        window.history.replaceState(null, "", window.location);
+                        window.history.replaceState(null, "", _options.requestUrl);
                     }
                 }
                 return xhr;
@@ -277,11 +395,11 @@
      */
     jQuery.pjax = function (_options) {
         var defaults = {
-            push: false,        // 添加历史记录
-            replace: false,     // 替换历史记录
-            scrollTo: false,    // 是否回到顶部 可定义顶部像素
-            scrollMore: false,  // 加载更多
-
+            push: false,                        // 添加历史记录
+            replace: false,                     // 替换历史记录
+            scrollTo: false,                    // 是否回到顶部 可定义顶部像素
+            scrollMore: false,                  // 加载更多
+            requestUrl: window.location.href,   // 重写地址
             type: "GET",
             dataType: "json",
             contentType: "application/x-www-form-urlencoded"
@@ -309,16 +427,22 @@
         if (xhr.readyState > 0) {
             // 添加历史记录
             if (_options.push === true) {
-                window.history.pushState(null, "", window.location.href);
+                window.history.pushState(null, document.title, _options.requestUrl);
             }
 
             // 替换历史记录
             else if (_options.replace === true) {
-                window.history.replaceState(null, "", window.location);
+                window.history.replaceState(null, document.title, _options.requestUrl);
             }
         }
 
         return xhr;
     }
 
+    /*jQuery.popstateEvent = function (_options) {
+        $(window).unbind("popstate");
+        $(window).bind("popstate", _options, function(result) {
+            jQuery.pjax(_options);
+        });
+    }*/
 }));

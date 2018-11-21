@@ -285,35 +285,36 @@
 </div>
 
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "settings.image.query",
         timestamp: "{:time()}"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        for (index in result.data) {
-            if (index == 'auto_image' && result.data[index]) {
-                $(".auto_image").addClass("checked");
-                $("#auto_image").attr("checked", "checked");
-            } else if (index == "add_water") {
-                $(".add_water"+result.data[index]).addClass("checked");
-                $("#add_water"+result.data[index]).attr("checked", "checked");
-            } else if (index == "water_type") {
-                $(".water_type"+result.data[index]).addClass("checked");
-                $("#water_type"+result.data[index]).attr("checked", "checked");
-            } else if (index == "water_location") {
-                $(".water_location"+result.data[index]).addClass("checked");
-                $("#water_location"+result.data[index]).attr("checked", "checked");
-            } else {
-                $("#"+index).val($.htmlDecode(result.data[index]));
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            for (index in result.data) {
+                if (index == 'auto_image' && result.data[index]) {
+                    $(".auto_image").addClass("checked");
+                    $("#auto_image").attr("checked", "checked");
+                } else if (index == "add_water") {
+                    $(".add_water"+result.data[index]).addClass("checked");
+                    $("#add_water"+result.data[index]).attr("checked", "checked");
+                } else if (index == "water_type") {
+                    $(".water_type"+result.data[index]).addClass("checked");
+                    $("#water_type"+result.data[index]).attr("checked", "checked");
+                } else if (index == "water_location") {
+                    $(".water_location"+result.data[index]).addClass("checked");
+                    $("#water_location"+result.data[index]).attr("checked", "checked");
+                } else {
+                    $("#"+index).val($.htmlDecode(result.data[index]));
+                }
             }
+            $("#img-water_image").attr("src", request.domain+result.data.water_image);
+            $("#img-water_image").show();
         }
-        $("#img-water_image").attr("src", request.domain+result.data.water_image);
-        $("#img-water_image").show();
     }
 });
 
@@ -325,27 +326,36 @@ $.uiPopup({
 });
 
 $(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "settings.image.upload");
+        data.append("timestamp", "{:time()}");
+        data.append("type", "water");
+
     $.upload({
-        url: request.api.upload+"?method=settings.image.upload&token=c2630911e31549d4ddb556daba9c20d9c910d396&timestamp={:time()}&type=water",
-        file: $("#uploadForm")[0],
-    }, function(result){
-        var dir = result.data.save_dir + result.data.file_name;
-        $("#water_image").val(dir);
-        $("#img-water_image").attr("src",  result.data.domain + dir);
-        $.uiPopup({}, "hide");
+        url: request.api.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#water_image").val(dir);
+            $("#img-water_image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
     });
 });
 
 $("form").submit(function(){
     var form_data = "method=settings.image.editor";
-     form_data += "&timestamp={:time()}";
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result);
+        success: function(result){
+            handle(result);
+        }
     });
     return false;
 });

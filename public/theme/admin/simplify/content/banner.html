@@ -39,7 +39,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.banner.query",
         p: page
     }
@@ -74,7 +74,7 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.banner.query",
             pid: "{$Request.param.pid}",
             p: page
@@ -111,7 +111,7 @@ $(document).on("click", ".np-btn-remove", function(){
         url: request.api.settle,
         async: false,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.banner.remove",
             id: id
         },

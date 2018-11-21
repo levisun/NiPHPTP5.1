@@ -82,7 +82,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.content.find",
         cid: "{$Request.param.cid}",
         id: "{$Request.param.id}"
@@ -99,7 +99,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.content.type",
         cid: "{$Request.param.cid}"
     }
@@ -112,7 +112,7 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=content.content.editor";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

@@ -253,16 +253,18 @@ class Async
      */
     public function createAsyncToken()
     {
-        $salt = strtoupper(substr(md5(request()->domain() . env('root_path')), 7, 3));
-
-        $http_referer = crypt(
-            request()->server('HTTP_USER_AGENT') .
-            request()->url(true) .
-            request()->ip(),
-            '$5$rounds=5000$' . sha1(env('app_path') . app()->version() . date('Ymd')) . '$'
-        );
-
-        cookie('_ASYNCTOKEN' . $salt, $http_referer);
+        if (!cookie('?_ASYNCTOKEN')) {
+            $http_referer = sha1(
+                // request()->url(true) .
+                request()->server('HTTP_USER_AGENT') .
+                request()->ip() .
+                app()->version() .
+                env('root_path') .
+                date('Ymd')
+            );
+            trace('[_ASYNCTOKEN] ' . $http_referer, 'alert');
+            cookie('_ASYNCTOKEN', $http_referer);
+        }
     }
 
     /**
@@ -279,18 +281,18 @@ class Async
             abort(404);
         }
 
-        $salt = strtoupper(substr(md5(request()->domain() . env('root_path')), 7, 3));
-
-        $http_referer = crypt(
+        $http_referer = sha1(
+            // request()->server('HTTP_REFERER') .
             request()->server('HTTP_USER_AGENT') .
-            request()->server('HTTP_REFERER') .
-            request()->ip(),
-            '$5$rounds=5000$' . sha1(env('app_path') . app()->version() . date('Ymd')) . '$'
+            request()->ip() .
+            app()->version() .
+            env('root_path') .
+            date('Ymd')
         );
 
-        if (!cookie('?_ASYNCTOKEN' . $salt) or !hash_equals($http_referer, cookie('_ASYNCTOKEN' . $salt))) {
-            trace('[_ASYNCTOKEN' . $salt . '] ' . $http_referer, 'alert');
-            trace('[COOKIE::_ASYNCTOKEN' . $salt . '] ' . cookie('_ASYNCTOKEN' . $salt), 'alert');
+        if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
+            trace('[_ASYNCTOKEN] ' . $http_referer, 'alert');
+            trace('[COOKIE::_ASYNCTOKEN] ' . cookie('_ASYNCTOKEN'), 'alert');
             abort(404);
         }
     }

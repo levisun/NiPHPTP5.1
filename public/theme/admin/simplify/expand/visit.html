@@ -41,7 +41,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "expand.visit.query",
         operate: "{:input('param.operate', 'visit')}",
         p: page
@@ -70,7 +70,7 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "expand.visit.query",
             operate: "{:input('param.operate', 'visit')}",
             p: _page

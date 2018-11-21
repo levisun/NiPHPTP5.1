@@ -66,7 +66,7 @@ $.loading({
     async: false,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.banner.find",
         id: "{$Request.param.id}"
     }
@@ -79,7 +79,7 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=content.banner.editor";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

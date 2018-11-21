@@ -46,80 +46,85 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "category.category.query",
         pid: "{$Request.param.pid}"
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
 
-    var list = "";
-    for (var index in result.data) {
-        list = list + "<tr>";
-        list = list + "<td><input type='text' name='sort["+result.data[index].id+"]' class='form-control mini' value='"+result.data[index].sort+"'></td>";
-        list = list + "<td>"+result.data[index]["id"]+"</td><td>"+result.data[index]["name"]+"</td>";
-        list = list + "<td>"+result.data[index].type_name+"</td>";
-        list = list + "<td>"+result.data[index].model_name+"</td>";
-        list = list + "<td>"+result.data[index].show+"</td>";
-        list = list + "<td>"+result.data[index].channel+"</td>";
+        var list = "";
+        for (var index in result.data) {
+            list = list + "<tr>";
+            list = list + "<td><input type='text' name='sort["+result.data[index].id+"]' class='form-control mini' value='"+result.data[index].sort+"'></td>";
+            list = list + "<td>"+result.data[index]["id"]+"</td><td>"+result.data[index]["name"]+"</td>";
+            list = list + "<td>"+result.data[index].type_name+"</td>";
+            list = list + "<td>"+result.data[index].model_name+"</td>";
+            list = list + "<td>"+result.data[index].show+"</td>";
+            list = list + "<td>"+result.data[index].channel+"</td>";
 
-        list = list + "<td>";
-        if (result.data[index].url.back) {
-            list = list + "<a href='"+result.data[index].url.back+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
-        }
-        if (result.data[index].url.child) {
-            list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
-        }
-        if (result.data[index].url.add_child) {
-            list = list + "<a href='"+result.data[index].url.add_child+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
-        }
-        if (result.data[index].url.editor) {
-            list = list + "<a href='"+result.data[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-        }
-        if (result.data[index].url.remove) {
-            list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
-        }
-        list = list + "</td>";
+            list = list + "<td>";
+            if (result.data[index].url.back) {
+                list = list + "<a href='"+result.data[index].url.back+"'><span class='fa fa-reply'></span>{:lang('go back')}</a>";
+            }
+            if (result.data[index].url.child) {
+                list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-eye'></span>{:lang('show child')}</a>";
+            }
+            if (result.data[index].url.add_child) {
+                list = list + "<a href='"+result.data[index].url.add_child+"'><span class='fa fa-plus'></span>{:lang('add child')}</a>";
+            }
+            if (result.data[index].url.editor) {
+                list = list + "<a href='"+result.data[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+            }
+            if (result.data[index].url.remove) {
+                list = list + "<a class='np-btn-remove' data-id='"+result.data[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
+            }
+            list = list + "</td>";
 
-        list = list + "</tr>";
+            list = list + "</tr>";
+        }
+        $("#dataTable tbody").prepend(list);
     }
-    $("#dataTable tbody").prepend(list);
 });
 
 $("form").submit(function(){
     var form_data = "method=category.category.sort";
-    form_data += "&timestamp={:time()}";
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result);
+        success: function(result){
+            handle(result);
+        }
     });
     return false;
 });
 
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
-    $.loading({
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "category.category.remove",
             id: id
         },
-    }, function(result){
-        handle(result, false, false);
-        if (result.code === "SUCCESS") {
-            $.reload();
+        success: function(result){
+            handle(result, false, false);
+            if (result.code === "SUCCESS") {
+                $.reload();
+            }
         }
     });
     return false;

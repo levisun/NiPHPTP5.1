@@ -43,7 +43,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "content.content.query",
         cid: "{$Request.param.cid}",
         p: page
@@ -82,10 +82,10 @@ function paging(_page) {
         url: request.api.query,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.content.query",
             cid: "{$Request.param.cid}",
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             p: _page
         }
     }, function(result){

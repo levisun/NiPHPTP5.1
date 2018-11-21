@@ -21,7 +21,7 @@ $(".compile").click(function(){
         url: request.api.settle,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.cache.compile",
         }
     }, function(result){
@@ -38,7 +38,7 @@ $(".cache").click(function(){
         url: request.api.settle,
         animation: true,
         data: {
-            timestamp: "{:time()}",
+            timestamp: $.timestamp(),
             method: "content.cache.cache",
         }
     }, function(result){

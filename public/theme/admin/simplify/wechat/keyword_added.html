@@ -96,7 +96,7 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=wechat.keyword.added";
-     form_data += "&timestamp={:time()}";
+     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
         url: request.api.settle,

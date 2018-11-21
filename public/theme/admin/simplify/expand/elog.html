@@ -27,7 +27,7 @@ $.loading({
     url: request.api.query,
     animation: true,
     data: {
-        timestamp: "{:time()}",
+        timestamp: $.timestamp(),
         method: "expand.elog.query"
     }
 }, function(result){

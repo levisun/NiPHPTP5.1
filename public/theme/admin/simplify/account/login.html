@@ -30,19 +30,20 @@
 <script type="text/javascript">
 $("form").submit(function(){
     var form_data = "method=account.login.login";
-    form_data += "&timestamp={:time()}";
-    form_data += "&"+$(this).serialize();
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
 
-    $.uiLoadpopup();
-    $.loading({
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        if ("{$Request.param.back}") {
-            handle(result, "{$Request.param.back}");
-        } else {
-            handle(result, "{:url('settings/info')}");
+        success: function(result){
+            if ("{$Request.param.back}") {
+                handle(result, "{$Request.param.back}");
+            } else {
+                handle(result, "{:url('settings/info')}");
+            }
         }
     });
     return false;

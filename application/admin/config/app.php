@@ -59,6 +59,7 @@ return [
         'parent',
         'models',
         'level',
-        'manage'
+        'manage',
+        'sort',
     ],
 ];
