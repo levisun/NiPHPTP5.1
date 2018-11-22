@@ -1,5 +1,5 @@
-{js href="__STATIC__library/ckeditor/ckeditor.js"}
-{js href="__STATIC__library/ckeditor/config.js"}
+{js href="__STATIC__ckeditor/ckeditor-11.1.1.js"}
+{js href="__STATIC__ckeditor/translations/zh-cn.js"}
 <div class="smart-widget">
     <div class="smart-widget-header">
         {$SITE_DATA.SUB_TITLE}
@@ -85,7 +85,7 @@
                         <div class="form-group">
                             <label for="website_description" class="col-lg-2 control-label">{:lang('content')}</label>
                             <div class="col-md-10">
-                                <textarea name="content" class="form-control ckeditor"></textarea>
+                                <textarea name="content" class="form-control" id="ckeditor"></textarea>
                             </div>
                         </div>
                     </div>
@@ -107,32 +107,62 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+ClassicEditor.create(
+    document.querySelector('#ckeditor'),
+    {
+        language: 'zh-cn',
+        ckfinder: {
+            uploadUrl: request.api.upload + '?method='+request.controller+'.'+request.action+'.upload&type=ckeditor'
+        }
+    }
+);
+
+var editor_data = {};
+$.pjax({
     url: request.api.query,
     async: false,
-    animation: true,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        method: "content.content.find",
+        cid: "{$Request.param.cid}",
+        id: "{$Request.param.cid}"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
+    }
+});
+$.pjax({
+    url: request.api.query,
+    async: false,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "content.content.type",
         cid: "{$Request.param.cid}"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
-        $("#type_id").append(type_option);
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
+            $("#type_id").append(type_option);
+        }
     }
 });
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "category.category.level"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        var level_option = eachToOption(result.data, "id", "name");
-        $("#access_id").append(level_option);
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var level_option = eachToOption(result.data, "id", "name");
+            $("#access_id").append(level_option);
+        }
     }
 });
 
@@ -144,27 +174,36 @@ $.uiPopup({
 });
 
 $(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "content.content.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "{$Request.param.model}");
+
     $.upload({
-        url: request.api.upload+"?method=content.content.upload&timestamp={:time()}&type={$Request.param.model}",
-        file: $("#uploadForm")[0],
-    }, function(result){
-        var dir = result.data.save_dir + result.data.file_name;
-        $("#image").val(dir);
-        $("#img-image").attr("src",  result.data.domain + dir);
-        $.uiPopup({}, "hide");
+        url: request.api.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#image").val(dir);
+            $("#img-image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
     });
 });
 
 $("form").submit(function(){
     var form_data = "method=content.content.editor";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result, "{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}");
+        success: function(result){
+            handle(result, "{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}");
+        }
     });
     return false;
 });

@@ -216,7 +216,7 @@ $.uiPopup({
 $(".upload-btn").click(function(){
     var data = new FormData($("#uploadForm")[0]);
         data.append("method", "category.category.upload");
-        data.append("timestamp", "{:time()}");
+        data.append("timestamp", $.timestamp());
         data.append("type", "category");
 
     $.upload({

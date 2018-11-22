@@ -33,7 +33,16 @@ class Visit
         $this->addedSearchengine();
         // $this->createSitemap();
 
-        // file_get_contents(url('api/getipinfo', ['ip' => '8.8.8.8']));
+        $_GET['ip'] = '117.'.rand(1, 255).'.'.rand(1, 255).'.'.rand(1, 255);
+        if (logic('common/logic/IpInfo')->getInfo()) {
+            $_GET['ip'] = '117.'.rand(1, 255).'.'.rand(1, 255).'.'.rand(1, 255);
+            if (logic('common/logic/IpInfo')->getInfo()) {
+                $_GET['ip'] = '117.'.rand(1, 255).'.'.rand(1, 255).'.'.rand(1, 255);
+                if (logic('common/logic/IpInfo')->getInfo()) {
+                    # code...
+                }
+            }
+        }
     }
 
     /**

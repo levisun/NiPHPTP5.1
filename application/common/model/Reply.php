@@ -93,6 +93,28 @@ class Reply extends Model
     }
 
     /**
+     * 排序
+     * @access public
+     * @param
+     * @return boolean
+     */
+    public function sort($_receive_data)
+    {
+        $data = [];
+        foreach ($_receive_data['id'] as $key => $value) {
+            $data[] = [
+                'id'   => (float) $key,
+                'sort' => (float) $value,
+            ];
+        }
+
+        $result =
+        $this->saveAll($data);
+
+        return !!$result;
+    }
+
+    /**
      * 获取器
      * 关键词回复类型
      * @access protected

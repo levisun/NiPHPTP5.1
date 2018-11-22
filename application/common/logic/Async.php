@@ -262,8 +262,8 @@ class Async
                 env('root_path') .
                 date('Ymd')
             );
-            trace('[_ASYNCTOKEN] ' . $http_referer, 'alert');
-            cookie('_ASYNCTOKEN', $http_referer);
+
+            cookie('_ASYNCTOKEN', $http_referer, strtotime(date('Y-m-d 23:59:59')));
         }
     }
 

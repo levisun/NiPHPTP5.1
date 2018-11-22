@@ -280,7 +280,7 @@ class Content extends Upload
      */
     public function sort()
     {
-        create_action_log('', 'category_sort');
+        create_action_log('', 'content_sort');
 
         return
         model('common/category')

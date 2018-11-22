@@ -49,36 +49,37 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "expand.databack.getTablesName"
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-
-    var list = "";
-    var num = 0;
-    for (var index in result.data) {
-        if(num % 4 == 0) {
-            list += "<tr>";
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
         }
 
-        list += "<td>";
-        list += "<input type='checkbox' name='table_name[]' value='"+result.data[index]+"' />";
-        list += index;
-        list += "</td>";
+        var list = "";
+        var num = 0;
+        for (var index in result.data) {
+            if(num % 4 == 0) {
+                list += "<tr>";
+            }
 
-        if(num % 4 == 3) {
-            list += "</tr>";
+            list += "<td>";
+            list += "<input type='checkbox' name='table_name[]' value='"+result.data[index]+"' />";
+            list += index;
+            list += "</td>";
+
+            if(num % 4 == 3) {
+                list += "</tr>";
+            }
+            num++;
         }
-        num++;
+        $("#dataTable tbody").prepend(list);
     }
-    $("#dataTable tbody").prepend(list);
 });
 
 $(".backup_type").click(function(){
@@ -91,16 +92,17 @@ $(".backup_type").click(function(){
 });
 
 $("form").submit(function(){
-    var table_name = $(this).serialize();
     var form_data = "method=expand.databack.backup";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result, false, false);
+        success: function(result){
+            handle(result, false, false);
+        }
     });
     return false;
 });

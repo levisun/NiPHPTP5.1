@@ -61,5 +61,6 @@ return [
         'level',
         'manage',
         'sort',
+        'role',
     ],
 ];

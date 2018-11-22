@@ -17,36 +17,38 @@
 </div>
 <script type="text/javascript">
 $(".compile").click(function(){
-    $.loading({
+    $.pjax({
         url: request.api.settle,
-        animation: true,
+        type: "post",
         data: {
             timestamp: $.timestamp(),
             method: "content.cache.compile",
-        }
-    }, function(result){
-        if (result.code !== "SUCCESS") {
-            return false;
-        }
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
+            }
 
-        handle(result, false, false);
+            handle(result, false, false);
+        }
     });
 });
 
 $(".cache").click(function(){
-    $.loading({
+    $.pjax({
         url: request.api.settle,
-        animation: true,
+        type: "post",
         data: {
             timestamp: $.timestamp(),
             method: "content.cache.cache",
-        }
-    }, function(result){
-        if (result.code !== "SUCCESS") {
-            return false;
-        }
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
+            }
 
-        handle(result, false, false);
+            handle(result, false, false);
+        }
     });
 });
 </script>

@@ -15,35 +15,51 @@
 
 
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "theme.mall.query",
         type: "mall",
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        var html = "";
-        for (var index in result.data.list) {
-            html += "<div class='col-sm-2'>";
-            html += "<div class='thumbnail'>";
-            html += "<img src='"+result.data.list[index].img+"' width='100'>";
-            html += "<div class='caption align-c'>";
-            html += "<input type='radio' name='themes' ";
-            if (result.data.list[index].name === result.data.default_theme) {
-                html += "checked >";
-            } else {
-                html += ">";
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var html = "";
+            for (var index in result.data.list) {
+                html += "<div class='col-sm-2'>";
+                html += "<div class='thumbnail'>";
+                html += "<img src='"+result.data.list[index].img+"' width='100'>";
+                html += "<div class='caption align-c'>";
+                html += "<input type='radio' name='themes' ";
+                if (result.data.list[index].name === result.data.default_theme) {
+                    html += "checked >";
+                } else {
+                    html += ">";
+                }
+                html += result.data.list[index].name;
+                html += "</div>";
+                html += "</div>";
+                html += "</div>";
             }
-            html += result.data.list[index].name;
-            html += "</div>";
-            html += "</div>";
-            html += "</div>";
+            $("#theme-list").append(html);
         }
-        $("#theme-list").append(html);
     }
 });
+$("body").on("click", "#set", function(){
+    var data = $(this).attr("data");
+    $.pjax({
+        url: request.api.settle,
+        type: "post",
+        data: {
+            timestamp: $.timestamp(),
+            method: "theme.mall.editor",
+            type: "cms",
+            name: data
+        },
+        success: function(result){
 
+        }
+    });
+});
 </script>

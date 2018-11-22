@@ -11,18 +11,19 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "expand.elog.find",
         id: "{$Request.param.id}"
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataPre").text(result.data);
     }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-    $("#dataPre").text(result.data);
 });
 </script>

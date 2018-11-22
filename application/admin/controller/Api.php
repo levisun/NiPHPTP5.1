@@ -63,13 +63,10 @@ class Api extends Async
             return $this->error($result);
         } else {
             if (input('param.type') === 'ckeditor') {
-                echo '<script type="text/javascript">' .
-                     'window.parent.CKEDITOR.tools.callFunction(' .
-                     input('param.CKEditorFuncNum') . ', "' .
-                     $result['domain'] . $result['save_dir'] . $result['file_name'] . '", "' .
-                     lang('upload success') . '");' .
-                     '</script>';
-                die();
+                return json([
+                    'uploaded' => true,
+                    'url' => $result['domain'] . $result['save_dir'] . $result['file_name'],
+                ]);
             } else {
                 return $this->success(lang('upload success'), $result);
             }

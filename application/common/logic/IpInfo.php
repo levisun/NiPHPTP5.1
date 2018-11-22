@@ -27,7 +27,7 @@ class IpInfo
      */
     public function getInfo()
     {
-        $request_ip = input('param.ip', request()->ip());
+        $request_ip = input('get.ip', request()->ip());
 
         $result =
         model('common/model/IpInfo')

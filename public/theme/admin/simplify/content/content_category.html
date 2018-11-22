@@ -27,37 +27,38 @@
 </div>
 
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "content.content.category",
         pid: "{$Request.param.pid|default='0'}"
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-
-    var list = "";
-    for (var index in result.data) {
-        list = list + "<tr>";
-        list = list + "<td>"+result.data[index].id+"</td>";
-        list = list + "<td>"+result.data[index].name+"</td>";
-        list = list + "<td>"+result.data[index].type_name+"</td>";
-        list = list + "<td>"+result.data[index].model_name+"</td>";
-        list = list + "<td>"+result.data[index].show+"</td>";
-        list = list + "<td>"+result.data[index].channel+"</td>";
-        list = list + "<td>";
-        if (result.data[index].url.child) {
-            list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-edit'></span>{:lang('button child')}</a>";
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
         }
 
-        list = list + "<a href='"+result.data[index].url.manage+"'><span class='fa fa-edit'></span>{:lang('button manage')}</a>";
-        list = list + "</td>";
-        list = list + "<tr>";
+        var list = "";
+        for (var index in result.data) {
+            list = list + "<tr>";
+            list = list + "<td>"+result.data[index].id+"</td>";
+            list = list + "<td>"+result.data[index].name+"</td>";
+            list = list + "<td>"+result.data[index].type_name+"</td>";
+            list = list + "<td>"+result.data[index].model_name+"</td>";
+            list = list + "<td>"+result.data[index].show+"</td>";
+            list = list + "<td>"+result.data[index].channel+"</td>";
+            list = list + "<td>";
+            if (result.data[index].url.child) {
+                list = list + "<a href='"+result.data[index].url.child+"'><span class='fa fa-edit'></span>{:lang('button child')}</a>";
+            }
+
+            list = list + "<a href='"+result.data[index].url.manage+"'><span class='fa fa-edit'></span>{:lang('button manage')}</a>";
+            list = list + "</td>";
+            list = list + "<tr>";
+        }
+        $("#dataTable tbody").prepend(list);
     }
-    $("#dataTable tbody").prepend(list);
 });
 </script>
