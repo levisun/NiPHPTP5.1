@@ -328,7 +328,7 @@ $.uiPopup({
 $(".upload-btn").click(function(){
     var data = new FormData($("#uploadForm")[0]);
         data.append("method", "settings.image.upload");
-        data.append("timestamp", "{:time()}");
+        data.append("timestamp", $.timestamp());
         data.append("type", "water");
 
     $.upload({

@@ -15,7 +15,7 @@ return [
     // 驱动方式
     'type'         => 'File',
     // 缓存前缀
-    'prefix'       => NP_C_PREFIX,
+    'prefix'       => NP_PREFIX,
     // 缓存有效期 0表示永久缓存
     'expire'       => 1200,
     'cache_subdir' => false,

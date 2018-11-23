@@ -20,11 +20,11 @@ namespace think;
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP VERSION >= 5.6.0!');
 
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.1 Alpha');
 define('DS', DIRECTORY_SEPARATOR);
-define('NP_C_PREFIX', substr(md5(__DIR__), 0, 9));
-define('NP_CS_PREFIX', strtoupper(substr(NP_C_PREFIX, -3)));
+define('NP_PREFIX', substr(md5(__DIR__ . $_SERVER['HTTP_HOST']), 0, 7));
+define('NP_KEY', strtoupper(substr(NP_PREFIX, -3)));
 header('X-Powered-By: NiPHP');
 
 if (APP_DEBUG) {

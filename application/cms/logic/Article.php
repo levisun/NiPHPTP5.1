@@ -44,7 +44,7 @@ class Article
             ['a.category_id', '=', $_cid],
             ['a.id', '=', $_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE QUERY' . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
         ->find();
 
         if ($result) {
@@ -66,7 +66,7 @@ class Article
             ->where([
                 ['d.main_id', '=', $result->id],
             ])
-            ->cache(!APP_DEBUG ? 'ARTICLE QUERY DATA' . $result->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . $result->id : false)
             ->select()
             ->toArray();
             foreach ($fields as $val) {
@@ -83,7 +83,7 @@ class Article
                 ->where([
                     ['main_id', '=', $result->id],
                 ])
-                ->cache(!APP_DEBUG ? 'ARTICLE QUERY ALBUM' . $result->id : false)
+                ->cache(!APP_DEBUG ? __METHOD__ . $result->id : false)
                 ->select()
                 ->toArray();
             }
@@ -99,7 +99,7 @@ class Article
                 ['a.category_id', '=', $result->category_id],
                 ['a.article_id', '=', $result->id],
             ])
-            ->cache(!APP_DEBUG ? 'ARTICLE QUERY TAGS' . $result['category_id'] . $result->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . $result['category_id'] . $result->id : false)
             ->select()
             ->toArray();
 
@@ -152,7 +152,7 @@ class Article
             ['id', '>', $_id]
         ])
         ->order('is_top, is_hot, is_com, sort DESC, id DESC')
-        ->cache(!APP_DEBUG ? 'ARTICLE QUERY NEXT MIN ID' . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
         ->min('id');
 
         $result =
@@ -164,7 +164,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $next_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE QUERY NEXT' . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
         ->find();
 
         if ($result) {
@@ -204,7 +204,7 @@ class Article
             ['id', '<', $_id]
         ])
         ->order('is_top, is_hot, is_com, sort DESC, id DESC')
-        ->cache(!APP_DEBUG ? 'ARTICLE QUERY PREVIOUS MAX ID' . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
         ->max('id');
 
         $result =
@@ -216,7 +216,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $previous_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE QUERY PREVIOUS' . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
         ->find();
 
         if ($result) {
@@ -272,7 +272,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $_id]
         ])
-        ->cache(!APP_DEBUG ? 'ARTICLE HITS' . $_cid . $_id : false, 60)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false, 60)
         ->find();
     }
 
@@ -309,7 +309,7 @@ class Article
         ->where([
             ['c.id', '=', $cid],
         ])
-        ->cache(!APP_DEBUG ? 'TABLE QUERYTABLENAME' . $cid : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $cid : false)
         ->find();
 
         if ($result) {

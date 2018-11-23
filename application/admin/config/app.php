@@ -62,5 +62,7 @@ return [
         'manage',
         'sort',
         'role',
+        'region',
+        'node',
     ],
 ];

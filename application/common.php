@@ -66,6 +66,8 @@ function get_template_config($_default_theme)
                              request()->module() . DIRECTORY_SEPARATOR .
                              $_default_theme . DIRECTORY_SEPARATOR;
 
+    // $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root();
+
     $template['tpl_replace_string'] = [
         '__DOMAIN__'   => request()->root(true) . '/',
         '__PHP_SELF__' => basename(request()->baseFile()),

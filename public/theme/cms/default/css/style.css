@@ -1,8 +1,13 @@
+body {
+    padding-bottom: 136px;
+}
 a {
     font-weight: 500;
     color: #495057;
 }
 footer {
+    position: fixed;
+    bottom: 0;
     font-size: 85%;
     background-color: #f7f7f7;
 }

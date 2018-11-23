@@ -89,7 +89,7 @@ class Member extends Upload
             ['pid', '=', input('post.region_id/f', 100000)],
         ])
         ->order('id ASC')
-        ->cache('ADMIN REGION' . input('post.region_id/f', 100000))
+        ->cache(__METHOD__ . input('post.region_id/f', 100000))
         ->select()
         ->toArray();
 

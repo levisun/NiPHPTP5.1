@@ -50,7 +50,7 @@ class Feedback
         ->where([
             ['f.category_id', '=', $_cid],
         ])
-        ->cache(!APP_DEBUG ? 'FEEDBACK QDFI' . $_cid : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid : false)
         ->select()
         ->toArray();
 

@@ -315,7 +315,7 @@ class Role
                 }
             }
 
-            create_action_log($role_data['name'], 'role_editor');
+            create_action_log(input('post.name'), 'role_editor');
 
             return !!$res;
         });

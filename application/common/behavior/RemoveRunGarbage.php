@@ -39,8 +39,8 @@ class RemoveRunGarbage
 
         $files = [
             'runtime' . DIRECTORY_SEPARATOR . 'cache',
-            'runtime' . DIRECTORY_SEPARATOR . 'log',
-            'runtime' . DIRECTORY_SEPARATOR . 'temp',
+            // 'runtime' . DIRECTORY_SEPARATOR . 'log',
+            // 'runtime' . DIRECTORY_SEPARATOR . 'temp',
             'public'  . DIRECTORY_SEPARATOR . 'html',
         ];
 
@@ -77,7 +77,7 @@ class RemoveRunGarbage
      */
     private function getDir($_dir_path)
     {
-        $days = APP_DEBUG ? strtotime('-3 hour') : strtotime('-7 days');
+        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-4 hour');
 
         $all_files = [];
         foreach ($_dir_path as $key => $path) {

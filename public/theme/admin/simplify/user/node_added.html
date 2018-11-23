@@ -79,31 +79,34 @@
     </div>
 </div>
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.node.query",
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        var option = eachToOption(result.data, "id", "title");
+        $("#pid").append(option);
     }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-    var option = eachToOption(result.data, "id", "title");
-    $("#pid").append(option);
 });
 
 $("form").submit(function(){
     var form_data = "method=user.node.added";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result, "{:url('user/node')}");
+        success: function(result){
+            handle(result, "{:url('user/node')}");
+        }
     });
     return false;
 });

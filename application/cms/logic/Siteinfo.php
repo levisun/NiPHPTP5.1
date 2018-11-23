@@ -30,7 +30,7 @@ class Siteinfo
             ['name', 'in', 'website_name,website_keywords,website_description,bottom_message,copyright,script,cms_theme'],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'SITEINFO ' . lang(':detect') : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . lang(':detect') : false)
         ->select()
         ->toArray();
 

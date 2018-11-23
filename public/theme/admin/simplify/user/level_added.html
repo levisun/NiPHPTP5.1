@@ -61,9 +61,9 @@
 <script type="text/javascript">
 $("form").submit(function(){
     var form_data = "method=user.level.added";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
         data: form_data,

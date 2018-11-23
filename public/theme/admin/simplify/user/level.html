@@ -31,97 +31,68 @@
     </div>
 </div>
 <script type="text/javascript">
-var page = window.location.hash;
-page = page.substr(1, page.length);
-$.loading({
-    url: request.api.query,
-    animation: true,
-    data: {
-        timestamp: $.timestamp(),
-        method: "user.level.query",
-        p: page
-    }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
+var p = $.url("p", 1);
+paging(p, true);
 
-    var list = "";
-    for (var index in result.data.list) {
-        list = list + "<tr>";
-        list = list + "<td>"+result.data.list[index].name+"</td>";
-        list = list + "<td>"+result.data.list[index].integral+"</td>";
-        list = list + "<td>"+result.data.list[index].status_name+"</td>";
-
-        list = list + "<td>";
-        if (result.data.list[index].url.editor) {
-            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-        }
-        if (result.data.list[index].url.remove) {
-            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-times'></span>{:lang('button remove')}</a>";
-        }
-        list = list + "</td>";
-
-        list = list + "</tr>";
-    }
-    $("#dataTable tbody").prepend(list);
-    $("#paging").prepend(result.data.page);
-});
-
-function paging(_page) {
-    $.rewriteUrl("{:request()->url(true)}#"+_page);
-    $.loading({
+function paging(_page, _push) {
+    _push = typeof(_push) == "undefined" ? true : false;
+    $.pjax({
         url: request.api.query,
-        animation: true,
+        type: "post",
+        push: _push,
+        requestUrl: $.domain(true) + "?p=" + _page,
         data: {
             timestamp: $.timestamp(),
             method: "user.level.query",
             p: _page
-        }
-    }, function(result){
-        if (result.code !== "SUCCESS") {
-            return false;
-        }
-        $("#dataTable tbody tr").remove();
-        $("#paging ul").remove();
-
-        var list = "";
-        for (var index in result.data.list) {
-            list = list + "<tr>";
-            list = list + "<td>"+result.data.list[index].name+"</td>";
-            list = list + "<td>"+result.data.list[index].integral+"</td>";
-            list = list + "<td>"+result.data.list[index].status_name+"</td>";
-
-            list = list + "<td>";
-            if (result.data.list[index].url.editor) {
-                list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
             }
-            if (result.data.list[index].url.remove) {
-                list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
-            }
-            list = list + "</td>";
+            $("#dataTable tbody tr").remove();
+            $("#paging ul").remove();
 
-            list = list + "</tr>";
+            var list = "";
+            for (var index in result.data.list) {
+                list = list + "<tr>";
+                list = list + "<td>"+result.data.list[index].name+"</td>";
+                list = list + "<td>"+result.data.list[index].integral+"</td>";
+                list = list + "<td>"+result.data.list[index].status_name+"</td>";
+
+                list = list + "<td>";
+                if (result.data.list[index].url.editor) {
+                    list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+                }
+                if (result.data.list[index].url.remove) {
+                    list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+                }
+                list = list + "</td>";
+
+                list = list + "</tr>";
+            }
+            $("#dataTable tbody").prepend(list);
+            $("#paging").prepend(result.data.page);
         }
-        $("#dataTable tbody").prepend(list);
-        $("#paging").prepend(result.data.page);
     });
 };
 
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
-    $.loading({
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: {
             timestamp: $.timestamp(),
             method: "user.level.remove",
             id: id
         },
-    }, function(result){
-        handle(result, false, false);
-        if (result.code === "SUCCESS") {
-            $.reload();
+        success: function(result){
+            handle(result, false, false);
+            if (result.code === "SUCCESS") {
+                $.reload();
+            }
         }
     });
     return false;

@@ -29,7 +29,7 @@ class Tags
         ->where([
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'TAGS QUERY' : false)
+        ->cache(!APP_DEBUG ? __METHOD__ : false)
         ->select()
         ->toArray();
 

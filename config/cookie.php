@@ -13,7 +13,7 @@
 
 return [
     // cookie 名称前缀
-    'prefix'    => NP_CS_PREFIX . '_',
+    'prefix'    => NP_KEY . '_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径

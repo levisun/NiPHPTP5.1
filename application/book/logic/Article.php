@@ -32,7 +32,7 @@ class Article
             ['is_pass', '=', 1],
             ['show_time', '<=', time()],
         ])
-        ->cache(!APP_DEBUG ? 'BOOKARTICLE QBI' . input('param.bid/f') . input('param.id/f') : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . input('param.bid/f') . input('param.id/f') : false)
         ->find();
 
         if ($result) {
@@ -162,7 +162,7 @@ class Article
             ['is_pass', '=', 1],
             ['show_time', '<=', time()],
         ])
-        ->cache(!APP_DEBUG ? 'BOOKARTICLE QBIH' . input('param.bid/f') . input('param.id/f') : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . input('param.bid/f') . input('param.id/f') : false)
         ->find();
     }
 

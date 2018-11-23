@@ -33,12 +33,12 @@ class ViewFilter
         $replace = [
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
+            '/( ){2,}/si',
         ];
         if (!APP_DEBUG) {
             // $replace[] = '/<\!--.*?-->/si';                                     // HTML注释
             // $replace[] = '/(\/\*).*?(\*\/)/si';                                 // JS注释
             // $replace[] = '/(\r|\n| )+(\/\/).*?(\r|\n)+/si';                     // JS注释
-            $replace[] = '/( ){2,}/si';                                         // 空格
             // $replace[] = '/(\r|\n|\f)/si';                                      // 回车
             $replace[] = '/(\f)/si';
             $replace[] = '/(\r\n){2,}/si';
@@ -74,9 +74,11 @@ class ViewFilter
 
         $foot .= PHP_EOL;
         $foot .= '<script type="text/javascript">';
-        $foot .= 'console.log("Powered by NiPHP ' . NP_VERSION . ' Copyright © 2013-' . date('Y') . '");';
+        $foot .= 'console.log("Powered by NiPHP Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com");';
         $foot .= 'console.log("Author 失眠小枕头");';
-        $foot .= 'console.log("http://www.NiPHP.com");';
+        $foot .= 'console.log("Date ' . date('Y-m-d H:i:s') . '");';
+        $foot .= 'console.log("Runtime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒");';
+        $foot .= 'console.log("Memory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB");';
         $foot .= '</script>';
         $foot .= PHP_EOL . '</body>' . PHP_EOL . '<html>';
 

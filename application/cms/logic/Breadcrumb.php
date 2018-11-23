@@ -47,7 +47,7 @@ class Breadcrumb
             ['id', '=', $_id],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? 'BREADCRUMB QUERYPARENT' . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_id : false)
         ->find();
 
         if ($result) {

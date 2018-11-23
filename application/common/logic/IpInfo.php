@@ -39,7 +39,7 @@ class IpInfo
         ->where([
             ['i.ip', '=', $request_ip]
         ])
-        ->cache('IPINFO GETINFO' . $request_ip, 1200)
+        ->cache(__METHOD__ . $request_ip, 1200)
         ->find();
 
         $result = $result ? $result->toArray() : [];
@@ -167,7 +167,7 @@ class IpInfo
         ->where([
             ['name', 'LIKE', $_name . '%']
         ])
-        // ->cache('IPINFO QUERYREGION' . $_name)
+        // ->cache(__METHOD__ . $_name)
         ->value('id');
 
         return $result ? $result : 0;

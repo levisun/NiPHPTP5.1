@@ -163,80 +163,85 @@ $(function(){
 });
 
 var editor_data = {};
-$.loading({
+$.pjax({
     url: request.api.query,
     async: false,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.member.find",
         id: "{$Request.param.id}"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        editor_data = result.data;
-        eachToInput(editor_data);
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
     }
 });
 
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.member.level",
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        var option = eachToOption(result.data, "id", "name", editor_data["level_id"]);
+        $("#level").append(option);
     }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-    var option = eachToOption(result.data, "id", "name", editor_data["level_id"]);
-    $("#level").append(option);
 });
 
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.member.region",
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        var option = eachToOption(result.data, "id", "name", editor_data["province"]);
+        $("#province").append(option);
     }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-    var option = eachToOption(result.data, "id", "name", editor_data["province"]);
-    $("#province").append(option);
 });
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.member.region",
         region_id: editor_data["province"],
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        var option = eachToOption(result.data, "id", "name", editor_data["city"]);
+        $("#city").append(option);
     }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-    var option = eachToOption(result.data, "id", "name", editor_data["city"]);
-    $("#city").append(option);
 });
-$.loading({
+$.pjax({
     url: request.api.query,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.member.region",
         region_id: editor_data["city"],
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        var option = eachToOption(result.data, "id", "name", editor_data["area"]);
+        $("#area").append(option);
     }
-}, function(result){
-    if (result.code !== "SUCCESS") {
-        return false;
-    }
-    var option = eachToOption(result.data, "id", "name", editor_data["area"]);
-    $("#area").append(option);
 });
 $(".region").change(function(){
     var id = $(this).val();
@@ -252,20 +257,21 @@ $(".region").change(function(){
         $("#area").append("<option value=''>{:lang('select area')}</option>");
     }
 
-    $.loading({
+    $.pjax({
         url: request.api.query,
-        animation: true,
+        type: "post",
         data: {
             timestamp: $.timestamp(),
             method: "user.member.region",
             region_id: id,
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
+            }
+            var option = eachToOption(result.data, "id", "name");
+            $(type).append(option);
         }
-    }, function(result){
-        if (result.code !== "SUCCESS") {
-            return false;
-        }
-        var option = eachToOption(result.data, "id", "name");
-        $(type).append(option);
     });
 });
 
@@ -276,27 +282,36 @@ $.uiPopup({
     footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' value='{:lang('button upload')}' />"
 });
 $(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "user.member.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "portrait");
+
     $.upload({
-        url: request.api.upload+"?method=user.member.upload&token=c2630911e31549d4ddb556daba9c20d9c910d396&timestamp={:time()}&type=portrait",
-        file: $("#uploadForm")[0],
-    }, function(result){
-        var dir = result.data.save_dir + result.data.file_name;
-        $("#portrait").val(dir);
-        $("#img-portrait").attr("src",  result.data.domain + dir);
-        $.uiPopup({}, "hide");
+        url: request.api.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#portrait").val(dir);
+            $("#img-portrait").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
     });
 });
 
 $("form").submit(function(){
     var form_data = "method=user.member.editor";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result, "{:url('user/member')}");
+        success: function(result){
+            handle(result, "{:url('user/member')}");
+        }
     });
     return false;
 });

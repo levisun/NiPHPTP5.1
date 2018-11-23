@@ -210,15 +210,17 @@ class Async
         $header = [];
 
         $result = [
-            'code' => $_code,
-            'msg'  => $_msg,
-            'time' => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
-            'data' => $_data,
+            'code'    => $_code,
+            'msg'     => $_msg,
+            'data'    => $_data,
+
+            'time'    => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
+            'ip'      => logic('common/IpInfo')->getInfo(),
+            'Runtime' => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
+            'Memory'  => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',
         ];
 
         if ($this->apiDebug) {
-            $runtime = number_format(microtime(true) - app()->getBeginTime(), 10);
-
             $result['debug'] = [
                 'server' => [
                     'sql query' => \think\Db::$queryTimes . '条查询 ' . \think\Db::$executeTimes . '条写入',
@@ -226,15 +228,12 @@ class Async
                     'include'   => count(get_included_files()) . '个文件',
                     'cookie'    => $_COOKIE,
                 ],
-                'run time' => number_format($runtime, 6) . '秒',
-                'memory'   => number_format((memory_get_usage() - app()->getBeginMem()) / 1024, 2) . 'KB',
                 'async'    => $this->debugMsg,
                 'params'   => input('param.', [], 'trim'),
                 'method'   => $this->methodName,
                 'headers'  => [
                     'http_referer'    => request()->server('HTTP_REFERER'),
                     'http_user_agent' => request()->server('HTTP_USER_AGENT'),
-                    'ip_info'         => logic('common/IpInfo')->getInfo(),
                     'request_method'  => request()->server('REQUEST_METHOD'),
                 ]
             ];
@@ -278,7 +277,7 @@ class Async
         // 验证请求方式
         // 异步只允许 Ajax Pjax Post 请求类型
         if (!request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
-            abort(404);
+            // abort(404);
         }
 
         $http_referer = sha1(

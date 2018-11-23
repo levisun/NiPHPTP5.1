@@ -60,31 +60,34 @@
 </div>
 <script type="text/javascript">
 var editor_data = {};
-$.loading({
+$.pjax({
     url: request.api.query,
     async: false,
-    animation: true,
+    type: "post",
     data: {
         timestamp: $.timestamp(),
         method: "user.level.find",
         id: "{$Request.param.id}"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        editor_data = result.data;
-        eachToInput(editor_data);
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
     }
 });
 $("form").submit(function(){
     var form_data = "method=user.level.editor";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.api.settle,
         async: false,
+        type: "post",
         data: form_data,
-    }, function(result){
-        handle(result, "{:url('user/level')}");
+        success: function(result){
+            handle(result, "{:url('user/level')}");
+        }
     });
     return false;
 });
