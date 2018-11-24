@@ -63,7 +63,7 @@ function paging(_page, _push) {
                 list = list + "<td>"+result.data.list[index].type_name+"</td>";
                 list = list + "<td>"+result.data.list[index].author+"</td>";
                 list = list + "<td>"+result.data.list[index].show+"</td>";
-                list = list + "<td>"+result.data.list[index].pass+result.data.list[index].status+"</td>";
+                list = list + "<td>"+result.data.list[index].pass+"</td>";
 
                 list = list + "<td>";
                 list = list + "<a href='"+result.data.list[index].url.manage+"'><span class='fa fa-eye'></span>{:lang('button manage')}</a>";
@@ -82,4 +82,6 @@ $(window).bind("popstate", function(result) {
     var p = $.url("p", 1);
     paging(p, false);
 });
+
+
 </script>

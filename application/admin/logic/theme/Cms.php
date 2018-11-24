@@ -35,14 +35,15 @@ class Cms
         $dir = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
         $data = (array) glob($dir . input('post.type') . DIRECTORY_SEPARATOR . '*');
 
+        $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root();
         $domain = request()->domain() . request()->root() . '/theme/' . input('post.type') . '/';
 
         $result = [];
         foreach ($data as $key => $value) {
             if (is_file($value . DIRECTORY_SEPARATOR . 'view.jpg')) {
-                $result[$key]['img'] = $domain . end($value) . 'view.jpg';
+                $result[$key]['img'] = $cdn . end($value) . 'view.jpg';
             } else {
-                $result[$key]['img'] = request()->domain() . request()->root() . '/static/images/view.jpg';
+                $result[$key]['img'] = $cdn . '/static/images/view.jpg';
             }
 
             $value = explode(DIRECTORY_SEPARATOR, $value);

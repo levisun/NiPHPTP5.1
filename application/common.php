@@ -66,16 +66,21 @@ function get_template_config($_default_theme)
                              request()->module() . DIRECTORY_SEPARATOR .
                              $_default_theme . DIRECTORY_SEPARATOR;
 
-    // $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root();
+    $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root() . '/';
+    $api = request()->scheme() . '://api.' . request()->rootDomain() . request()->root();
 
     $template['tpl_replace_string'] = [
-        '__DOMAIN__'   => request()->root(true) . '/',
-        '__PHP_SELF__' => basename(request()->baseFile()),
-        '__STATIC__'   => request()->root(true) . '/static/',
-        '__THEME__'    => $_default_theme,
-        '__CSS__'      => request()->root(true) . '/theme/' . request()->module() . '/' . $_default_theme . '/css/',
-        '__JS__'       => request()->root(true) . '/theme/' . request()->module() . '/' . $_default_theme . '/js/',
-        '__IMG__'      => request()->root(true) . '/theme/' . request()->module() . '/' . $_default_theme . '/images/',
+        '__DOMAIN__'     => request()->root(true) . '/',
+        '__PHP_SELF__'   => basename(request()->baseFile()),
+        '__CDN__'        => $cdn,
+        '__API_QUERY__'  => url('api/query'),
+        '__API_SETTLE__' => url('api/settle'),
+        '__API_UPLOAD__' => url('api/upload'),
+        '__STATIC__'     => $cdn . 'static/',
+        '__THEME__'      => $_default_theme,
+        '__CSS__'        => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
+        '__JS__'         => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
+        '__IMG__'        => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
     ];
 
     return $template;

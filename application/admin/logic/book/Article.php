@@ -26,7 +26,7 @@ class Article
     {
         $result =
         model('common/bookArticle')
-        ->field(true)
+        ->field(['id', 'title', 'is_pass', 'update_time', 'create_time'])
         ->order('sort DESC, id DESC')
         ->where([
             ['book_id', '=', input('param.bid')]

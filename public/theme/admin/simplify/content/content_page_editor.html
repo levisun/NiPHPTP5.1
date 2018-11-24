@@ -83,9 +83,8 @@
                     </div>
                     <div role="tabpanel" class="tab-pane" id="CT-content">
                         <div class="form-group">
-                            <label for="website_description" class="col-lg-2 control-label">{:lang('content')}</label>
-                            <div class="col-md-10">
-                                <textarea name="content" class="form-control" id="ckeditor"></textarea>
+                            <div class="col-md-12">
+                                <textarea name="content" class="form-control" id="content"></textarea>
                             </div>
                         </div>
                     </div>
@@ -108,7 +107,7 @@
 </div>
 <script type="text/javascript">
 ClassicEditor.create(
-    document.querySelector('#ckeditor'),
+    document.querySelector('#content'),
     {
         language: 'zh-cn',
         ckfinder: {
@@ -185,8 +184,8 @@ $(".upload-btn").click(function(){
         data: data,
         success: function(result) {
             var dir = result.data.save_dir + result.data.file_name;
-            $("#image").val(dir);
-            $("#img-image").attr("src",  result.data.domain + dir);
+            $("#thumb").val(dir);
+            $("#img-thumb").attr("src",  result.data.domain + dir);
             $.uiPopup({}, "hide");
         }
     });

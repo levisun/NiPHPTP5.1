@@ -110,6 +110,31 @@
     }
 
     /**
+     * 签名
+     */
+    jQuery.sign = function (_params) {
+        // 先用Object内置类的keys方法获取要排序对象的属性名，再利用Array原型上的sort方法对获取的属性名进行排序，newkey是一个数组
+        var newkey = Object.keys(_params).sort();
+
+        // 创建一个新的对象，用于存放排好序的键值对
+        var newObj = {};
+        for(var i = 0; i < newkey.length; i++) {
+            // 遍历newkey数组
+            newObj[newkey[i]] = _params[newkey[i]];
+            // 向新创建的对象中按照排好的顺序依次增加键值对
+        }
+
+        var sign = "";
+        for (var index in newObj) {
+            sign += index + "=" + newObj[index] + "&";
+        }
+        sign = sign.substr(0, sign.length - 1);
+        sign = md5(sign);
+
+        return sign;
+    }
+
+    /**
      * HTML转义
      */
     jQuery.htmlDecode = function (_string) {
@@ -303,6 +328,9 @@
         return value ? value : _default;
     }
 
+    /**
+     * 时间戳
+     */
     jQuery.timestamp = function () {
         var timestamp = Date.parse(new Date());
         return timestamp /1000;
@@ -326,11 +354,13 @@
      * 上传
      */
     jQuery.upload = function (_params) {
-        _params = jQuery.extend(true, jQuery.ajaxSettings, _params);
-        _params.async       = false;
-        _params.cache       = false;
-        _params.processData = false;
-        _params.contentType = false;
+        var defaults = {
+            async: false,
+            cache: false,
+            processData: false,
+            contentType: false
+        };
+        _params = jQuery.extend(true, defaults, _params);
 
         var xhr = jQuery.ajax(_params);
         if (xhr.readyState > 0) {
@@ -343,17 +373,18 @@
      * 加载更多
      */
     jQuery.more = function (_params) {
-        var page = "loading-"+_params.flag+"-page";
-        var bool = "loading-"+_params.flag+"-bool";
+        var page = "more-"+_params.flag+"-page";
+        var bool = "more-"+_params.flag+"-bool";
         jQuery("body").attr(page, 1);
         jQuery("body").attr(bool, "true");
 
         jQuery(window).scroll(function(){
             var is = jQuery("body").attr(bool);
-            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) - 10) {
+            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) - 100) {
                 var num = jQuery("body").attr(page);
                     num++;
 
+                _params.data.page = num;
                 jQuery("body").attr(page, num);
                 jQuery("body").attr(bool, "false");
 
@@ -376,13 +407,12 @@
             push: false,                        // 添加历史记录
             replace: false,                     // 替换历史记录
             scrollTo: false,                    // 是否回到顶部 可定义顶部像素
-            scrollMore: false,                  // 加载更多
             requestUrl: window.location.href,   // 重写地址
             type: "GET",
             dataType: "json",
             contentType: "application/x-www-form-urlencoded"
         };
-        _params = jQuery.extend(true, jQuery.ajaxSettings, defaults, _params);
+        _params = jQuery.extend(true, defaults, _params);
 
         // 回到顶部
         if (_params.scrollTo !== false) {
@@ -396,12 +426,8 @@
             xhr.setRequestHeader("HTTP_X_PJAX", true);
         }
 
-        // 加载更多
-        if (_params.scrollMore !== false) {
-            jQuery.loadMore(_params);
-        }
-
         var xhr = jQuery.ajax(_params);
+
         if (xhr.readyState > 0) {
             // 添加历史记录
             if (_params.push === true) {
@@ -417,10 +443,30 @@
         return xhr;
     }
 
-    /*jQuery.popstateEvent = function (_params) {
+    jQuery.popstateEvent = function (_params) {
         $(window).unbind("popstate");
-        $(window).bind("popstate", _params, function(result) {
-            jQuery.pjax(_params);
-        });
-    }*/
+
+        // 函数方法
+        if (typeof(_params) === "function") {
+            $(window).bind("popstate", function(result) {
+                _params();
+            });
+        }
+
+        // 参数
+        else if (typeof(_params) === "object") {
+            $(window).bind("popstate", _params, function(result) {
+                jQuery.pjax(_params);
+            });
+        }
+
+        else {
+            // alert(typeof(_params));
+        }
+
+
+        // $(window).bind("popstate", _params, function(result) {
+        //     jQuery.pjax(_params);
+        // });
+    }
 }));

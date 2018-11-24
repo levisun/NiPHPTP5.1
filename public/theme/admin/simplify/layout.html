@@ -23,15 +23,15 @@
     {js href="https://cdn.bootcss.com/modernizr/2.7.1/modernizr.min.js" /}
     {js href="__JS__jquery.popupoverlay.min.js" /}
     {js href="__JS__simplify/simplify.js" /}
-    {js href="__STATIC__nipui/js/nipui-2.2.1.js" /}
+    {js href="__STATIC__nipui/js/nipui-2.2.5.js" /}
     <script type="text/javascript">
     var request = {
         domain:     "__DOMAIN__",
         url:        "{:url()}",
         api: {
-            query:  "{:url('api/query')}",
-            settle: "{:url('api/settle')}",
-            upload: "{:url('api/upload')}",
+            query:  "__API_QUERY__",
+            settle: "__API_SETTLE__",
+            upload: "__API_UPLOAD__",
         },
         static:     "__STATIC__",
         css:        "__CSS__",
@@ -146,7 +146,7 @@
 
 <script type="text/javascript">
 $("._handle_logout").click(function(){
-    $.loading({
+    $.pjax({
         url: request.api.settle,
         data: {
             timestamp: $.timestamp(),

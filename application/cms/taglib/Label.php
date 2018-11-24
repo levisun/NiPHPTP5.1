@@ -44,7 +44,7 @@ class Label extends TagLib
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -52,16 +52,17 @@ class Label extends TagLib
                             sign:   jQuery.sign({
                                 method: "tags.query"
                             })
-                        }
-                    }, function(result){
-                        if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            for (var key in data) {
-                                var vo = data[key];
-                                ' . $_content . '
+                        },
+                        success: function(result){
+                            if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                for (var key in data) {
+                                    var vo = data[key];
+                                    ' . $_content . '
+                                }
                             }
                         }
                     });
@@ -96,7 +97,7 @@ class Label extends TagLib
             $time = time();
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -111,9 +112,8 @@ class Label extends TagLib
                                 id:        "' . $_tag['id'] . '"
                             })
                         }
-                    }, function(){
                     });
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -125,23 +125,24 @@ class Label extends TagLib
                                 cid:    "' . $_tag['cid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
-                        }
-                    }, function(result){
-                        if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404') . '");
-                        } else if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            jQuery("title").text(data.title+" - "+jQuery("title").text());
-                            if (data.keywords) {
-                                jQuery("meta[name=\'keywords\']").attr("content", data.keywords);
+                        },
+                        success: function(result){
+                            if (result.code === "404") {
+                                jQuery.redirect("' . url('error/404') . '");
+                            } else if (result.code !== "SUCCESS") {
+                                return false;
                             }
-                            if (data.description) {
-                                jQuery("meta[name=\'description\']").attr("content", data.description);
+                            if (result.data) {
+                                var data = result.data;
+                                jQuery("title").text(data.title+" - "+jQuery("title").text());
+                                if (data.keywords) {
+                                    jQuery("meta[name=\'keywords\']").attr("content", data.keywords);
+                                }
+                                if (data.description) {
+                                    jQuery("meta[name=\'description\']").attr("content", data.description);
+                                }
+                                ' . $_content . '
                             }
-                            ' . $_content . '
                         }
                     });
                 });
@@ -156,7 +157,7 @@ class Label extends TagLib
             $time = time();
             $parseStr .= '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -171,7 +172,6 @@ class Label extends TagLib
                                 id:        "' . $_tag['id'] . '"
                             })
                         }
-                    }, function(){
                     });
                 });
                 </script>';
@@ -195,7 +195,7 @@ class Label extends TagLib
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input("param.cid/f")}';
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -205,22 +205,23 @@ class Label extends TagLib
                                 method: "listing.query",
                                 cid:    "' . $_tag['cid'] . '"
                             })
-                        }
-                    }, function(result){
-                        if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404') . '");
-                        } else if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            var list = result.data.list;
-                            var page = result.data.page;
-                            var total = result.data.total;
-                            var current_page = result.data.current_page;
-                            var last_page = result.data.last_page;
-                            var per_page = result.data.per_page;
-                            ' . $_content . '
+                        },
+                        success: function(result){
+                            if (result.code === "404") {
+                                jQuery.redirect("' . url('error/404') . '");
+                            } else if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                var list = result.data.list;
+                                var page = result.data.page;
+                                var total = result.data.total;
+                                var current_page = result.data.current_page;
+                                var last_page = result.data.last_page;
+                                var per_page = result.data.per_page;
+                                ' . $_content . '
+                            }
                         }
                     });
                 });
@@ -253,7 +254,7 @@ class Label extends TagLib
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -263,18 +264,19 @@ class Label extends TagLib
                                 method:   "banner.query",
                                 slide_id: "' . $_tag['id'] . '"
                             })
-                        }
-                    }, function(result){
-                        if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404') . '");
-                        } else if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            for (var key in data) {
-                                var vo = data[key];
-                                ' . $_content . '
+                        },
+                        success: function(result){
+                            if (result.code === "404") {
+                                jQuery.redirect("' . url('error/404') . '");
+                            } else if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                for (var key in data) {
+                                    var vo = data[key];
+                                    ' . $_content . '
+                                }
                             }
                         }
                     });
@@ -307,7 +309,7 @@ class Label extends TagLib
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 $(function(){
-                    $.loading({
+                    $.pjax({
                         url: request.api.query,
                         type: "get",
                         data: {
@@ -317,16 +319,17 @@ class Label extends TagLib
                                 method: "ads.query",
                                 ads_id: "' . $_tag['id'] . '"
                             })
-                        }
-                    }, function(result){
-                        if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            for (var key in data) {
-                                var vo = data[key];
-                                ' . $_content . '
+                        },
+                        success: function(result){
+                            if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                for (var key in data) {
+                                    var vo = data[key];
+                                    ' . $_content . '
+                                }
                             }
                         }
                     });

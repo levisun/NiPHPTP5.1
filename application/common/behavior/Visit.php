@@ -32,17 +32,6 @@ class Visit
         $this->addedVisit();
         $this->addedSearchengine();
         // $this->createSitemap();
-
-        $_GET['ip'] = '117.'.rand(1, 255).'.'.rand(1, 255).'.'.rand(1, 255);
-        if (logic('common/logic/IpInfo')->getInfo()) {
-            $_GET['ip'] = '117.'.rand(1, 255).'.'.rand(1, 255).'.'.rand(1, 255);
-            if (logic('common/logic/IpInfo')->getInfo()) {
-                $_GET['ip'] = '117.'.rand(1, 255).'.'.rand(1, 255).'.'.rand(1, 255);
-                if (logic('common/logic/IpInfo')->getInfo()) {
-                    # code...
-                }
-            }
-        }
     }
 
     /**

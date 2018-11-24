@@ -30,22 +30,11 @@ class ViewFilter
 
     public function view($_content)
     {
-        $replace = [
+        $_content = preg_replace([
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
             '/( ){2,}/si',
-        ];
-        if (!APP_DEBUG) {
-            // $replace[] = '/<\!--.*?-->/si';                                     // HTML注释
-            // $replace[] = '/(\/\*).*?(\*\/)/si';                                 // JS注释
-            // $replace[] = '/(\r|\n| )+(\/\/).*?(\r|\n)+/si';                     // JS注释
-            // $replace[] = '/(\r|\n|\f)/si';                                      // 回车
-            $replace[] = '/(\f)/si';
-            $replace[] = '/(\r\n){2,}/si';
-            $replace[] = '/(\r){2,}/si';
-            $replace[] = '/(\n){2,}/si';
-        }
-        $_content = preg_replace($replace, '', $_content);
+        ], '', $_content);
         $_content = $this->head($_content);
         $_content = $this->foot($_content);
 
@@ -74,13 +63,13 @@ class ViewFilter
 
         $foot .= PHP_EOL;
         $foot .= '<script type="text/javascript">';
-        $foot .= 'console.log("Powered by NiPHP Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com");';
-        $foot .= 'console.log("Author 失眠小枕头");';
-        $foot .= 'console.log("Date ' . date('Y-m-d H:i:s') . '");';
-        $foot .= 'console.log("Runtime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒");';
-        $foot .= 'console.log("Memory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB");';
+        $foot .= 'console.log("Powered by NiPHP Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com';
+        $foot .= '\r\nAuthor 失眠小枕头';
+        $foot .= '\r\nCreate Date ' . date('Y-m-d H:i:s');
+        $foot .= '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒';
+        $foot .= '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");';
         $foot .= '</script>';
-        $foot .= PHP_EOL . '</body>' . PHP_EOL . '<html>';
+        $foot .= PHP_EOL . '</body>' . PHP_EOL . '</html>';
 
         return $_content . $foot;
     }
@@ -124,7 +113,7 @@ class ViewFilter
                  '<meta property="og:title" content="' . $this->siteInfo['title'] . ' - Powered by NiPHP" />' . PHP_EOL .
                  '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
                  '<meta property="og:description" content="' . $this->siteInfo['website_description'] . '" />' . PHP_EOL .
-                 '<link rel="dns-prefetch" href="' . request()->domain() . '" />' . PHP_EOL .
+                 '<link rel="dns-prefetch" href="' . $this->template['tpl_replace_string']['__CDN__'] . '" />' . PHP_EOL .
                  '<link href="' . request()->domain() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
         if (!empty($this->config['css'])) {

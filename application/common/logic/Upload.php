@@ -49,8 +49,11 @@ class Upload
             $this->ext = $upload->getExtension();
             $thumb_filename = $this->createThumb($save_name);
 
+            $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root();
+
             return [
-                'domain'     => request()->root(true),
+                // 'domain'     => request()->root(true),
+                'domain'     => $cdn,
                 'save_dir'   => '/upload/' . $this->saveSubDir(),
                 'file_name'  => $save_name,
                 'thumb_name' => $thumb_filename,

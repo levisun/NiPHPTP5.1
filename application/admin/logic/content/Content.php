@@ -225,6 +225,10 @@ class Content extends Upload
             ->toArray();
         }
 
+        if ($result['content']) {
+            $result['content'] = htmlspecialchars_decode($result['content']);
+        }
+
         return $result;
     }
 

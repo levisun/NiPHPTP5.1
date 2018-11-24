@@ -38,6 +38,7 @@ class Siteinfo
         foreach ($result as $value) {
             $data[$value['name']] = $value['value'];
         }
+        $data['title'] = $data['website_name'];
 
         if (input('param.bid/f')) {
             $res =

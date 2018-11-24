@@ -21,7 +21,20 @@ Route::pattern([
     'p'       => '\d+',
 ]);
 
+Route::domain('api', function(){
+    Route::group('admin', function(){
+        Route::rule('query',  'query');
+        Route::rule('settle', 'settle');
+        Route::rule('upload', 'upload');
+    })->prefix('admin/api/');
 
+
+    Route::group('cms', function(){
+        Route::rule('query',  'query');
+        Route::rule('settle', 'settle');
+        Route::rule('upload', 'upload');
+    })->prefix('cms/api/');
+});
 
 Route::domain('my', [
 ])

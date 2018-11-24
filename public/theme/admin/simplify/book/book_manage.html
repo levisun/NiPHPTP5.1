@@ -61,7 +61,7 @@ function paging(_page, _push) {
                 list = list + "<tr>";
                 list = list + "<td>"+result.data.list[index].id+"</td>";
                 list = list + "<td>"+result.data.list[index].title+"</td>";
-                list = list + "<td>"+result.data.list[index].status+"</td>";
+                list = list + "<td>"+result.data.list[index].pass+"</td>";
                 list = list + "<td>"+result.data.list[index].update_time+"</td>";
 
                 list = list + "<td>";
@@ -76,7 +76,11 @@ function paging(_page, _push) {
         }
     });
 }
-$(window).bind("popstate", function(result) {
+// $(window).bind("popstate", function(result) {
+//     var p = $.url("p", 1);
+//     paging(p, false);
+// });
+$.popstateEvent(function(){
     var p = $.url("p", 1);
     paging(p, false);
 });
