@@ -57,6 +57,11 @@ class Article
             $result->cat_url     = url('list/' . $result->category_id);
             $result->cat_url     = str_replace('/index/', '/', $result->cat_url);
 
+            if ($result->hits > 10000) {
+                $result->hits_format = number_format($result->hits / 10000, 2) . 'M+';
+            } elseif ($result->hits > 1000) {
+                $result->hits_format = number_format($result->hits / 1000, 2) . 'K+';
+            }
 
             // 查询自定义字段
             $fields =

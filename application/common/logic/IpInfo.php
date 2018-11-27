@@ -2,7 +2,6 @@
 /**
  *
  * IP归属地 - 业务层
- * 基于角色的数据库方式验证类
  *
  * @package   NiPHPCMS
  * @category  application\admin\logic\account
@@ -39,7 +38,7 @@ class IpInfo
         ->where([
             ['i.ip', '=', $request_ip]
         ])
-        ->cache(__METHOD__ . $request_ip, 1200)
+        ->cache(__METHOD__ . $request_ip, 28800)
         ->find();
 
         $result = $result ? $result->toArray() : [];
@@ -167,7 +166,7 @@ class IpInfo
         ->where([
             ['name', 'LIKE', $_name . '%']
         ])
-        // ->cache(__METHOD__ . $_name)
+        ->cache(__METHOD__ . $_name, 28800)
         ->value('id');
 
         return $result ? $result : 0;

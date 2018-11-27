@@ -19,8 +19,8 @@ return [
     // 默认时区
     'default_timezone'     => 'PRC',
     // 默认全局过滤方法 用逗号分隔多个
-    'default_filter'       => 'safe_filter',
-    'content_filter'       => 'safe_filter_strict',
+    'default_filter'       => 'safe_filter_strict',
+    'content_filter'       => 'safe_filter',
     // 是否开启多语言
     'lang_switch_on'       => true,
     // 默认语言
@@ -30,6 +30,8 @@ return [
     'default_module'       => 'cms',
     // 禁止访问模块
     'deny_module_list'     => ['common'],
+    // 默认模块名
+    'default_module'       => 'cms',
     // 默认控制器名
     'default_controller'   => 'Index',
     // 默认操作名

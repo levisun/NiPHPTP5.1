@@ -97,24 +97,25 @@ class Admin extends Upload
      */
     public function added()
     {
-        $receive_data = [
-            'username'     => input('post.username'),
-            'password'     => input('post.password'),
-            'not_password' => input('post.not_password'),
-            'email'        => input('post.email'),
-            'role'         => input('post.role/f'),
-            'salt'         => rand(111111, 999999),
-            '__token__'    => input('post.__token__'),
-        ];
-
-        $result = validate('admin/user/admin.added', input('post.'));
-        if (true !== $result) {
-            return $result;
-        }
-
-        unset($receive_data['__token__']);
-
         $result = model('common/admin')->transaction(function(){
+            $receive_data = [
+                'username'     => input('post.username'),
+                'password'     => input('post.password'),
+                'not_password' => input('post.not_password'),
+                'email'        => input('post.email'),
+                'role'         => input('post.role/f'),
+                'salt'         => rand(111111, 999999),
+                '__token__'    => input('post.__token__'),
+            ];
+
+            $result = validate('admin/user/admin.added', input('post.'));
+            if (true !== $result) {
+                return $result;
+            }
+
+            unset($receive_data['__token__']);
+
+
             $admin_id =
             model('common/admin')
             ->added([

@@ -70,7 +70,7 @@ class Page extends Model
      */
     public function added($_receive_data)
     {
-        unset($_receive_data['id'], $_receive_data['__token__']);
+        unset($_receive_data['__token__']);
 
         $result =
         $this->allowField(true)

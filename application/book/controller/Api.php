@@ -25,7 +25,7 @@ class Api extends Async
      */
     public function query()
     {
-        $result = $this->run();
+        $result = $this->handle();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {

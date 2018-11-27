@@ -55,7 +55,16 @@ class Content extends Upload
             }
 
             if ($value['model_id'] == 4) {
-                $url['manage'] = url('content/content', ['operate' => 'editor', 'model' => 'page', 'cid' => $value['id']]);
+                $has =
+                model('common/page')->where([
+                    ['id', '=', $value['id']],
+                    ['category_id', '=', $value['id']]
+                ])->value('id');
+                if ($has) {
+                    $url['manage'] = url('content/content', ['operate' => 'editor', 'model' => 'page', 'cid' => $value['id']]);
+                } else {
+                    $url['manage'] = url('content/content', ['operate' => 'added', 'model' => 'page', 'cid' => $value['id']]);
+                }
             } else {
                 $url['manage'] = url('content/content', ['operate' => 'manage', 'cid' => $value['id']]);
             }
@@ -149,7 +158,92 @@ class Content extends Upload
      */
     public function added()
     {
-        # code...
+        $result = model('common/article')->transaction(function(){
+            $receive_data = [
+                'title'         => input('post.title'),
+                'keywords'      => input('post.keywords'),
+                'description'   => input('post.description'),
+                'content'       => input('post.content', '', config('content_filter')),
+                'thumb'         => input('post.thumb', ''),
+                'category_id'   => input('post.category_id/f'),
+                'type_id'       => input('post.type_id/f'),
+                'is_pass'       => input('post.is_pass/f', 0),
+                'is_com'        => input('post.is_com/f', 0),
+                'is_top'        => input('post.is_top/f', 0),
+                'is_hot'        => input('post.is_hot/f', 0),
+                'sort'          => input('post.sort/f', 0),
+                'username'      => input('post.username', ''),
+                'origin'        => input('post.origin', ''),
+                'user_id'       => input('post.user_id/f', 0),
+                'down_url'      => input('post.down_url', ''),
+                'url'           => input('post.url', ''),
+                'is_link'       => input('post.is_link/f', 0),
+                'show_time'     => input('post.show_time', time(), 'trim,strtotime'),
+                'access_id'     => input('post.access_id/f', 0),
+                'lang'          => lang(':detect'),
+                '__token__'     => input('post.__token__'),
+            ];
+
+            $result = validate('admin/content/content.added', input('post.'));
+            if (true !== $result) {
+                return $result;
+            }
+
+            // 数据所属模型
+            $result =
+            model('common/category')
+            ->view('category c', ['id', 'name'])
+            ->view('model m', ['name' => 'tablename'], 'm.id=c.model_id')
+            ->where([
+                ['c.id', '=', input('param.category_id/f')],
+            ])
+            ->find()
+            ->toArray();
+
+            $table_name =  $result['tablename'];
+
+            if ($table_name == 'page') {
+                $receive_data['id'] = input('post.category_id/f');
+            }
+
+
+            $id =
+            $result =
+            model('common/' . $table_name)
+            ->allowField(true)
+            ->added($receive_data);
+
+            // 自定义字段数据
+            // 标签
+            if (!in_array($table_name, ['link', 'external'])) {
+                $fields = input('post.fields/a');
+                if (!empty($fields)) {
+                    $added_data = [];
+                    foreach ($fields as $key => $value) {
+                        $added_data[] = [
+                            'main_id'   => $id,
+                            'fields_id' => $key,
+                            'data'      => $value
+                        ];
+                    }
+                    model('common/' . $table_name . 'Data')
+                    ->saveAll($added_data);
+                }
+
+
+            }
+
+            // 相册数据
+            if (in_array($table_name, ['picture', 'product'])) {
+                # code...
+            }
+
+            create_action_log($receive_data['title'], 'content_added');
+
+            return true;
+        });
+
+        return $result;
     }
 
     /**
@@ -320,9 +414,8 @@ class Content extends Upload
         ->where([
             ['c.id', '=', input('param.cid/f')],
         ])
-        ->find();
-
-        $result = $result->toArray();
+        ->find()
+        ->toArray();
 
         return $result['model_tablename'];
     }

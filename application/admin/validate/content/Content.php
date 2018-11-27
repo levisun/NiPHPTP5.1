@@ -14,7 +14,7 @@ namespace app\admin\validate\content;
 
 use think\Validate;
 
-class ContentContent extends Validate
+class Content extends Validate
 {
     protected $rule = [
         'id'           => ['require', 'number'],
@@ -68,28 +68,17 @@ class ContentContent extends Validate
     ];
 
     protected $scene = [
-        'added_link' = [],
-
-
         'added' => [
             'title',
             'keywords',
             'description',
-            // 'content',
+            'content',
             'thumb',
             'category_id',
             'type_id',
-            'is_pass',
-            'is_com',
-            'is_top',
-            'is_hot',
             'username',
             'origin',
             'user_id',
-            'url',
-            'down_url',
-            'is_link',
-            'show_time',
             'access_id'
         ],
         'editor' => [
@@ -97,50 +86,63 @@ class ContentContent extends Validate
             'title',
             'keywords',
             'description',
-            // 'content',
+            'content',
             'thumb',
             'category_id',
             'type_id',
-            'is_pass',
-            'is_com',
-            'is_top',
-            'is_hot',
             'username',
             'origin',
             'user_id',
-            'url',
-            'down_url',
-            'is_link',
-            'show_time',
             'access_id'
         ],
 
-        'page_added' => [
-            'title',
-            'keywords',
-            'description',
-            'content',
-            'thumb',
-            'category_id',
-            'type_id',
-            'username',
-            'origin',
-            'user_id',
-            'access_id'
-        ],
-        'page_editor' => [
-            'id',
-            'title',
-            'keywords',
-            'description',
-            'content',
-            'thumb',
-            'category_id',
-            'type_id',
-            'username',
-            'origin',
-            'user_id',
-            'access_id'
-        ],
+
+
+        // 'added_link' => [],
+
+
+        // 'added' => [
+        //     'title',
+        //     'keywords',
+        //     'description',
+        //     'content',
+        //     'thumb',
+        //     'category_id',
+        //     'type_id',
+        //     'is_pass',
+        //     'is_com',
+        //     'is_top',
+        //     'is_hot',
+        //     'username',
+        //     'origin',
+        //     'user_id',
+        //     'url',
+        //     'down_url',
+        //     'is_link',
+        //     'show_time',
+        //     'access_id'
+        // ],
+        // 'editor' => [
+        //     'id',
+        //     'title',
+        //     'keywords',
+        //     'description',
+        //     'content',
+        //     'thumb',
+        //     'category_id',
+        //     'type_id',
+        //     'is_pass',
+        //     'is_com',
+        //     'is_top',
+        //     'is_hot',
+        //     'username',
+        //     'origin',
+        //     'user_id',
+        //     'url',
+        //     'down_url',
+        //     'is_link',
+        //     'show_time',
+        //     'access_id'
+        // ],
     ];
 }

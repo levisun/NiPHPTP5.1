@@ -66,8 +66,13 @@ function get_template_config($_default_theme)
                              request()->module() . DIRECTORY_SEPARATOR .
                              $_default_theme . DIRECTORY_SEPARATOR;
 
-    $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root() . '/';
-    $api = request()->scheme() . '://api.' . request()->rootDomain() . request()->root();
+    if (request()->rootDomain() != 'localhost') {
+        $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root() . '/';
+        $api = request()->scheme() . '://api.' . request()->rootDomain() . request()->root() . '/';
+    } else {
+        $cdn = request()->root(true);
+        $api = request()->root(true);
+    }
 
     $template['tpl_replace_string'] = [
         '__DOMAIN__'     => request()->root(true) . '/',
