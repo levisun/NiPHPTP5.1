@@ -66,7 +66,7 @@ class Content extends Upload
                     $url['manage'] = url('content/content', ['operate' => 'added', 'model' => 'page', 'cid' => $value['id']]);
                 }
             } else {
-                $url['manage'] = url('content/content', ['operate' => 'manage', 'cid' => $value['id']]);
+                $url['manage'] = url('content/content', ['operate' => 'manage', 'model' => 'page', 'cid' => $value['id']]);
             }
 
             $result[$key]['url'] = $url;

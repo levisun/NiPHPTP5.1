@@ -101,14 +101,21 @@ $.uiPopup({
 });
 
 $(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "wechat.keyword.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "portrait");
+
     $.upload({
-        url: request.api.upload+"?method=wechat.keyword.upload&token=c2630911e31549d4ddb556daba9c20d9c910d396&timestamp={:time()}&type=wechat",
-        file: $("#uploadForm")[0],
-    }, function(result){
-        var dir = result.data.save_dir + result.data.file_name;
-        $("#image").val(dir);
-        $("#img-image").attr("src",  result.data.domain + dir);
-        $.uiPopup({}, "hide");
+        url: request.api.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#image").val(dir);
+            $("#img-image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
     });
 });
 

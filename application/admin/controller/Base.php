@@ -29,9 +29,10 @@ class Base extends Controller
         $this->filter(function($_content){
             $_content = preg_replace([
                 '/( ){2,}/si',
-                // '/(\r\n){2,}/si',
-                // '/(\r){2,}/si',
-                // '/(\n){2,}/si',
+                '/(\/\*)(.*?)(\*\/)/si',
+                '/([\r\n]){2,}/si',
+                # '/(\r){2,}/si',
+                # '/(\n){2,}/si',
                 '/(\t)/si',
             ], '', $_content);
 

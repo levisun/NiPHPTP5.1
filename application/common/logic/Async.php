@@ -17,7 +17,7 @@ use think\exception\HttpResponseException;
 
 class Async
 {
-    protected $moduleName;                                                      // 模块名
+    protected $module;                                                          // 模块名
 
     protected $appid;
     protected $appsecret;
@@ -27,7 +27,7 @@ class Async
     protected $format      = 'json';                                            // 返回数据类型[json|pjson|xml]
     protected $version     = null;                                              // 版本号
 
-    protected $methodName;                                                      // 执行方法名
+    protected $method;                                                          // 执行方法名
     protected $layer       = 'logic';                                           // 业务名
     protected $class       = 'index';                                           // 类名
     protected $action      = 'index';                                           // 方法名
@@ -43,16 +43,16 @@ class Async
         // 验证请求合法性
         $this->checkAsyncToken();
 
-        $this->moduleName = strtolower(request()->module());                    // 模块名称
-        $this->appid      = input('param.appid');                               //
-        $this->appsecret  = input('param.appsecret');                           //
-        $this->sign       = input('param.sign');                                // 请求数据签名
-        $this->sign_type  = input('param.sign_type', 'md5');                    // 签名类型
-        $this->timestamp  = input('param.timestamp/f', time());                 // 请求时间戳
-        $this->format     = strtolower(input('param.format', 'json'));          // 返回数据类型
-        $this->methodName = strtolower(input('param.method'));                  // 请求API方法名
-        $this->version    = input('param.version', null);                       // 版本号
-        $this->apiDebug   = APP_DEBUG;                                          // 显示调试信息
+        $this->module    = strtolower(request()->module());                    // 模块名称
+        $this->appid     = input('param.appid');                               //
+        $this->appsecret = input('param.appsecret');                           //
+        $this->sign      = input('param.sign');                                // 请求数据签名
+        $this->sign_type = input('param.sign_type', 'md5');                    // 签名类型
+        $this->timestamp = input('param.timestamp/f', time());                 // 请求时间戳
+        $this->format    = strtolower(input('param.format', 'json'));          // 返回数据类型
+        $this->method    = strtolower(input('param.method'));                  // 请求API方法名
+        $this->version   = input('param.version', null);                       // 版本号
+        $this->apiDebug  = APP_DEBUG;                                          // 显示调试信息
 
 
         $this->analysisMethod();                                                // 解析method参数
@@ -163,24 +163,26 @@ class Async
      */
     private function analysisMethod()
     {
-        if (!$this->methodName) {
+        if (!$this->method) {
             $this->error('[METHOD] parameter error');
         }
 
         // 参数[业务分层名.类名.方法名]
         // 参数[logic.类名.方法名] 业务分层名默认logic
         // 参数[logic.类名.index] 业务分层名默认logic 方法名默认index
-        $count = count(explode('.', $this->methodName));
-        if ($count == 3) {
-            list($this->layer, $this->class, $this->action) = explode('.', $this->methodName, 3);
+        $count = count(explode('.', $this->method));
+        if ($count == 4) {
+            list($this->module, $this->layer, $this->class, $this->action) = explode('.', $this->method, 4);
+        } elseif ($count == 3) {
+            list($this->layer, $this->class, $this->action) = explode('.', $this->method, 3);
         } elseif ($count == 2) {
-            list($this->class, $this->action) = explode('.', $this->methodName, 2);
+            list($this->class, $this->action) = explode('.', $this->method, 2);
         } elseif ($count == 1) {
-            list($this->class) = explode('.', $this->methodName, 1);
+            list($this->class) = explode('.', $this->method, 1);
         }
 
         // 检查业务分层文件是否存在
-        $file_path = env('app_path') . $this->moduleName . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
+        $file_path = env('app_path') . $this->module . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
         // 分层目录
         $file_path .= $this->layer !== 'logic' ? $this->layer . DIRECTORY_SEPARATOR : '';
         // 版本目录
@@ -194,7 +196,7 @@ class Async
         }
 
         // 检查方法是否存在
-        $this->logicObject = logic($this->moduleName . '/' . $this->layer . '/' . $this->class);
+        $this->logicObject = logic($this->module . '/' . $this->layer . '/' . $this->class);
         if (!method_exists($this->logicObject, $this->action)) {
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             $this->error('[METHOD PARAMETER ERROR]');
@@ -262,7 +264,7 @@ class Async
             ];
             $result['async']  = $this->debugMsg;
             $result['params'] = input('param.', [], 'trim');
-            $result['method'] = $this->methodName;
+            $result['method'] = $this->method;
         }
 
         $response = Response::create($result, $this->format, 200)->allowCache(!APP_DEBUG);

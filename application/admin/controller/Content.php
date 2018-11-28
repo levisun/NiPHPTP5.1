@@ -25,6 +25,8 @@ class Content extends Base
     {
         if (in_array($operate, ['', 'category', 'child'])) {
             $tpl = 'content_category';
+        } elseif (input('param.operate', false) === 'manage') {
+            $tpl = 'content_' . $operate;
         } else {
             // 安模型表名拼接模板名
             if (input('param.model', false)) {

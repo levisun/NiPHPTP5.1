@@ -34,6 +34,8 @@ class ViewFilter
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
             '/( ){2,}/si',
+            '/(\/\*)(.*?)(\*\/)/si',
+            '/([\r\n]){2,}/si',
         ], '', $_content);
         $_content = $this->head($_content);
         $_content = $this->foot($_content);
@@ -82,49 +84,49 @@ class ViewFilter
      */
     private function head($_content)
     {
-        $head = '<!DOCTYPE html>' . PHP_EOL .
-                '<html lang="en">' . PHP_EOL .
-                '<head>' . PHP_EOL .
-                '<meta charset="utf-8" />' . PHP_EOL;
+        $head = '<!DOCTYPE html>' .
+                '<html lang="en">' .
+                '<head>' .
+                '<meta charset="utf-8" />';
 
         if (request()->isMobile()) {
-            $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' . PHP_EOL;
-            $head .= '<meta name="apple-mobile-web-app-capable" content="yes" />' . PHP_EOL;
-            $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black" />' . PHP_EOL;
-            $head .= '<meta name="format-detection" content="telephone=yes" />' . PHP_EOL;
-            $head .= '<meta name="format-detection" content="email=yes" />' . PHP_EOL;
+            $head .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />';
+            $head .= '<meta name="apple-mobile-web-app-capable" content="yes" />';
+            $head .= '<meta name="apple-mobile-web-app-status-bar-style" content="black" />';
+            $head .= '<meta name="format-detection" content="telephone=yes" />';
+            $head .= '<meta name="format-detection" content="email=yes" />';
         } else {
-            $head .= '<meta name="renderer" content="webkit" />' . PHP_EOL;
-            $head .= '<meta name="force-rendering" content="webkit" />' . PHP_EOL;
-            $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL;
+            $head .= '<meta name="renderer" content="webkit" />';
+            $head .= '<meta name="force-rendering" content="webkit" />';
+            $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />';
         }
 
-        $head .= '<meta name="author" content="失眠小枕头" />' . PHP_EOL .
-                 '<meta name="generator" content="失眠小枕头" />' . PHP_EOL .
-                 '<meta name="copyright" content="失眠小枕头" />' . PHP_EOL .
-                 '<meta name="robots" content="all" />' . PHP_EOL .
+        $head .= '<meta name="author" content="失眠小枕头" />' .
+                 '<meta name="generator" content="失眠小枕头" />' .
+                 '<meta name="copyright" content="失眠小枕头" />' .
+                 '<meta name="robots" content="all" />' .
 
-                 '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
-                 '<title>' . $this->siteInfo['title'] . ' - Powered by NiPHP</title>' . PHP_EOL .
-                 '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' . PHP_EOL .
-                 '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' . PHP_EOL .
-                 '<meta property="og:site_name" content="' . $this->siteInfo['website_name'] . '" />' . PHP_EOL .
-                 '<meta property="og:type" content="blog" />' . PHP_EOL .
-                 '<meta property="og:title" content="' . $this->siteInfo['title'] . ' - Powered by NiPHP" />' . PHP_EOL .
-                 '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
-                 '<meta property="og:description" content="' . $this->siteInfo['website_description'] . '" />' . PHP_EOL .
-                 '<link rel="dns-prefetch" href="' . $this->template['tpl_replace_string']['__CDN__'] . '" />' . PHP_EOL .
-                 '<link href="' . request()->domain() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
+                 '<meta http-equiv="Cache-Control" content="no-siteapp" />' .
+                 '<title>' . $this->siteInfo['title'] . ' - Powered by NiPHP</title>' .
+                 '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' .
+                 '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' .
+                 '<meta property="og:site_name" content="' . $this->siteInfo['website_name'] . '" />' .
+                 '<meta property="og:type" content="blog" />' .
+                 '<meta property="og:title" content="' . $this->siteInfo['title'] . ' - Powered by NiPHP" />' .
+                 '<meta property="og:url" content="' . request()->url(true) . '" />' .
+                 '<meta property="og:description" content="' . $this->siteInfo['website_description'] . '" />' .
+                 '<link rel="dns-prefetch" href="' . $this->template['tpl_replace_string']['__CDN__'] . '" />' .
+                 '<link href="' . request()->domain() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
         if (!empty($this->config['css'])) {
             foreach ($this->config['css'] as $css) {
-                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />' . PHP_EOL;
+                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
             }
         }
 
         if (!empty($this->config['js'])) {
             foreach ($this->config['js'] as $js) {
-                $head .= '<script type="text/javascript" src="' . $js . '"></script>' . PHP_EOL;
+                $head .= '<script type="text/javascript" src="' . $js . '"></script>';
             }
         }
 
@@ -143,7 +145,7 @@ class ViewFilter
                  '};' .
                  '</script>';
 
-        $head .= PHP_EOL . '</head>' . PHP_EOL . '<body>' . PHP_EOL;
+        $head .= '</head><body>' . PHP_EOL;
 
         return $head . $_content;
     }

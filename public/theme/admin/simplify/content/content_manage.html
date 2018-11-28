@@ -3,7 +3,7 @@
         {$SITE_DATA.SUB_TITLE}
 
         <span class="smart-widget-option">
-            <a href="{:url('', array('operate' => 'added'))}" class="btn btn-default btn-xs">
+            <a href="{:url('', array('operate' => 'added', 'model' => $Request.param.model, 'cid' => $Request.param.cid))}" class="btn btn-default btn-xs">
                 <span class="fa fa-plus"></span>{:lang('button add')}
             </a>
         </span>

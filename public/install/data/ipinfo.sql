@@ -14,5 +14,7 @@ CREATE TABLE IF NOT EXISTS `np_ipinfo` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT 'IP地域信息';
 
 INSERT INTO `np_ipinfo` (`ip`, `country_id`, `province_id`, `city_id`, `area_id`, `update_time`, `create_time`) VALUES
-('117.22.144.218', 100000, 610000, 220403, 0, 1534605995, 1534604292),
-('::1', 0, 0, 0, 0, 1534606876, 1534606876);
+('::1', 0, 0, 0, 0, 1534605995, 1534604292),
+('127.0.0.1', 0, 0, 0, 0, 1534605995, 1534604292),
+('192.168.0.1', 0, 0, 0, 0, 1534605995, 1534604292),
+('0.0.0.0', 0, 0, 0, 0, 1534606876, 1534606876);

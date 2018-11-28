@@ -28,6 +28,20 @@ class IpInfo
     {
         $request_ip = input('get.ip', request()->ip());
 
+        $check = explode('.', $request_ip);
+        if (count($check) != 4) {
+            return null;
+        } else {
+            if (in_array($check[0], [0, 10, 172, 127, 192, 255])) {
+                return null;
+            }
+            foreach ($check as $value) {
+                if (!$value) {
+                    return null;
+                }
+            }
+        }
+
         $result =
         model('common/model/IpInfo')
         ->view('ipinfo i', ['id', 'ip', 'update_time'])
@@ -88,17 +102,26 @@ class IpInfo
             }
 
             if ($country) {
+                $has =
                 model('common/model/IpInfo')
-                ->allowField(true)
-                ->create([
-                    'ip'          => $_request_ip,
-                    'country_id'  => $country,
-                    'province_id' => $province,
-                    'city_id'     => $city,
-                    'area_id'     => $area,
-                    'update_time' => time(),
-                    'create_time' => time()
-                ]);
+                ->where([
+                    ['ip', '=', $_request_ip]
+                ])
+                ->value('id');
+
+                if (!$has) {
+                    model('common/model/IpInfo')
+                    ->allowField(true)
+                    ->create([
+                        'ip'          => $_request_ip,
+                        'country_id'  => $country,
+                        'province_id' => $province,
+                        'city_id'     => $city,
+                        'area_id'     => $area,
+                        'update_time' => time(),
+                        'create_time' => time()
+                    ]);
+                }
             }
 
             return [
@@ -159,7 +182,7 @@ class IpInfo
      */
     private function queryRegion($_name)
     {
-        $_name = safe_filter($_name, true, true);
+        $_name = safe_filter($_name);
 
         $result =
         model('common/model/region')
@@ -185,9 +208,11 @@ class IpInfo
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
 
         $headers = ['content-type: application/x-www-form-urlencoded;charset=UTF-8'];
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
         $result = curl_exec($curl);
 
         if ($result) {
