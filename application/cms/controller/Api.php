@@ -33,17 +33,6 @@ class Api extends Async
         }
     }
 
-    /**
-     * ip地区信息
-     * @access public
-     * @param
-     * @return json
-     */
-    public function getipinfo()
-    {
-        $this->success('IP INFO', logic('common/IpInfo')->getInfo());
-    }
-
     protected function auth()
     {
         return true;

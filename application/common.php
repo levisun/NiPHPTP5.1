@@ -67,8 +67,8 @@ function get_template_config($_default_theme)
                              $_default_theme . DIRECTORY_SEPARATOR;
 
     if (request()->rootDomain() != 'localhost') {
-        $cdn = request()->scheme() . '://cdn.' . request()->rootDomain() . request()->root() . '/';
-        $api = request()->scheme() . '://api.' . request()->rootDomain() . request()->root() . '/';
+        $cdn = '//cdn.' . request()->rootDomain() . request()->root() . '/';
+        $api = '//api.' . request()->rootDomain() . request()->root() . '/';
     } else {
         $cdn = request()->root(true);
         $api = request()->root(true);

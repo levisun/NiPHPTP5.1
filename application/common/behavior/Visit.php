@@ -58,7 +58,7 @@ class Visit
             return false;
         }
 
-        $ip_info = logic('common/logic/IpInfo')->getInfo();
+        $ip_info = logic('common/logic/IpInfo')->getInfo(request()->ip());
         if (in_array($ip_info['ip'], ['127.0.0.1'])) {
             return false;
         }

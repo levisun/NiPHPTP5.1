@@ -77,7 +77,7 @@ class RemoveRunGarbage
      */
     private function getDir($_dir_path)
     {
-        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-4 hour');
+        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-1 days');
 
         $all_files = [];
         foreach ($_dir_path as $key => $path) {

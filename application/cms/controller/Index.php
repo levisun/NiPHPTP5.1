@@ -137,7 +137,7 @@ class Index extends Base
      */
     public function getipinfo()
     {
-        return json(logic('common/IpInfo')->getInfo());
+        return json(logic('common/IpInfo')->getInfo(input('get.ip')));
     }
 
     /**

@@ -15,6 +15,7 @@ Route::domain(['www', 'm'], function(){
     Route::rule('/', 'index/index');
     Route::rule('index', 'index/index');
     Route::rule('caiji', 'index/caiji');
+    Route::rule('getipinfo', 'index/getipinfo');
 
     Route::rule('list/:cid$', 'index/entry');
     Route::rule('link/:cid$', 'index/entry');

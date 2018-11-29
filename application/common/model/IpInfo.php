@@ -34,6 +34,7 @@ class IpInfo extends Model
         'province_id',
         'city_id',
         'area_id',
+        'isp',
         'update_time',
         'create_time'
     ];

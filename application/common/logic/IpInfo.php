@@ -24,47 +24,62 @@ class IpInfo
      * @param
      * @return array
      */
-    public function getInfo()
+    public function getInfo($_request_ip)
     {
-        $request_ip = input('get.ip', request()->ip());
+        // $request_ip = input('get.ip', request()->ip());
 
-        $check = explode('.', $request_ip);
-        if (count($check) != 4) {
-            return null;
-        } else {
-            if (in_array($check[0], [0, 10, 172, 127, 192, 255])) {
-                return null;
-            }
-            foreach ($check as $value) {
-                if (!$value) {
-                    return null;
-                }
-            }
+        $result = $this->validate($_request_ip);
+        if (is_null($result)) {
+            return [
+                'ip'          => $_request_ip,
+                'country'     => '错误IP',
+                'province'    => '错误IP',
+                'city'        => '错误IP',
+                'area'        => '错误IP',
+                'country_id'  => '',
+                'province_id' => '',
+                'city_id'     => '',
+                'area_id'     => '',
+                'region'      => '',
+            ];
+        } elseif (!$result) {
+            return [
+                'ip'          => $_request_ip,
+                'country'     => '保留地址或本地局域网',
+                'province'    => '内网IP',
+                'city'        => '内网IP',
+                'area'        => '内网IP',
+                'country_id'  => '',
+                'province_id' => '',
+                'city_id'     => '',
+                'area_id'     => '',
+                'region'      => '',
+            ];
         }
 
         $result =
         model('common/model/IpInfo')
-        ->view('ipinfo i', ['id', 'ip', 'update_time'])
+        ->view('ipinfo i', ['id', 'ip', 'isp', 'update_time'])
         ->view('region country', ['id' => 'country_id', 'name' => 'country'], 'country.id=i.country_id', 'LEFT')
         ->view('region region', ['id' => 'region_id', 'name' => 'region'], 'region.id=i.province_id', 'LEFT')
         ->view('region city', ['id' => 'city_id', 'name' => 'city'], 'city.id=i.city_id', 'LEFT')
         ->view('region area', ['id' => 'area_id', 'name' => 'area'], 'area.id=i.area_id', 'LEFT')
         ->where([
-            ['i.ip', '=', $request_ip]
+            ['i.ip', '=', $_request_ip]
         ])
-        ->cache(__METHOD__ . $request_ip, 28800)
+        ->cache(__METHOD__ . $_request_ip, 28800)
         ->find();
 
         $result = $result ? $result->toArray() : [];
 
         // 存在更新信息
-        if ($result && $result['update_time'] <= strtotime('-1 year')) {
+        if (!empty($result) && $result['update_time'] <= strtotime('-30 days')) {
             $this->update($request_ip);
         }
 
         // 不存在新建信息
-        if (!$result) {
-            $result = $this->added($request_ip);
+        if (empty($result)) {
+            $result = $this->added($_request_ip);
             if ($result !== false) {
                 $result['region'] = empty($result['region']) ? '' : $result['region'];
                 $result['city']   = empty($result['city']) ? '' : $result['city'];
@@ -78,7 +93,54 @@ class IpInfo
             $result['country'] = '保留地址或本地局域网';
         }
 
+        // $result['total'] =
+        // model('common/model/IpInfo')
+        // ->cache(__METHOD__ . 'total', 28800)
+        // ->count();
+
         return $result;
+    }
+
+    /**
+     * 验证IP
+     * @access private
+     * @param  string  $_request_ip
+     * @return array
+     */
+    private function validate($_request_ip)
+    {
+        if (empty($_request_ip)) {
+            return null;
+        }
+
+        $ip = explode('.', $_request_ip);
+        if (count($ip) == 4) {
+            foreach ($ip as $key => $value) {
+                if ($value != '') {
+                    $ip[$key] = (int) $value;
+                } else {
+                    return null;
+                }
+            }
+
+            // 保留IP地址段
+            // a类 10.0.0.0~10.255.255.255
+            // b类 172.16.0.0~172.31.255.255
+            // c类 192.168.0.0~192.168.255.255
+            if ($ip[0] == 0 || $ip[0] == 10 || $ip[0] == 255) {
+                return false;
+            } elseif ($ip[0] == 172 && $ip[1] >= 16 && $ip[1] <= 31) {
+                return false;
+            } elseif ($ip[0] == 172 && $ip[1] = 0) {
+                return false;
+            } elseif ($ip[0] == 192 && $ip[1] == 168) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -95,6 +157,7 @@ class IpInfo
             $country  = $this->queryRegion($ip['data']['country']);
             $province = $this->queryRegion($ip['data']['region']);
             $city     = $this->queryRegion($ip['data']['city']);
+            $isp      = safe_filter_strict($ip['data']['isp']);
             if ($ip['data']['area']) {
                 $area = $this->queryRegion($ip['data']['area']);
             } else {
@@ -118,6 +181,7 @@ class IpInfo
                         'province_id' => $province,
                         'city_id'     => $city,
                         'area_id'     => $area,
+                        'isp'         => $isp,
                         'update_time' => time(),
                         'create_time' => time()
                     ]);
@@ -134,6 +198,7 @@ class IpInfo
                 'province_id' => $province,
                 'city_id'     => $city,
                 'area_id'     => $area,
+                'isp'         => $isp,
             ];
         } else {
             return false;
@@ -153,6 +218,7 @@ class IpInfo
             $country  = $this->queryRegion($ip['data']['country']);
             $province = $this->queryRegion($ip['data']['region']);
             $city     = $this->queryRegion($ip['data']['city']);
+            $isp      = safe_filter_strict($ip['data']['isp']);
             if ($ip['data']['area']) {
                 $area = $this->queryRegion($ip['data']['area']);
             } else {
@@ -165,10 +231,11 @@ class IpInfo
                 ['ip', '=', $_request_ip],
             ])
             ->update([
-                'country_id'  => safe_filter_strict($country),
-                'province_id' => safe_filter_strict($province),
-                'city_id'     => safe_filter_strict($city),
-                'area_id'     => safe_filter_strict($area),
+                'country_id'  => $country,
+                'province_id' => $province,
+                'city_id'     => $city,
+                'area_id'     => $area,
+                'isp'         => $isp,
                 'update_time' => time()
             ]);
         }
@@ -182,7 +249,7 @@ class IpInfo
      */
     private function queryRegion($_name)
     {
-        $_name = safe_filter($_name);
+        $_name = safe_filter_strict($_name);
 
         $result =
         model('common/model/region')

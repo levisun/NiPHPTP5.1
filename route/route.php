@@ -33,6 +33,7 @@ Route::domain('api', function(){
         Route::rule('query',  'query');
         Route::rule('settle', 'settle');
         Route::rule('upload', 'upload');
+        Route::rule('getipinfo', 'getipinfo');
     })->prefix('cms/api/');
 });
 

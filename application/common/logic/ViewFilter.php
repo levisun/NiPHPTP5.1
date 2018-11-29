@@ -34,8 +34,9 @@ class ViewFilter
             '/<(\!DOCTYPE.*?)>(.*?)<(body.*?)>/si',
             '/<(\/body.*?)>(.*?)<(\/html.*?)>/si',
             '/( ){2,}/si',
+            '/(<\!--)(.*?)(-->)/si',
             '/(\/\*)(.*?)(\*\/)/si',
-            '/([\r\n]){2,}/si',
+            '/(\r\n){2,}/si',
         ], '', $_content);
         $_content = $this->head($_content);
         $_content = $this->foot($_content);

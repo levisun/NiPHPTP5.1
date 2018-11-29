@@ -249,7 +249,7 @@ class Async
             'data'    => $_data,
 
             'log' => [
-                'request ip'   => logic('common/IpInfo')->getInfo(),
+                'request ip'   => logic('common/IpInfo')->getInfo(request()->ip()),
                 'request time' => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
                 'runtime'      => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
                 'memory'       => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',
