@@ -21,12 +21,12 @@ class IpInfo
     /**
      * 查询IP地址信息
      * @access public
-     * @param
+     * @param  string 请求IP地址
      * @return array
      */
-    public function getInfo($_request_ip)
+    public function getInfo($_request_ip = '')
     {
-        // $request_ip = input('get.ip', request()->ip());
+        $_request_ip = $_request_ip ? $_request_ip : request()->ip();
 
         $result = $this->validate($_request_ip);
         if (is_null($result)) {

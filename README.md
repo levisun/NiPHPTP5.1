@@ -1,10 +1,12 @@
-# NiPHPTP5.1
+# NiPHP2.x
 
-> NiPHPTP5.1的运行环境要求PHP5.6以上。
+> NiPHP2.x的运行环境要求PHP5.6以上。
 
-> NiPHPTP5基于ThinkPHP5.1框架开发，使用时请先下载[ThinkPHP5.1框架](http://www.thinkphp.cn/)
+> NiPHP2.x基于ThinkPHP5.1框架开发，使用时请先下载[ThinkPHP5.1框架](http://www.thinkphp.cn/)
 
 > 安装ThinkPHP5.1框架后，替换application和public目录。
+
+> 业务层支持API版本分层
 
 ## 目录结构
 ~~~
@@ -15,9 +17,11 @@ www  WEB部署目录（或者子目录）
 │   │   ├─controller                        控制层目录
 │   │   ├─lang                              语言包目录
 │   │   ├─logic                             业务层目录
+│   │   ├─middleware                        中间层目录
 │   │   ├─validate                          验证层目录
 │   │   ├─common.php                        函数文件
 │   ├─cms                                   CMS模块目录
+│   │   ├─behavior                          行为目录
 │   │   ├─config                            配置目录
 │   │   ├─controller                        控制层目录
 │   │   ├─lang                              语言包目录
@@ -26,16 +30,16 @@ www  WEB部署目录（或者子目录）
 │   │   ├─common.php                        函数文件
 │   ├─common                                公共模块目录
 │   │   ├─behavior                          行为目录
-│   │   │   ├─Concurrent.php                缓解并发文件
-│   │   │   ├─CreateApiToken.php            生成API请求令牌文件
-│   │   │   ├─HtmlCache.php                 HTML缓存文件
-│   │   │   ├─RemoveRunGarbage.php          清理运行垃圾文件
-│   │   │   ├─Visit.php                     访问记录文件
+│   │   │   ├─Concurrent.php
+│   │   │   ├─CreateApiToken.php            生成API请求令牌方法
+│   │   │   ├─RemoveRunGarbage.php          清理运行垃圾方法
+│   │   │   ├─Visit.php                     访问记录方法
 │   │   ├─logic                             业务层目录
-│   │   │   ├─Async.php                     异步请求文件
-│   │   │   ├─IpInfo.php                    IP归属地文件
-│   │   │   ├─Rbac.php                      帐户权限验证文件
-│   │   │   ├─RequestLog.php                请求日志文件
+│   │   │   ├─Async.php                     异步请求方法
+│   │   │   ├─IpInfo.php                    IP归属地方法
+│   │   │   ├─Rbac.php                      帐户权限验证方法
+│   │   │   ├─RequestLog.php                请求日志方法
+│   │   │   ├─SafeFilter.php                数据安全过滤方法
 │   │   │   ├─Upload.php                    上传文件文件
 │   │   ├─model                             模型目录
 │   ├─mall                                  商城模块目录
@@ -73,6 +77,6 @@ www  WEB部署目录（或者子目录）
 
 ## 版权信息
 
-版权所有Copyright © 2006-2017 by niphp.com (http://niphp.com)
+版权所有Copyright © 2006-2018 by niphp.com (http://niphp.com)
 
 All rights reserved。

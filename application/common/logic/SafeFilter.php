@@ -16,38 +16,13 @@ class SafeFilter
 {
 
     /**
-     * 严格的安全过滤
-     * @access public
-     * @param  mixed  $_data
-     * @return mixed
-     */
-    public function filter_strict($_data)
-    {
-        if (is_array($_data)) {
-            foreach ($_data as $key => $value) {
-                $_data[$key] = $this->filter_strict($value);
-            }
-        } else {
-            $_data = trim($_data);
-            $_data = strip_tags($_data);
-            $_data = $this->PHP($_data);
-            $_data = $this->XSS($_data);
-            $_data = $this->XXE($_data);
-            $_data = $this->SQL($_data);
-            $_data = $this->enter($_data);
-            $_data = $this->strToEncode($_data);
-        }
-
-        return $_data;
-    }
-
-    /**
      * 安全过滤
      * @access public
-     * @param  mixed  $_data
+     * @param  mixed   $_data
+     * @param  boolean $_strict 严格过滤
      * @return mixed
      */
-    public function filter($_data)
+    public function filter($_data, $_strict = true)
     {
         if (is_array($_data)) {
             foreach ($_data as $key => $value) {
@@ -55,6 +30,7 @@ class SafeFilter
             }
         } else {
             $_data = trim($_data);
+            $_data = $_strict ? strip_tags($_data) : $_data;
             $_data = $this->PHP($_data);
             $_data = $this->XSS($_data);
             $_data = $this->XXE($_data);

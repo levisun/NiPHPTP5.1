@@ -67,10 +67,10 @@ class ViewFilter
         $foot .= PHP_EOL;
         $foot .= '<script type="text/javascript">';
         $foot .= 'console.log("Powered by NiPHP Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com';
-        $foot .= '\r\nAuthor 失眠小枕头';
-        $foot .= '\r\nCreate Date ' . date('Y-m-d H:i:s');
-        $foot .= '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒';
-        $foot .= '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");';
+        $foot .= '\r\nAuthor: NiPHP 失眠小枕头';
+        $foot .= '\r\nCreate Date: ' . date('Y-m-d H:i:s');
+        $foot .= '\r\nRuntime: ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒';
+        $foot .= '\r\nMemory: ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");';
         $foot .= '</script>';
         $foot .= PHP_EOL . '</body>' . PHP_EOL . '</html>';
 
@@ -102,18 +102,18 @@ class ViewFilter
             $head .= '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />';
         }
 
-        $head .= '<meta name="author" content="失眠小枕头" />' .
-                 '<meta name="generator" content="失眠小枕头" />' .
-                 '<meta name="copyright" content="失眠小枕头" />' .
+        $head .= '<meta name="generator" content="NiPHP ' . NP_VERSION . '" />' .
+                 '<meta name="author" content="NiPHP 失眠小枕头" />' .
+                 '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' .
                  '<meta name="robots" content="all" />' .
 
                  '<meta http-equiv="Cache-Control" content="no-siteapp" />' .
-                 '<title>' . $this->siteInfo['title'] . ' - Powered by NiPHP</title>' .
+                 '<title>' . $this->siteInfo['title'] . '</title>' .
                  '<meta name="keywords" content="' . $this->siteInfo['website_keywords'] . '" />' .
                  '<meta name="description" content="' . $this->siteInfo['website_description'] . '" />' .
                  '<meta property="og:site_name" content="' . $this->siteInfo['website_name'] . '" />' .
                  '<meta property="og:type" content="blog" />' .
-                 '<meta property="og:title" content="' . $this->siteInfo['title'] . ' - Powered by NiPHP" />' .
+                 '<meta property="og:title" content="' . $this->siteInfo['title'] . '" />' .
                  '<meta property="og:url" content="' . request()->url(true) . '" />' .
                  '<meta property="og:description" content="' . $this->siteInfo['website_description'] . '" />' .
                  '<link rel="dns-prefetch" href="' . $this->template['tpl_replace_string']['__CDN__'] . '" />' .

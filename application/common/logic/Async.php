@@ -43,17 +43,19 @@ class Async
         // 验证请求合法性
         $this->checkAsyncToken();
 
-        $this->module    = strtolower(request()->module());                    // 模块名称
-        $this->appid     = input('param.appid');                               //
-        $this->appsecret = input('param.appsecret');                           //
-        $this->sign      = input('param.sign');                                // 请求数据签名
-        $this->sign_type = input('param.sign_type', 'md5');                    // 签名类型
-        $this->timestamp = input('param.timestamp/f', time());                 // 请求时间戳
-        $this->format    = strtolower(input('param.format', 'json'));          // 返回数据类型
-        $this->method    = strtolower(input('param.method'));                  // 请求API方法名
-        $this->version   = input('param.version', null);                       // 版本号
-        $this->apiDebug  = APP_DEBUG;                                          // 显示调试信息
+        $this->module    = strtolower(request()->module());                     // 模块名称
+        $this->appid     = input('param.appid');                                //
+        $this->appsecret = input('param.appsecret');                            //
+        $this->sign      = input('param.sign');                                 // 请求数据签名
+        $this->sign_type = input('param.sign_type', 'md5');                     // 签名类型
+        $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
+        $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
+        $this->method    = strtolower(input('param.method'));                   // 请求API方法名
+        $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
 
+        $this->version   = input('param.version', null);                        // 版本号
+        list($this->version) = explode('.', $this->version);
+        $this->version   = $this->version ? 'v' . $this->version : '';
 
         $this->analysisMethod();                                                // 解析method参数
         $this->auth();                                                          // 请求权限校验
@@ -167,6 +169,7 @@ class Async
             $this->error('[METHOD] parameter error');
         }
 
+        // 参数[模块名.业务分层名.类名.方法名]
         // 参数[业务分层名.类名.方法名]
         // 参数[logic.类名.方法名] 业务分层名默认logic
         // 参数[logic.类名.index] 业务分层名默认logic 方法名默认index
@@ -183,22 +186,26 @@ class Async
 
         // 检查业务分层文件是否存在
         $file_path = env('app_path') . $this->module . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
-        // 分层目录
-        $file_path .= $this->layer !== 'logic' ? $this->layer . DIRECTORY_SEPARATOR : '';
         // 版本目录
         $file_path .= $this->version ? $this->version . DIRECTORY_SEPARATOR : '';
+        // 分层目录
+        $file_path .= $this->layer !== 'logic' ? $this->layer . DIRECTORY_SEPARATOR : '';
 
         $file_path .= ucfirst($this->class) . '.php';
 
         if (!is_file($file_path)) {
-            $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+            $this->debugMsg[] = $file_path;
+            $this->debugMsg[] = $this->layer . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             $this->error('[METHOD PARAMETER ERROR]');
         }
 
         // 检查方法是否存在
-        $this->logicObject = logic($this->module . '/' . $this->layer . '/' . $this->class);
+        $logic_params  = $this->module . '/';
+        $logic_params .= $this->version ? $this->version . '\\' . $this->layer : $this->layer;
+        $logic_params .= '/' . $this->class;
+        $this->logicObject = logic($logic_params);
         if (!method_exists($this->logicObject, $this->action)) {
-            $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+            $this->debugMsg[] = $this->layer . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             $this->error('[METHOD PARAMETER ERROR]');
         }
     }

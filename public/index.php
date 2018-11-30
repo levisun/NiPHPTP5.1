@@ -23,9 +23,9 @@ version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP VERSION >= 5.6.0!');
 define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.1 Alpha');
 define('DS', DIRECTORY_SEPARATOR);
-define('NP_PREFIX', substr(md5(__DIR__ . $_SERVER['HTTP_HOST']), 0, 7));
-define('NP_KEY', strtoupper(substr(NP_PREFIX, -3)));
-header('X-Powered-By: NiPHP');
+define('NP_CACHE_PREFIX', substr(md5(__DIR__ . $_SERVER['HTTP_HOST']), 0, 7));
+define('NP_COOKIE_PREFIX', strtoupper(substr(NP_PREFIX, -3)));
+header('X-Powered-By: NiPHP ' . NP_VERSION);
 
 if (APP_DEBUG) {
     set_time_limit(30);

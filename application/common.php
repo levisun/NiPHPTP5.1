@@ -432,7 +432,7 @@ function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
  */
 function safe_filter($_content)
 {
-    return logic('common/SafeFilter')->filter($_content);
+    return logic('common/SafeFilter')->filter($_content, false);
 }
 
 /**
@@ -442,5 +442,5 @@ function safe_filter($_content)
  */
 function safe_filter_strict($_content)
 {
-    return logic('common/SafeFilter')->filter_strict($_content);
+    return logic('common/SafeFilter')->filter($_content, true);
 }
