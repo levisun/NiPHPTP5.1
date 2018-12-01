@@ -183,7 +183,7 @@ $("form").submit(function(){
         type: "post",
         data: form_data,
         success: function(result){
-            handle(result, "{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}");
+            handle(result, "{:url()}");
         }
     });
     return false;

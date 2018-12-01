@@ -1,0 +1,13 @@
+{
+    "css": [
+        "__STATIC__nipui/css/nipui-2.1.1.css",
+        "https://cdn.bootcss.com/twitter-bootstrap/4.1.3/css/bootstrap.min.css",
+        "__CSS__style.css"
+    ],
+    "js": [
+        "__STATIC__/jquery/jquery-3.1.1.min.js",
+        "https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js",
+        "__STATIC__nipui/js/nipui-2.2.5.js",
+        "https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"
+    ]
+}

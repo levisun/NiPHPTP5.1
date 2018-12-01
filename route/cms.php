@@ -14,35 +14,33 @@
 Route::domain(['www', 'm'], function(){
     Route::rule('/', 'index/index');
     Route::rule('index', 'index/index');
+    Route::rule('list/:cid$', 'index/entry');
+    Route::rule('link/:cid$', 'index/entry');
+    Route::rule('search/:q$', 'index/search');
+    Route::rule('channel/:cid$', 'index/channel');
+    Route::rule('feedback/:cid$', 'index/feedback');
+    Route::rule('message/:cid$', 'index/message');
+    Route::rule('comment/:cid/:id$', 'index/comment');
+    Route::rule('article/:cid/:id$', 'index/article');
+    Route::rule('picture/:cid/:id$', 'index/article');
+    Route::rule('download/:cid/:id$', 'index/article');
+    Route::rule('product/:cid/:id$', 'index/article');
+    Route::rule('page/:cid$', 'index/article');
+
+
+
+
     Route::rule('caiji', 'index/caiji');
     Route::rule('getipinfo', 'index/getipinfo');
 
-    Route::rule('list/:cid$', 'index/entry');
-    Route::rule('link/:cid$', 'index/entry');
 
     Route::rule('go/:cid/[:id]$',  'index/go');
 
-    Route::rule('search/:q$',     'index/search');
-    Route::rule('channel/:cid$',  'index/channel');
-    Route::rule('feedback/:cid$', 'index/feedback');
-    Route::rule('message/:cid$',  'index/message');
 
-    Route::rule('comment/:cid/:id$',  'index/comment');
-    Route::rule('article/:cid/:id$',  'index/article');
-    Route::rule('picture/:cid/:id$',  'index/article');
-    Route::rule('download/:cid/:id$', 'index/article');
-    Route::rule('product/:cid/:id$',  'index/article');
-    Route::rule('page/:cid$',         'index/article');
 
     Route::rule('tags$', 'index/tags');
 
     Route::rule('error/:code$', 'index/abort');
-
-    Route::group('api', function(){
-        Route::rule('query',  'query');
-        Route::rule('settle', 'settle');
-        // Route::rule('upload', 'upload');
-    })->prefix('api/');
 })
 ->bind('cms')
 ->cache(APP_DEBUG ? false : 1200);

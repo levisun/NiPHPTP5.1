@@ -12,14 +12,8 @@
  */
 
 Route::domain('admin', function(){
-    // Route::rule('/', 'account/login');
+    Route::rule('/', 'account/login');
     Route::rule('index', 'account/login');
-
-    Route::group('api', function(){
-        Route::rule('query',  'query');
-        Route::rule('settle', 'settle');
-        Route::rule('upload', 'upload');
-    })->prefix('api/');
 })
 ->bind('admin')
 ->cache(false);

@@ -76,10 +76,7 @@ class LevelMember extends Model
 
         $result =
         $this->allowField(true)
-        ->where([
-            ['user_id', '=', $_receive_data['user_id']],
-        ])
-        ->update($_receive_data);
+        ->save($_receive_data, ['id' => $_receive_data['id']]);
 
         return !!$result;
     }

@@ -24,7 +24,7 @@ class IpInfo
      * @param  string 请求IP地址
      * @return array
      */
-    public function getInfo($_request_ip = '')
+    public function getInfo($_request_ip = false)
     {
         $_request_ip = $_request_ip ? $_request_ip : request()->ip();
 

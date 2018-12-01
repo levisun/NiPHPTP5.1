@@ -80,10 +80,7 @@ class Fields extends Model
 
         $result =
         $this->allowField(true)
-        ->where([
-            ['id', '=', $_receive_data['id']],
-        ])
-        ->update($_receive_data);
+        ->save($_receive_data, ['id' => $_receive_data['id']]);
 
         return !!$result;
     }

@@ -26,26 +26,7 @@ class Base extends Controller
         $template = get_template_config(config('default_theme'));
         config('template.view_path', $template['view_path']);
         $this->engine($template);
-        $this->filter(function($_content){
-            $_content = preg_replace([
-                '/( ){2,}/si',
-                '/(<\!--)(.*?)(-->)/si',
-                '/(\/\*)(.*?)(\*\/)/si',
-                '/(\r\n){2,}/si',
-                '/(\t)/si',
-            ], '', $_content);
-
-            $html  = '<script type="text/javascript">';
-            $html .= 'console.log("Powered by NiPHP Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com';
-            $html .= '\r\nAuthor 失眠小枕头';
-            $html .= '\r\nCreate Date ' . date('Y-m-d H:i:s');
-            $html .= '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒';
-            $html .= '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");';
-            $html .= '</script>';
-            $html .= '</body>';
-
-            return str_replace('</body>', $html, $_content);
-        });
+        $this->filter('replace_meta');
 
         $assign = [];
 

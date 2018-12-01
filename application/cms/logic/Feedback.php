@@ -17,7 +17,7 @@ class Feedback
 
     public function added()
     {
-        $ip_info = logic('common/logic/IpInfo')->getInfo();
+        $ip_info = logic('common/IpInfo')->getInfo();
 
         $receive_data = [
             'title'       => input('post.title'),

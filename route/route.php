@@ -1,16 +1,17 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006~2016 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+/**
+ *
+ * 全局 路由配置
+ *
+ * @package   NiPHPCMS
+ * @category  application
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @link      www.NiPHP.com
+ * @since     2018/12
+ */
 
-// Route::miss('index/abort');
-
+// 全局变量规则
 Route::pattern([
     'operate' => '\w+',
     'code'    => '\d+',
@@ -21,33 +22,46 @@ Route::pattern([
     'p'       => '\d+',
 ]);
 
-Route::domain('api', function(){
-    Route::group('admin', function(){
-        Route::rule('query',  'query');
-        Route::rule('settle', 'settle');
-        Route::rule('upload', 'upload');
-    })->prefix('admin/api/');
-
-
-    Route::group('cms', function(){
-        Route::rule('query',  'query');
-        Route::rule('settle', 'settle');
-        Route::rule('upload', 'upload');
-        Route::rule('getipinfo', 'getipinfo');
-    })->prefix('cms/api/');
+// 进制cdn|css|img|js等二级域名直接访问网站
+Route::domain([
+    'cdn', 'css', 'img', 'js'
+], function(){
+    abort(404);
 });
 
-Route::domain('my', [
-])
-->bind('member')
-->ext('do');
+// API接口路由
+Route::group('api', function(){
+    Route::rule('query',  'query');
+    Route::rule('settle', 'settle');
+    Route::rule('upload', 'upload');
+})->prefix('api/');
 
-Route::domain('mall', [
-])
-->bind('mall')
-->ext('html');
+// Route::miss('index/abort');
 
-Route::domain('api.wechat', [
-])
-->bind('wechat')
-->ext('do');
+// Route::domain('api', function(){
+//     Route::group('admin', function(){
+//         Route::rule('query',  'query');
+//         Route::rule('settle', 'settle');
+//         Route::rule('upload', 'upload');
+//     })->prefix('admin/api/');
+
+
+//     Route::group('cms', function(){
+//         Route::rule('query',  'query');
+//         Route::rule('settle', 'settle');
+//         Route::rule('upload', 'upload');
+//         Route::rule('getipinfo', 'getipinfo');
+//     })->prefix('cms/api/');
+// });
+
+// Route::domain('my', [
+// ])
+// ->bind('member')
+// ->ext('do');
+
+// Route::domain('mall', [
+// ])
+// ->bind('mall')
+// ->ext('html');
+
+

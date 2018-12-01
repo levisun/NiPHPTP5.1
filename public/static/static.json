@@ -1,0 +1,8 @@
+{
+    "ckeditor": "https://ckeditor.com/",                                        // 编辑器
+    "jquery":   "http://jquery.com/",                                           // JS框架
+
+    "bootstrap": "http://getbootstrap.com/",                                    // 前台框架
+
+    "font-awesome": "https://fontawesome.com/",                                 // 小图标
+}

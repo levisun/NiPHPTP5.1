@@ -40,7 +40,7 @@ class Concurrent
         // trace('[behavior] concurrent', 'warning');
 
         // 万分之一抛出异常
-        if (!APP_DEBUG && rand(1, 10000) === 1) {
+        if (!APP_DEBUG && rand(1, 1000) === 1) {
             abort(502);
         }
     }

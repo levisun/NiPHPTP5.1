@@ -95,8 +95,8 @@
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-lg-10">
                         {:token()}
-                        <input type="hidden" name="category_id" value="">
-                        <input type="hidden" name="id" value="">
+                        <input type="hidden" name="category_id" id="category_id" value="">
+                        <input type="hidden" name="id" id="id" value="">
                         <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
                     </div>
                 </div>
@@ -201,7 +201,7 @@ $("form").submit(function(){
         type: "post",
         data: form_data,
         success: function(result){
-            handle(result, "{:url('', ['operate'=>'manage', 'cid'=>$Request.param.cid])}");
+            handle(result, "{:url()}");
         }
     });
     return false;

@@ -67,7 +67,7 @@ function get_template_config($_default_theme)
                              $_default_theme . DIRECTORY_SEPARATOR;
 
     if (request()->rootDomain() != 'localhost') {
-        $cdn = '//cdn.' . request()->rootDomain() . request()->root() . '/';
+        $cdn = request()->rootDomain() . request()->root() . '/';
         $api = '//api.' . request()->rootDomain() . request()->root() . '/';
     } else {
         $cdn = request()->root(true);
@@ -75,17 +75,17 @@ function get_template_config($_default_theme)
     }
 
     $template['tpl_replace_string'] = [
-        '__DOMAIN__'     => request()->root(true) . '/',
+        '__DOMAIN__'     => str_replace(['http:', 'https:'], '', request()->root(true)) . '/',
         '__PHP_SELF__'   => basename(request()->baseFile()),
-        '__CDN__'        => $cdn,
+        '__CDN__'        => '//cdn.' . $cdn,
         '__API_QUERY__'  => url('api/query'),
         '__API_SETTLE__' => url('api/settle'),
         '__API_UPLOAD__' => url('api/upload'),
-        '__STATIC__'     => $cdn . 'static/',
+        '__STATIC__'     => '//cdn.' . $cdn . 'static/',
         '__THEME__'      => $_default_theme,
-        '__CSS__'        => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
-        '__JS__'         => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
-        '__IMG__'        => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
+        '__CSS__'        => '//css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
+        '__JS__'         => '//js.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
+        '__IMG__'        => '//img.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
     ];
 
     return $template;
@@ -192,7 +192,12 @@ function is_wechat_request()
  */
 function url($_url = '', $_vars = '', $_domain = true)
 {
-    return Url::build($_url, $_vars, true, $_domain);
+    return
+    str_replace(
+        ['http:', 'https:'],
+        '',
+        Url::build($_url, $_vars, true, $_domain)
+    );
 }
 
 /**

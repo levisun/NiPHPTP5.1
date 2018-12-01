@@ -45,7 +45,7 @@ Temporary Items
 #Project
 *.back
 *.log
-*.json
+# *.json
 think
 build.php
 json.php

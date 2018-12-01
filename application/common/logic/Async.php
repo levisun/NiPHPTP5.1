@@ -149,7 +149,6 @@ class Async
 
         if (!hash_equals($str, $this->sign)) {
             $this->debugMsg['sign'] = $str;
-            trace('[SIGN ERROR] ' . $this->sign . '::' . $str, 'alert');
             $this->error('SIGN ERROR');
         }
     }
@@ -194,7 +193,6 @@ class Async
         $file_path .= ucfirst($this->class) . '.php';
 
         if (!is_file($file_path)) {
-            $this->debugMsg[] = $file_path;
             $this->debugMsg[] = $this->layer . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             $this->error('[METHOD PARAMETER ERROR]');
         }
@@ -251,27 +249,24 @@ class Async
         $header = [];
 
         $result = [
-            'code'    => $_code,
-            'msg'     => $_msg,
-            'data'    => $_data,
-
-            'log' => [
-                'request ip'   => logic('common/IpInfo')->getInfo(request()->ip()),
-                'request time' => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
-                'runtime'      => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
-                'memory'       => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',
-            ]
+            'code' => $_code,
+            'msg'  => $_msg,
+            'data' => $_data,
+            'time' => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
+            'ip'      => logic('common/IpInfo')->getInfo(),
+            'runtime' => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
+            'memory'  => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',
         ];
 
         if ($this->apiDebug) {
-            $result['log']['server'] = [
+            $result['debug'] = [
                 'sql query' => \think\Db::$queryTimes . '条查询 ' . \think\Db::$executeTimes . '条写入',
                 'db cache'  => app('cache')->getReadTimes() . '次读取 ' . app('cache')->getWriteTimes() . '次写入',
-                'include'   => count(get_included_files()) . '个文件'
+                'include'   => count(get_included_files()) . '个文件',
+                'async'     => $this->debugMsg,
+                'params'    => input('param.', [], 'trim'),
+                'method'    => $this->method
             ];
-            $result['async']  = $this->debugMsg;
-            $result['params'] = input('param.', [], 'trim');
-            $result['method'] = $this->method;
         }
 
         $response = Response::create($result, $this->format, 200)->allowCache(!APP_DEBUG);
