@@ -296,6 +296,18 @@
     }
 
     /**
+     * 数据安全过滤
+     */
+    jQuery.safe_filter = function (_string) {
+        var pattern = new RegExp("[`~!@#$%^&*()_+-={}|\\[\\]\\:\";'<>?,./”“；：。，、？——【】｛｝（）·￥……]");
+        var specialStr = "";
+        for (var i = 0; i < _string.length; i++) {
+            specialStr += _string.substr(i, 1).replace(pattern, '');
+        }
+        return specialStr;
+    }
+
+    /**
      * URL get参数
      */
     jQuery.url = function (_key, _default, _url) {
@@ -380,7 +392,7 @@
 
         jQuery(window).scroll(function(){
             var is = jQuery("body").attr(bool);
-            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) - 100) {
+            if (is == "true" && jQuery(window).scrollTop() >= (jQuery(document).height() - jQuery(window).height()) - 200) {
                 var num = jQuery("body").attr(page);
                     num++;
 
@@ -392,7 +404,7 @@
                 if (xhr.readyState > 0) {
                     setTimeout(function(){
                         jQuery("body").attr(bool, "true");
-                    }, 3000);
+                    }, 1500);
                 }
                 return xhr;
             }

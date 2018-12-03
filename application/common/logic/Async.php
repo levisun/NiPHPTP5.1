@@ -249,10 +249,10 @@ class Async
         $header = [];
 
         $result = [
-            'code' => $_code,
-            'msg'  => $_msg,
-            'data' => $_data,
-            'time' => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
+            'code'    => $_code,
+            'message' => $_msg,
+            'data'    => $_data,
+            'time'    => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
             'ip'      => logic('common/IpInfo')->getInfo(),
             'runtime' => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
             'memory'  => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',

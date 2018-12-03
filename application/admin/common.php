@@ -22,12 +22,20 @@ function replace_meta($_content)
 
     $cdn = request()->rootDomain() . request()->root() . '/';
 
-    $meta = '<head>' . PHP_EOL .
+    $meta = '</title>' . PHP_EOL .
             '<meta name="generator" content="NiPHP ' . NP_VERSION . '" />' . PHP_EOL .
-            '<meta name="author" content="NiPHP 失眠小枕头" />' . PHP_EOL .
+            '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' . PHP_EOL .
             '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' . PHP_EOL .
-            // '<meta name="robots" content="all" />' . PHP_EOL .
+            '<meta name="robots" content="none" />' . PHP_EOL .
+            '<meta name="revisit-after" content="7 days" >' . PHP_EOL .
+            '<meta name="renderer" content="webkit" />' . PHP_EOL .
+            '<meta name="force-rendering" content="webkit" />' . PHP_EOL .
+            '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' . PHP_EOL .
+            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' . PHP_EOL .
+            '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL .
             '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
+            '<meta http-equiv="Widow-target" content="_top">' . PHP_EOL .
+
             '<link rel="dns-prefetch" href="//cdn.' . $cdn . '" />' . PHP_EOL .
             '<link rel="dns-prefetch" href="//css.' . $cdn . '" />' . PHP_EOL .
             '<link rel="dns-prefetch" href="//js.' . $cdn . '" />' . PHP_EOL .
@@ -35,21 +43,16 @@ function replace_meta($_content)
             '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
     if (request()->isMobile()) {
-        $meta .= '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' . PHP_EOL .
-                 '<meta name="apple-mobile-web-app-capable" content="yes" />' . PHP_EOL .
+        $meta .= '<meta name="apple-mobile-web-app-capable" content="yes" />' . PHP_EOL .
                  '<meta name="apple-mobile-web-app-status-bar-style" content="black" />' . PHP_EOL .
                  '<meta name="format-detection" content="telephone=yes" />' . PHP_EOL .
                  '<meta name="format-detection" content="email=yes" />' . PHP_EOL;
-    } else {
-        $meta .= '<meta name="renderer" content="webkit" />' . PHP_EOL .
-                 '<meta name="force-rendering" content="webkit" />' . PHP_EOL .
-                 '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL;
     }
-    $_content = str_replace('<head>', $meta, $_content);
+    $_content = str_replace('</title>', $meta, $_content);
 
     $html = '<script type="text/javascript">' .
-            'console.log("Powered by NiPHP Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
-            '\r\nAuthor 失眠小枕头' .
+            'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
+            '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
             '\r\nCreate Date ' . date('Y-m-d H:i:s') .
             '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒' .
             '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");' .

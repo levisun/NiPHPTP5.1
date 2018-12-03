@@ -295,6 +295,16 @@
         return false;
     }
 
+    jQuery.safe_filter = function (_string) {
+        var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]");
+        var pattern = new RegExp("[`~!@#$%^&*()_+-={}|\[\]\\:\";'<>?,./]");
+        var specialStr = "";
+        for (var i = 0; i < _string.length; i++) {
+            specialStr += _string.substr(i, 1).replace(pattern, '');
+        }
+        return specialStr;
+    }
+
     /**
      * URL get参数
      */
