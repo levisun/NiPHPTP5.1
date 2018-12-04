@@ -52,10 +52,8 @@ class Article
             $result->title   = htmlspecialchars_decode($result->title);
             $result->content = htmlspecialchars_decode($result->content);
             $result->url     = url($table_name . '/' . $result->category_id . '/' . $result->id);
-            $result->url     = str_replace('/index/', '/', $result->url);
 
             $result->cat_url     = url('list/' . $result->category_id);
-            $result->cat_url     = str_replace('/index/', '/', $result->cat_url);
 
             if ($result->hits > 10000) {
                 $result->hits_format = number_format($result->hits / 10000, 2) . 'M+';
@@ -182,8 +180,6 @@ class Article
                 $result->url = url($_table_name . '/' . $result->category_id . '/' . $result->id);
             }
 
-            $result->url = str_replace('/index/', '/', $result->url);
-
             $result = $result->toArray();
         }
 
@@ -233,8 +229,6 @@ class Article
             } else {
                 $result->url = url($_table_name . '/' . $result->category_id . '/' . $result->id);
             }
-
-            $result->url = str_replace('/index/', '/', $result->url);
 
             $result = $result->toArray();
         }

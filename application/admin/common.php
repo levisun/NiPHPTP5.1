@@ -27,14 +27,13 @@ function replace_meta($_content)
             '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' . PHP_EOL .
             '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' . PHP_EOL .
             '<meta name="robots" content="none" />' . PHP_EOL .
-            '<meta name="revisit-after" content="7 days" >' . PHP_EOL .
+            '<meta name="revisit-after" content="7 days" />' . PHP_EOL .
             '<meta name="renderer" content="webkit" />' . PHP_EOL .
             '<meta name="force-rendering" content="webkit" />' . PHP_EOL .
             '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' . PHP_EOL .
             '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' . PHP_EOL .
             '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL .
             '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
-            '<meta http-equiv="Widow-target" content="_top">' . PHP_EOL .
 
             '<link rel="dns-prefetch" href="//cdn.' . $cdn . '" />' . PHP_EOL .
             '<link rel="dns-prefetch" href="//css.' . $cdn . '" />' . PHP_EOL .

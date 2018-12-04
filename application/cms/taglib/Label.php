@@ -25,7 +25,7 @@ class Label extends TagLib
         'nav'     => ['close' => 1, 'attr' => 'type', 'alias' => 'category'],
         'bread'   => ['close' => 1, 'attr' => '', 'alias' => 'breadcrumb'],
         'menu'    => ['close' => 0, 'attr' => '', 'alias' => 'sidebar'],
-        'ads'     => ['close' => 1, 'attr' => 'id', 'alias' => 'ad'],
+        'ads'     => ['close' => 1, 'attr' => 'id', 'alias' => 'adv'],
         'banner'  => ['close' => 1, 'attr' => 'id', 'alias' => 'slide'],
         'query'   => ['close' => 1, 'attr' => 'sql', 'alias' => 'db'],
     ];

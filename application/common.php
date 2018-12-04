@@ -66,13 +66,7 @@ function get_template_config($_default_theme)
                              request()->module() . DIRECTORY_SEPARATOR .
                              $_default_theme . DIRECTORY_SEPARATOR;
 
-    if (request()->rootDomain() != 'localhost') {
-        $cdn = request()->rootDomain() . request()->root() . '/';
-        $api = '//api.' . request()->rootDomain() . request()->root() . '/';
-    } else {
-        $cdn = request()->root(true);
-        $api = request()->root(true);
-    }
+    $cdn = request()->rootDomain() . request()->root() . '/';
 
     $template['tpl_replace_string'] = [
         '__DOMAIN__'     => str_replace(['http:', 'https:'], '', request()->root(true)) . '/',

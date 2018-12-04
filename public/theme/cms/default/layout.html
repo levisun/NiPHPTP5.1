@@ -1,25 +1,33 @@
+<!-- 头部 开始 -->
 <header class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- LOGO 开始 -->
     <a class="navbar-brand" href="__DOMAIN__">小枕头</a>
+    <!-- LOGO 结束 -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
+    <!-- 导航 开始 -->
     <nav class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+            <!-- 首页链接 -->
             <li class="nav-item active">
                 <a class="nav-link" href="__DOMAIN__">首页 <span class="sr-only">(current)</span></a>
             </li>
+            <!-- 主导航 开始 -->
             {label:nav type="2"}
             {if !empty($vo.child)}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown{$vo.id}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {$vo.name}
                 </a>
+                <!-- 主导航 子导航 开始 -->
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown{$vo.id}">
                     {foreach $vo.child as $v}
                     <a class="dropdown-item" href="{$v.url}">{$v.name}</a>
                     {/foreach}
                 </div>
+                <!-- 主导航 子导航 结束 -->
             </li>
             {else /}
             <li class="nav-item">
@@ -27,32 +35,42 @@
             </li>
             {/if}
             {/label:nav}
+            <!-- 主导航 结束 -->
 
+            <!-- 顶部导航 开始 -->
             {label:nav type="1"}
             <li class="nav-item">
                 <a class="nav-link disabled" href="{$vo.url}">{$vo.name}</a>
             </li>
             {/label:nav}
+            <!-- 顶部导航 结束 -->
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </nav>
+    <!-- 导航 结束 -->
 </header>
+<!-- 头部 结束 -->
 
 <main class="container-fluid">
     <div class="row">
         {label:menu /}
-        {if isset($menu['child'])}
+        {if isset($menu['name'])}
         <aside id="sidebar" class="col-sm-2">
             <nav class="row nav flex-column nav-pills">
                 <h5 class="nav-link side-title">{$menu.name}</h5>
+                {if isset($menu['child'])}
                 {foreach $menu.child as $vo}
                 <a class="nav-link" href="{$vo.url}">{$vo.name}</a>
                 {/foreach}
+                {else /}
+                <a class="nav-link" href="{$menu.url}">{$menu.name}</a>
+                {/if}
             </nav>
         </aside>
+
         <div class="col-sm-10">
             <nav class="row">
                 <ol class="breadcrumb col-sm-12">
@@ -66,7 +84,8 @@
                 {__CONTENT__}
             </div>
         </div>
-        {else /}{__CONTENT__}
+        {else /}
+        {__CONTENT__}
         {/if}
     </div>
 </main>

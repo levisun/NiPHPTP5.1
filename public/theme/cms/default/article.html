@@ -1,20 +1,20 @@
 <article class="col-sm-12 content-wrap">
     <h5 class="article-title"></h5>
-    <p class="article-meta row"></p>
+    <p class="article-meta"></p>
     <div class="article-content"></div>
 </article>
-<div>
-    <div id="article-previous"></div>
-    <div id="article-next"></div>
+<div class="col-sm-12 row">
+    <div id="article-previous" class="col"></div>
+    <div id="article-next" class="col"></div>
 </div>
 {label:page}
 $(".article-title").html("<a href='"+data.url+"'>"+data.title+"</a>");
-$(".article-meta").html("<a class='col' href='"+data.cat_url+"'>"+data.category_name+"</a><span class='col'>阅读:"+data.hits+"</span>");
+$(".article-meta").html("<a href='"+data.cat_url+"'>"+data.category_name+"</a><span>阅读:"+data.hits+"</span>");
 $(".article-content").html(data.content);
 if (data.prev.url) {
-$("#article-previous").html("<a href='"+data.prev.url+"'>"+data.prev.title+"</a>");
+$("#article-previous").html("上一篇 <a href='"+data.prev.url+"'>"+data.prev.title+"</a>");
 }
 if (data.next.url) {
-$("#article-next").html("<a href='"+data.next.url+"'>"+data.next.title+"</a>");
+$("#article-next").html("<a href='"+data.next.url+"'>"+data.next.title+"</a> 下一篇");
 }
 {/label:page}

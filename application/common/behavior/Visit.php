@@ -156,7 +156,6 @@ class Visit
         ->select();
         foreach ($result as $key => $value) {
             $url = url($value->model_tablename . '/' . $value->category_id . '/' . $value->id);
-            $url = str_replace('/index/', '/', $url);
 
             if ($value->update_time) {
                 $lastmod = $value->update_time;

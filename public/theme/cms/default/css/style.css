@@ -1,5 +1,6 @@
 body {
     padding-bottom: 136px;
+    /*background: url(//img.tp5.com/static/nipui/img/body.gif);*/
 }
 a {
     font-weight: 500;
@@ -11,6 +12,9 @@ footer {
     font-size: 85%;
     background-color: #f7f7f7;
 }
+/*#sidebar {
+    background-color: #fff;
+}*/
 #sidebar a {
     font-size: 85%;
 }
@@ -18,6 +22,7 @@ footer {
     padding: .86rem 1rem;
     background-color: #f7f7f7;
     border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
     border-radius: 0;
     font-size: 85%;
 }
@@ -25,19 +30,38 @@ footer {
     background-color: #f7f7f7;
     border-top: 1px solid #fff;
     border-left: 1px solid #fff;
+    border-bottom: 1px solid #fff;
     border-radius: 0;
     font-size: 85%;
+    margin-bottom: 0;
 }
 .main {
     border-left: 1px solid #f7f7f7;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
+.content-wrap {
 
-.article-title {
+}
+.content-wrap .article-title {
     text-align: center;
 }
-.article-title a {
+.content-wrap .article-title a {
     text-decoration: none;
 }
-.article-meta {
+.content-wrap .article-meta {
     font-size: 75%;
+    text-align: center;
+}
+.content-wrap .article-meta span {
+    padding-left: 15px;
+}
+#article-next {
+    text-align: right;
+}
+
+/*友情链接*/
+dl.list-unstyled dt {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
 }

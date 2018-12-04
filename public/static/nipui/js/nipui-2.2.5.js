@@ -380,11 +380,41 @@
     }
 
     /**
+     * 点击加载更多
+     */
+    jQuery.click_more = function (_params) {
+        var page = "click_more-"+_params.flag+"-page";
+        var bool = "click_more-"+_params.flag+"-bool";
+        jQuery("body").attr(page, 1);
+        jQuery("body").attr(bool, "true");
+
+        jQuery(document).on("click", _params.element, function(){
+            var is = jQuery("body").attr(bool);
+            if (is == "true" ) {
+                var num = jQuery("body").attr(page);
+                    num++;
+
+                _params.data.page = num;
+                jQuery("body").attr(page, num);
+                jQuery("body").attr(bool, "false");
+
+                var xhr = jQuery.pjax(_params);
+                if (xhr.readyState > 0) {
+                    setTimeout(function(){
+                        jQuery("body").attr(bool, "true");
+                    }, 1500);
+                }
+                return xhr;
+            }
+        });
+    }
+
+    /**
      * 加载更多
      */
-    jQuery.more = function (_params) {
-        var page = "more-"+_params.flag+"-page";
-        var bool = "more-"+_params.flag+"-bool";
+    jQuery.scroll_more = function (_params) {
+        var page = "scroll_more-"+_params.flag+"-page";
+        var bool = "scroll_more-"+_params.flag+"-bool";
         jQuery("body").attr(page, 1);
         jQuery("body").attr(bool, "true");
 

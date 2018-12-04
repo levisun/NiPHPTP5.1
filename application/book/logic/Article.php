@@ -84,7 +84,6 @@ class Article
             $result->flag = encrypt($result->id);
             $result->title = htmlspecialchars_decode($result->title);
             $result->url = url('article/' . $result->book_id . '/' . $result->id);
-            $result->url = str_replace('/index/', '/', $result->url);
 
             $result = $result->toArray();
         }
@@ -127,7 +126,6 @@ class Article
             $result->flag = encrypt($result->id);
             $result->title = htmlspecialchars_decode($result->title);
             $result->url = url('article/' . $result->book_id . '/' . $result->id);
-            $result->url = str_replace('/index/', '/', $result->url);
 
             $result = $result->toArray();
         }

@@ -36,7 +36,6 @@ class Book
             $result[$key]->flag   = encrypt($value->id);
             $result[$key]->title = htmlspecialchars_decode($value->title);
             $result[$key]->url = url('book/' . $value->id);
-            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
         }
 
         $list = $result->toArray();

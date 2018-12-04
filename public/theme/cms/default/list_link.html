@@ -1,13 +1,15 @@
-<table id="listing" class="layui-table" lay-even lay-skin="nob">
-
-</table>
+<div class="col-sm-12">
+    <dl class="list-unstyled row"></dl>
+</div>
 {label:list}
 var html = "";
 for(index in list){
     var data = list[index];
-    html += "<tr>";
-    html += "<td><a href='"+data.url+"'>"+data.title+"</a></td>";
-    html += "</tr>";
+    if (html != data.type_name) {
+        $(".list-unstyled").append("<dt class='col-sm-12'>"+data.type_name+"</dt>");
+        html = data.type_name;
+    }
+
+    $(".list-unstyled").append("<dd class='col-sm-2'><a href='"+data.url+"'>"+data.title+"</a></dd>");
 }
-$("#listing").append(html);
 {/label:list}

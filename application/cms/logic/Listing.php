@@ -79,10 +79,8 @@ class Listing
             $result[$key]->title = htmlspecialchars_decode($value->title);
 
             $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
-            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
 
             $result[$key]->cat_url = url('list/' . $value->category_id);
-            $result[$key]->cat_url = str_replace('/index/', '/', $result[$key]->cat_url);
 
             // 查询自定义字段
             $fields =
@@ -92,7 +90,7 @@ class Listing
             ->where([
                 ['d.main_id', '=', $value->id],
             ])
-            ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . 'FIELDS' . $value->id : false)
             ->select()
             ->toArray();
             foreach ($fields as $val) {
@@ -170,10 +168,7 @@ class Listing
                 $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             }
 
-            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
-
             $result[$key]->cat_url = url('list/' . $value->category_id);
-            $result[$key]->cat_url = str_replace('/index/', '/', $result[$key]->cat_url);
 
             // 查询自定义字段
             $fields =
@@ -183,7 +178,7 @@ class Listing
             ->where([
                 ['d.main_id', '=', $value->id],
             ])
-            ->cache(!APP_DEBUG ? 'LISITING QDFI' . $value->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . 'FIELDS' . $value->id : false)
             ->select()
             ->toArray();
             foreach ($fields as $val) {
@@ -197,7 +192,7 @@ class Listing
             ->where([
                 ['main_id', '=', $value->id],
             ])
-            ->cache(!APP_DEBUG ? 'LISITING FAM' . $value->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . 'ALBUMS' . $value->id : false)
             ->select()
             ->toArray();
 
@@ -210,7 +205,7 @@ class Listing
                 ['a.category_id', '=', $value->category_id],
                 ['a.article_id', '=', $value->id],
             ])
-            ->cache(!APP_DEBUG ? 'LISITING FTCA' . $value->category_id . $value->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . 'TAGS' . $value->category_id . $value->id : false)
             ->select()
             ->toArray();
         }
@@ -285,10 +280,7 @@ class Listing
                 $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             }
 
-            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
-
             $result[$key]->cat_url = url('list/' . $value->category_id);
-            $result[$key]->cat_url = str_replace('/index/', '/', $result[$key]->cat_url);
 
             // 查询自定义字段
             $fields =
@@ -314,7 +306,7 @@ class Listing
                 ['a.category_id', '=', $value->category_id],
                 ['a.article_id', '=', $value->id],
             ])
-            ->cache(!APP_DEBUG ? 'LISITING FTCA' . $value->category_id . $value->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . $value->category_id . $value->id : false)
             ->select()
             ->toArray();
         }
@@ -346,14 +338,14 @@ class Listing
         ->view('link a', $fields)
         ->view('category c', ['name' => 'category_name'], 'c.id=a.category_id')
         ->view('model m', [], 'm.id=c.model_id')
-        ->view('type t', ['name' => 'type_name'], 't.id=c.type_id', 'LEFT')
+        ->view('type t', ['name' => 'type_name'], 't.id=a.type_id', 'LEFT')
         ->where([
             ['a.is_pass', '=', 1],
             ['a.category_id', '=', $_cid]
         ])
         ->order('t.name DESC, a.sort DESC, a.id DESC')
         ->append(['pass_name'])
-        ->cache(!APP_DEBUG ? 'LISITING QCLI' . $_cid : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $_cid : false)
         ->select();
 
         foreach ($result as $key => $value) {
@@ -361,7 +353,6 @@ class Listing
             $result[$key]->title = htmlspecialchars_decode($value->title);
 
             $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
-            $result[$key]->url = str_replace('/index/', '/', $result[$key]->url);
         }
 
         $result = $result->toArray();
@@ -394,7 +385,7 @@ class Listing
         ->where([
             ['c.id', '=', $cid],
         ])
-        ->cache(!APP_DEBUG ? 'TABLE QTN' . $cid : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . $cid : false)
         ->find();
 
         if ($result) {
