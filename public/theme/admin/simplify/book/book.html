@@ -78,10 +78,9 @@ function paging(_page, _push) {
         }
     });
 }
-$(window).bind("popstate", function(result) {
+$.popstateEvent(function(){
     var p = $.url("p", 1);
     paging(p, false);
 });
-
 
 </script>

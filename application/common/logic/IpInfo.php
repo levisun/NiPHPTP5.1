@@ -41,6 +41,7 @@ class IpInfo
                 'city_id'     => '',
                 'area_id'     => '',
                 'region'      => '',
+                'isp'         => '',
             ];
         } elseif (!$result) {
             return [
@@ -54,6 +55,7 @@ class IpInfo
                 'city_id'     => '',
                 'area_id'     => '',
                 'region'      => '',
+                'isp'         => '',
             ];
         }
 
@@ -154,12 +156,12 @@ class IpInfo
     {
         $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . $_request_ip);
         if (!is_null($result) && $ip = json_decode($result, true)) {
-            $country  = $this->queryRegion($ip['data']['country']);
-            $province = $this->queryRegion($ip['data']['region']);
-            $city     = $this->queryRegion($ip['data']['city']);
+            $country  = $this->queryRegion($ip['data']['country'], 0);
+            $province = $this->queryRegion($ip['data']['region'], $country);
+            $city     = $this->queryRegion($ip['data']['city'], $province);
             $isp      = safe_filter_strict($ip['data']['isp']);
             if ($ip['data']['area']) {
-                $area = $this->queryRegion($ip['data']['area']);
+                $area = $this->queryRegion($ip['data']['area'], $city);
             } else {
                 $area = 0;
             }
@@ -215,12 +217,12 @@ class IpInfo
     {
         $result = $this->curl('http://ip.taobao.com/service/getIpInfo.php?ip=' . $_request_ip);
         if (!is_null($result) && $ip = json_decode($result, true)) {
-            $country  = $this->queryRegion($ip['data']['country']);
-            $province = $this->queryRegion($ip['data']['region']);
-            $city     = $this->queryRegion($ip['data']['city']);
+            $country  = $this->queryRegion($ip['data']['country'], 0);
+            $province = $this->queryRegion($ip['data']['region'], $country);
+            $city     = $this->queryRegion($ip['data']['city'], $province);
             $isp      = safe_filter_strict($ip['data']['isp']);
             if ($ip['data']['area']) {
-                $area = $this->queryRegion($ip['data']['area']);
+                $area = $this->queryRegion($ip['data']['area'], $city);
             } else {
                 $area = 0;
             }
@@ -247,13 +249,14 @@ class IpInfo
      * @param  string  $_name
      * @return int
      */
-    private function queryRegion($_name)
+    private function queryRegion($_name, $_pid)
     {
         $_name = safe_filter_strict($_name);
 
         $result =
         model('common/model/region')
         ->where([
+            ['pid', '=', $_pid],
             ['name', 'LIKE', $_name . '%']
         ])
         ->cache(__METHOD__ . $_name, 28800)

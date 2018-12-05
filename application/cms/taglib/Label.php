@@ -20,6 +20,7 @@ class Label extends TagLib
     // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
     protected $tags = [
         'tags'    => ['close' => 1, 'attr' => '', 'alias' => 'tag'],
+        'search'  => ['close' => 1, 'attr' => '', 'alias' => 'search'],
         'article' => ['close' => 1, 'attr' => '', 'alias' => 'page'],
         'list'    => ['close' => 1, 'attr' => '', 'alias' => 'list'],
         'nav'     => ['close' => 1, 'attr' => 'type', 'alias' => 'category'],
@@ -75,6 +76,49 @@ class Label extends TagLib
             $parseStr .= 'foreach ($tags as $key => $vo) { ?>';
             $parseStr .= $_content;
             $parseStr .= '<?php } unset($tags, $count, $key, $vo); ?>';
+        }
+
+        return $parseStr;
+    }
+
+    public function tagSearch($_tag, $_content)
+    {
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
+        if ($_tag['async'] == 'true') {
+            $_tag['q'] = !empty($_tag['q']) ? $_tag['q'] : '{:input("param.q/")}';
+            $_tag['p']  = '{:input("param.p/f", 1)}';
+
+            $parseStr = '<script type="text/javascript">
+                jQuery(function(){
+                    jQuery.pjax({
+                        url: request.api.query,
+                        type: "get",
+                        data: {
+                            method:    "search.query",
+                            q:         "' . $_tag['q'] . '",
+                            p:         "' . $_tag['p'] . '",
+                            sign:  jQuery.sign({
+                                method:    "search.query",
+                                q:         "' . $_tag['q'] . '",
+                                p:         "' . $_tag['p'] . '"
+                            })
+                        },
+                        success: function(result){
+                            if (result.code === "404") {
+                                jQuery.redirect("' . url('error/404') . '");
+                            } else if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                ' . $_content . '
+                            }
+                        }
+                    });
+                });
+                </script>';
+        } else {
+
         }
 
         return $parseStr;
@@ -193,6 +237,7 @@ class Label extends TagLib
 
         if ($_tag['async'] == 'true') {
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input("param.cid/f")}';
+            $_tag['p']  = '{:input("param.p/f", 1)}';
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
@@ -201,9 +246,11 @@ class Label extends TagLib
                         data: {
                             method: "listing.query",
                             cid:    "' . $_tag['cid'] . '",
+                            p:      "' . $_tag['p'] . '",
                             sign:   jQuery.sign({
                                 method: "listing.query",
-                                cid:    "' . $_tag['cid'] . '"
+                                cid:    "' . $_tag['cid'] . '",
+                                p:      "' . $_tag['p'] . '",
                             })
                         },
                         success: function(result){

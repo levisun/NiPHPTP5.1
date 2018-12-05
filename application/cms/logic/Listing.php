@@ -27,13 +27,17 @@ class Listing
         $table_name = $this->queryTableName($_cid);
         if (!$table_name) {
             return false;
-        } elseif (in_array($table_name, ['article', 'download'])) {
+        }
+        elseif (in_array($table_name, ['article', 'download'])) {
             return $this->articleAndDownload($_cid, $table_name);
-        } elseif (in_array($table_name, ['feedback', 'message'])) {
+        }
+        elseif (in_array($table_name, ['feedback', 'message'])) {
             return $this->feedbackAndMessage($_cid, $table_name);
-        } elseif (in_array($table_name, ['picture', 'product'])) {
+        }
+        elseif (in_array($table_name, ['picture', 'product'])) {
             return $this->pictureAndProduct($_cid, $table_name);
-        } elseif ($table_name === 'link') {
+        }
+        elseif ($table_name === 'link') {
             return $this->link($_cid);
         }
     }

@@ -108,7 +108,7 @@ class Article
 
 
 
-            // 上一篇
+            // 上一篇 下一篇
             if (in_array($table_name, ['article', 'download', 'picture', 'product'])) {
                 $result->prev = $this->previous($_id, $_cid, $table_name);
                 $result->next = $this->next($_id, $_cid, $table_name);
@@ -155,7 +155,7 @@ class Article
             ['id', '>', $_id]
         ])
         ->order('is_top, is_hot, is_com, sort DESC, id DESC')
-        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . 'MIN' . $_cid . $_id : false)
         ->min('id');
 
         $result =
@@ -167,7 +167,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $next_id]
         ])
-        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . 'FIND' . $_cid . $_id : false)
         ->find();
 
         if ($result) {
@@ -205,7 +205,7 @@ class Article
             ['id', '<', $_id]
         ])
         ->order('is_top, is_hot, is_com, sort DESC, id DESC')
-        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . 'MAX' . $_cid . $_id : false)
         ->max('id');
 
         $result =
@@ -217,7 +217,7 @@ class Article
             ['category_id', '=', $_cid],
             ['id', '=', $previous_id]
         ])
-        ->cache(!APP_DEBUG ? __METHOD__ . $_cid . $_id : false)
+        ->cache(!APP_DEBUG ? __METHOD__ . 'FIND' . $_cid . $_id : false)
         ->find();
 
         if ($result) {

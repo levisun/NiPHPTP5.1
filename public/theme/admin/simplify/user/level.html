@@ -77,6 +77,11 @@ function paging(_page, _push) {
     });
 };
 
+$.popstateEvent(function(){
+    var p = $.url("p", 1);
+    paging(p, false);
+});
+
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.pjax({

@@ -140,7 +140,7 @@ class Async
 
         $str = '';
         foreach ($params as $key => $value) {
-            if (is_string($value) && !in_array($key, ['sign', 'p'])) {
+            if (is_string($value) && !in_array($key, ['sign'])) {
                 $str .= $key . '=' . $value . '&';
             }
         }

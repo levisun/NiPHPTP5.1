@@ -58,7 +58,7 @@ function replace_meta($_content)
             '<meta property="og:title" content="' . $siteinfo['title'] . '" />' . PHP_EOL .
             '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
             '<meta property="og:description" content="' . $siteinfo['website_description'] . '" />' . PHP_EOL .
-            '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
+            '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
 
     if (is_file(config('template.view_path') . 'config.json')) {
@@ -85,19 +85,19 @@ function replace_meta($_content)
         }
     }
 
-    $head .= '<script type="text/javascript">' . PHP_EOL .
-             'var request = {' . PHP_EOL .
-                 'domain: "' . $tpl_replace_string['__DOMAIN__'] . '",' . PHP_EOL .
-                 'api: {' . PHP_EOL .
-                    'query: "' . url('api/query') . '",' . PHP_EOL .
-                    'settle: "' . url('api/settle') . '",' . PHP_EOL .
-                    'upload: "' . url('api/upload') . '",' . PHP_EOL .
-                 '},' . PHP_EOL .
-                 'static: "' . $tpl_replace_string['__STATIC__'] . '",' . PHP_EOL .
-                 'css: "' . $tpl_replace_string['__CSS__'] . '",' . PHP_EOL .
-                 'js: "' . $tpl_replace_string['__JS__'] . '",' . PHP_EOL .
-                 'img: "' . $tpl_replace_string['__IMG__'] . '"' . PHP_EOL .
-             '};' . PHP_EOL .
+    $head .= '<script type="text/javascript">' .
+             'var request = {' .
+                 'domain: "' . $tpl_replace_string['__DOMAIN__'] . '",' .
+                 'api: {' .
+                    'query: "' . url('api/query') . '",' .
+                    'settle: "' . url('api/settle') . '",' .
+                    'upload: "' . url('api/upload') . '",' .
+                 '},' .
+                 'static: "' . $tpl_replace_string['__STATIC__'] . '",' .
+                 'css: "' . $tpl_replace_string['__CSS__'] . '",' .
+                 'js: "' . $tpl_replace_string['__JS__'] . '",' .
+                 'img: "' . $tpl_replace_string['__IMG__'] . '"' .
+             '};' .
              '</script>';
 
     $head .= '</head><body>' . PHP_EOL;

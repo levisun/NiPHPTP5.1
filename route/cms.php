@@ -27,20 +27,14 @@ Route::domain(['www', 'm'], function(){
     Route::rule('product/:cid/:id$', 'index/article');
     Route::rule('page/:cid$', 'index/article');
 
+    Route::rule('go/:cid/[:id]$',  'index/go');
+    Route::rule('tags/:id$', 'index/tags');
 
-
-
-    Route::rule('caiji', 'index/caiji');
     Route::rule('getipinfo', 'index/getipinfo');
 
-
-    Route::rule('go/:cid/[:id]$',  'index/go');
-
-
-
-    Route::rule('tags$', 'index/tags');
-
     Route::rule('error/:code$', 'index/abort');
+
+    Route::rule('caiji', 'index/caiji');
 })
 ->bind('cms')
 ->cache(APP_DEBUG ? false : 1200);

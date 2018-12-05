@@ -108,6 +108,7 @@ class Index extends Base
      */
     public function tags()
     {
+        logic('cms/tags')->article();
         return $this->fetch('tags');
     }
 
@@ -119,14 +120,47 @@ class Index extends Base
      */
     public function search()
     {
+        logic('cms/Search')->query();
         return $this->fetch('search');
     }
 
-    /**/
+    /**
+     * 重定向
+     * @access public
+     * @param
+     * @return mixed
+     */
     public function go()
     {
-        # code...
-        die();
+        $table_name = logic('cms/article')->queryTableName();
+        if (!$table_name) {
+            abort(404);
+        }
+
+        // 外部模型
+        elseif ($table_name == 'external') {
+            $result =
+            model('common/category')
+            ->where([
+                ['id', '=', input('param.cid/f')]
+            ])
+            ->cache(!APP_DEBUG ? __METHOD__ . input('param.cid/f') : false)
+            ->value('url');
+        }
+
+        // 文章等模型
+        else {
+            $result =
+            model('common/' . $table_name)
+            ->where([
+                ['id', '=', input('param.id/f')],
+                ['category_id', '=', input('param.cid/f')]
+            ])
+            ->cache(!APP_DEBUG ? __METHOD__ . input('param.id/f') . input('param.cid/f') : false)
+            ->value('url');
+        }
+
+        return redirect($result);
     }
 
     /**

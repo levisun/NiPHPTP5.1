@@ -12,9 +12,9 @@ $(".article-title").html("<a href='"+data.url+"'>"+data.title+"</a>");
 $(".article-meta").html("<a href='"+data.cat_url+"'>"+data.category_name+"</a><span>阅读:"+data.hits+"</span>");
 $(".article-content").html(data.content);
 if (data.prev.url) {
-$("#article-previous").html("上一篇 <a href='"+data.prev.url+"'>"+data.prev.title+"</a>");
+$("#article-previous").html("<a href='"+data.prev.url+"'>上一篇 "+data.prev.title+"</a>");
 }
 if (data.next.url) {
-$("#article-next").html("<a href='"+data.next.url+"'>"+data.next.title+"</a> 下一篇");
+$("#article-next").html("<a href='"+data.next.url+"'>"+data.next.title+" 下一篇</a>");
 }
 {/label:page}

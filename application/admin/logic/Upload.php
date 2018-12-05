@@ -41,7 +41,6 @@ class Upload
 
             if (!is_string($result)) {
                 create_action_log($result['save_dir'] . $result['file_name'], 'upload_file');
-                remove_old_upload_file($result['save_dir'] . $result['file_name']);
             }
 
             return $result;
