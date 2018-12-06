@@ -16,7 +16,7 @@ Route::domain(['www', 'm'], function(){
     Route::rule('index', 'index/index');
     Route::rule('list/:cid$', 'index/entry');
     Route::rule('link/:cid$', 'index/entry');
-    Route::rule('search/:q$', 'index/search');
+    Route::rule('search$', 'index/search');
     Route::rule('channel/:cid$', 'index/channel');
     Route::rule('feedback/:cid$', 'index/feedback');
     Route::rule('message/:cid$', 'index/message');

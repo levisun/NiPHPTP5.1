@@ -246,14 +246,12 @@ class Async
      */
     private function result($_msg, $_data = [], $_code = 'SUCCESS')
     {
-        $header = [];
-
         $result = [
             'code'    => $_code,
             'message' => $_msg,
             'data'    => $_data,
             'time'    => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
-            'ip'      => logic('common/IpInfo')->getInfo(),
+            // 'ip'      => logic('common/IpInfo')->getInfo(),
             'runtime' => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
             'memory'  => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',
         ];

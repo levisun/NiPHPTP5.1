@@ -317,7 +317,7 @@ function lang($_name, $_vars = [], $_lang = '')
  */
 function session($name, $value = '', $prefix = null)
 {
-    $name  = 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
+    $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
     $value = $value ? encrypt($value) : $value;
 
     if (is_array($name)) {
@@ -348,7 +348,7 @@ function session($name, $value = '', $prefix = null)
  */
 function cookie($name, $value = '', $option = null)
 {
-    $name  = 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
+    $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
     $value = $value ? encrypt($value) : $value;
 
     if (is_array($name)) {

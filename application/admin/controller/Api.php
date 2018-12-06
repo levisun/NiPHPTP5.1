@@ -74,6 +74,17 @@ class Api extends Async
         }
     }
 
+    /**
+     * 获得IP地址地区信息
+     * @access public
+     * @param
+     * @return json
+     */
+    public function getipinfo()
+    {
+        $result = logic('common/IpInfo')->getInfo(input('param.ip'));
+        $this->success('QUERY SUCCESS', $result);
+    }
 
     /**
      * 验证Auth

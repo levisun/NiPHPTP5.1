@@ -47,19 +47,19 @@
      * return
      */
     function handle(_result, _url, _reload) {
-        if (_result.msg === "ILLEGAL REQUEST") {
+        if (_result.message === "ILLEGAL REQUEST") {
             $.redirect(request.domain);
             return false;
         }
 
         if (_result.code === "SUCCESS") {
-            $.uiToast(_result.msg);
+            $.uiToast(_result.message);
             if (typeof(_url) != "undefined" && _url) {
                 $.redirect(_url);
                 return false;
             }
         } else {
-            $.uiToast(_result.msg);
+            $.uiToast(_result.message);
         }
 
         if (typeof(_reload) == "undefined" && _reload) {

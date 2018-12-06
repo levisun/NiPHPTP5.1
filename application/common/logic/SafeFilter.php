@@ -30,12 +30,11 @@ class SafeFilter
             }
         } else {
             $_data = trim($_data);
-            $_data = $_strict ? strip_tags($_data) : $_data;
+            $_data = $this->enter($_data);
             $_data = $this->PHP($_data);
             $_data = $this->XSS($_data);
             $_data = $this->XXE($_data);
-            $_data = $this->SQL($_data);
-            $_data = $this->enter($_data);
+            $_data = $this->SQL($_data, $_strict);
             $_data = $this->strToEncode($_data);
         }
 
@@ -84,16 +83,19 @@ class SafeFilter
 
     /**
      * SQL
-     * 数据库攻击
+     * 数据库注入
      * @access private
-     * @param  string $_content
+     * @param  string  $_content
+     * @param  boolean $_strict  过滤HTML标签
      * @return string
      */
-    private function SQL($_content)
+    private function SQL($_content, $_strict)
     {
+        $_content = $_strict ? strip_tags($_content) : $_content;
         $_content = htmlspecialchars($_content);
 
-        $_content = get_magic_quotes_gpc() === false ? addslashes($_content) : $_content;
+        // $_content = get_magic_quotes_gpc() === false ? addslashes($_content) : $_content;
+
         $pattern = [
             'and '   => '&#97;nd ',
             'create' => '&#99;reate',
@@ -102,6 +104,12 @@ class SafeFilter
             'or '    => '&#111;r ',
 
             // 安全字符
+            '`' => '&acute;',
+            '~' => '&#126;',
+            '!' => '&#33;',
+            '=' => '&#61;',
+            '|' => '&#124;',
+
             /*'/(#)+/si'   => '&#35;',   '/(\!)+/si'  => '&#33;',
             '/(\?)+/si'  => '&#129;',  '/(\|)+/si'  => '&#124;',
             '/(\*)+/si'  => '&#42;',   '/(`)+/si'   => '&acute;',
@@ -161,7 +169,7 @@ class SafeFilter
     private function XSS($_content)
     {
         return preg_replace([
-            '/on([a-zA-Z0-9]*?)(=)["|\'](.*?)["|\']/si',
+            '/on([a-zA-Z0-9 ]*?)(=[ ]*?)["|\'](.*?)["|\']/si',
             '/(javascript:)(.*?)(\))/si',
             '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si', '/<(\/?javascript.*?)>/si',
             '/<(script.*?)>(.*?)<(\/script.*?)>/si',         '/<(\/?script.*?)>/si',

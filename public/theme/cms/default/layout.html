@@ -1,7 +1,7 @@
 <!-- 头部 开始 -->
-<header class="navbar navbar-expand-lg navbar-light bg-light">
+<header class="navbar navbar-expand-lg navbar-light">
     <!-- LOGO 开始 -->
-    <a class="navbar-brand" href="__DOMAIN__">小枕头</a>
+    <a class="navbar-brand" href="__DOMAIN__">__SITENAME__</a>
     <!-- LOGO 结束 -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -12,7 +12,7 @@
         <ul class="navbar-nav mr-auto">
             <!-- 首页链接 -->
             <li class="nav-item active">
-                <a class="nav-link" href="__DOMAIN__">首页 <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="__DOMAIN__" title="__SITENAME__">首页 <span class="sr-only">(current)</span></a>
             </li>
             <!-- 主导航 开始 -->
             {label:nav type="2"}
@@ -45,9 +45,9 @@
             {/label:nav}
             <!-- 顶部导航 结束 -->
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        <form class="form-inline my-2 my-lg-0" action="search.html">
+            <input class="form-control mr-sm-2" type="search" placeholder="搜索" aria-label="Search" name="q">
+            <button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
         </form>
     </nav>
     <!-- 导航 结束 -->
@@ -63,10 +63,10 @@
                 <h5 class="nav-link side-title">{$menu.name}</h5>
                 {if isset($menu['child'])}
                 {foreach $menu.child as $vo}
-                <a class="nav-link" href="{$vo.url}">{$vo.name}</a>
+                <a class="nav-link" href="{$vo.url}"><font>{$vo.name}</font></a>
                 {/foreach}
                 {else /}
-                <a class="nav-link" href="{$menu.url}">{$menu.name}</a>
+                <a class="nav-link" href="{$menu.url}"><font>{$menu.name}</font></a>
                 {/if}
             </nav>
         </aside>
@@ -81,7 +81,17 @@
                 </ol>
             </nav>
             <div class="row main">
+                <div class="col-sm-9">
                 {__CONTENT__}
+                </div>
+                <div class="col-sm-3">
+                    <div>
+                        {label:tags}
+                        {/label:tags}
+                    </div>
+                    <p>hot</p>
+                    <p>tag</p>
+                </div>
             </div>
         </div>
         {else /}

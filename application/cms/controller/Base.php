@@ -26,6 +26,7 @@ class Base extends Controller
         $template = get_template_config($this->siteInfo['cms_theme']);
 
         $template['taglib_pre_load'] = 'app\cms\taglib\Label';
+        $template['tpl_replace_string']['__SITENAME__']   = $this->siteInfo['website_name'];
         $template['tpl_replace_string']['__TITLE__']      = $this->siteInfo['title'];
         $template['tpl_replace_string']['__BOTTOM_MSG__'] = htmlspecialchars_decode($this->siteInfo['bottom_message']);
         $template['tpl_replace_string']['__COPYRIGHT__']  = $this->siteInfo['copyright'];

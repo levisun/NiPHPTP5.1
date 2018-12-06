@@ -58,7 +58,7 @@ function replace_meta($_content)
             '<meta property="og:title" content="' . $siteinfo['title'] . '" />' . PHP_EOL .
             '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
             '<meta property="og:description" content="' . $siteinfo['website_description'] . '" />' . PHP_EOL .
-            '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />';
+            '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
 
     if (is_file(config('template.view_path') . 'config.json')) {
@@ -92,6 +92,7 @@ function replace_meta($_content)
                     'query: "' . url('api/query') . '",' .
                     'settle: "' . url('api/settle') . '",' .
                     'upload: "' . url('api/upload') . '",' .
+                    'getipinfo: "' . url('api/getipinfo') . '",' .
                  '},' .
                  'static: "' . $tpl_replace_string['__STATIC__'] . '",' .
                  'css: "' . $tpl_replace_string['__CSS__'] . '",' .

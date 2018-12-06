@@ -32,6 +32,22 @@ class Label extends TagLib
     ];
 
     /**
+     * 标签解析
+     * @access public
+     * @param  array  $_tag     标签属性
+     * @param  string $_content 标签内容
+     * @return string|void
+     */
+    public function tagQuery($_tag, $_content)
+    {
+        /*$parseStr  = '<?php $data = Db::query(' . $_tag['sql'] . ')';
+
+        $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';*/
+
+        // return $parseStr;
+    }
+
+    /**
      * 标签
      * @access public
      * @param  array  $_tag     标签属性
@@ -446,21 +462,5 @@ class Label extends TagLib
         $parseStr .= '<?php } unset($nav, $count, $key, $vo); ?>';
 
         return $parseStr;
-    }
-
-    /**
-     * 标签解析
-     * @access public
-     * @param  array  $_tag     标签属性
-     * @param  string $_content 标签内容
-     * @return string|void
-     */
-    public function tagQuery($_tag, $_content)
-    {
-        /*$parseStr  = '<?php $data = Db::query(' . $_tag['sql'] . ')';
-
-        $parseStr .= '<?php } unset($data, $count, $key, $vo); ?>';*/
-
-        // return $parseStr;
     }
 }
