@@ -40,7 +40,7 @@
 <script type="text/javascript">
 var editor_data = {};
 $.loading({
-    url: request.api.query,
+    url: request.ajax.query,
     async: false,
     animation: true,
     data: {
@@ -56,7 +56,7 @@ $.loading({
 });
 
 $.loading({
-    url: request.api.query,
+    url: request.ajax.query,
     animation: true,
     data: {
         timestamp: $.timestamp(),
@@ -74,7 +74,7 @@ $("form").submit(function(){
     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         data: form_data,
     }, function(result){

@@ -67,19 +67,20 @@ function get_template_config($_default_theme)
                              $_default_theme . DIRECTORY_SEPARATOR;
 
     $cdn = request()->rootDomain() . request()->root() . '/';
+    $scheme = request()->scheme() . '://';
 
     $template['tpl_replace_string'] = [
-        '__DOMAIN__'     => str_replace(['http:', 'https:'], '', request()->root(true)) . '/',
-        '__PHP_SELF__'   => basename(request()->baseFile()),
-        '__CDN__'        => '//cdn.' . $cdn,
-        '__API_QUERY__'  => url('api/query'),
-        '__API_SETTLE__' => url('api/settle'),
-        '__API_UPLOAD__' => url('api/upload'),
-        '__STATIC__'     => '//cdn.' . $cdn . 'static/',
-        '__THEME__'      => $_default_theme,
-        '__CSS__'        => '//css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
-        '__JS__'         => '//js.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
-        '__IMG__'        => '//img.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
+        '__DOMAIN__'      => request()->root(true) . '/',
+        '__PHP_SELF__'    => basename(request()->baseFile()),
+        '__CDN__'         => $scheme . 'cdn.' . $cdn,
+        '__AJAX_QUERY__'  => url('ajax/query', '', true),
+        '__AJAX_SETTLE__' => url('ajax/settle', '', true),
+        '__AJAX_UPLOAD__' => url('ajax/upload', '', true),
+        '__STATIC__'      => $scheme . 'cdn.' . $cdn . 'static/',
+        '__THEME__'       => $_default_theme,
+        '__CSS__'         => $scheme . 'css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
+        '__JS__'          => $scheme . 'js.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
+        '__IMG__'         => $scheme . 'img.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
     ];
 
     return $template;
@@ -184,8 +185,9 @@ function is_wechat_request()
  * @param bool|string   $domain 域名
  * @return string
  */
-function url($_url = '', $_vars = '', $_domain = true)
+function url($_url = '', $_vars = '', $_domain = false)
 {
+    return Url::build($_url, $_vars, true, $_domain);
     return
     str_replace(
         ['http:', 'https:'],

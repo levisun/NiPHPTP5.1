@@ -14,7 +14,7 @@ namespace app\cms\controller;
 
 use app\common\logic\Async;
 
-class Api extends Async
+class Ajax extends Async
 {
 
     /**

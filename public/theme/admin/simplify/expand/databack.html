@@ -30,7 +30,7 @@
 </div>
 <script type="text/javascript">
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     type: "post",
     data: {
         timestamp: $.timestamp(),
@@ -62,7 +62,7 @@ $.pjax({
 $(document).on("click", ".np-btn-reduction", function(){
     var id = $(this).attr("data-id");
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: {
@@ -79,7 +79,7 @@ $(document).on("click", ".np-btn-reduction", function(){
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: {

@@ -1,5 +1,5 @@
 body {
-    padding-bottom: 136px;
+    /*padding-bottom: 136px;*/
     background-color: #f8f8f8;
     /*background: url(//img.tp5.com/static/nipui/img/body.gif);*/
 }
@@ -14,8 +14,8 @@ header {
     z-index: 999;
 }
 footer {
-    position: fixed;
-    bottom: 0;
+    /*position: fixed;*/
+    /*bottom: 0;*/
     font-size: 85%;
     background: #f1f1f1;
 }
@@ -47,11 +47,24 @@ footer {
     padding-top: 15px;
     padding-bottom: 15px;
 }
+
+/*标签*/
+.tags h6 {
+    padding-bottom: .5rem;
+    border-bottom: 3px solid #f1f1f1;
+}
+.tags ol {
+    font-size: 85%;
+}
+
+/*列表*/
 .list-data li {
     padding: 1.7rem;
     background-color: #fff;
     border-radius: 5px;
 }
+
+/*内容*/
 .content-wrap {
     padding: 1.7rem;
     background-color: #fff;

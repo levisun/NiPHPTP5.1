@@ -19,9 +19,15 @@ namespace think;
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP VERSION >= 5.6.0!');
+if (!extension_loaded("PDO")) die('PDO');
+if (!is_file(__DIR__ . '/../runtime/install.lock')) {
+    header("location:/install.php");
+    exit;
+}
 
 define('APP_DEBUG', true);
-define('NP_VERSION', '2.0.1 Alpha');
+define('NP_VERSION', '2.0.1_20181207 Alpha');
+define('TP_VERSION', '5.1.30 LTS');
 define('DS', DIRECTORY_SEPARATOR);
 define('NP_CACHE_PREFIX', substr(md5(__DIR__ . $_SERVER['HTTP_HOST']), 0, 7));
 define('NP_COOKIE_PREFIX', strtoupper(substr(NP_CACHE_PREFIX, -3)));
@@ -31,12 +37,14 @@ if (APP_DEBUG) {
     set_time_limit(30);
     ini_set('memory_limit', '16M');
 } else {
-    set_time_limit(300);
+    set_time_limit(120);
     ini_set('memory_limit', '64M');
 }
 
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
+
+version_compare(Container::get('app')->version(), TP_VERSION, '>=') or die('THINKPHP VERSION >= ' . TP_VERSION . '!');
 
 // 支持事先使用静态方法设置Request对象和Config对象
 

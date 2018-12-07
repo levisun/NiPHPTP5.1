@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     type: "post",
     data: {
         timestamp: $.timestamp(),
@@ -49,7 +49,7 @@ $.pjax({
 $("body").on("click", "#set", function(){
     var data = $(this).attr("data");
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         type: "post",
         data: {
             timestamp: $.timestamp(),

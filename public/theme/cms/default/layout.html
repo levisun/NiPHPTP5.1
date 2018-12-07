@@ -85,12 +85,11 @@
                 {__CONTENT__}
                 </div>
                 <div class="col-sm-3">
-                    <div>
-                        {label:tags}
-                        {/label:tags}
+                    <div class="tags">
+                        <h6>标签</h6>
+                        <ol class="row"></ol>
                     </div>
                     <p>hot</p>
-                    <p>tag</p>
                 </div>
             </div>
         </div>
@@ -100,9 +99,13 @@
     </div>
 </main>
 
-<footer class="container-fluid p-3 p-md-5 text-muted">
+<footer class="container-fluid p-md-3 text-muted">
     <div class="">
-        <div>__BOTTOM_MSG__</div>
-        <div>__COPYRIGHT__</div>
+        <p>__BOTTOM_MSG__</p>
+        <p>__COPYRIGHT__ <a href=""><i class="fab fa-github-alt"></i></a></p>
     </div>
 </footer>
+
+{label:tags}
+$(".tags .row").append("<li class='col-sm-4'><a href='"+vo.url+"'>"+vo.name+"</a></li>");
+{/label:tags}

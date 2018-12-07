@@ -13,10 +13,13 @@
 namespace app\common\logic;
 
 use think\Response;
+use think\Request;
 use think\exception\HttpResponseException;
 
 class Async
 {
+    private   $request;
+
     protected $module;                                                          // 模块名
 
     protected $appid;
@@ -37,13 +40,37 @@ class Async
     protected $apiDebug    = false;                                             // 调试模式
     protected $debugMsg    = [];                                                // 错误信息
 
+    /**
+     * 构造方法
+     * @access public
+     * @param  Request $request Request 对象
+     * @return
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
 
-    public function handle()
+        // 初始化
+        $this->_initialize();
+    }
+
+    /**
+     * 初始化
+     * @access protected
+     * @param
+     * @return
+     */
+    protected function _initialize()
+    {
+        # code...
+    }
+
+    protected function handle()
     {
         // 验证请求合法性
         $this->checkAsyncToken();
 
-        $this->module    = strtolower(request()->module());                     // 模块名称
+        $this->module    = strtolower($this->request->module());                // 模块名称
         $this->appid     = input('param.appid');                                //
         $this->appsecret = input('param.appsecret');                            //
         $this->sign      = input('param.sign');                                 // 请求数据签名
@@ -74,9 +101,9 @@ class Async
     {
         if (!cookie('?_ASYNCTOKEN')) {
             $http_referer = sha1(
-                // request()->url(true) .
-                request()->server('HTTP_USER_AGENT') .
-                request()->ip() .
+                // $this->request->url(true) .
+                $this->request->server('HTTP_USER_AGENT') .
+                $this->request->ip() .
                 env('root_path') .
                 date('Ymd')
             );
@@ -95,14 +122,14 @@ class Async
     {
         // 验证请求方式
         // 异步只允许 Ajax Pjax Post 请求类型
-        if (!request()->isAjax() && !request()->isPjax() && !request()->isPost()) {
+        if (!$this->request->isAjax() && !$this->request->isPjax() && !$this->request->isPost()) {
             $this->error('REQUEST METHOD ERROR');
         }
 
         $http_referer = sha1(
-            // request()->server('HTTP_REFERER') .
-            request()->server('HTTP_USER_AGENT') .
-            request()->ip() .
+            // $this->request->server('HTTP_REFERER') .
+            $this->request->server('HTTP_USER_AGENT') .
+            $this->request->ip() .
             env('root_path') .
             date('Ymd')
         );
@@ -250,7 +277,7 @@ class Async
             'code'    => $_code,
             'message' => $_msg,
             'data'    => $_data,
-            'time'    => date('Y-m-d H:i:s', request()->server('REQUEST_TIME')),
+            'time'    => date('Y-m-d H:i:s', $this->request->server('REQUEST_TIME')),
             // 'ip'      => logic('common/IpInfo')->getInfo(),
             'runtime' => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
             'memory'  => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',

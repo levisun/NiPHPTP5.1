@@ -64,7 +64,7 @@ $("form").submit(function(){
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         data: form_data,
     }, function(result){

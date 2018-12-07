@@ -14,7 +14,16 @@
 Route::domain('admin', function(){
     Route::rule('/', 'account/login');
     Route::rule('index', 'account/login');
+
+    // AJAX路由
+    Route::group('ajax', function(){
+        Route::rule('query',  'query');
+        Route::rule('settle', 'settle');
+        Route::rule('upload', 'upload');
+        Route::rule('getipinfo', 'getipinfo');
+    })->prefix('ajax/');
 })
 ->bind('admin')
+->ext('do')
 ->cache(false);
 

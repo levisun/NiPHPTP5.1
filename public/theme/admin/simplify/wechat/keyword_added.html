@@ -89,7 +89,7 @@ $(".upload-btn").click(function(){
         data.append("type", "portrait");
 
     $.upload({
-        url: request.api.upload,
+        url: request.ajax.upload,
         type: "post",
         data: data,
         success: function(result) {
@@ -106,7 +106,7 @@ $("form").submit(function(){
      form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         data: form_data,
     }, function(result){

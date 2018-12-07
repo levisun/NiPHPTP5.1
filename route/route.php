@@ -29,20 +29,15 @@ Route::domain([
     abort(404);
 });
 
-// API接口路由
-Route::group('api', function(){
-    Route::rule('query',  'query');
-    Route::rule('settle', 'settle');
-    Route::rule('upload', 'upload');
-    Route::rule('getipinfo', 'getipinfo');
-})->prefix('api/');
+
 
 Route::domain('api', function(){
     Route::rule('query',  'api/query');
-        Route::rule('settle', 'settle');
-        Route::rule('upload', 'upload');
-        Route::rule('getipinfo', 'getipinfo');
+    Route::rule('settle', 'settle');
+    Route::rule('upload', 'upload');
+    Route::rule('getipinfo', 'getipinfo');
 })
+->allowCrossDomain()
 ->cache(APP_DEBUG ? false : 1200);
 
 

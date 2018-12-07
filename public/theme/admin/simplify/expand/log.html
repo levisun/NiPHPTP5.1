@@ -34,7 +34,7 @@ paging(p, true);
 function paging(_page, _push) {
     _push = typeof(_push) == "undefined" ? true : false;
     $.pjax({
-        url: request.api.query,
+        url: request.ajax.query,
         type: "post",
         push: _push,
         requestUrl: $.domain(true) + "?p=" + _page,

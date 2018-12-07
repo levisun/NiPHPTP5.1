@@ -26,6 +26,8 @@ function replace_meta($_content)
 
     $siteinfo = logic(request()->module() . '/siteinfo')->query();
     $cdn = request()->rootDomain() . request()->root() . '/';
+    $scheme = request()->scheme() . '://';
+
     $tpl_replace_string = config('template.tpl_replace_string');
 
     $head = '<!DOCTYPE html>' . PHP_EOL .
@@ -37,7 +39,7 @@ function replace_meta($_content)
             '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' . PHP_EOL .
             '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' . PHP_EOL .
             '<meta name="robots" content="all" />' . PHP_EOL .
-            '<meta name="revisit-after" content="1 days" />' . PHP_EOL .
+            '<meta name="revisit-after" content="7 days" />' . PHP_EOL .
             '<meta name="renderer" content="webkit" />' . PHP_EOL .
             '<meta name="force-rendering" content="webkit" />' . PHP_EOL .
             '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' . PHP_EOL .
@@ -58,7 +60,7 @@ function replace_meta($_content)
             '<meta property="og:title" content="' . $siteinfo['title'] . '" />' . PHP_EOL .
             '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
             '<meta property="og:description" content="' . $siteinfo['website_description'] . '" />' . PHP_EOL .
-            '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
+            '<link href="' . $scheme . 'cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
 
     if (is_file(config('template.view_path') . 'config.json')) {
@@ -88,11 +90,11 @@ function replace_meta($_content)
     $head .= '<script type="text/javascript">' .
              'var request = {' .
                  'domain: "' . $tpl_replace_string['__DOMAIN__'] . '",' .
-                 'api: {' .
-                    'query: "' . url('api/query') . '",' .
-                    'settle: "' . url('api/settle') . '",' .
-                    'upload: "' . url('api/upload') . '",' .
-                    'getipinfo: "' . url('api/getipinfo') . '",' .
+                 'ajax: {' .
+                    'query: "' . $tpl_replace_string['__AJAX_QUERY__'] . '",' .
+                    'settle: "' . $tpl_replace_string['__AJAX_SETTLE__'] . '",' .
+                    'upload: "' . $tpl_replace_string['__AJAX_UPLOAD__'] . '",' .
+                    'getipinfo: "' . url('ajax/getipinfo') . '",' .
                  '},' .
                  'static: "' . $tpl_replace_string['__STATIC__'] . '",' .
                  'css: "' . $tpl_replace_string['__CSS__'] . '",' .
@@ -103,24 +105,23 @@ function replace_meta($_content)
 
     $head .= '</head><body>' . PHP_EOL;
 
-    $foot  = '';
+    $foot  = $siteinfo['script'];
 
     // 插件加载
     if (!empty($config['hook'])) {
         foreach ($config['hook'] as $hook) {
-
+            $foot .= $hook;
         }
     }
 
-    $foot .= $siteinfo['script'] .
-            '<script type="text/javascript">' .
-            'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
-            '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
-            '\r\nCreate Date ' . date('Y-m-d H:i:s') .
-            '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒' .
-            '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");' .
-            '</script>' .  PHP_EOL .
-            '</body>' . PHP_EOL . '</html>';
+    $foot .= '<script type="text/javascript">' .
+             'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
+             '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
+             '\r\nCreate Date ' . date('Y-m-d H:i:s') .
+             '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒' .
+             '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");' .
+             '</script>' .  PHP_EOL .
+             '</body>' . PHP_EOL . '</html>';
 
     return $head . $_content . $foot;
 }

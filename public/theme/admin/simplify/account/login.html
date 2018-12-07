@@ -34,7 +34,7 @@ $("form").submit(function(){
         form_data += "&"+$(this).serialize();
 
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: form_data,

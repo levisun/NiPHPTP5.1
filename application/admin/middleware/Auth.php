@@ -24,7 +24,8 @@ class Auth
      */
     public function handle($_request, \Closure $_next)
     {
-        if ($_request->ext() != '' && $_request->ext() !== 'do') abort(404);
+        if ($_request->ext() != '' && $_request->ext() !== 'do')
+            abort(404);
 
         $module     = strtolower($_request->module());
         $controller = strtolower($_request->controller());

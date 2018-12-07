@@ -34,7 +34,7 @@
 var page = window.location.hash;
 page = page.substr(1, page.length);
 $.loading({
-    url: request.api.query,
+    url: request.ajax.query,
     animation: true,
     data: {
         timestamp: $.timestamp(),
@@ -65,7 +65,7 @@ $.loading({
 function paging(_page) {
     $.rewriteUrl("{:request()->url(true)}#"+_page);
     $.loading({
-        url: request.api.query,
+        url: request.ajax.query,
         animation: true,
         data: {
             timestamp: $.timestamp(),
@@ -100,7 +100,7 @@ function paging(_page) {
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.loading({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         data: {
             timestamp: $.timestamp(),

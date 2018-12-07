@@ -82,7 +82,7 @@
 <script type="text/javascript">
 var editor_data = {};
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     async: false,
     type: "post",
     data: {
@@ -99,7 +99,7 @@ $.pjax({
 });
 
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     type: "post",
     data: {
         timestamp: $.timestamp(),
@@ -119,7 +119,7 @@ $("form").submit(function(){
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: form_data,

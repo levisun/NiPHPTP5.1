@@ -14,8 +14,21 @@ namespace app\admin\controller;
 
 use app\common\logic\Async;
 
-class Api extends Async
+class Ajax extends Async
 {
+
+    /**
+     * 初始化
+     * @access protected
+     * @param
+     * @return
+     */
+    protected function _initialize()
+    {
+        if (request()->ext() != '' && request()->ext() !== 'do')
+            abort(404);
+    }
+
     /**
      * 查询请求
      * @access public

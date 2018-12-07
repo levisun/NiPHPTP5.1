@@ -14,27 +14,36 @@
 Route::domain(['www', 'm'], function(){
     Route::rule('/', 'index/index');
     Route::rule('index', 'index/index');
-    Route::rule('list/:cid$', 'index/entry');
-    Route::rule('link/:cid$', 'index/entry');
     Route::rule('search$', 'index/search');
-    Route::rule('channel/:cid$', 'index/channel');
-    Route::rule('feedback/:cid$', 'index/feedback');
-    Route::rule('message/:cid$', 'index/message');
-    Route::rule('comment/:cid/:id$', 'index/comment');
-    Route::rule('article/:cid/:id$', 'index/article');
-    Route::rule('picture/:cid/:id$', 'index/article');
-    Route::rule('download/:cid/:id$', 'index/article');
-    Route::rule('product/:cid/:id$', 'index/article');
-    Route::rule('page/:cid$', 'index/article');
 
-    Route::rule('go/:cid/[:id]$',  'index/go');
-    Route::rule('tags/:id$', 'index/tags');
+    Route::rule('list-:cid$', 'index/entry');
+    Route::rule('link-:cid$', 'index/entry');
+    Route::rule('channel-:cid$', 'index/channel');
+    Route::rule('feedback-:cid$', 'index/feedback');
+    Route::rule('message-:cid$', 'index/message');
+    Route::rule('tags-:id$', 'index/tags');
+
+    Route::rule('comment-:cid-:id$', 'index/comment');
+    Route::rule('article-:cid-:id$', 'index/article');
+    Route::rule('download-:cid-:id$', 'index/article');
+    Route::rule('page-:cid$', 'index/article');
+    Route::rule('picture-:cid-:id$', 'index/article');
+    Route::rule('product-:cid-:id$', 'index/article');
+
+    Route::rule('go-:cid-[:id]$',  'index/go');
 
     Route::rule('getipinfo', 'index/getipinfo');
 
-    Route::rule('error/:code$', 'index/abort');
+    Route::rule('error-:code$', 'index/abort');
 
     Route::rule('caiji', 'index/caiji');
+
+    // AJAX路由
+    Route::rule('ajax-query',  'ajax/query');
+    Route::rule('ajax-settle', 'ajax/settle');
+    Route::rule('ajax-upload', 'ajax/upload');
+    Route::rule('ajax-getipinfo', 'ajax/getipinfo');
 })
 ->bind('cms')
+->ext('html')
 ->cache(APP_DEBUG ? false : 1200);

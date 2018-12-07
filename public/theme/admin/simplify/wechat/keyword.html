@@ -53,7 +53,7 @@ paging(p, true);
 function paging(_page, _push) {
     _push = typeof(_push) == "undefined" ? true : false;
     $.pjax({
-        url: request.api.query,
+        url: request.ajax.query,
         type: "post",
         push: _push,
         requestUrl: $.domain(true) + "?p=" + _page,
@@ -101,7 +101,7 @@ $("form").submit(function(){
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: form_data,
@@ -115,7 +115,7 @@ $("form").submit(function(){
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: {

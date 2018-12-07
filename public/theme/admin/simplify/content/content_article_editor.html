@@ -111,14 +111,14 @@ ClassicEditor.create(
     {
         language: 'zh-cn',
         ckfinder: {
-            uploadUrl: request.api.upload + '?method='+request.controller+'.'+request.action+'.upload&type=ckeditor'
+            uploadUrl: request.ajax.upload + '?method='+request.controller+'.'+request.action+'.upload&type=ckeditor'
         }
     }
 );
 
 var editor_data = {};
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     async: false,
     type: "post",
     data: {
@@ -135,7 +135,7 @@ $.pjax({
     }
 });
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     async: false,
     type: "post",
     data: {
@@ -151,7 +151,7 @@ $.pjax({
     }
 });
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     type: "post",
     data: {
         timestamp: $.timestamp(),
@@ -179,7 +179,7 @@ $(".upload-btn").click(function(){
         data.append("type", "{$Request.param.model}");
 
     $.upload({
-        url: request.api.upload,
+        url: request.ajax.upload,
         type: "post",
         data: data,
         success: function(result) {
@@ -196,7 +196,7 @@ $("form").submit(function(){
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: form_data,

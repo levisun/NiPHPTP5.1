@@ -22,7 +22,7 @@ class Label extends TagLib
         'tags'    => ['close' => 1, 'attr' => '', 'alias' => 'tag'],
         'search'  => ['close' => 1, 'attr' => '', 'alias' => 'search'],
         'article' => ['close' => 1, 'attr' => '', 'alias' => 'page'],
-        'list'    => ['close' => 1, 'attr' => '', 'alias' => 'list'],
+        'catlist' => ['close' => 1, 'attr' => '', 'alias' => 'list'],
         'nav'     => ['close' => 1, 'attr' => 'type', 'alias' => 'category'],
         'bread'   => ['close' => 1, 'attr' => '', 'alias' => 'breadcrumb'],
         'menu'    => ['close' => 0, 'attr' => '', 'alias' => 'sidebar'],
@@ -62,7 +62,7 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method: "tags.query",
@@ -107,7 +107,7 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method:    "search.query",
@@ -158,7 +158,7 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method: "article.hits",
@@ -174,7 +174,7 @@ class Label extends TagLib
                         }
                     });
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method: "article.query",
@@ -218,7 +218,7 @@ class Label extends TagLib
             $parseStr .= '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method: "article.hits",
@@ -247,7 +247,7 @@ class Label extends TagLib
      * @param  string $_content 标签内容
      * @return string|void
      */
-    public function tagList($_tag, $_content)
+    public function tagCatlist($_tag, $_content)
     {
         $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
@@ -257,14 +257,14 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
-                            method: "listing.query",
+                            method: "catlist.query",
                             cid:    "' . $_tag['cid'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:   jQuery.sign({
-                                method: "listing.query",
+                                method: "catlist.query",
                                 cid:    "' . $_tag['cid'] . '",
                                 p:      "' . $_tag['p'] . '",
                             })
@@ -291,7 +291,7 @@ class Label extends TagLib
                 </script>';
         } else {
             $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : 'input("param.cid/f")';
-            $parseStr  = '<?php $list = logic("cms/listing")->query(' . $_tag['cid'] . ');';
+            $parseStr  = '<?php $list = logic("cms/catlist")->query(' . $_tag['cid'] . ');';
             $parseStr .= 'if (is_null($list)) {abort(404);}';
             $parseStr .= '$count = count($list["list"]);';
             $parseStr .= 'foreach ($list["list"] as $key => $vo) { ?>';
@@ -318,7 +318,7 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method:   "banner.query",
@@ -373,7 +373,7 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 $(function(){
                     $.pjax({
-                        url: request.api.query,
+                        url: request.ajax.query,
                         type: "get",
                         data: {
                             method:  "ads.query",

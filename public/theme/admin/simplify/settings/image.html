@@ -286,7 +286,7 @@
 
 <script type="text/javascript">
 $.pjax({
-    url: request.api.query,
+    url: request.ajax.query,
     type: "post",
     data: {
         timestamp: $.timestamp(),
@@ -332,7 +332,7 @@ $(".upload-btn").click(function(){
         data.append("type", "water");
 
     $.upload({
-        url: request.api.upload,
+        url: request.ajax.upload,
         type: "post",
         data: data,
         success: function(result) {
@@ -349,7 +349,7 @@ $("form").submit(function(){
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
-        url: request.api.settle,
+        url: request.ajax.settle,
         async: false,
         type: "post",
         data: form_data,

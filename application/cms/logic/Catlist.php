@@ -12,7 +12,7 @@
  */
 namespace app\cms\logic;
 
-class Listing
+class Catlist
 {
 
     /**
