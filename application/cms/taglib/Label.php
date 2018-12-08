@@ -3,7 +3,7 @@
  *
  * 标签
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\cms\taglib
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -62,14 +62,18 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method: "tags.query",
                             sign:   jQuery.sign({
                                 method: "tags.query"
                             })
                         },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
                         success: function(result){
                             if (result.code !== "SUCCESS") {
                                 return false;
@@ -107,8 +111,8 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method:    "search.query",
                             q:         "' . $_tag['q'] . '",
@@ -119,6 +123,10 @@ class Label extends TagLib
                                 p:         "' . $_tag['p'] . '"
                             })
                         },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -158,8 +166,8 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method: "article.hits",
                             timestamp: "' . $time . '",
@@ -174,8 +182,8 @@ class Label extends TagLib
                         }
                     });
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method: "article.query",
                             cid:   "' . $_tag['cid'] . '",
@@ -186,6 +194,10 @@ class Label extends TagLib
                                 id:     "' . $_tag['id'] . '"
                             })
                         },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -218,8 +230,8 @@ class Label extends TagLib
             $parseStr .= '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method: "article.hits",
                             timestamp: "' . $time . '",
@@ -257,8 +269,8 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method: "catlist.query",
                             cid:    "' . $_tag['cid'] . '",
@@ -269,6 +281,10 @@ class Label extends TagLib
                                 p:      "' . $_tag['p'] . '",
                             })
                         },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -318,8 +334,8 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
                     jQuery.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method:   "banner.query",
                             slide_id: "' . $_tag['id'] . '",
@@ -328,6 +344,10 @@ class Label extends TagLib
                                 slide_id: "' . $_tag['id'] . '"
                             })
                         },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -373,8 +393,8 @@ class Label extends TagLib
             $parseStr = '<script type="text/javascript">
                 $(function(){
                     $.pjax({
-                        url: request.ajax.query,
-                        type: "get",
+                        url: request.api.query,
+                        type: "post",
                         data: {
                             method:  "ads.query",
                             ads_id:  "' . $_tag['id'] . '",
@@ -383,6 +403,10 @@ class Label extends TagLib
                                 ads_id: "' . $_tag['id'] . '"
                             })
                         },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
                         success: function(result){
                             if (result.code !== "SUCCESS") {
                                 return false;

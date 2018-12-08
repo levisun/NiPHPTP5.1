@@ -126,10 +126,11 @@
 <script type="text/javascript">
 $.pjax({
     url: request.ajax.query,
+    // url: "//api.tp5.com/query.do",
     type: "post",
     data: {
         timestamp: $.timestamp(),
-        method: "settings.info.query"
+        method: "admin.settings.info.query"
     },
     success: function (result) {
         if (result.code !== "SUCCESS") {

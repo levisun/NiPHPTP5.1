@@ -3,7 +3,7 @@
  *
  * IP归属地 - 业务层
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\admin\logic\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -133,7 +133,7 @@ class IpInfo
                 return false;
             } elseif ($ip[0] == 172 && $ip[1] >= 16 && $ip[1] <= 31) {
                 return false;
-            } elseif ($ip[0] == 172 && $ip[1] = 0) {
+            } elseif ($ip[0] == 127 && $ip[1] = 0) {
                 return false;
             } elseif ($ip[0] == 192 && $ip[1] == 168) {
                 return false;

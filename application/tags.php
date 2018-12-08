@@ -3,7 +3,7 @@
  *
  * 行为
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -17,8 +17,6 @@ return [
     'app_init'     => [
         // 并发抛出504[每次访问万分之一几率执行操作]
         'app\\common\\behavior\\Concurrent',
-        // GET请求下生成API请求TOKEN
-        'app\\common\\behavior\\CreateApiToken',
     ],
     // 应用开始
     'app_begin'    => [],

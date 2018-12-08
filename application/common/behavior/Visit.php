@@ -3,7 +3,7 @@
  *
  * 访问记录 - 行为
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\common\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -25,13 +25,13 @@ class Visit
     {
         // 阻挡Ajax Pjax Post类型请求
         // 阻挡common模块请求
-        if (request_block() || request()->module() === 'admin') {
+        if (request_block() || in_array(request()->module(), ['admin', 'api'])) {
             return true;
         }
 
         $this->addedVisit();
         $this->addedSearchengine();
-        // $this->createSitemap();
+        $this->createSitemap();
     }
 
     /**
@@ -102,82 +102,97 @@ class Visit
 
     public function createSitemap()
     {
-        $xml  = '<?xml version="1.0" encoding="UTF-8"?>
-                    <urlset>
-                        <url>
-                            <loc>' . request()->root(true) . '</loc>
-                            <priority>1.00</priority>
-                            <lastmod>' . date('Y-m-d H:i:s') . '</lastmod>
-                            <changefreq>weekly</changefreq>
-                        </url>';
+        $file = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
+        if (is_file($file) && filectime($file) >= strtotime('-1 days')) {
+            return false;
+        }
 
-        $result =
-        db()->field(['id', 'category_id', 'update_time', 'create_time'])
-        ->table('np_article')
-        ->union(function($query){
-            $query->field(['id', 'category_id', 'update_time', 'create_time'])
-            ->table('np_picture')
-            ->where([
-                ['is_pass', '=', 1],
-                ['show_time', '<=', time()]
-            ]);
-        })
-        ->union(function($query){
-            $query->field(['id', 'category_id', 'update_time', 'create_time'])
-            ->table('np_download')
-            ->where([
-                ['is_pass', '=', 1],
-                ['show_time', '<=', time()]
-            ]);
-        })
-        ->union(function($query){
-            $query->field(['id', 'category_id', 'update_time', 'create_time'])
-            ->table('np_product')
-            ->where([
-                ['is_pass', '=', 1],
-                ['show_time', '<=', time()]
-            ]);
-        })
-        ->select();
-        print_r($result);die();
-
+        global $map, $field;
+        $field = ['id', 'category_id', 'title', 'show_time', 'update_time', 'create_time'];
         $map = [
-            ['a.is_pass', '=', 1],
-            ['a.show_time', '<=', time()]
+            ['is_pass', '=', 1],
+            ['show_time', '<=', time()]
         ];
 
         $result =
-        model('common/article')
-        ->view('article a', ['id', 'category_id', 'update_time', 'create_time'])
-        ->view('category c', ['name' => 'category_name'], 'c.id=a.category_id')
-        ->view('model m', ['name' => 'model_tablename'], 'm.id=c.model_id')
+        db()->field($field)
+        ->table('np_article')
+        ->union(function($query){
+            global $map, $field;
+            $query->field($field)
+            ->table('np_download')
+            ->where($map);
+        })
+        ->union(function($query){
+            global $map, $field;
+            $query->field($field)
+            ->table('np_picture')
+            ->where($map);
+        })
+        ->union(function($query){
+            global $map, $field;
+            $query->field($field)
+            ->table('np_product')
+            ->where($map);
+        })
         ->where($map)
-        ->order('id DESC')
+        ->order('show_time DESC, update_time DESC')
+        ->limit(100)
         ->select();
+
         foreach ($result as $key => $value) {
-            $url = url($value->model_tablename . '/' . $value->category_id . '/' . $value->id);
+            // $result[$key]['flag'] = encrypt($value['id']);
+            // $result[$key]['title'] = htmlspecialchars_decode($value['title']);
+            $result[$key]['cat_url'] = url('list/' . $value['category_id'], '', true);
 
-            if ($value->update_time) {
-                $lastmod = $value->update_time;
-            } elseif ($value->create_time) {
-                $lastmod = date('Y-m-d H:i:s', $value->create_time);
-            } else {
-                $lastmod = date('Y-m-d H:i:s', time());
-            }
+            // 查询模型表名
+            $table_name =
+            model('common/category')
+            ->view('category c', ['model_id'])
+            ->view('model m', ['table_name'], 'm.id=c.model_id')
+            ->where([
+                ['c.id', '=', $value['category_id']],
+            ])
+            ->cache(__METHOD__ . 'TABLE_NAME' . $value['category_id'])
+            ->value('table_name');
 
-            $xml .= '<url>
-                        <loc>' . $url . '</loc>
-                        <priority>0.50</priority>
-                        <lastmod>' . $lastmod . '</lastmod>
-                        <changefreq>weekly</changefreq>
-                    </url>';
+            $result[$key]['url'] = url($table_name . '/' . $value['category_id'] . '/' . $value['id'], '', true);
         }
 
+        $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL .
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL .
+                '<url>' . PHP_EOL .
+                '<loc>' . request()->root(true) . '</loc>' . PHP_EOL .
+                '<lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL .
+                '<changefreq>daily</changefreq>' . PHP_EOL .
+                '<priority>1.00</priority>' . PHP_EOL .
+                '</url>' . PHP_EOL;
 
+        $cat_url = '';
+        foreach ($result as $key => $value) {
+            $value['update_time'] = $value['update_time'] ? date('Y-m-d', $value['update_time']) : date('Y-m-d');
+
+            if ($cat_url != $value['cat_url']) {
+                $xml .= '<url>' . PHP_EOL .
+                        '<loc>' . $value['cat_url'] . '</loc>' . PHP_EOL .
+                        '<lastmod>' . $value['update_time'] . '</lastmod>' . PHP_EOL .
+                        '<changefreq>daily</changefreq>' . PHP_EOL .
+                        '<priority>1.0</priority>' . PHP_EOL .
+                        '</url>' . PHP_EOL;
+                $cat_url = $value['cat_url'];
+            }
+
+            $xml .= '<url>' . PHP_EOL .
+                    '<loc>' . $value['url'] . '</loc>' . PHP_EOL .
+                    '<lastmod>' . $value['update_time'] . '</lastmod>' . PHP_EOL .
+                    '<changefreq>weekly</changefreq>' . PHP_EOL .
+                    '<priority>0.8</priority>' . PHP_EOL .
+                    '</url>' . PHP_EOL;
+        }
 
         $xml .= '</urlset>';
 
-        print_r($xml);die();
+        file_put_contents($file, $xml);
     }
 
     /**
@@ -193,7 +208,7 @@ class Visit
             return false;
         }
 
-        $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
+        $user_agent = safe_filter_strict(request()->server('HTTP_USER_AGENT'), true, true);
 
         $result =
         model('common/model/searchengine')

@@ -3,7 +3,7 @@
  *
  * 异步请求实现 - 业务层
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\common\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -18,7 +18,7 @@ use think\exception\HttpResponseException;
 
 class Async
 {
-    private   $request;
+    protected $request;
 
     protected $module;                                                          // 模块名
 
@@ -35,7 +35,7 @@ class Async
     protected $class       = 'index';                                           // 类名
     protected $action      = 'index';                                           // 方法名
 
-    private   $logicObject = null;                                              // 业务类对象
+    protected $logicObject = null;                                              // 业务类对象
 
     protected $apiDebug    = false;                                             // 调试模式
     protected $debugMsg    = [];                                                // 错误信息
@@ -50,8 +50,11 @@ class Async
     {
         $this->request = $request;
 
+        // 初始化Async
+        $this->init();
+
         // 初始化
-        $this->_initialize();
+        $this->initialize();
     }
 
     /**
@@ -60,83 +63,45 @@ class Async
      * @param
      * @return
      */
-    protected function _initialize()
+    protected function initialize()
     {
         # code...
     }
 
-    protected function handle()
+    /**
+     * 发送数据
+     * @access protected
+     * @param
+     * @return
+     */
+    protected function send()
     {
-        // 验证请求合法性
-        $this->checkAsyncToken();
-
-        $this->module    = strtolower($this->request->module());                // 模块名称
-        $this->appid     = input('param.appid');                                //
-        $this->appsecret = input('param.appsecret');                            //
-        $this->sign      = input('param.sign');                                 // 请求数据签名
-        $this->sign_type = input('param.sign_type', 'md5');                     // 签名类型
-        $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
-        $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
-        $this->method    = strtolower(input('param.method'));                   // 请求API方法名
-        $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
-
-        $this->version   = input('param.version', null);                        // 版本号
-        list($this->version) = explode('.', $this->version);
-        $this->version   = $this->version ? 'v' . $this->version : '';
-
-        $this->analysisMethod();                                                // 解析method参数
-        $this->auth();                                                          // 请求权限校验
-        $this->sign();                                                          // 请求数据签名校验
-
         return call_user_func_array([$this->logicObject, $this->action], []);
     }
 
     /**
-     * 生成请求令牌
-     * @access public
+     * 运行
+     * @access protected
      * @param
-     * @return void
+     * @return
      */
-    public function createAsyncToken()
+    protected function run()
     {
-        if (!cookie('?_ASYNCTOKEN')) {
-            $http_referer = sha1(
-                // $this->request->url(true) .
-                $this->request->server('HTTP_USER_AGENT') .
-                $this->request->ip() .
-                env('root_path') .
-                date('Ymd')
-            );
+        $this->analysisMethod();                                                // 解析method参数
+        $this->checkMethod();                                                   // method参数检查
 
-            cookie('_ASYNCTOKEN', $http_referer, strtotime(date('Y-m-d 23:59:59')) - time());
-        }
+        return $this;
     }
 
     /**
-     * 验证请求令牌是否合法
-     * @access private
+     * 验证TOKEN
+     * @access protected
      * @param
      * @return mixed
      */
-    private function checkAsyncToken()
+    protected function token()
     {
-        // 验证请求方式
-        // 异步只允许 Ajax Pjax Post 请求类型
-        if (!$this->request->isAjax() && !$this->request->isPjax() && !$this->request->isPost()) {
-            $this->error('REQUEST METHOD ERROR');
-        }
-
-        $http_referer = sha1(
-            // $this->request->server('HTTP_REFERER') .
-            $this->request->server('HTTP_USER_AGENT') .
-            $this->request->ip() .
-            env('root_path') .
-            date('Ymd')
-        );
-
-        if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
-            $this->error('REQUEST TOKEN ERROR');
-        }
+        abort(404);
     }
 
     /**
@@ -151,7 +116,7 @@ class Async
     }
 
     /**
-     * 验证异步加密签名
+     * 验证签名
      * @access protected
      * @param
      * @return mixed
@@ -178,6 +143,43 @@ class Async
             $this->debugMsg['sign'] = $str;
             $this->error('SIGN ERROR');
         }
+
+        return $this;
+    }
+
+    /**
+     * method 参数检查
+     * @access private
+     * @param
+     * @return void
+     */
+    private function checkMethod()
+    {
+        // 检查业务分层文件是否存在
+        $file_path = $this->module . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
+        // 版本目录
+        $file_path .= $this->version ? $this->version . DIRECTORY_SEPARATOR : '';
+        // 分层目录
+        $file_path .= $this->layer !== 'logic' ? $this->layer . DIRECTORY_SEPARATOR : '';
+
+        $file_path .= ucfirst($this->class) . '.php';
+
+        if (!is_file(env('app_path') . $file_path)) {
+            $this->debugMsg[] = $file_path;
+            $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+            $this->error('[METHOD] PARAMETER ERROR');
+        }
+
+        // 检查方法是否存在
+        $logic_params  = $this->module . '/';
+        $logic_params .= $this->version ? $this->version . '\\' . $this->layer : $this->layer;
+        $logic_params .= '/' . $this->class;
+        $this->logicObject = logic($logic_params);
+        if (!method_exists($this->logicObject, $this->action)) {
+            $this->debugMsg[] = $file_path;
+            $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+            $this->error('[METHOD] PARAMETER ERROR');
+        }
     }
 
     /**
@@ -192,7 +194,7 @@ class Async
     private function analysisMethod()
     {
         if (!$this->method) {
-            $this->error('[METHOD] parameter error');
+            $this->error('[METHOD] Undefined parameters');
         }
 
         // 参数[模块名.业务分层名.类名.方法名]
@@ -209,30 +211,29 @@ class Async
         } elseif ($count == 1) {
             list($this->class) = explode('.', $this->method, 1);
         }
+    }
 
-        // 检查业务分层文件是否存在
-        $file_path = env('app_path') . $this->module . DIRECTORY_SEPARATOR . 'logic' . DIRECTORY_SEPARATOR;
-        // 版本目录
-        $file_path .= $this->version ? $this->version . DIRECTORY_SEPARATOR : '';
-        // 分层目录
-        $file_path .= $this->layer !== 'logic' ? $this->layer . DIRECTORY_SEPARATOR : '';
+    /**
+     * 初始化Async
+     * @access private
+     * @param
+     * @return void
+     */
+    private function init()
+    {
+        $this->module    = strtolower($this->request->module());                // 模块名称
+        $this->appid     = input('param.appid');                                //
+        $this->appsecret = input('param.appsecret');                            //
+        $this->sign      = input('param.sign');                                 // 请求数据签名
+        $this->sign_type = strtolower(input('param.sign_type', 'md5'));         // 签名类型
+        $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
+        $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
+        $this->method    = strtolower(input('param.method'));                   // 请求API方法名
+        $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
 
-        $file_path .= ucfirst($this->class) . '.php';
-
-        if (!is_file($file_path)) {
-            $this->debugMsg[] = $this->layer . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-            $this->error('[METHOD PARAMETER ERROR]');
-        }
-
-        // 检查方法是否存在
-        $logic_params  = $this->module . '/';
-        $logic_params .= $this->version ? $this->version . '\\' . $this->layer : $this->layer;
-        $logic_params .= '/' . $this->class;
-        $this->logicObject = logic($logic_params);
-        if (!method_exists($this->logicObject, $this->action)) {
-            $this->debugMsg[] = $this->layer . '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
-            $this->error('[METHOD PARAMETER ERROR]');
-        }
+        $this->version   = input('param.version', null);                        // 版本号
+        list($this->version) = explode('.', $this->version);
+        $this->version   = $this->version ? 'v' . $this->version : '';
     }
 
     /**

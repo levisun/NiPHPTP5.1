@@ -3,7 +3,7 @@
  *
  * 图片设置 - 设置 - 验证器
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\admin\validate\settings
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

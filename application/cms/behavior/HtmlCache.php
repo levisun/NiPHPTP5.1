@@ -3,7 +3,7 @@
  *
  * html缓存 - 行为
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  cms\behavior
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

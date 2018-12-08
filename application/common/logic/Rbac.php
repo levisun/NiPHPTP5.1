@@ -4,7 +4,7 @@
  * 帐户权限验证 - 业务层
  * 基于角色的数据库方式验证类
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\admin\logic\account
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

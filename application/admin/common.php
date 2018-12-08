@@ -3,7 +3,7 @@
  *
  * 公共函数文件
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\admin
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -21,6 +21,7 @@ function replace_meta($_content)
     $_content = preg_replace('/( ){2,}/si', '', $_content);
 
     $cdn = request()->rootDomain() . request()->root() . '/';
+    $scheme = request()->scheme() . '://';
 
     $meta = '</title>' . PHP_EOL .
             '<meta name="generator" content="NiPHP ' . NP_VERSION . '" />' . PHP_EOL .
@@ -39,7 +40,7 @@ function replace_meta($_content)
             '<link rel="dns-prefetch" href="//css.' . $cdn . '" />' . PHP_EOL .
             '<link rel="dns-prefetch" href="//js.' . $cdn . '" />' . PHP_EOL .
             '<link rel="dns-prefetch" href="//img.' . $cdn . '" />' . PHP_EOL .
-            '<link href="//cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
+            '<link href="' . $scheme . 'cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
     if (request()->isMobile()) {
         $meta .= '<meta name="apple-mobile-web-app-capable" content="yes" />' . PHP_EOL .

@@ -3,7 +3,7 @@
  *
  * 上传文件 - 业务层
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\ommon\logic
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

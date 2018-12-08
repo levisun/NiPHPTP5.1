@@ -12,6 +12,7 @@
  */
 
 Route::domain(['www', 'm'], function(){
+    Route::miss('index/abort');
     Route::rule('/', 'index/index');
     Route::rule('index', 'index/index');
     Route::rule('search$', 'index/search');

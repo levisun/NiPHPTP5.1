@@ -3,7 +3,7 @@
  *
  * 接口设置 - 微信 - 验证器
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\admin\validate\wechat
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

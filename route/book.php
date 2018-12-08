@@ -21,11 +21,11 @@ Route::domain('book', function(){
     Route::rule('search/:q$',        'index/search');
 
 
-    Route::group('api', function(){
-        Route::rule('query',  'query');
-        Route::rule('settle', 'settle');
-        // Route::rule('upload', 'upload');
-    })->prefix('api/');
+    // AJAX路由
+    Route::rule('ajax-query',  'ajax/query');
+    Route::rule('ajax-settle', 'ajax/settle');
+    Route::rule('ajax-upload', 'ajax/upload');
+    Route::rule('ajax-getipinfo', 'ajax/getipinfo');
 })
 ->bind('book')
 ->cache(APP_DEBUG ? false : 1200);

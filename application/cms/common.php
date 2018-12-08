@@ -3,7 +3,7 @@
  *
  * 公共函数文件
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\cms
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -26,6 +26,7 @@ function replace_meta($_content)
 
     $siteinfo = logic(request()->module() . '/siteinfo')->query();
     $cdn = request()->rootDomain() . request()->root() . '/';
+    $api = '//api.' . request()->rootDomain() . request()->root() . '/';
     $scheme = request()->scheme() . '://';
 
     $tpl_replace_string = config('template.tpl_replace_string');
@@ -90,11 +91,11 @@ function replace_meta($_content)
     $head .= '<script type="text/javascript">' .
              'var request = {' .
                  'domain: "' . $tpl_replace_string['__DOMAIN__'] . '",' .
-                 'ajax: {' .
-                    'query: "' . $tpl_replace_string['__AJAX_QUERY__'] . '",' .
-                    'settle: "' . $tpl_replace_string['__AJAX_SETTLE__'] . '",' .
-                    'upload: "' . $tpl_replace_string['__AJAX_UPLOAD__'] . '",' .
-                    'getipinfo: "' . url('ajax/getipinfo') . '",' .
+                 'api: {' .
+                    'query: "' . $api . 'query.do"' .
+                    // 'settle: "' . $tpl_replace_string['__API_SETTLE__'] . '",' .
+                    // 'upload: "' . $tpl_replace_string['__API_UPLOAD__'] . '",' .
+                    // 'getipinfo: "' . url('api/getipinfo', '', true) . '",' .
                  '},' .
                  'static: "' . $tpl_replace_string['__STATIC__'] . '",' .
                  'css: "' . $tpl_replace_string['__CSS__'] . '",' .

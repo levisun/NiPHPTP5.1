@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * API - 控制器
+ * AJAX - 控制器
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\cms\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -25,7 +25,7 @@ class Ajax extends Async
      */
     public function query()
     {
-        $result = $this->handle();
+        $result = $this->run()->token()->sign()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {
@@ -34,19 +34,31 @@ class Ajax extends Async
     }
 
     /**
-     * 获得IP地址地区信息
-     * @access public
+     * 验证TOKEN
+     * @access protected
      * @param
-     * @return json
+     * @return mixed
      */
-    public function getipinfo()
+    protected function token()
     {
-        $result = logic('common/IpInfo')->getInfo(input('param.ip'));
-        $this->success('QUERY SUCCESS', $result);
-    }
+        // 验证请求方式
+        // 异步只允许 Ajax Pjax Post 请求类型
+        if (!$this->request->isAjax() && !$this->request->isPjax() && !$this->request->isPost()) {
+            $this->error('REQUEST METHOD ERROR');
+        }
 
-    protected function auth()
-    {
-        return true;
+        $http_referer = sha1(
+            // $this->request->server('HTTP_REFERER') .
+            $this->request->server('HTTP_USER_AGENT') .
+            $this->request->ip() .
+            env('root_path') .
+            date('Ymd')
+        );
+
+        if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
+            $this->error('REQUEST TOKEN ERROR');
+        }
+
+        return $this;
     }
 }

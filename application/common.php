@@ -3,7 +3,7 @@
  *
  * 应用公共函数文件
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -73,9 +73,6 @@ function get_template_config($_default_theme)
         '__DOMAIN__'      => request()->root(true) . '/',
         '__PHP_SELF__'    => basename(request()->baseFile()),
         '__CDN__'         => $scheme . 'cdn.' . $cdn,
-        '__AJAX_QUERY__'  => url('ajax/query', '', true),
-        '__AJAX_SETTLE__' => url('ajax/settle', '', true),
-        '__AJAX_UPLOAD__' => url('ajax/upload', '', true),
         '__STATIC__'      => $scheme . 'cdn.' . $cdn . 'static/',
         '__THEME__'       => $_default_theme,
         '__CSS__'         => $scheme . 'css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
@@ -298,12 +295,12 @@ function lang($_name, $_vars = [], $_lang = '')
         // 加载对应语言包
         $lang_path  = env('app_path') . request()->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-        $lang_path .= safe_filter(Lang::detect(), true, true) . '.php';
+        $lang_path .= safe_filter_strict(Lang::detect(), true, true) . '.php';
         Lang::load($lang_path);
 
         return true;
     } elseif ($_name == ':detect') {
-        return safe_filter(Lang::detect(), true, true);
+        return safe_filter_strict(Lang::detect(), true, true);
     } else {
         return Lang::get($_name, $_vars, $_lang);
     }

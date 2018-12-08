@@ -3,7 +3,7 @@
  *
  * 全局 - 控制器
  *
- * @package   NiPHPCMS
+ * @package   NiPHP
  * @category  application\admin\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -22,6 +22,8 @@ class Base extends Controller
 
     protected function initialize()
     {
+        $this->createToken();
+
         // 模板设置
         $template = get_template_config(config('default_theme'));
         config('template.view_path', $template['view_path']);
@@ -50,5 +52,26 @@ class Base extends Controller
         $assign['SUB_TITLE']  = $tit_bre['sub_title'];
 
         $this->assign('SITE_DATA', $assign);
+    }
+
+    /**
+     * 生成请求令牌
+     * @access private
+     * @param
+     * @return void
+     */
+    private function createToken()
+    {
+        if (!cookie('?_ASYNCTOKEN')) {
+            $http_referer = sha1(
+                // $this->request->url(true) .
+                $this->request->server('HTTP_USER_AGENT') .
+                $this->request->ip() .
+                env('root_path') .
+                date('Ymd')
+            );
+
+            cookie('_ASYNCTOKEN', $http_referer, strtotime(date('Y-m-d 23:59:59')) - time());
+        }
     }
 }

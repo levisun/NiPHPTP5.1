@@ -1,5 +1,5 @@
 <!-- 头部 开始 -->
-<header class="navbar navbar-expand-lg navbar-light">
+<header class="navbar navbar-expand-lg navbar-light" style="display: none;">
     <!-- LOGO 开始 -->
     <a class="navbar-brand" href="__DOMAIN__">__SITENAME__</a>
     <!-- LOGO 结束 -->
@@ -54,7 +54,7 @@
 </header>
 <!-- 头部 结束 -->
 
-<main class="container-fluid">
+<main class="container-fluid" style="display: none;">
     <div class="row">
         {label:menu /}
         {if isset($menu['name'])}
@@ -99,7 +99,7 @@
     </div>
 </main>
 
-<footer class="container-fluid p-md-3 text-muted">
+<footer class="container-fluid p-md-3 text-muted" style="display: none;">
     <div class="">
         <p>__BOTTOM_MSG__</p>
         <p>__COPYRIGHT__ <a href=""><i class="fab fa-github-alt"></i></a></p>
@@ -109,3 +109,6 @@
 {label:tags}
 $(".tags .row").append("<li class='col-sm-4'><a href='"+vo.url+"'>"+vo.name+"</a></li>");
 {/label:tags}
+
+
+

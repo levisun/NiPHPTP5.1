@@ -29,7 +29,7 @@ define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.1_20181207 Alpha');
 define('TP_VERSION', '5.1.30 LTS');
 define('DS', DIRECTORY_SEPARATOR);
-define('NP_CACHE_PREFIX', substr(md5(__DIR__ . $_SERVER['HTTP_HOST']), 0, 7));
+define('NP_CACHE_PREFIX', substr(md5(__DIR__), 0, 7));
 define('NP_COOKIE_PREFIX', strtoupper(substr(NP_CACHE_PREFIX, -3)));
 header('X-Powered-By: NiPHP ' . NP_VERSION);
 

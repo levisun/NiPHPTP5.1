@@ -464,7 +464,7 @@
 
         // 设置头部
         _params.beforeSend = function (xhr) {
-            xhr.setRequestHeader("HTTP_X_PJAX", true);
+            // xhr.setRequestHeader("HTTP_X_PJAX", true);
         }
 
         var xhr = jQuery.ajax(_params);
