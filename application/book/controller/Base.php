@@ -38,8 +38,7 @@ class Base extends Controller
 
         $this->engine($template);
 
-        $view_filter = logic('common/ViewFilter');
-        $this->filter([$view_filter, 'view']);
+        $this->filter('replace_meta');
     }
 
     /**

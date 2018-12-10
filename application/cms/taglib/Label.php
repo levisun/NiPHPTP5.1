@@ -392,7 +392,7 @@ class Label extends TagLib
         if ($_tag['async'] == 'true') {
             $parseStr = '<script type="text/javascript">
                 $(function(){
-                    $.pjax({
+                    jQuery.pjax({
                         url: request.api.query,
                         type: "post",
                         data: {

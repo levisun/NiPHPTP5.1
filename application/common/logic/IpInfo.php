@@ -75,8 +75,8 @@ class IpInfo
         $result = $result ? $result->toArray() : [];
 
         // 存在更新信息
-        if (!empty($result) && $result['update_time'] <= strtotime('-30 days')) {
-            $this->update($request_ip);
+        if (!empty($result) && $result['update_time'] <= strtotime('-7 days')) {
+            $this->update($_request_ip);
         }
 
         // 不存在新建信息

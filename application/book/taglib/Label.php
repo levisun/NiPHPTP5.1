@@ -41,9 +41,9 @@ class Label extends TagLib
             $time = time();
             $parseStr = '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
-                        type: "get",
+                        type: "post",
                         data: {
                             method: "article.hits",
                             timestamp: "' . $time . '",
@@ -58,9 +58,9 @@ class Label extends TagLib
                         }
                     }, function(){
                     });
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
-                        type: "get",
+                        type: "post",
                         data: {
                             method: "article.query",
                             bid:   "' . $_tag['bid'] . '",
@@ -70,23 +70,28 @@ class Label extends TagLib
                                 bid:    "' . $_tag['bid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
-                        }
-                    }, function(result){
-                        if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404') . '");
-                        } else if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            jQuery("title").text(data.title+" - "+jQuery("title").text());
-                            if (data.keywords) {
-                                jQuery("meta[name=\'keywords\']").attr("content", data.title);
+                        },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: function(result){
+                            if (result.code === "404") {
+                                jQuery.redirect("' . url('error/404') . '");
+                            } else if (result.code !== "SUCCESS") {
+                                return false;
                             }
-                            if (data.description) {
-                                jQuery("meta[name=\'description\']").attr("content", data.title);
+                            if (result.data) {
+                                var data = result.data;
+                                jQuery("title").text(data.title+" - "+jQuery("title").text());
+                                if (data.keywords) {
+                                    jQuery("meta[name=\'keywords\']").attr("content", data.title);
+                                }
+                                if (data.description) {
+                                    jQuery("meta[name=\'description\']").attr("content", data.title);
+                                }
+                                ' . $_content . '
                             }
-                            ' . $_content . '
                         }
                     });
                 });
@@ -98,9 +103,9 @@ class Label extends TagLib
             $time = time();
             $parseStr .= '<script type="text/javascript">
                 jQuery(function(){
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
-                        type: "get",
+                        type: "post",
                         data: {
                             method: "article.hits",
                             timestamp: "' . $time . '",
@@ -113,7 +118,6 @@ class Label extends TagLib
                                 id:        "' . $_tag['id'] . '"
                             })
                         }
-                    }, function(){
                     });
                 });
                 </script>';
@@ -135,9 +139,9 @@ class Label extends TagLib
         $time = time();
         $parseStr = '<script type="text/javascript">
             jQuery(function(){
-                jQuery.loadMore({
+                jQuery.scroll_more({
                     url: request.api.query,
-                    type: "get",
+                    type: "post",
                     data: {
                         method:    "listing.query",
                         timestamp: "' . $time . '",
@@ -147,22 +151,27 @@ class Label extends TagLib
                             timestamp: "' . $time . '",
                             bid:       "' . $_tag['bid'] . '",
                         })
-                    }
-                }, function(result){
-                    if (result.code === "404") {
-                        jQuery.redirect("' . url('error/404') . '");
-                    } else if (result.code !== "SUCCESS") {
-                        return false;
-                    }
-                    if (result.data) {
-                        var data = result.data;
-                        var list = result.data.list;
-                        var page = result.data.page;
-                        var total = result.data.total;
-                        var current_page = result.data.current_page;
-                        var last_page = result.data.last_page;
-                        var per_page = result.data.per_page;
-                        ' . $_content . '
+                    },
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success: function(result){
+                        if (result.code === "404") {
+                            jQuery.redirect("' . url('error/404') . '");
+                        } else if (result.code !== "SUCCESS") {
+                            return false;
+                        }
+                        if (result.data) {
+                            var data = result.data;
+                            var list = result.data.list;
+                            var page = result.data.page;
+                            var total = result.data.total;
+                            var current_page = result.data.current_page;
+                            var last_page = result.data.last_page;
+                            var per_page = result.data.per_page;
+                            ' . $_content . '
+                        }
                     }
                 });
             });
@@ -188,9 +197,9 @@ class Label extends TagLib
                 jQuery(function(){
                     var page = window.location.hash;
                     page = page.substr(1, page.length);
-                    jQuery.loading({
+                    jQuery.pjax({
                         url: request.api.query,
-                        type: "get",
+                        type: "post",
                         data: {
                             method: "listing.query",
                             bid:    "' . $_tag['bid'] . '",
@@ -198,22 +207,27 @@ class Label extends TagLib
                                 method: "listing.query",
                                 bid:    "' . $_tag['bid'] . '",
                             })
-                        }
-                    }, function(result){
-                        if (result.code === "404") {
-                            jQuery.redirect("' . url('error/404') . '");
-                        } else if (result.code !== "SUCCESS") {
-                            return false;
-                        }
-                        if (result.data) {
-                            var data = result.data;
-                            var list = result.data.list;
-                            var page = result.data.page;
-                            var total = result.data.total;
-                            var current_page = result.data.current_page;
-                            var last_page = result.data.last_page;
-                            var per_page = result.data.per_page;
-                            ' . $_content . '
+                        },
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true,
+                        success: function(result){
+                            if (result.code === "404") {
+                                jQuery.redirect("' . url('error/404') . '");
+                            } else if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                var list = result.data.list;
+                                var page = result.data.page;
+                                var total = result.data.total;
+                                var current_page = result.data.current_page;
+                                var last_page = result.data.last_page;
+                                var per_page = result.data.per_page;
+                                ' . $_content . '
+                            }
                         }
                     });
                 });

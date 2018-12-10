@@ -1,31 +1,30 @@
 <?php
 /**
  *
- * AJAX - 控制器
+ * API - 控制器
  *
  * @package   NiPHP
- * @category  application\cms\controller
+ * @category  application\api\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2017/12
  */
-namespace app\cms\controller;
+namespace app\api\controller;
 
 use app\common\logic\Async;
 
-class Ajax extends Async
+class Book extends Async
 {
 
-    /**
-     * 查询请求
-     * @access public
-     * @param
-     * @return json
-     */
+    protected function initialize()
+    {
+        $this->module = 'book';
+    }
+
     public function query()
     {
-        $result = $this->run()->token()->sign()->send();
+        $result = $this->token()->run()->sign()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {
@@ -56,6 +55,7 @@ class Ajax extends Async
         );
 
         if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
+            $this->debugMsg[] = cookie('_ASYNCTOKEN') . '=' . $http_referer;
             $this->error('REQUEST TOKEN ERROR');
         }
 

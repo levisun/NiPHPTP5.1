@@ -24,7 +24,7 @@ class Cms extends Async
 
     public function query()
     {
-        $result = $this->run()->token()->sign()->send();
+        $result = $this->token()->run()->sign()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {
@@ -40,12 +40,6 @@ class Cms extends Async
      */
     protected function token()
     {
-        // 验证请求方式
-        // 异步只允许 Ajax Pjax Post 请求类型
-        if (!$this->request->isAjax() && !$this->request->isPjax() && !$this->request->isPost()) {
-            $this->error('REQUEST METHOD ERROR');
-        }
-
         $http_referer = sha1(
             // $this->request->server('HTTP_REFERER') .
             $this->request->server('HTTP_USER_AGENT') .

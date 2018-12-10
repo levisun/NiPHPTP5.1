@@ -148,6 +148,17 @@ class Async
     }
 
     /**
+     * 设置模块
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function setModule($_name)
+    {
+        $this->module = $_name;
+    }
+
+    /**
      * method 参数检查
      * @access private
      * @param

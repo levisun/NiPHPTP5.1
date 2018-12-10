@@ -124,7 +124,6 @@ class Ajax extends Async
      */
     protected function auth()
     {
-        echo $this->action;die();
         // 权限验证
         if ($this->action != 'login') {
             // 是否登录
