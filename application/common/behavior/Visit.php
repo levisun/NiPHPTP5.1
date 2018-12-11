@@ -24,8 +24,8 @@ class Visit
     public function run()
     {
         // 阻挡Ajax Pjax Post类型请求
-        // 阻挡common模块请求
-        if (request_block() || in_array(request()->module(), ['admin', 'api'])) {
+        // 阻挡common admin api模块请求
+        if (request_block()) {
             return true;
         }
 
@@ -63,7 +63,7 @@ class Visit
             return false;
         }
 
-        $user_agent = safe_filter(request()->server('HTTP_USER_AGENT'), true, true);
+        $user_agent = safe_filter_strict(request()->server('HTTP_USER_AGENT'));
 
         $result =
         model('common/model/visit')
@@ -103,7 +103,7 @@ class Visit
     public function createSitemap()
     {
         $file = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
-        if (is_file($file) && filectime($file) >= strtotime('-1 days')) {
+        if (is_file($file) && filectime($file) <= strtotime('-1 days')) {
             return false;
         }
 
@@ -175,7 +175,7 @@ class Visit
             if ($cat_url != $value['cat_url']) {
                 $xml .= '<url>' . PHP_EOL .
                         '<loc>' . $value['cat_url'] . '</loc>' . PHP_EOL .
-                        '<lastmod>' . $value['update_time'] . '</lastmod>' . PHP_EOL .
+                        '<lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL .
                         '<changefreq>daily</changefreq>' . PHP_EOL .
                         '<priority>1.0</priority>' . PHP_EOL .
                         '</url>' . PHP_EOL;
@@ -208,7 +208,7 @@ class Visit
             return false;
         }
 
-        $user_agent = safe_filter_strict(request()->server('HTTP_USER_AGENT'), true, true);
+        $user_agent = safe_filter_strict(request()->server('HTTP_USER_AGENT'));
 
         $result =
         model('common/model/searchengine')

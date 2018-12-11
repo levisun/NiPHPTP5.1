@@ -32,7 +32,7 @@ class Concurrent
         }
 
         // 阻挡Ajax Pjax Post类型请求
-        // 阻挡common模块请求
+        // 阻挡common admin api模块请求
         if (request_block()) {
             return true;
         }

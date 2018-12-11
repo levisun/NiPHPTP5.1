@@ -69,7 +69,7 @@ class IpInfo
         ->where([
             ['i.ip', '=', $_request_ip]
         ])
-        ->cache(__METHOD__ . $_request_ip, 28800)
+        ->cache(__METHOD__ . $_request_ip)
         ->find();
 
         $result = $result ? $result->toArray() : [];
@@ -90,15 +90,6 @@ class IpInfo
         } else {
             unset($result['id'], $result['update_time']);
         }
-
-        if (in_array($result['ip'], ['::1', '127.0.0.1'])) {
-            $result['country'] = '保留地址或本地局域网';
-        }
-
-        // $result['total'] =
-        // model('common/model/IpInfo')
-        // ->cache(__METHOD__ . 'total', 28800)
-        // ->count();
 
         return $result;
     }
@@ -278,7 +269,7 @@ class IpInfo
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
 
         $headers = ['content-type: application/x-www-form-urlencoded;charset=UTF-8'];
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);

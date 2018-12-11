@@ -156,9 +156,10 @@ function request_block()
         abort(404);
     }
 
+    // 阻挡common admin api模块请求
     // 阻挡空模块请求
     // 阻挡验证码请求
-    if (empty($module) && request()->path() == 'captcha') {
+    if (in_array($module, ['', 'admin', 'api']) && request()->path() == 'captcha') {
         return true;
     }
 

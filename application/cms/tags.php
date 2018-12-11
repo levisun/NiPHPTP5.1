@@ -16,7 +16,7 @@ return [
     // 应用初始化
     'app_init'     => [
         // 并发抛出504[每次访问万分之一几率执行操作]
-        // 'app\\common\\behavior\\Concurrent',
+        'app\\common\\behavior\\Concurrent',
     ],
     // 应用开始
     'app_begin'    => [],
@@ -29,8 +29,8 @@ return [
     // 应用结束
     'app_end'      => [
         // 访问记录
-        // 'app\\common\\behavior\\Visit',
+        'app\\common\\behavior\\Visit',
         // GET请求下清除运行垃圾文件[每次访问百分之一几率执行操作]
-        // 'app\\common\\behavior\\RemoveRunGarbage'
+        'app\\common\\behavior\\RemoveRunGarbage'
     ]
 ];
