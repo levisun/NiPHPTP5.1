@@ -37,8 +37,6 @@ return [
     'default_controller'  => 'account',
     // 默认操作名
     'default_action'      => 'login',
-    // URL伪静态后缀
-    'url_html_suffix'     => 'do',
 
     'user_auth_founder'   => 1,
     'user_auth_key'       => 'auth_id',                                         // 认证key

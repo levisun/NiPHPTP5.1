@@ -25,12 +25,6 @@ class RemoveRunGarbage
      */
     public function run()
     {
-        // 阻挡Ajax Pjax Post类型请求
-        // 阻挡common admin api模块请求
-        if (request_block()) {
-            return true;
-        }
-
         // 减少频繁操作,每次请求百分之一几率运行操作
         if (rand(1, 100) !== 1) {
             return true;
@@ -39,7 +33,7 @@ class RemoveRunGarbage
 
         $files = [
             'runtime' . DIRECTORY_SEPARATOR . 'cache',
-            // 'runtime' . DIRECTORY_SEPARATOR . 'log',
+            'runtime' . DIRECTORY_SEPARATOR . 'log',
             // 'runtime' . DIRECTORY_SEPARATOR . 'temp',
             'public'  . DIRECTORY_SEPARATOR . 'html',
         ];

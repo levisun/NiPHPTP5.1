@@ -125,7 +125,7 @@ class Index extends Base
     }
 
     /**
-     * 重定向
+     * 跳转
      * @access public
      * @param
      * @return mixed
@@ -161,17 +161,6 @@ class Index extends Base
         }
 
         return redirect($result);
-    }
-
-    /**
-     * IP信息
-     * @access public
-     * @param
-     * @return mixed
-     */
-    public function getipinfo()
-    {
-        return json(logic('common/IpInfo')->getInfo(input('get.ip')));
     }
 
     /**

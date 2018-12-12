@@ -23,12 +23,6 @@ class Visit
      */
     public function run()
     {
-        // 阻挡Ajax Pjax Post类型请求
-        // 阻挡common admin api模块请求
-        if (request_block()) {
-            return true;
-        }
-
         $this->addedVisit();
         $this->addedSearchengine();
         $this->createSitemap();
@@ -103,8 +97,10 @@ class Visit
     public function createSitemap()
     {
         $file = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
-        if (is_file($file) && filectime($file) <= strtotime('-1 days')) {
+        if (is_file($file) && filectime($file) >= strtotime('-1 days')) {
             return false;
+        } elseif (is_file($file)) {
+            @unlink($file);
         }
 
         global $map, $field;
@@ -163,7 +159,7 @@ class Visit
                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL .
                 '<url>' . PHP_EOL .
                 '<loc>' . request()->root(true) . '</loc>' . PHP_EOL .
-                '<lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL .
+                '<lastmod>' . date('Y-m-d H:i:s') . '</lastmod>' . PHP_EOL .
                 '<changefreq>daily</changefreq>' . PHP_EOL .
                 '<priority>1.00</priority>' . PHP_EOL .
                 '</url>' . PHP_EOL;

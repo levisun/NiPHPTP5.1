@@ -15,37 +15,29 @@ $expire = config('cache.expire');
 // CMS 模块
 Route::domain(['www', 'm'], function(){
     Route::miss('index/abort');
-    Route::rule('/', 'index/index');
-    Route::rule('index', 'index/index');
-    Route::rule('search$', 'index/search');
+    Route::get('/', 'index/index');
+    Route::get('index', 'index/index');
+    Route::get('search$', 'index/search');
 
-    Route::rule('list-:cid$', 'index/entry');
-    Route::rule('link-:cid$', 'index/entry');
-    Route::rule('channel-:cid$', 'index/channel');
-    Route::rule('feedback-:cid$', 'index/feedback');
-    Route::rule('message-:cid$', 'index/message');
-    Route::rule('tags-:id$', 'index/tags');
+    Route::get('list/<cid>$', 'index/entry');
+    Route::get('link/<cid>$', 'index/entry');
+    Route::get('channel/<cid>$', 'index/channel');
+    Route::get('feedback/<cid>$', 'index/feedback');
+    Route::get('message/<cid>$', 'index/message');
+    Route::get('tags/<id>$', 'index/tags');
 
-    Route::rule('comment-:cid-:id$', 'index/comment');
-    Route::rule('article-:cid-:id$', 'index/article');
-    Route::rule('download-:cid-:id$', 'index/article');
-    Route::rule('page-:cid$', 'index/article');
-    Route::rule('picture-:cid-:id$', 'index/article');
-    Route::rule('product-:cid-:id$', 'index/article');
+    Route::get('comment/<cid>/<id>$', 'index/comment');
+    Route::get('article/<cid>/<id>$', 'index/article');
+    Route::get('download/<cid>/<id>$', 'index/article');
+    Route::get('page/<cid>$', 'index/article');
+    Route::get('picture/<cid>/<id>$', 'index/article');
+    Route::get('product/<cid>/<id>$', 'index/article');
 
-    Route::rule('go-:cid-[:id]$',  'index/go');
+    Route::get('go/<cid>/<id>$',  'index/go');
 
-    Route::rule('getipinfo', 'index/getipinfo');
+    Route::get('error/<code>$', 'index/abort');
 
-    Route::rule('error-:code$', 'index/abort');
-
-    Route::rule('caiji', 'index/caiji');
-
-    // AJAX路由
-    Route::rule('ajax-query',  'ajax/query');
-    Route::rule('ajax-settle', 'ajax/settle');
-    Route::rule('ajax-upload', 'ajax/upload');
-    Route::rule('ajax-getipinfo', 'ajax/getipinfo');
+    Route::get('caiji', 'index/caiji');
 })
 ->bind('cms')
 ->ext('html')
@@ -53,47 +45,53 @@ Route::domain(['www', 'm'], function(){
 
 // BOOK 模块
 Route::domain('book', function(){
-    Route::rule('/', 'index/index');
-    Route::rule('index', 'index/index');
+    Route::get('/', 'index/index');
+    Route::get('index', 'index/index');
 
-    Route::rule('list-:bid$',        'index/entry');
-    Route::rule('article-:bid-:id$', 'index/article');
+    Route::get('list/<bid>$',        'index/entry');
+    Route::get('article/<bid>/<id>$', 'index/article');
 
-    Route::rule('search-:q$',        'index/search');
+    Route::get('search/<q>$',        'index/search');
 })
 ->bind('book')
 ->cache(APP_DEBUG ? false : $expire);
 
 // ADMIN 模块
 Route::domain('admin', function(){
-    Route::rule('/', 'account/login');
-    Route::rule('index', 'account/login');
+    Route::get('/', 'account/login');
+    Route::get('index', 'account/login');
 
     // AJAX路由
     Route::group('ajax', function(){
-        Route::rule('query',  'query');
-        Route::rule('settle', 'settle');
-        Route::rule('upload', 'upload');
+        Route::post('query',  'query');
+        Route::post('settle', 'settle');
+        Route::post('upload', 'upload');
     })->prefix('ajax/');
 })
 ->bind('admin')
-->ext('do')
+->ext('html')
 ->cache(false);
 
 // API 模块
 Route::domain('api', function(){
     Route::miss('api/abort');
+
+    $domain = request()->rootDomain() . request()->root() . '';
+
     Route::rule('/', 'api/abort')->allowCrossDomain();
+    Route::get('getipinfo', 'api/getipinfo')->allowCrossDomain();
+    Route::post('settle', 'api/settle')->allowCrossDomain();
+    Route::post('upload', 'api/upload')->allowCrossDomain();
 
-    Route::rule('getipinfo', 'api/getipinfo', 'GET|POST')->allowCrossDomain();
-    Route::rule('settle', 'api/settle', 'POST')->allowCrossDomain();
-    Route::rule('upload', 'api/upload', 'POST')->allowCrossDomain();
-
-    Route::rule('cms/query',  'cms/query', 'GET|POST')->allowCrossDomain();
+    Route::rule('cms/query',  'cms/query', 'GET|POST')
+    ->allowCrossDomain(true, [
+        'Access-Control-Allow-Origin'      => request()->scheme() . '://www.' . $domain,
+        'Access-Control-Allow-Credentials' => 'true',
+    ]);
     Route::rule('book/query',  'book/query', 'GET|POST')->allowCrossDomain();
 })
 ->bind('api')
-->ext('do')
+->ext('html')
 ->cache(APP_DEBUG ? false : $expire);
 
 // 禁止cdn|css|img|js等二级域名直接访问网站

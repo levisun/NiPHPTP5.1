@@ -45,17 +45,16 @@ class Banner
             ['pid', '=', $parent['id']],
             ['lang', '=', lang(':detect')],
         ])
-        ->cache(!APP_DEBUG ? __METHOD__ . $parent['id'] : false)
-        ->select()
-        ->toArray();
+        ->cache(!APP_DEBUG ? __METHOD__ . 'pid' . $parent['id'] : false)
+        ->select();
 
         $data = [];
         foreach ($result as $value) {
-            // $value = $value->toArray();
-            $value['url']    = url('/banner/' . $value['id']);
+            $value = $value->toArray();
+            // $value['url']    = url('banner/' . $value['id']);
             $value['width']  = $parent['width'];
             $value['height'] = $parent['height'];
-            $value['flag']   = encrypt($parent['id']);
+            $value['flag']   = encrypt($value['id']);
             $data[] = $value;
         }
 

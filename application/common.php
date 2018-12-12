@@ -133,40 +133,6 @@ function file_size($_size_or_path)
 }
 
 /**
- * 阻挡请求
- * @param
- * @return mixed
- */
-function request_block()
-{
-    // 阻挡Ajax Pjax Post类型请求
-    if (request()->isAjax() || request()->isPjax() || request()->isPost()) {
-        return true;
-    }
-
-    // 阻挡资源类型请求
-    if (!in_array(request()->ext(), ['', 'do', 'html', 'htm'])) {
-        return true;
-    }
-
-    // common模块抛出404
-    $module = strtolower(request()->module());
-
-    if ($module === 'common') {
-        abort(404);
-    }
-
-    // 阻挡common admin api模块请求
-    // 阻挡空模块请求
-    // 阻挡验证码请求
-    if (in_array($module, ['', 'admin', 'api']) && request()->path() == 'captcha') {
-        return true;
-    }
-
-    return false;
-}
-
-/**
  * 是否微信请求
  * @param
  * @return boolean
@@ -174,24 +140,6 @@ function request_block()
 function is_wechat_request()
 {
     return strpos(request()->server('HTTP_USER_AGENT'), 'MicroMessenger') !== false ? true : false;
-}
-
-/**
- * Url生成
- * @param string        $url 路由地址
- * @param string|array  $vars 变量
- * @param bool|string   $domain 域名
- * @return string
- */
-function url($_url = '', $_vars = '', $_domain = false)
-{
-    return Url::build($_url, $_vars, true, $_domain);
-    return
-    str_replace(
-        ['http:', 'https:'],
-        '',
-        Url::build($_url, $_vars, true, $_domain)
-    );
 }
 
 /**
@@ -296,12 +244,12 @@ function lang($_name, $_vars = [], $_lang = '')
         // 加载对应语言包
         $lang_path  = env('app_path') . request()->module();
         $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
-        $lang_path .= safe_filter_strict(Lang::detect(), true, true) . '.php';
+        $lang_path .= safe_filter_strict(Lang::detect()) . '.php';
         Lang::load($lang_path);
 
         return true;
     } elseif ($_name == ':detect') {
-        return safe_filter_strict(Lang::detect(), true, true);
+        return safe_filter_strict(Lang::detect());
     } else {
         return Lang::get($_name, $_vars, $_lang);
     }

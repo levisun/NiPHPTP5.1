@@ -16,6 +16,9 @@ use think\Response;
 use think\Request;
 use think\exception\HttpResponseException;
 
+use think\facade\Config;
+use think\facade\Lang;
+
 class Async
 {
     protected $request;
@@ -89,7 +92,7 @@ class Async
     {
         $this->analysisMethod();                                                // 解析method参数
         $this->checkMethod();                                                   // method参数检查
-
+        $this->loadLang();                                                      // 加载语言
         return $this;
     }
 
@@ -145,6 +148,20 @@ class Async
         }
 
         return $this;
+    }
+
+    /**
+     * 加载模块语言包
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function loadLang()
+    {
+        $lang_path  = env('app_path') . $this->module;
+        $lang_path .= DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR;
+        $lang_path .= safe_filter_strict(Lang::detect()) . '.php';
+        Lang::load($lang_path);
     }
 
     /**

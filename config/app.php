@@ -39,7 +39,7 @@ return [
     // pathinfo分隔符
     'pathinfo_depr'        => '/',
     // URL伪静态后缀
-    'url_html_suffix'      => 'do|html',
+    'url_html_suffix'      => 'html',
     // 路由使用完整匹配
     'route_complete_match' => true,
     // 是否强制使用路由
