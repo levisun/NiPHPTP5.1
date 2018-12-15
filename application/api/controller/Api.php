@@ -16,15 +16,35 @@ use app\common\logic\Async;
 
 class Api extends Async
 {
+    protected $handleMethod = [
+        'login',
+        'logout',
+        'added',
+        'editor',
+        'remove',
+        'sort',
+    ];
 
-    public function settle()
+    protected $uploadMethod = [
+        'upload',
+    ];
+
+    public function handle()
     {
-        $this->token();
+        if (!in_array($this->action, $this->handleMethod)) {
+            $this->error('[METHOD] method error');
+        }
+
+        $this->auth()->token();
     }
 
     public function upload()
     {
-        $this->token()->auth();
+        if (!in_array($this->action, $this->uploadMethod)) {
+            $this->error('[METHOD] method error');
+        }
+
+        $this->auth()->token();
     }
 
     /**

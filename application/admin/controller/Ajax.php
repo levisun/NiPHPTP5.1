@@ -16,6 +16,18 @@ use app\common\logic\Async;
 
 class Ajax extends Async
 {
+    private $handleMethod = [
+        'login',
+        'logout',
+        'added',
+        'editor',
+        'remove',
+        'sort',
+    ];
+
+    private $uploadMethod = [
+        'upload',
+    ];
 
     /**
      * 查询请求
@@ -25,6 +37,14 @@ class Ajax extends Async
      */
     public function query()
     {
+        $this->apiCache = APP_DEBUG ? false : true;
+
+        if (in_array($this->action, $this->handleMethod)) {
+            $this->error('[METHOD] method error');
+        } elseif (in_array($this->action, $this->uploadMethod)) {
+            $this->error('[METHOD] method error');
+        }
+
         $result = $this->run()->token()->auth()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
@@ -39,8 +59,12 @@ class Ajax extends Async
      * @param
      * @return json
      */
-    public function settle()
+    public function handle()
     {
+        if (!in_array($this->action, $this->handleMethod)) {
+            $this->error('[METHOD] method error');
+        }
+
         $result = $this->run()->token()->auth()->send();
         if ($result === true) {
             $this->success(lang('exec success'), $result);
@@ -57,6 +81,10 @@ class Ajax extends Async
      */
     public function upload()
     {
+        if (!in_array($this->action, $this->uploadMethod)) {
+            $this->error('[METHOD] method error');
+        }
+
         $result = $this->run()->token()->auth()->send();
         if ($result === false) {
             return $this->error($this->errorMsg);

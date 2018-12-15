@@ -12,9 +12,9 @@
  */
 namespace app\api\controller;
 
-use app\common\logic\Async;
+use app\api\controller\Api;
 
-class Cms extends Async
+class Cms extends Api
 {
 
     protected function initialize()
@@ -24,6 +24,14 @@ class Cms extends Async
 
     public function query()
     {
+        $this->apiCache = APP_DEBUG ? false : true;
+
+        if (in_array($this->action, $this->handleMethod)) {
+            $this->error('[METHOD] method error');
+        } elseif (in_array($this->action, $this->uploadMethod)) {
+            $this->error('[METHOD] method error');
+        }
+
         $result = $this->token()->run()->sign()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);

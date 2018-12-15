@@ -70,14 +70,14 @@ function get_template_config($_default_theme)
     $scheme = request()->scheme() . '://';
 
     $template['tpl_replace_string'] = [
-        '__DOMAIN__'      => request()->root(true) . '/',
-        '__PHP_SELF__'    => basename(request()->baseFile()),
-        '__CDN__'         => $scheme . 'cdn.' . $cdn,
-        '__STATIC__'      => $scheme . 'cdn.' . $cdn . 'static/',
-        '__THEME__'       => $_default_theme,
-        '__CSS__'         => $scheme . 'css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
-        '__JS__'          => $scheme . 'js.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
-        '__IMG__'         => $scheme . 'img.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
+        '__DOMAIN__'   => request()->root(true) . '/',
+        '__PHP_SELF__' => basename(request()->baseFile()),
+        '__CDN__'      => $scheme . 'cdn.' . $cdn,
+        '__STATIC__'   => $scheme . 'cdn.' . $cdn . 'static/',
+        '__THEME__'    => $_default_theme,
+        '__CSS__'      => $scheme . 'css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
+        '__JS__'       => $scheme . 'js.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
+        '__IMG__'      => $scheme . 'img.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
     ];
 
     return $template;
@@ -324,7 +324,7 @@ function cookie($name, $value = '', $option = null)
  * @return string           加密后的字符串
  */
 function encrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
-    $_authkey = md5($_authkey . env('app_path'));
+    $_authkey = md5($_authkey . __DIR__);
 
     if (is_array($_str)) {
         $en = [];
@@ -351,7 +351,7 @@ function encrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
  * @return string           加密前的字符串
  */
 function decrypt($_str, $_authkey = '0af4769d381ece7b4fddd59dcf048da6') {
-    $_authkey = md5($_authkey . env('app_path'));
+    $_authkey = md5($_authkey . __DIR__);
 
     if (is_array($_str)) {
         $de = [];

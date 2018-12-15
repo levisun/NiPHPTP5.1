@@ -41,6 +41,7 @@ class Async
     protected $logicObject = null;                                              // 业务类对象
 
     protected $apiDebug    = false;                                             // 调试模式
+    protected $apiCache    = false;                                             // 缓存
     protected $debugMsg    = [];                                                // 错误信息
 
     /**
@@ -86,7 +87,7 @@ class Async
      * 运行
      * @access protected
      * @param
-     * @return
+     * @return object
      */
     protected function run()
     {
@@ -100,7 +101,7 @@ class Async
      * 验证TOKEN
      * @access protected
      * @param
-     * @return mixed
+     * @return object
      */
     protected function token()
     {
@@ -111,7 +112,7 @@ class Async
      * 验证权限
      * @access protected
      * @param
-     * @return mixed
+     * @return object
      */
     protected function auth()
     {
@@ -122,7 +123,7 @@ class Async
      * 验证签名
      * @access protected
      * @param
-     * @return mixed
+     * @return object
      */
     protected function sign()
     {
@@ -192,6 +193,7 @@ class Async
 
         $file_path .= ucfirst($this->class) . '.php';
 
+        // 文件是否存在
         if (!is_file(env('app_path') . $file_path)) {
             $this->debugMsg[] = $file_path;
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
@@ -323,7 +325,7 @@ class Async
             ];
         }
 
-        $response = Response::create($result, $this->format, 200)->allowCache(!APP_DEBUG);
+        $response = Response::create($result, $this->format, 200)->allowCache($this->apiCache);
 
         throw new HttpResponseException($response);
     }

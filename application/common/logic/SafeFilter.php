@@ -26,7 +26,7 @@ class SafeFilter
     {
         if (is_array($_data)) {
             foreach ($_data as $key => $value) {
-                $_data[$key] = $this->filter($value);
+                $_data[$key] = $this->filter($value, $_strict);
             }
         } else {
             $_data = trim($_data);

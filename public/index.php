@@ -17,6 +17,10 @@
  */
 namespace think;
 
+define('APP_DEBUG', false);
+
+
+
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP VERSION >= 5.6.0!');
 if (!extension_loaded("PDO")) die('PDO');
@@ -25,7 +29,6 @@ if (!is_file(__DIR__ . '/../runtime/install.lock')) {
     exit;
 }
 
-define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.1_20181207 Alpha');
 define('TP_VERSION', '5.1.30 LTS');
 define('DS', DIRECTORY_SEPARATOR);

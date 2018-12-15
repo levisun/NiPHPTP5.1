@@ -56,7 +56,7 @@ $("form").submit(function(){
     form_data += "&timestamp=" + $.timestamp();
     form_data += "&"+$(this).serialize();
     $.loading({
-        url: request.ajax.settle,
+        url: request.ajax.handle,
         async: false,
         data: form_data,
     }, function(result){

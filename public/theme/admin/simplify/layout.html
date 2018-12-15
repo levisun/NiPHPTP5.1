@@ -28,7 +28,7 @@
         url:        "{:url('', '', true)}",
         ajax: {
             query:  "{:url('ajax/query', '', true)}",
-            settle: "{:url('ajax/settle', '', true)}",
+            handle: "{:url('ajax/handle', '', true)}",
             upload: "{:url('ajax/upload', '', true)}",
         },
         static:     "__STATIC__",
@@ -145,7 +145,7 @@
 <script type="text/javascript">
 $("._handle_logout").click(function(){
     $.pjax({
-        url: request.ajax.settle,
+        url: request.ajax.handle,
         data: {
             timestamp: $.timestamp(),
             method: "account.logout.logout"

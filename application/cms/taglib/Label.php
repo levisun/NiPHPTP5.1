@@ -63,7 +63,7 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method: "tags.query",
                             sign:   jQuery.sign({
@@ -112,7 +112,7 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method:    "search.query",
                             q:         "' . $_tag['q'] . '",
@@ -167,7 +167,7 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method: "article.hits",
                             timestamp: "' . $time . '",
@@ -183,7 +183,7 @@ class Label extends TagLib
                     });
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method: "article.query",
                             cid:   "' . $_tag['cid'] . '",
@@ -231,7 +231,7 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method: "article.hits",
                             timestamp: "' . $time . '",
@@ -270,7 +270,7 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method: "catlist.query",
                             cid:    "' . $_tag['cid'] . '",
@@ -335,7 +335,7 @@ class Label extends TagLib
                 jQuery(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method:   "banner.query",
                             slide_id: "' . $_tag['id'] . '",
@@ -394,7 +394,7 @@ class Label extends TagLib
                 $(function(){
                     jQuery.pjax({
                         url: request.api.query,
-                        type: "post",
+                        type: "get",
                         data: {
                             method:  "ads.query",
                             ads_id:  "' . $_tag['id'] . '",

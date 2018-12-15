@@ -83,12 +83,12 @@ Route::domain('api', function(){
     Route::post('settle', 'api/settle')->allowCrossDomain();
     Route::post('upload', 'api/upload')->allowCrossDomain();
 
-    Route::rule('cms/query',  'cms/query', 'GET|POST')
+    Route::get('cms/query',  'cms/query')
     ->allowCrossDomain(true, [
         'Access-Control-Allow-Origin'      => request()->scheme() . '://www.' . $domain,
         'Access-Control-Allow-Credentials' => 'true',
     ]);
-    Route::rule('book/query',  'book/query', 'GET|POST')->allowCrossDomain();
+    Route::get('book/query',  'book/query')->allowCrossDomain();
 })
 ->bind('api')
 ->ext('html')

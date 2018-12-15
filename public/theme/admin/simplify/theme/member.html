@@ -49,7 +49,7 @@ $.pjax({
 $("body").on("click", "#set", function(){
     var data = $(this).attr("data");
     $.pjax({
-        url: request.ajax.settle,
+        url: request.ajax.handle,
         type: "post",
         data: {
             timestamp: $.timestamp(),

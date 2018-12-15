@@ -84,7 +84,7 @@ $(window).bind("popstate", function(result) {
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
     $.pjax({
-        url: request.ajax.settle,
+        url: request.ajax.handle,
         async: false,
         type: "post",
         data: {

@@ -83,7 +83,7 @@ $("form").submit(function(){
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
-        url: request.ajax.settle,
+        url: request.ajax.handle,
         async: false,
         type: "post",
         data: form_data,

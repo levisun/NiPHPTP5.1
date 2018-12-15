@@ -101,7 +101,7 @@ $(".submit").click(function(){
     form_data += "&"+$("form").serialize();
 
     $.pjax({
-        url: request.ajax.settle,
+        url: request.ajax.handle,
         async: false,
         type: "post",
         data: form_data,
