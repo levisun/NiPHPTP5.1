@@ -54,6 +54,7 @@ Route::domain('book', function(){
     Route::get('search/<q>$',        'index/search');
 })
 ->bind('book')
+->ext('html')
 ->cache(APP_DEBUG ? false : $expire);
 
 // ADMIN 模块
@@ -74,21 +75,29 @@ Route::domain('admin', function(){
 
 // API 模块
 Route::domain('api', function(){
+    $refer = parse_url(request()->server('HTTP_ORIGIN'));
+    if (empty($refer['scheme']) || !in_array($refer['host'], config('whitelist'))) {
+        abort(404);
+    }
+
+    $header = [
+        'Access-Control-Allow-Credentials' => 'true',
+        'Access-Control-Allow-Origin'      => $refer['scheme'] . '://' . $refer['host'],
+    ];
+
     Route::miss('api/abort');
 
-    $domain = request()->rootDomain() . request()->root() . '';
+    Route::group('', function(){
+        Route::rule('/', 'api/abort');
 
-    Route::rule('/', 'api/abort')->allowCrossDomain();
-    Route::get('getipinfo', 'api/getipinfo')->allowCrossDomain();
-    Route::post('settle', 'api/settle')->allowCrossDomain();
-    Route::post('upload', 'api/upload')->allowCrossDomain();
+        Route::rule('getipinfo', 'api/getipinfo');
+        Route::post('settle', 'api/settle');
+        Route::post('upload', 'api/upload');
 
-    Route::get('cms/query',  'cms/query')
-    ->allowCrossDomain(true, [
-        'Access-Control-Allow-Origin'      => request()->scheme() . '://www.' . $domain,
-        'Access-Control-Allow-Credentials' => 'true',
-    ]);
-    Route::get('book/query',  'book/query')->allowCrossDomain();
+        Route::get('cms/query',  'cms/query');
+        Route::get('book/query',  'book/query');
+    })
+    ->allowCrossDomain(true, $header);
 })
 ->bind('api')
 ->ext('html')

@@ -22,7 +22,8 @@ class Index extends Base
      */
     public function index()
     {
-        return $this->fetch('index');
+        echo '<input type="text" value="'.safe_filter_strict('学霸汇总"\'\|!+= 初一上册数学考试必考').'">';die();
+        // return $this->fetch('index');
     }
 
     /**

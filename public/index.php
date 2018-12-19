@@ -17,7 +17,7 @@
  */
 namespace think;
 
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 
 
