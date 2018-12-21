@@ -10,12 +10,23 @@
  * @link      www.NiPHP.com
  * @since     2017/12
  */
+
 use think\facade\Cookie;
+use think\facade\Env;
 use think\facade\Lang;
+use think\facade\Request;
 use think\facade\Session;
 use think\facade\Url;
 
 defined('APP_DEBUG') or define('APP_DEBUG', true);
+define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root() . '/');
+define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root() . '/');
+define('API_TOKEN', sha1(
+    Request::server('HTTP_USER_AGENT') .
+    Request::ip() .
+    Env::get('root_path') .
+    date('Ymd')
+));
 
 /**
  * emoji编码
@@ -66,18 +77,17 @@ function get_template_config($_default_theme)
                              request()->module() . DIRECTORY_SEPARATOR .
                              $_default_theme . DIRECTORY_SEPARATOR;
 
-    $cdn = request()->rootDomain() . request()->root() . '/';
-    $scheme = request()->scheme() . '://';
+    $cdn = request()->scheme() . ':' . CDN_DOMAIN;
 
     $template['tpl_replace_string'] = [
         '__DOMAIN__'   => request()->root(true) . '/',
         '__PHP_SELF__' => basename(request()->baseFile()),
-        '__CDN__'      => $scheme . 'cdn.' . $cdn,
-        '__STATIC__'   => $scheme . 'cdn.' . $cdn . 'static/',
+        '__CDN__'      => $cdn,
+        '__STATIC__'   => $cdn . 'static/',
         '__THEME__'    => $_default_theme,
-        '__CSS__'      => $scheme . 'css.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
-        '__JS__'       => $scheme . 'js.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
-        '__IMG__'      => $scheme . 'img.' . $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
+        '__CSS__'      => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/css/',
+        '__JS__'       => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/js/',
+        '__IMG__'      => $cdn . 'theme/' . request()->module() . '/' . $_default_theme . '/images/',
     ];
 
     return $template;

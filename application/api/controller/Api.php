@@ -31,20 +31,12 @@ class Api extends Async
 
     public function handle()
     {
-        if (!in_array($this->action, $this->handleMethod)) {
-            $this->error('[METHOD] method error');
-        }
-
-        $this->auth()->token();
+        $this->methodAuth('handle')->token();
     }
 
     public function upload()
     {
-        if (!in_array($this->action, $this->uploadMethod)) {
-            $this->error('[METHOD] method error');
-        }
-
-        $this->auth()->token();
+        $this->methodAuth('upload')->token();
     }
 
     /**
@@ -71,41 +63,21 @@ class Api extends Async
     }
 
     /**
-     * 验证AUTH
+     * 验证METHOD AUTH
      * @access protected
      * @param
      * @return mixed
      */
-    protected function auth()
+    protected function methodAuth($_type)
     {
-        # code...
-    }
-
-    /**
-     * 验证TOKEN
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function token()
-    {
-        // 验证请求方式
-        // 异步只允许 Ajax Pjax Post 请求类型
-        if (!$this->request->isAjax() && !$this->request->isPjax() && !$this->request->isPost()) {
-            $this->error('REQUEST METHOD ERROR');
-        }
-
-        $http_referer = sha1(
-            // $this->request->server('HTTP_REFERER') .
-            $this->request->server('HTTP_USER_AGENT') .
-            $this->request->ip() .
-            env('root_path') .
-            date('Ymd')
-        );
-
-        if (!cookie('?_ASYNCTOKEN') or !hash_equals($http_referer, cookie('_ASYNCTOKEN'))) {
-            $this->debugMsg[] = cookie('_ASYNCTOKEN') . '=' . $http_referer;
-            $this->error('REQUEST TOKEN ERROR');
+        if ($_type === 'handle' && !in_array($this->action, $this->handleMethod)) {
+            $this->error('[METHOD] ' . $this->method . ' error');
+        } elseif ($_type === 'upload' && !in_array($this->action, $this->uploadMethod)) {
+            $this->error('[METHOD] ' . $this->method . ' error');
+        } elseif ($_type === 'query') {
+            if (in_array($this->action, $this->handleMethod) || in_array($this->action, $this->uploadMethod)) {
+                $this->error('[METHOD] ' . $this->method . ' error');
+            }
         }
 
         return $this;

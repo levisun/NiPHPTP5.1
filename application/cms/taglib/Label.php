@@ -66,14 +66,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "tags.query",
+                            token: "' . API_TOKEN . '",
                             sign:   jQuery.sign({
-                                method: "tags.query"
+                                method: "tags.query",
+                                token: "' . API_TOKEN . '"
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code !== "SUCCESS") {
                                 return false;
@@ -114,19 +112,17 @@ class Label extends TagLib
                         url: request.api.query,
                         type: "get",
                         data: {
-                            method:    "search.query",
-                            q:         "' . $_tag['q'] . '",
-                            p:         "' . $_tag['p'] . '",
+                            method: "search.query",
+                            token:  "' . API_TOKEN . '",
+                            q:      "' . $_tag['q'] . '",
+                            p:      "' . $_tag['p'] . '",
                             sign:  jQuery.sign({
-                                method:    "search.query",
-                                q:         "' . $_tag['q'] . '",
-                                p:         "' . $_tag['p'] . '"
+                                method: "search.query",
+                                token:  "' . API_TOKEN . '",
+                                q:      "' . $_tag['q'] . '",
+                                p:      "' . $_tag['p'] . '"
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -170,11 +166,13 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
+                            token: "' . API_TOKEN . '",
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
+                                token: "' . API_TOKEN . '",
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -186,18 +184,16 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.query",
+                            token: "' . API_TOKEN . '",
                             cid:   "' . $_tag['cid'] . '",
                             id:    "' . $_tag['id'] . '",
                             sign:  jQuery.sign({
                                 method: "article.query",
+                                token: "' . API_TOKEN . '",
                                 cid:    "' . $_tag['cid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -234,11 +230,13 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
+                            token: "' . API_TOKEN . '",
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
+                                token: "' . API_TOKEN . '",
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -273,18 +271,16 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "catlist.query",
+                            token:  "' . API_TOKEN . '",
                             cid:    "' . $_tag['cid'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:   jQuery.sign({
                                 method: "catlist.query",
+                                token:  "' . API_TOKEN . '",
                                 cid:    "' . $_tag['cid'] . '",
                                 p:      "' . $_tag['p'] . '",
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -338,16 +334,14 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:   "banner.query",
+                            token:    "' . API_TOKEN . '",
                             slide_id: "' . $_tag['id'] . '",
                             sign:     jQuery.sign({
                                 method:   "banner.query",
+                                token:    "' . API_TOKEN . '",
                                 slide_id: "' . $_tag['id'] . '"
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -397,16 +391,14 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:  "ads.query",
+                            token:   "' . API_TOKEN . '",
                             ads_id:  "' . $_tag['id'] . '",
                             sign:    jQuery.sign({
                                 method: "ads.query",
+                                token:  "' . API_TOKEN . '",
                                 ads_id: "' . $_tag['id'] . '"
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code !== "SUCCESS") {
                                 return false;

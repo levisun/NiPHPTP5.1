@@ -39,13 +39,7 @@ class Ajax extends Async
     {
         $this->apiCache = APP_DEBUG ? false : true;
 
-        if (in_array($this->action, $this->handleMethod)) {
-            $this->error('[METHOD] method error');
-        } elseif (in_array($this->action, $this->uploadMethod)) {
-            $this->error('[METHOD] method error');
-        }
-
-        $result = $this->run()->token()->auth()->send();
+        $result = $this->run()->token()->methodAuth('query')->auth()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {
@@ -61,11 +55,7 @@ class Ajax extends Async
      */
     public function handle()
     {
-        if (!in_array($this->action, $this->handleMethod)) {
-            $this->error('[METHOD] method error');
-        }
-
-        $result = $this->run()->token()->auth()->send();
+        $result = $this->run()->token()->methodAuth('handle')->auth()->send();
         if ($result === true) {
             $this->success(lang('exec success'), $result);
         } else {
@@ -81,11 +71,7 @@ class Ajax extends Async
      */
     public function upload()
     {
-        if (!in_array($this->action, $this->uploadMethod)) {
-            $this->error('[METHOD] method error');
-        }
-
-        $result = $this->run()->token()->auth()->send();
+        $result = $this->run()->token()->methodAuth('upload')->auth()->send();
         if ($result === false) {
             return $this->error($this->errorMsg);
         } elseif (is_string($result)) {
@@ -101,6 +87,27 @@ class Ajax extends Async
             }
 
         }
+    }
+
+    /**
+     * 验证METHOD AUTH
+     * @access protected
+     * @param
+     * @return mixed
+     */
+    protected function methodAuth($_type)
+    {
+        if ($_type === 'handle' && !in_array($this->action, $this->handleMethod)) {
+            $this->error('[METHOD] ' . $this->method . ' error');
+        } elseif ($_type === 'upload' && !in_array($this->action, $this->uploadMethod)) {
+            $this->error('[METHOD] ' . $this->method . ' error');
+        } elseif ($_type === 'query') {
+            if (in_array($this->action, $this->handleMethod) || in_array($this->action, $this->uploadMethod)) {
+                $this->error('[METHOD] ' . $this->method . ' error');
+            }
+        }
+
+        return $this;
     }
 
     /**

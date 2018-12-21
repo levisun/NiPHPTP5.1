@@ -53,7 +53,7 @@ class Article
             $result->content = htmlspecialchars_decode($result->content);
             $result->url     = url($table_name . '/' . $result->category_id . '/' . $result->id);
 
-            $result->cat_url     = url('list/' . $result->category_id);
+            $result->cat_url = url('list/' . $result->category_id);
 
             if ($result->hits > 10000) {
                 $result->hits_format = number_format($result->hits / 10000, 2) . 'M+';
@@ -69,7 +69,7 @@ class Article
             ->where([
                 ['d.main_id', '=', $result->id],
             ])
-            ->cache(!APP_DEBUG ? __METHOD__ . $result->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . 'FIELDS' . $result->id : false)
             ->select()
             ->toArray();
             foreach ($fields as $val) {
@@ -86,12 +86,10 @@ class Article
                 ->where([
                     ['main_id', '=', $result->id],
                 ])
-                ->cache(!APP_DEBUG ? __METHOD__ . $result->id : false)
+                ->cache(!APP_DEBUG ? __METHOD__ . 'ALBUMS' . $result->id : false)
                 ->select()
                 ->toArray();
             }
-
-
 
             // 查询标签
             $result->tags =
@@ -102,19 +100,15 @@ class Article
                 ['a.category_id', '=', $result->category_id],
                 ['a.article_id', '=', $result->id],
             ])
-            ->cache(!APP_DEBUG ? __METHOD__ . $result['category_id'] . $result->id : false)
+            ->cache(!APP_DEBUG ? __METHOD__ . 'TAGS' . $result->category_id . $result->id : false)
             ->select()
             ->toArray();
-
-
 
             // 上一篇 下一篇
             if (in_array($table_name, ['article', 'download', 'picture', 'product'])) {
                 $result->prev = $this->previous($_id, $_cid, $table_name);
                 $result->next = $this->next($_id, $_cid, $table_name);
             }
-
-
 
             // 更新浏览数
             model('common/' . $table_name)

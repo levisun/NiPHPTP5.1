@@ -30,11 +30,11 @@ class SafeFilter
             }
         } else {
             $_data = trim($_data);
-            $_data = $this->enter($_data);
             $_data = $this->PHP($_data);
             $_data = $this->XSS($_data);
             $_data = $this->XXE($_data);
             $_data = $this->SQL($_data, $_strict);
+            $_data = $this->enter($_data);
             $_data = $this->strToEncode($_data);
         }
 
@@ -57,7 +57,7 @@ class SafeFilter
             // 特殊字符
             '‖' => '&#124;',
             '“' => '&ldquo;', '”' => '&rdquo;',
-            '‘' => '&lsquo;', '’' => '&rsquo;',
+            // '‘' => '&lsquo;', '’' => '&rsquo;',
             '™' => '&trade;', '®' => '&reg;', '©' => '&copy;', '￥' => '&yen;', '℃' => '&#8451;', '℉' => '&#8457;',
             '+' => '&#43;', '—' => '&ndash;', '×' => '&times;', '÷' => '&divide;',
         ];
@@ -96,42 +96,27 @@ class SafeFilter
 
         // $_content = get_magic_quotes_gpc() === false ? addslashes($_content) : $_content;
 
-        if ($_strict) {
-            $pattern = [
-                // 'and '   => '&#97;nd ',
-                // 'create' => '&#99;reate',
-                // 'delete' => '&#100;elete',
-                // 'update' => '&#117;pdate',
-                // 'or '    => '&#111;r ',
+        $pattern = [
+            // ASCII 安全字符
+            '!'  => '&#33;',
+            '%'  => '&#37;',
+            '('  => '&#40;',
+            ')'  => '&#41;',
+            '*'  => '&#42;',
+            '+'  => '&#43;',
+            ';'  => '&#59;',
+            '='  => '&#61;',
+            '\\' => '&#92;',
+            '^'  => '&#94;',
+            '`'  => '&#96;',
+            '|'  => '&#124;',
+            '~'  => '&#126;',
+            '?'  => '&#129;',
+            '‚'  => '&sbquo;',
+            // '\'' => '&quot;',
+        ];
 
-                // 安全字符
-                '`'  => '&acute;',
-                '~'  => '&#126;',
-                '!'  => '&#33;',
-                '='  => '&#61;',
-                '|'  => '&#124;',
-                '”'  => '&quot;',
-                '“'  => '&quot;',
-                '?'  => '&#129;',
-                '|'  => '&#124;',
-                '*'  => '&#42;',
-                '\\' => '&#92;',
-                '‚'  => '&sbquo;',
-                '^'  => '&#94;',
-                '@'  => '&#64;',
-                '\'' => '&quot;',
-
-                /*'/(#)+/si'   => '&#35;',   '/(\!)+/si'  => '&#33;',
-                '/(\?)+/si'  => '&#129;',  '/(\|)+/si'  => '&#124;',
-                '/(\*)+/si'  => '&#42;',   '/(`)+/si'   => '&acute;',
-                '/(\\\)+/si' => '&#92;',   '/(~)+/si'   => '&#126;',
-                '/(‚)+/si'   => '&sbquo;', '/(\^)+/si'  => '&#94;',
-                '/(\@)+/si'  => '&#64;',   '/(=)+/si'   => '&#61;',*/
-            ];
-
-            $_content = str_replace(array_keys($pattern), array_values($pattern), $_content);
-
-        }
+        $_content = str_replace(array_keys($pattern), array_values($pattern), $_content);
 
         return $_content;
     }

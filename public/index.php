@@ -17,13 +17,13 @@
  */
 namespace think;
 
-define('APP_DEBUG', true);
+define('APP_DEBUG', false);
 
 
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP VERSION >= 5.6.0!');
-if (!extension_loaded("PDO")) die('PDO');
+if (!extension_loaded('PDO')) die('PDO');
 if (!is_file(__DIR__ . '/../runtime/install.lock')) {
     header("location:/install.php");
     exit;

@@ -27,6 +27,7 @@ class Async
 
     protected $appid;
     protected $appsecret;
+    protected $token       = null;                                              // 令牌
     protected $sign;                                                            // 签名
     protected $sign_type   = 'md5';                                             // 签名类型
     protected $timestamp   = 0;                                                 // 请求时间
@@ -98,17 +99,6 @@ class Async
     }
 
     /**
-     * 验证TOKEN
-     * @access protected
-     * @param
-     * @return object
-     */
-    protected function token()
-    {
-        abort(404);
-    }
-
-    /**
      * 验证权限
      * @access protected
      * @param
@@ -117,6 +107,33 @@ class Async
     protected function auth()
     {
         abort(404);
+    }
+
+    /**
+     * 验证TOKEN
+     * @access protected
+     * @param
+     * @return object
+     */
+    protected function token()
+    {
+        $referer = sha1(
+            // $this->request->server('HTTP_ORIGIN') .
+            $this->request->server('HTTP_USER_AGENT') .
+            $this->request->ip() .
+            env('root_path') .
+            date('Ymd')
+        );
+
+        if (!$this->token or !hash_equals($referer, $this->token)) {
+            $this->debugMsg[] = 'token=' . $referer;
+            trace('[ASYNC] request token error', 'error');
+            trace('[ASYNC] self::token ' . $referer, 'error');
+            trace('[ASYNC] request::token ' . $this->token, 'error');
+            $this->error('REQUEST TOKEN ERROR');
+        }
+
+        return $this;
     }
 
     /**
@@ -145,6 +162,7 @@ class Async
 
         if (!hash_equals($str, $this->sign)) {
             $this->debugMsg['sign'] = $str;
+            trace('[SIGN] request sign error', 'error');
             $this->error('SIGN ERROR');
         }
 
@@ -197,6 +215,8 @@ class Async
         if (!is_file(env('app_path') . $file_path)) {
             $this->debugMsg[] = $file_path;
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+            trace('[METHOD] request params error', 'error');
+            trace('[METHOD] ' . $file_path, 'error');
             $this->error('[METHOD] PARAMETER ERROR');
         }
 
@@ -208,6 +228,8 @@ class Async
         if (!method_exists($this->logicObject, $this->action)) {
             $this->debugMsg[] = $file_path;
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
+            trace('[METHOD] request params error', 'error');
+            trace('[METHOD] ' . $file_path, 'error');
             $this->error('[METHOD] PARAMETER ERROR');
         }
     }
@@ -224,6 +246,7 @@ class Async
     private function analysisMethod()
     {
         if (!$this->method) {
+            trace('[METHOD] Undefined parameters', 'error');
             $this->error('[METHOD] Undefined parameters');
         }
 
@@ -252,13 +275,15 @@ class Async
     private function init()
     {
         $this->module    = strtolower($this->request->module());                // 模块名称
-        $this->appid     = input('param.appid');                                //
+        $this->appid     = input('param.appid/f');                              //
         $this->appsecret = input('param.appsecret');                            //
+        $this->token     = input('param.token');                                // 令牌
         $this->sign      = input('param.sign');                                 // 请求数据签名
         $this->sign_type = strtolower(input('param.sign_type', 'md5'));         // 签名类型
         $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
         $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
         $this->method    = strtolower(input('param.method'));                   // 请求API方法名
+        // $this->apiCache  = input('param.cache/b', true);                        // 缓存数据
         $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
 
         $this->version   = input('param.version', null);                        // 版本号

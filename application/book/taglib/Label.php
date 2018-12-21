@@ -45,12 +45,14 @@ class Label extends TagLib
                         url: request.api.query,
                         type: "post",
                         data: {
-                            method: "article.hits",
+                            method:    "article.hits",
+                            token:     "' . API_TOKEN . '",
                             timestamp: "' . $time . '",
                             bid:       "' . $_tag['bid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
+                                token:     "' . API_TOKEN . '",
                                 timestamp: "' . $time . '",
                                 bid:       "' . $_tag['bid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -63,18 +65,16 @@ class Label extends TagLib
                         type: "post",
                         data: {
                             method: "article.query",
+                            token:  "' . API_TOKEN . '",
                             bid:   "' . $_tag['bid'] . '",
                             id:    "' . $_tag['id'] . '",
                             sign:  jQuery.sign({
                                 method: "article.query",
+                                token:  "' . API_TOKEN . '",
                                 bid:    "' . $_tag['bid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");
@@ -108,11 +108,13 @@ class Label extends TagLib
                         type: "post",
                         data: {
                             method: "article.hits",
+                            token:  "' . API_TOKEN . '",
                             timestamp: "' . $time . '",
                             bid:       "' . $_tag['bid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
+                                token:     "' . API_TOKEN . '",
                                 timestamp: "' . $time . '",
                                 bid:       "' . $_tag['bid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -144,18 +146,16 @@ class Label extends TagLib
                     type: "post",
                     data: {
                         method:    "listing.query",
+                        token:     "' . API_TOKEN . '",
                         timestamp: "' . $time . '",
                         bid:       "' . $_tag['bid'] . '",
                         sign:   jQuery.sign({
                             method:    "listing.query",
+                            token:     "' . API_TOKEN . '",
                             timestamp: "' . $time . '",
                             bid:       "' . $_tag['bid'] . '",
                         })
                     },
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
                     success: function(result){
                         if (result.code === "404") {
                             jQuery.redirect("' . url('error/404') . '");
@@ -202,16 +202,14 @@ class Label extends TagLib
                         type: "post",
                         data: {
                             method: "listing.query",
+                            token:  "' . API_TOKEN . '",
                             bid:    "' . $_tag['bid'] . '",
                             sign:   jQuery.sign({
                                 method: "listing.query",
+                                token:  "' . API_TOKEN . '",
                                 bid:    "' . $_tag['bid'] . '",
                             })
                         },
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                        crossDomain: true,
                         success: function(result){
                             if (result.code === "404") {
                                 jQuery.redirect("' . url('error/404') . '");

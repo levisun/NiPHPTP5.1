@@ -10,7 +10,7 @@
  * @link      www.NiPHP.com
  * @since     2018/12
  */
-$expire = config('cache.expire');
+
 
 // CMS 模块
 Route::domain(['www', 'm'], function(){
@@ -41,7 +41,7 @@ Route::domain(['www', 'm'], function(){
 })
 ->bind('cms')
 ->ext('html')
-->cache(APP_DEBUG ? false : $expire);
+->cache(false);
 
 // BOOK 模块
 Route::domain('book', function(){
@@ -55,7 +55,7 @@ Route::domain('book', function(){
 })
 ->bind('book')
 ->ext('html')
-->cache(APP_DEBUG ? false : $expire);
+->cache(false);
 
 // ADMIN 模块
 Route::domain('admin', function(){
@@ -76,7 +76,7 @@ Route::domain('admin', function(){
 // API 模块
 Route::domain('api', function(){
     $refer = parse_url(request()->server('HTTP_ORIGIN'));
-    if (empty($refer['scheme']) || !in_array($refer['host'], config('whitelist'))) {
+    if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
         abort(404);
     }
 
@@ -88,20 +88,21 @@ Route::domain('api', function(){
     Route::miss('api/abort');
 
     Route::group('', function(){
+        $expire = config('cache.expire');
+
         Route::rule('/', 'api/abort');
 
-        Route::rule('getipinfo', 'api/getipinfo');
+        Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
         Route::post('settle', 'api/settle');
         Route::post('upload', 'api/upload');
 
-        Route::get('cms/query',  'cms/query');
-        Route::get('book/query',  'book/query');
+        Route::get('cms/query',  'cms/query')->cache(APP_DEBUG ? false : $expire);
+        Route::get('book/query',  'book/query')->cache(APP_DEBUG ? false : $expire);;
     })
     ->allowCrossDomain(true, $header);
 })
 ->bind('api')
-->ext('html')
-->cache(APP_DEBUG ? false : $expire);
+->ext('html');
 
 // 禁止cdn|css|img|js等二级域名直接访问网站
 Route::domain([
