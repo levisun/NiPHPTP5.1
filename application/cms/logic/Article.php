@@ -32,6 +32,10 @@ class Article
             return false;
         }
 
+        // 单页模型 规定ID
+        $_id  = $table_name === 'page' ? $_cid : $_id;
+
+
         $result =
         model('common/' . $table_name)
         ->view($table_name . ' a', true)

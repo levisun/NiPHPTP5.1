@@ -66,10 +66,10 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "tags.query",
-                            token: "' . API_TOKEN . '",
+                            token: "{$Think.const.API_TOKEN}",
                             sign:   jQuery.sign({
                                 method: "tags.query",
-                                token: "' . API_TOKEN . '"
+                                token: "{$Think.const.API_TOKEN}"
                             })
                         },
                         success: function(result){
@@ -113,12 +113,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "search.query",
-                            token:  "' . API_TOKEN . '",
+                            token:  "{$Think.const.API_TOKEN}",
                             q:      "' . $_tag['q'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:  jQuery.sign({
                                 method: "search.query",
-                                token:  "' . API_TOKEN . '",
+                                token:  "{$Think.const.API_TOKEN}",
                                 q:      "' . $_tag['q'] . '",
                                 p:      "' . $_tag['p'] . '"
                             })
@@ -166,13 +166,13 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: "' . API_TOKEN . '",
+                            token: "{$Think.const.API_TOKEN}",
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token: "' . API_TOKEN . '",
+                                token: "{$Think.const.API_TOKEN}",
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -184,12 +184,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.query",
-                            token: "' . API_TOKEN . '",
+                            token: "{$Think.const.API_TOKEN}",
                             cid:   "' . $_tag['cid'] . '",
                             id:    "' . $_tag['id'] . '",
                             sign:  jQuery.sign({
                                 method: "article.query",
-                                token: "' . API_TOKEN . '",
+                                token: "{$Think.const.API_TOKEN}",
                                 cid:    "' . $_tag['cid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
@@ -230,13 +230,13 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: "' . API_TOKEN . '",
+                            token: "{$Think.const.API_TOKEN}",
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token: "' . API_TOKEN . '",
+                                token: "{$Think.const.API_TOKEN}",
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -271,12 +271,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "catlist.query",
-                            token:  "' . API_TOKEN . '",
+                            token:  "{$Think.const.API_TOKEN}",
                             cid:    "' . $_tag['cid'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:   jQuery.sign({
                                 method: "catlist.query",
-                                token:  "' . API_TOKEN . '",
+                                token:  "{$Think.const.API_TOKEN}",
                                 cid:    "' . $_tag['cid'] . '",
                                 p:      "' . $_tag['p'] . '",
                             })
@@ -334,11 +334,11 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:   "banner.query",
-                            token:    "' . API_TOKEN . '",
+                            token:    "{$Think.const.API_TOKEN}",
                             slide_id: "' . $_tag['id'] . '",
                             sign:     jQuery.sign({
                                 method:   "banner.query",
-                                token:    "' . API_TOKEN . '",
+                                token:    "{$Think.const.API_TOKEN}",
                                 slide_id: "' . $_tag['id'] . '"
                             })
                         },
@@ -391,11 +391,11 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:  "ads.query",
-                            token:   "' . API_TOKEN . '",
+                            token:   "{$Think.const.API_TOKEN}",
                             ads_id:  "' . $_tag['id'] . '",
                             sign:    jQuery.sign({
                                 method: "ads.query",
-                                token:  "' . API_TOKEN . '",
+                                token:  "{$Think.const.API_TOKEN}",
                                 ads_id: "' . $_tag['id'] . '"
                             })
                         },

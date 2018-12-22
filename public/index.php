@@ -17,7 +17,7 @@
  */
 namespace think;
 
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 
 
@@ -29,7 +29,7 @@ if (!is_file(__DIR__ . '/../runtime/install.lock')) {
     exit;
 }
 
-define('NP_VERSION', '2.0.1_20181207 Alpha');
+define('NP_VERSION', '2.0.1_20181222 Alpha');
 define('TP_VERSION', '5.1.30 LTS');
 define('DS', DIRECTORY_SEPARATOR);
 define('NP_CACHE_PREFIX', substr(md5(__DIR__), 0, 7));

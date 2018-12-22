@@ -11,6 +11,62 @@
  * @since     2018/12
  */
 
+// 禁止cdn|css|img|js等二级域名直接访问网站
+Route::domain([
+    'cdn', 'css', 'img', 'js'
+], function(){
+    abort(404);
+});
+
+// 全局变量规则
+Route::pattern([
+    'operate' => '\w+',
+    'code'    => '\d+',
+    'cid'     => '\d+',
+    'bid'     => '\d+',
+    'pid'     => '\d+',
+    'id'      => '\d+',
+    'p'       => '\d+',
+]);
+
+// API 模块
+Route::domain('api', function(){
+    Route::miss('api/abort');
+
+    $refer = parse_url(request()->server('HTTP_ORIGIN'));
+    if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
+        abort(404);
+    }
+
+    Route::group('', function(){
+        $expire = config('cache.expire');
+
+        Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
+        Route::rule('query/cms', 'api/index')->cache(APP_DEBUG ? false : $expire);
+
+
+
+
+        Route::rule('query/admin', 'api/index');
+        Route::rule('handle/admin', 'api/index');
+
+
+    //     Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
+    //     Route::post('query', 'api/query');
+    //     Route::post('handle', 'api/handle');
+    //     Route::post('upload', 'api/upload');
+
+    //     Route::get('cms/query',  'cms/query')->cache(APP_DEBUG ? false : $expire);
+
+    //     Route::get('book/query',  'book/query')->cache(APP_DEBUG ? false : $expire);;
+    })
+    ->allowCrossDomain(true, [
+        'Access-Control-Allow-Credentials' => 'true',
+        'Access-Control-Allow-Origin'      => $refer['scheme'] . '://' . $refer['host'],
+    ]);
+})
+->bind('api')
+->ext('html');
 
 // CMS 模块
 Route::domain(['www', 'm'], function(){
@@ -72,52 +128,3 @@ Route::domain('admin', function(){
 ->bind('admin')
 ->ext('html')
 ->cache(false);
-
-// API 模块
-Route::domain('api', function(){
-    $refer = parse_url(request()->server('HTTP_ORIGIN'));
-    if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
-        abort(404);
-    }
-
-    $header = [
-        'Access-Control-Allow-Credentials' => 'true',
-        'Access-Control-Allow-Origin'      => $refer['scheme'] . '://' . $refer['host'],
-    ];
-
-    Route::miss('api/abort');
-
-    Route::group('', function(){
-        $expire = config('cache.expire');
-
-        Route::rule('/', 'api/abort');
-
-        Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
-        Route::post('settle', 'api/settle');
-        Route::post('upload', 'api/upload');
-
-        Route::get('cms/query',  'cms/query')->cache(APP_DEBUG ? false : $expire);
-        Route::get('book/query',  'book/query')->cache(APP_DEBUG ? false : $expire);;
-    })
-    ->allowCrossDomain(true, $header);
-})
-->bind('api')
-->ext('html');
-
-// 禁止cdn|css|img|js等二级域名直接访问网站
-Route::domain([
-    'cdn', 'css', 'img', 'js'
-], function(){
-    abort(404);
-});
-
-// 全局变量规则
-Route::pattern([
-    'operate' => '\w+',
-    'code'    => '\d+',
-    'cid'     => '\d+',
-    'bid'     => '\d+',
-    'pid'     => '\d+',
-    'id'      => '\d+',
-    'p'       => '\d+',
-]);

@@ -27,8 +27,11 @@
         domain:     "__DOMAIN__",
         url:        "{:url('', '', true)}",
         ajax: {
-            query:  "{:url('ajax/query', '', true)}",
-            handle: "{:url('ajax/handle', '', true)}",
+            // query:  "{:url('ajax/query', '', true)}",
+            query:  "{$Think.const.API_DOMAIN}query/admin.html",
+            // handle: "{:url('ajax/handle', '', true)}",
+            handle:  "{$Think.const.API_DOMAIN}handle/admin.html",
+
             upload: "{:url('ajax/upload', '', true)}",
         },
         static:     "__STATIC__",

@@ -12,44 +12,29 @@
  */
 
 return [
-    // 应用调试模式
-    'app_debug'            => APP_DEBUG,
-    // 应用Trace
-    'app_trace'            => APP_DEBUG,
-    // 默认时区
-    'default_timezone'     => 'PRC',
-    // 默认全局过滤方法 用逗号分隔多个
-    'default_filter'       => 'safe_filter_strict',
+    'app_debug'            => APP_DEBUG,                                        // 应用调试模式
+    'app_trace'            => APP_DEBUG,                                        // 应用Trace
+    'default_timezone'     => 'PRC',                                            // 默认时区
+
+    'default_filter'       => 'safe_filter_strict',                             // 默认全局过滤方法 用逗号分隔多个
     'content_filter'       => 'safe_filter',
-    // 是否开启多语言
-    'lang_switch_on'       => true,
-    // 默认语言
-    'default_lang'         => 'zh-cn',
+
+    'lang_switch_on'       => true,                                             // 是否开启多语言
+    'default_lang'         => 'zh-cn',                                          // 默认语言
     'lang_list'            => ['zh-cn', 'en-us'],
-    // 默认模块名
-    'default_module'       => 'cms',
-    // 禁止访问模块
-    'deny_module_list'     => ['common'],
-    // 默认模块名
-    'default_module'       => 'cms',
-    // 默认控制器名
-    'default_controller'   => 'Index',
-    // 默认操作名
-    'default_action'       => 'index',
-    // pathinfo分隔符
-    'pathinfo_depr'        => '/',
-    // URL伪静态后缀
-    'url_html_suffix'      => 'html',
-    // 路由使用完整匹配
-    'route_complete_match' => true,
-    // 是否强制使用路由
-    'url_route_must'       => false,
-    // 域名部署
-    'url_domain_deploy'    => true,
-    // 开启路由延迟解析
-    'url_lazy_route'       => true,
-    // 合并分组路由规则
-    'route_rule_merge'     => true,
+
+    'default_module'       => 'cms',                                            // 默认模块名
+    'deny_module_list'     => ['common'],                                       // 禁止访问模块
+    'default_module'       => 'cms',                                            // 默认模块名
+    'default_controller'   => 'Index',                                          // 默认控制器名
+    'default_action'       => 'index',                                          // 默认操作名
+    'pathinfo_depr'        => '/',                                              // pathinfo分隔符
+    'url_html_suffix'      => 'html',                                           // URL伪静态后缀
+    'route_complete_match' => true,                                             // 路由使用完整匹配
+    'url_route_must'       => false,                                            // 是否强制使用路由
+    'url_domain_deploy'    => true,                                             // 域名部署
+    'url_lazy_route'       => true,                                             // 开启路由延迟解析
+    'route_rule_merge'     => true,                                             // 合并分组路由规则
 
     // 异常页面的模板文件
     'exception_tmpl'       => env('root_path') . 'public/theme/abort/think_exception.tpl',
@@ -67,6 +52,7 @@ return [
 
     // 跨域请求白名单
     'whitelist'            => [
+        'admin.tp5.com',
         'www.tp5.com',
         'm.tp5.com'
     ],

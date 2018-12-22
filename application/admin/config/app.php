@@ -11,8 +11,6 @@
  * @since     2017/12
  */
 return [
-
-
     // icon
     'icon' => [
         'settings' => 'cogs',

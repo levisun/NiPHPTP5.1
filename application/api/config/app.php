@@ -11,8 +11,4 @@
  * @since     2017/12
  */
 return [
-    // URL伪静态后缀
-    'url_html_suffix'     => 'html',
-    // pathinfo分隔符
-    'pathinfo_depr'       => '/',
 ];

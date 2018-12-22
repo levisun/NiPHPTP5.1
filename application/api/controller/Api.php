@@ -12,31 +12,18 @@
  */
 namespace app\api\controller;
 
-use app\common\logic\Async;
+// use app\common\logic\Async;
 
-class Api extends Async
+class Api
 {
-    protected $handleMethod = [
-        'login',
-        'logout',
-        'added',
-        'editor',
-        'remove',
-        'sort',
-    ];
 
-    protected $uploadMethod = [
-        'upload',
-    ];
-
-    public function handle()
+    public function index()
     {
-        $this->methodAuth('handle')->token();
-    }
+        list($action, $model) = explode('/', request()->path(), 2);
 
-    public function upload()
-    {
-        $this->methodAuth('upload')->token();
+        $logic = logic('api/' . $model);
+
+        call_user_func_array([$logic, $action], []);
     }
 
     /**
@@ -60,26 +47,5 @@ class Api extends Async
     public function abort()
     {
         abort(404);
-    }
-
-    /**
-     * 验证METHOD AUTH
-     * @access protected
-     * @param
-     * @return mixed
-     */
-    protected function methodAuth($_type)
-    {
-        if ($_type === 'handle' && !in_array($this->action, $this->handleMethod)) {
-            $this->error('[METHOD] ' . $this->method . ' error');
-        } elseif ($_type === 'upload' && !in_array($this->action, $this->uploadMethod)) {
-            $this->error('[METHOD] ' . $this->method . ' error');
-        } elseif ($_type === 'query') {
-            if (in_array($this->action, $this->handleMethod) || in_array($this->action, $this->uploadMethod)) {
-                $this->error('[METHOD] ' . $this->method . ' error');
-            }
-        }
-
-        return $this;
     }
 }

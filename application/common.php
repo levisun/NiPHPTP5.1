@@ -275,9 +275,6 @@ function lang($_name, $_vars = [], $_lang = '')
  */
 function session($name, $value = '', $prefix = null)
 {
-    $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
-    $value = $value ? encrypt($value) : $value;
-
     if (is_array($name)) {
         // 初始化
         Session::init($name);
@@ -286,12 +283,16 @@ function session($name, $value = '', $prefix = null)
         Session::clear($value);
     } elseif ('' === $value) {
         // 判断或获取
+        $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
+        $value = $value ? encrypt($value) : $value;
         return 0 === strpos($name, '?') ? Session::has(substr($name, 1), $prefix) : decrypt(Session::get($name, $prefix));
     } elseif (is_null($value)) {
         // 删除
         return Session::delete($name, $prefix);
     } else {
         // 设置
+        $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
+        $value = $value ? encrypt($value) : $value;
         return Session::set($name, $value, $prefix);
     }
 }
@@ -306,9 +307,6 @@ function session($name, $value = '', $prefix = null)
  */
 function cookie($name, $value = '', $option = null)
 {
-    $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
-    $value = $value ? encrypt($value) : $value;
-
     if (is_array($name)) {
         // 初始化
         Cookie::init($name);
@@ -317,12 +315,16 @@ function cookie($name, $value = '', $option = null)
         Cookie::clear($value);
     } elseif ('' === $value) {
         // 获取
+        $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
+        $value = $value ? encrypt($value) : $value;
         return 0 === strpos($name, '?') ? Cookie::has(substr($name, 1), $option) : decrypt(Cookie::get($name));
     } elseif (is_null($value)) {
         // 删除
         return Cookie::delete($name);
     } else {
         // 设置
+        $name  = !is_array($name) && 0 === strpos($name, '?') ? '?' . encrypt(substr($name, 1)) : encrypt($name);
+        $value = $value ? encrypt($value) : $value;
         return Cookie::set($name, $value, $option);
     }
 }

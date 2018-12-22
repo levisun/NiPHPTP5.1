@@ -88,7 +88,7 @@ function replace_meta($_content)
              'var request = {' .
                  'domain: "' . $tpl_replace_string['__DOMAIN__'] . '",' .
                  'api: {' .
-                    'query: "' . API_DOMAIN . 'cms/query.html"' .
+                    'query: "' . API_DOMAIN . 'query/cms.html"' .
                     // 'settle: "' . $tpl_replace_string['__API_SETTLE__'] . '",' .
                     // 'upload: "' . $tpl_replace_string['__API_UPLOAD__'] . '",' .
                     // 'getipinfo: "' . url('api/getipinfo', '', true) . '",' .

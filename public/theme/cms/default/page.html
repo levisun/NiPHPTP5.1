@@ -1,3 +1,16 @@
-{label:page}
+<article class="content-wrap">
+    <h5 class="article-title"></h5>
+    <p class="article-meta"></p>
+    <div class="article-content"></div>
 
+    <div class="row">
+        <div id="article-previous" class="col"></div>
+        <div id="article-next" class="col"></div>
+    </div>
+</article>
+{label:page}
+$(".article-title").html("<a href='"+data.url+"'>"+data.title+"</a>");
+$(".article-meta").html("<a href='"+data.cat_url+"'>"+data.category_name+"</a><span>阅读:"+data.hits+"</span>");
+$(".article-content").html(data.content);
 {/label:page}
+
