@@ -57,6 +57,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.admin.find",
         id: "{$Request.param.id}"
     },
@@ -73,7 +74,8 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
-        method: "user.admin.role",
+        token: "{$Think.const.API_TOKEN}",
+        method: "user.admin.role"
     },
     success: function(result){
         if (result.code !== "SUCCESS") {
@@ -86,6 +88,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=user.admin.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

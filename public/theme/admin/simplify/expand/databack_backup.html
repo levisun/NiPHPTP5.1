@@ -54,6 +54,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "expand.databack.getTablesName"
     },
     success: function(result){
@@ -93,6 +94,7 @@ $(".backup_type").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=expand.databack.backup";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

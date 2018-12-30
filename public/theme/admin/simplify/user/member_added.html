@@ -166,6 +166,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.member.level",
     },
     success: function(result){
@@ -182,6 +183,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.member.region",
     },
     success: function(result){
@@ -211,6 +213,7 @@ $(".region").change(function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "user.member.region",
             region_id: id,
         },
@@ -251,6 +254,7 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=user.member.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

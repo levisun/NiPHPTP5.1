@@ -22,6 +22,7 @@ $(".compile").click(function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "content.cache.compile",
         },
         success: function(result){
@@ -40,6 +41,7 @@ $(".cache").click(function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "content.cache.cache",
         },
         success: function(result){

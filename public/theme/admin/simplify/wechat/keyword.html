@@ -59,6 +59,7 @@ function paging(_page, _push) {
         requestUrl: $.domain(true) + "?p=" + _page,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "wechat.keyword.query",
             type: "{$type}",
             p: _page
@@ -98,6 +99,7 @@ $.popstateEvent(function(){
 
 $("form").submit(function(){
     var form_data = "method=wechat.keyword.sort";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
@@ -120,6 +122,7 @@ $(document).on("click", ".np-btn-remove", function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "wechat.keyword.remove",
             id: id
         },

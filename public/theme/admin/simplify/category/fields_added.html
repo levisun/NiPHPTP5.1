@@ -73,6 +73,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.fields.type"
     },
     success: function(result){
@@ -87,6 +88,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.fields.category"
     },
     success: function(result){
@@ -99,6 +101,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=category.fields.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

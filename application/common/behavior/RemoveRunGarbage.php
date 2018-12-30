@@ -86,7 +86,7 @@ class RemoveRunGarbage
                     $temp = $this->getDir($temp);
                     $all_files = array_merge($all_files, $temp);
                 } else {
-                    $all_files[] = $path;
+                    // $all_files[] = $path;
                 }
             }
         }

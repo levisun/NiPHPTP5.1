@@ -129,8 +129,8 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
-        method: "admin.settings.info.query",
-        token: "{$Think.const.API_TOKEN}"
+        token: "{$Think.const.API_TOKEN}",
+        method: "admin.settings.info.query"
     },
     success: function (result) {
         if (result.code !== "SUCCESS") {

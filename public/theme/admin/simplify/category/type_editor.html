@@ -39,46 +39,53 @@
 </div>
 <script type="text/javascript">
 var editor_data = {};
-$.loading({
+$.pjax({
     url: request.ajax.query,
     async: false,
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.type.find",
         id: "{$Request.param.id}"
-    }
-}, function(result) {
-    if (result.code === "SUCCESS") {
-        editor_data = result.data;
-        eachToInput(editor_data);
+    },
+    success: function(result) {
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
     }
 });
 
-$.loading({
+$.pjax({
     url: request.ajax.query,
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.type.category"
-    }
-}, function(result){
-    if (result.code === "SUCCESS") {
-        var type_option = eachToOption(result.data, "id", "name", editor_data.category_id);
-        $("#category_id").append(type_option);
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var type_option = eachToOption(result.data, "id", "name", editor_data.category_id);
+            $("#category_id").append(type_option);
+        }
     }
 });
 
 $("form").submit(function(){
     var form_data = "method=category.type.editor";
-    form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+
+    $.pjax({
         url: request.ajax.handle,
         async: false,
         data: form_data,
-    }, function(result){
-        handle(result, "{:url('category/type')}");
+        success: function(result){
+            handle(result, "{:url('category/type')}");
+        }
     });
     return false;
 });

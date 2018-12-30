@@ -20,6 +20,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "theme.mall.query",
         type: "mall",
     },
@@ -53,6 +54,7 @@ $("body").on("click", "#set", function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "theme.mall.editor",
             type: "cms",
             name: data

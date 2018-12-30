@@ -287,8 +287,10 @@ class Async
         $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
 
         $this->version   = input('param.version', null);                        // 版本号
-        list($this->version) = explode('.', $this->version);
-        $this->version   = $this->version ? 'v' . $this->version : '';
+        if ($this->version) {
+            list($major, $minor) = explode('.', $this->version, 3);
+            $this->version = 'v' . $major . '.' . $minor;
+        }
     }
 
     /**

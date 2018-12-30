@@ -122,6 +122,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "content.content.type",
         cid: "{$Request.param.cid}"
     },
@@ -137,6 +138,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.category.level"
     },
     success: function(result){
@@ -175,6 +177,7 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=content.content.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

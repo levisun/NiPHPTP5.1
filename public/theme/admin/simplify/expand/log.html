@@ -40,6 +40,7 @@ function paging(_page, _push) {
         requestUrl: $.domain(true) + "?p=" + _page,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "expand.log.query",
             p: _page
         },

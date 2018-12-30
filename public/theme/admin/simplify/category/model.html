@@ -37,6 +37,7 @@ $.loading({
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.model.query",
         p: page
     }
@@ -65,6 +66,7 @@ function paging(_page) {
         animation: true,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "category.model.query",
             p: page
         }

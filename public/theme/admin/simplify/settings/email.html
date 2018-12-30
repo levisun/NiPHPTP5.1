@@ -58,6 +58,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "settings.email.query"
     },
     success: function(result){
@@ -71,6 +72,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=settings.email.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

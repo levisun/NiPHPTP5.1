@@ -76,18 +76,20 @@
 </div>
 
 <script type="text/javascript">
-$.loading({
+$.pjax({
     url: request.ajax.query,
     async: false,
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "wechat.keyword.find",
         id: "{$Request.param.id}"
-    }
-}, function(result) {
-    if (result.code === "SUCCESS") {
-        eachToInput(result.data);
+    },
+    success: function(result) {
+        if (result.code === "SUCCESS") {
+            eachToInput(result.data);
+        }
     }
 });
 
@@ -121,14 +123,16 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=wechat.keyword.editor";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
         url: request.ajax.handle,
         async: false,
         data: form_data,
-    }, function(result){
-        handle(result, "{:url('wechat/keyword')}");
+        success: function(result){
+            handle(result, "{:url('wechat/keyword')}");
+        }
     });
     return false;
 });

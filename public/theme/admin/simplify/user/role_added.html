@@ -66,6 +66,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.role.node",
     },
     success: function(result){
@@ -123,6 +124,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=user.role.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

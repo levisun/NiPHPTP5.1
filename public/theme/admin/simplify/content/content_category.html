@@ -32,6 +32,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "content.content.category",
         pid: "{$Request.param.pid|default='0'}"
     },

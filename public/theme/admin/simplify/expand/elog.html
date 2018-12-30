@@ -28,6 +28,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "expand.elog.query"
     },
     success: function(result){

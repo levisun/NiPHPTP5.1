@@ -38,6 +38,7 @@ $.loading({
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.type.query",
         p: page
     }
@@ -64,53 +65,57 @@ $.loading({
 
 function paging(_page) {
     $.rewriteUrl("{:request()->url(true)}#"+_page);
-    $.loading({
+    $.pjax({
         url: request.ajax.query,
         animation: true,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "category.type.query",
             p: _page
-        }
-    }, function(result){
-        if (result.code !== "SUCCESS") {
-            return false;
-        }
-        $("#dataTable tbody tr").remove();
-        $("#paging ul").remove();
+        },
+        success: function(result){
+            if (result.code !== "SUCCESS") {
+                return false;
+            }
+            $("#dataTable tbody tr").remove();
+            $("#paging ul").remove();
 
-        var list = "";
-        for (var index in result.data.list) {
-            list = list + "<tr>";
-            list = list + "<td>"+result.data.list[index].name+"</td>";
-            list = list + "<td>"+result.data.list[index].cat_name+"</td>";
+            var list = "";
+            for (var index in result.data.list) {
+                list = list + "<tr>";
+                list = list + "<td>"+result.data.list[index].name+"</td>";
+                list = list + "<td>"+result.data.list[index].cat_name+"</td>";
 
-            list = list + "<td>";
-            list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
-            list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
-            list = list + "</td>";
+                list = list + "<td>";
+                list = list + "<a href='"+result.data.list[index].url.editor+"'><span class='fa fa-edit'></span>{:lang('button editor')}</a>";
+                list = list + "<a class='np-btn-remove' data-id='"+result.data.list[index].id+"'><span class='fa fa-edit'></span>{:lang('button remove')}</a>";
+                list = list + "</td>";
 
-            list = list + "</tr>";
+                list = list + "</tr>";
+            }
+            $("#dataTable tbody").prepend(list);
+            $("#paging").prepend(result.data.page);
         }
-        $("#dataTable tbody").prepend(list);
-        $("#paging").prepend(result.data.page);
     });
 };
 
 $(document).on("click", ".np-btn-remove", function(){
     var id = $(this).attr("data-id");
-    $.loading({
+    $.pjax({
         url: request.ajax.handle,
         async: false,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "category.type.remove",
             id: id
         },
-    }, function(result){
-        handle(result, false, false);
-        if (result.code === "SUCCESS") {
-            $.reload();
+        success: function(result){
+            handle(result, false, false);
+            if (result.code === "SUCCESS") {
+                $.reload();
+            }
         }
     });
     return false;

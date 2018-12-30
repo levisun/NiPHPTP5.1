@@ -76,6 +76,7 @@ $.loading({
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.fields.find",
         id: "{$Request.param.id}"
     }
@@ -96,6 +97,7 @@ $.loading({
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.fields.type"
     }
 }, function(result){
@@ -109,6 +111,7 @@ $.loading({
     animation: true,
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "category.fields.category"
     }
 }, function(result){
@@ -120,9 +123,11 @@ $.loading({
 
 $("form").submit(function(){
     var form_data = "method=category.fields.editor";
-    form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$(this).serialize();
-    $.loading({
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+
+    $.pjax({
         url: request.ajax.handle,
         async: false,
         data: form_data,

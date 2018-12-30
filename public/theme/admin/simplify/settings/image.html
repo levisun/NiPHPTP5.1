@@ -290,8 +290,8 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
-        method: "settings.image.query",
-        timestamp: "{:time()}"
+        token: "{$Think.const.API_TOKEN}",
+        method: "settings.image.query"
     },
     success: function(result){
         if (result.code === "SUCCESS") {
@@ -346,6 +346,7 @@ $(".upload-btn").click(function(){
 
 $("form").submit(function(){
     var form_data = "method=settings.image.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

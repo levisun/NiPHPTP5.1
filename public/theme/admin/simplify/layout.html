@@ -151,6 +151,7 @@ $("._handle_logout").click(function(){
         url: request.ajax.handle,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "account.logout.logout"
         }
     }, function(result){

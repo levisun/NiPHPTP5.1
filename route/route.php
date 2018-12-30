@@ -49,16 +49,6 @@ Route::domain('api', function(){
 
         Route::rule('query/admin', 'api/index');
         Route::rule('handle/admin', 'api/index');
-
-
-    //     Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
-    //     Route::post('query', 'api/query');
-    //     Route::post('handle', 'api/handle');
-    //     Route::post('upload', 'api/upload');
-
-    //     Route::get('cms/query',  'cms/query')->cache(APP_DEBUG ? false : $expire);
-
-    //     Route::get('book/query',  'book/query')->cache(APP_DEBUG ? false : $expire);;
     })
     ->allowCrossDomain(true, [
         'Access-Control-Allow-Credentials' => 'true',

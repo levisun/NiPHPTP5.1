@@ -49,9 +49,9 @@ function paging(_page, _push) {
         requestUrl: $.domain(true) + "?p=" + _page,
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "content.content.query",
             cid: "{$Request.param.cid}",
-            timestamp: $.timestamp(),
             p: _page
         },
         success: function(result){
@@ -99,6 +99,7 @@ $(document).on("click", ".np-btn-remove", function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "content.content.remove",
             cid: "{$Request.param.cid}",
             id: id

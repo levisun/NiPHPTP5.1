@@ -83,6 +83,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "content.content.find",
         cid: "{$Request.param.cid}",
         id: "{$Request.param.id}"
@@ -101,6 +102,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "content.content.type",
         cid: "{$Request.param.cid}"
     },
@@ -114,6 +116,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=content.content.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

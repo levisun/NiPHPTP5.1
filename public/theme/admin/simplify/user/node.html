@@ -47,6 +47,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.node.query",
     },
     success: function(result){
@@ -81,6 +82,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=user.node.sort";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
@@ -103,6 +105,7 @@ $(document).on("click", ".np-btn-remove", function(){
         type: "post",
         data: {
             timestamp: $.timestamp(),
+            token: "{$Think.const.API_TOKEN}",
             method: "user.node.remove",
             id: id
         },

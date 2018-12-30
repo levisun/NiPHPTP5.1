@@ -31,14 +31,13 @@ if (!is_file(__DIR__ . '/../runtime/install.lock')) {
 
 define('NP_VERSION', '2.0.1_20181222 Alpha');
 define('TP_VERSION', '5.1.30 LTS');
-define('DS', DIRECTORY_SEPARATOR);
 define('NP_CACHE_PREFIX', substr(md5(__DIR__), 0, 7));
 define('NP_COOKIE_PREFIX', strtoupper(substr(NP_CACHE_PREFIX, -3)));
 header('X-Powered-By: NiPHP ' . NP_VERSION);
 
 if (APP_DEBUG) {
     set_time_limit(30);
-    ini_set('memory_limit', '16M');
+    ini_set('memory_limit', '32M');
 } else {
     set_time_limit(120);
     ini_set('memory_limit', '64M');

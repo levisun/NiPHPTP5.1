@@ -30,9 +30,9 @@
 <script type="text/javascript">
 $("form").submit(function(){
     var form_data = "method=account.login.login";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
-        form_data += "&token={$Think.const.API_TOKEN}";
 
     $.pjax({
         url: request.ajax.handle,

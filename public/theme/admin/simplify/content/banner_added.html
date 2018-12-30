@@ -62,6 +62,7 @@
 <script type="text/javascript">
 $("form").submit(function(){
     var form_data = "method=content.banner.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

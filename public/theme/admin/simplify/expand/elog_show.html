@@ -16,6 +16,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "expand.elog.find",
         id: "{$Request.param.id}"
     },

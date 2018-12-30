@@ -67,6 +67,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "content.banner.find",
         id: "{$Request.param.id}"
     },
@@ -80,6 +81,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=content.banner.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({

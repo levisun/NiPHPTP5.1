@@ -61,6 +61,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "settings.lang.query"
     },
     success: function(result){
@@ -97,8 +98,9 @@ $.pjax({
 
 $(".submit").click(function(){
     var form_data = "method=settings.lang.editor";
-     form_data += "&timestamp=" + $.timestamp();
-    form_data += "&"+$("form").serialize();
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$("form").serialize();
 
     $.pjax({
         url: request.ajax.handle,

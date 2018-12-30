@@ -87,6 +87,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.node.find",
         id: "{$Request.param.id}"
     },
@@ -103,6 +104,7 @@ $.pjax({
     type: "post",
     data: {
         timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
         method: "user.node.query",
     },
     success: function(result){
@@ -116,6 +118,7 @@ $.pjax({
 
 $("form").submit(function(){
     var form_data = "method=user.node.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
         form_data += "&"+$(this).serialize();
     $.pjax({
