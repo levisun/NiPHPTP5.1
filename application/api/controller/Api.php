@@ -12,14 +12,12 @@
  */
 namespace app\api\controller;
 
-// use app\common\logic\Async;
-
 class Api
 {
 
     public function index()
     {
-        list($action, $model) = explode('/', request()->path(), 2);
+        list($model, $action) = explode('/', request()->path(), 2);
 
         $logic = logic('api/' . $model);
 

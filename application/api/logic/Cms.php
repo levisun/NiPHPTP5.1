@@ -46,12 +46,12 @@ class Cms extends Async
 
     public function handle()
     {
-        $this->token()->run()->sign()->methodAuth('handle');
+        abort(404);
     }
 
     public function upload()
     {
-        $this->token()->run()->sign()->methodAuth('upload');
+        abort(404);
     }
 
     /**
@@ -62,14 +62,8 @@ class Cms extends Async
      */
     protected function methodAuth($_type)
     {
-        if ($_type === 'handle' && !in_array($this->action, $this->handleMethod)) {
+        if (in_array($this->action, $this->handleMethod) || in_array($this->action, $this->uploadMethod)) {
             $this->error('[METHOD] ' . $this->method . ' error');
-        } elseif ($_type === 'upload' && !in_array($this->action, $this->uploadMethod)) {
-            $this->error('[METHOD] ' . $this->method . ' error');
-        } elseif ($_type === 'query') {
-            if (in_array($this->action, $this->handleMethod) || in_array($this->action, $this->uploadMethod)) {
-                $this->error('[METHOD] ' . $this->method . ' error');
-            }
         }
 
         return $this;

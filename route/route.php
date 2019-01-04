@@ -15,7 +15,7 @@
 Route::domain([
     'cdn', 'css', 'img', 'js'
 ], function(){
-    abort(404);
+    abort(404, '');
 });
 
 // 全局变量规则
@@ -35,20 +35,22 @@ Route::domain('api', function(){
 
     $refer = parse_url(request()->server('HTTP_ORIGIN'));
     if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
-        abort(404);
+        abort(404, 'ORIGIN ERROR');
     }
 
     Route::group('', function(){
         $expire = config('cache.expire');
 
         Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
-        Route::rule('query/cms', 'api/index')->cache(APP_DEBUG ? false : $expire);
+
+
+        Route::rule('cms/query', 'api/index')->cache(APP_DEBUG ? false : $expire);
 
 
 
 
-        Route::rule('query/admin', 'api/index');
-        Route::rule('handle/admin', 'api/index');
+        Route::rule('admin/query', 'api/index');
+        Route::rule('admin/handle', 'api/index');
     })
     ->allowCrossDomain(true, [
         'Access-Control-Allow-Credentials' => 'true',
@@ -107,13 +109,6 @@ Route::domain('book', function(){
 Route::domain('admin', function(){
     Route::get('/', 'account/login');
     Route::get('index', 'account/login');
-
-    // AJAX路由
-    Route::group('ajax', function(){
-        Route::post('query',  'query');
-        Route::post('settle', 'settle');
-        Route::post('upload', 'upload');
-    })->prefix('ajax/');
 })
 ->bind('admin')
 ->ext('html')

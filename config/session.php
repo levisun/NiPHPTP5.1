@@ -12,7 +12,7 @@
  */
 
 return [
-    'id'             => md5(__DIR__),
+    'id'             => '',
     // SESSION_ID的提交变量,解决flash上传跨域
     'var_session_id' => '',
     // SESSION 前缀
@@ -24,4 +24,6 @@ return [
     'httponly'       => true,
     'secure'         => false,
     'domain'         => '.' . request()->rootDomain(),
+    'type' => 'app\common\logic\Session',
+    'expire' => 0,
 ];

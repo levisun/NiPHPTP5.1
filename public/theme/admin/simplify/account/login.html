@@ -41,9 +41,9 @@ $("form").submit(function(){
         data: form_data,
         success: function(result){
             if ("{$Request.param.back}") {
-                handle(result, "{$Request.param.back}");
+                // handle(result, "{$Request.param.back}");
             } else {
-                handle(result, "{:url('settings/info')}");
+                // handle(result, "{:url('settings/info')}");
             }
         }
     });

@@ -36,11 +36,9 @@ function replace_meta($_content)
             '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL .
             '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
 
-            '<link rel="dns-prefetch" href="//cdn.' . $cdn . '" />' . PHP_EOL .
-            '<link rel="dns-prefetch" href="//css.' . $cdn . '" />' . PHP_EOL .
-            '<link rel="dns-prefetch" href="//js.' . $cdn . '" />' . PHP_EOL .
-            '<link rel="dns-prefetch" href="//img.' . $cdn . '" />' . PHP_EOL .
-            '<link href="' . $scheme . 'cdn.' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
+            '<link rel="dns-prefetch" href="' . CDN_DOMAIN . '" />' . PHP_EOL .
+            '<link rel="dns-prefetch" href="' . API_DOMAIN . '" />' . PHP_EOL .
+            '<link href="' . CDN_DOMAIN . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
     if (request()->isMobile()) {
         $meta .= '<meta name="apple-mobile-web-app-capable" content="yes" />' . PHP_EOL .

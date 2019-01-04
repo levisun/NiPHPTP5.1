@@ -25,7 +25,7 @@ function replace_meta($_content)
         ], '', $_content);
 
     $siteinfo = logic(request()->module() . '/siteinfo')->query();
-    $cdn = request()->scheme() . ':' . CDN_DOMAIN;
+    $cdn = request()->scheme() . ':' . CDN_DOMAIN . '/';
     $scheme = request()->scheme() . '://';
 
     $tpl_replace_string = config('template.tpl_replace_string');
@@ -47,8 +47,9 @@ function replace_meta($_content)
             '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' . PHP_EOL .
             '<meta http-equiv="Cache-Control" content="no-siteapp" />' . PHP_EOL .
             // '<meta http-equiv="Widow-target" content="_top" />' . PHP_EOL .
-
+            '<meta http-equiv="x-dns-prefetch-control" content="on" />' . PHP_EOL .
             '<link rel="dns-prefetch" href="' . CDN_DOMAIN . '" />' . PHP_EOL .
+            '<link rel="dns-prefetch" href="' . API_DOMAIN . '" />' . PHP_EOL .
 
             '<meta name="keywords" content="' . $siteinfo['website_keywords'] . '" />' . PHP_EOL .
             '<meta name="description" content="' . $siteinfo['website_description'] . '" />' . PHP_EOL .
@@ -57,7 +58,7 @@ function replace_meta($_content)
             '<meta property="og:title" content="' . $siteinfo['title'] . '" />' . PHP_EOL .
             '<meta property="og:url" content="' . request()->url(true) . '" />' . PHP_EOL .
             '<meta property="og:description" content="' . $siteinfo['website_description'] . '" />' . PHP_EOL .
-            '<link href="' . $cdn . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
+            '<link href="' . CDN_DOMAIN . 'favicon.ico" rel="shortcut icon" type="image/x-icon" />' . PHP_EOL;
 
 
     if (is_file(config('template.view_path') . 'config.json')) {
@@ -88,7 +89,7 @@ function replace_meta($_content)
              'var request = {' .
                  'domain: "' . $tpl_replace_string['__DOMAIN__'] . '",' .
                  'api: {' .
-                    'query: "' . API_DOMAIN . 'query/cms.html"' .
+                    'query: "' . API_DOMAIN . '/cms/query.html"' .
                     // 'settle: "' . $tpl_replace_string['__API_SETTLE__'] . '",' .
                     // 'upload: "' . $tpl_replace_string['__API_UPLOAD__'] . '",' .
                     // 'getipinfo: "' . url('api/getipinfo', '', true) . '",' .

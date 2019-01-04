@@ -19,14 +19,24 @@ use think\facade\Session;
 use think\facade\Url;
 
 defined('APP_DEBUG') or define('APP_DEBUG', true);
-define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root() . '/');
-define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root() . '/');
+define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root());
+define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root());
 define('API_TOKEN', sha1(
     Request::server('HTTP_USER_AGENT') .
     Request::ip() .
     Env::get('root_path') .
     date('Ymd')
 ));
+
+function token($_type = 'md5')
+{
+    $str =
+    __DIR__ .
+    uniqid(rand(111111111, 999999999), true) .
+    request()->server('HTTP_USER_AGENT') .
+    request()->ip() .
+    time();
+}
 
 /**
  * emoji编码
@@ -77,7 +87,7 @@ function get_template_config($_default_theme)
                              request()->module() . DIRECTORY_SEPARATOR .
                              $_default_theme . DIRECTORY_SEPARATOR;
 
-    $cdn = request()->scheme() . ':' . CDN_DOMAIN;
+    $cdn = CDN_DOMAIN . '/';
 
     $template['tpl_replace_string'] = [
         '__DOMAIN__'   => request()->root(true) . '/',

@@ -36,7 +36,10 @@ class Admin extends Async
         config('session.auto_start', true);
         session(config('session.'));
 
+        // 加载项目函数库
         include_once env('app_path') . 'admin' . DIRECTORY_SEPARATOR . 'common.php';
+
+        // 加载项目配置
         $config = include env('app_path') . 'admin' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
         foreach ($config as $name => $value) {
             config($name, $value);
@@ -71,7 +74,7 @@ class Admin extends Async
     {
         $result = $this->run()->token()->methodAuth('handle')->auth()->send();
         if ($result === true) {
-            $this->success(lang('exec success'), $result);
+            $this->success(lang('exec success'), session_id());
         } else {
             $this->error($result);
         }
