@@ -46,6 +46,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.type.find",
         id: "{$Request.param.id}"
     },
@@ -63,6 +64,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.type.category"
     },
     success: function(result){

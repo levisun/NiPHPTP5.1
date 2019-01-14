@@ -23,6 +23,7 @@ $(".compile").click(function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "content.cache.compile",
         },
         success: function(result){
@@ -42,6 +43,7 @@ $(".cache").click(function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "content.cache.cache",
         },
         success: function(result){

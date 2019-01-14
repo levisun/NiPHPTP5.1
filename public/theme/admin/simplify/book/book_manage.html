@@ -46,6 +46,7 @@ function paging(_page, _push) {
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "book.article.query",
             bid: "{$Request.param.id}",
             p: _page

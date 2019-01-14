@@ -50,6 +50,7 @@ function paging(_page, _push) {
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "content.content.query",
             cid: "{$Request.param.cid}",
             p: _page
@@ -100,6 +101,7 @@ $(document).on("click", ".np-btn-remove", function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "content.content.remove",
             cid: "{$Request.param.cid}",
             id: id

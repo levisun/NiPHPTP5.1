@@ -39,6 +39,7 @@ $.loading({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.type.query",
         p: page
     }
@@ -71,6 +72,7 @@ function paging(_page) {
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "category.type.query",
             p: _page
         },
@@ -108,6 +110,7 @@ $(document).on("click", ".np-btn-remove", function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "category.type.remove",
             id: id
         },

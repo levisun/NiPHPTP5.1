@@ -130,6 +130,8 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "admin.settings.info.query"
     },
     success: function (result) {

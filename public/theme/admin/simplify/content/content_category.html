@@ -33,6 +33,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "content.content.category",
         pid: "{$Request.param.pid|default='0'}"
     },

@@ -77,6 +77,7 @@ $.loading({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.fields.find",
         id: "{$Request.param.id}"
     }
@@ -98,6 +99,7 @@ $.loading({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.fields.type"
     }
 }, function(result){
@@ -112,6 +114,7 @@ $.loading({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.fields.category"
     }
 }, function(result){

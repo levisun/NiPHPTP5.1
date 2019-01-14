@@ -123,6 +123,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "content.content.type",
         cid: "{$Request.param.cid}"
     },
@@ -139,6 +140,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.category.level"
     },
     success: function(result){

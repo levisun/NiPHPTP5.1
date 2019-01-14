@@ -20,9 +20,6 @@ function replace_meta($_content)
 {
     $_content = preg_replace('/( ){2,}/si', '', $_content);
 
-    $cdn = request()->rootDomain() . request()->root() . '/';
-    $scheme = request()->scheme() . '://';
-
     $meta = '</title>' . PHP_EOL .
             '<meta name="generator" content="NiPHP ' . NP_VERSION . '" />' . PHP_EOL .
             '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' . PHP_EOL .

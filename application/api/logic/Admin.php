@@ -33,9 +33,6 @@ class Admin extends Async
     {
         $this->module = 'admin';
 
-        config('session.auto_start', true);
-        session(config('session.'));
-
         // 加载项目函数库
         include_once env('app_path') . 'admin' . DIRECTORY_SEPARATOR . 'common.php';
 
@@ -44,6 +41,10 @@ class Admin extends Async
         foreach ($config as $name => $value) {
             config($name, $value);
         }
+
+        config('session.auto_start', true);
+        config('session.id', $this->sid);
+        session(config('session.'));
     }
 
     /**

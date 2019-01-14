@@ -33,7 +33,6 @@ class Session implements SessionHandlerInterface
      */
     public function open($_savePath, $_sessName)
     {
-        // $this->handler = model('common/session');
         $this->handler = new SessionModel;
 
         return true;
@@ -63,7 +62,6 @@ class Session implements SessionHandlerInterface
 
         if ($this->config['expire'] != 0) {
             $map[] = ['update_time', '>=', time() - $this->config['expire']];
-            // $map['update_time'] = ['gt', time() - $this->config['expire']];
         }
         $result =
         $this->handler

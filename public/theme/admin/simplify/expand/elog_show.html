@@ -17,6 +17,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "expand.elog.find",
         id: "{$Request.param.id}"
     },

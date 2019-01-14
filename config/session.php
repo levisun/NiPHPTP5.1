@@ -24,6 +24,6 @@ return [
     'httponly'       => true,
     'secure'         => false,
     'domain'         => '.' . request()->rootDomain(),
-    'type' => 'app\common\logic\Session',
-    'expire' => 0,
+    'type'           => 'app\common\logic\Session',
+    'expire'         => 0,
 ];

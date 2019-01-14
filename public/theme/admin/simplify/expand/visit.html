@@ -48,6 +48,7 @@ function paging(_page, _push) {
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "expand.visit.query",
             operate: "{:input('param.operate', 'visit')}",
             p: _page

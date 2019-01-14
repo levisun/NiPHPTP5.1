@@ -23,16 +23,16 @@ define('APP_DEBUG', true);
 
 // PHP版本支持
 version_compare(PHP_VERSION, '5.6.0', '>=') or die('PHP VERSION >= 5.6.0!');
+// PDO支持
 if (!extension_loaded('PDO')) die('PDO');
+// 安装
 if (!is_file(__DIR__ . '/../runtime/install.lock')) {
     header("location:/install.php");
     exit;
 }
 
-define('NP_VERSION', '2.0.1_20181222 Alpha');
-define('TP_VERSION', '5.1.30 LTS');
-define('NP_CACHE_PREFIX', substr(md5(__DIR__), 0, 7));
-define('NP_COOKIE_PREFIX', strtoupper(substr(NP_CACHE_PREFIX, -3)));
+define('NP_VERSION', '2.0.1_20181222 Alpha');                                   // 版本号
+define('TP_VERSION', '5.1.30 LTS');                                             // 支持最低TP版本
 header('X-Powered-By: NiPHP ' . NP_VERSION);
 
 if (APP_DEBUG) {

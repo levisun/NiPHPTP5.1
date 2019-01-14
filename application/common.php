@@ -27,16 +27,8 @@ define('API_TOKEN', sha1(
     Env::get('root_path') .
     date('Ymd')
 ));
-
-function token($_type = 'md5')
-{
-    $str =
-    __DIR__ .
-    uniqid(rand(111111111, 999999999), true) .
-    request()->server('HTTP_USER_AGENT') .
-    request()->ip() .
-    time();
-}
+define('NP_CACHE_PREFIX', substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7));
+define('NP_COOKIE_PREFIX', strtoupper(substr(md5(__DIR__), -3)));
 
 /**
  * emoji编码

@@ -9,7 +9,8 @@
         "__STATIC__/jquery/jquery-3.1.1.min.js",
         "https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js",
         "__STATIC__nipui/js/nipui.js",
-        "https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"
+        "https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js",
+        "https://cdn.bootcss.com/vue/2.5.21/vue.min.js"
     ],
     "hook": [
         "<!--[if lt IE 9]><script src=\"https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js\"></script><![endif]-->"

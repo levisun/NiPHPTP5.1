@@ -38,6 +38,7 @@ $.loading({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.model.query",
         p: page
     }
@@ -67,6 +68,7 @@ function paging(_page) {
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "category.model.query",
             p: page
         }

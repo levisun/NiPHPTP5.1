@@ -47,15 +47,14 @@ Route::domain('api', function(){
         Route::rule('cms/query', 'api/index')->cache(APP_DEBUG ? false : $expire);
 
 
-
-
         Route::rule('admin/query', 'api/index');
         Route::rule('admin/handle', 'api/index');
     })
-    ->allowCrossDomain(true, [
+    ->allowCrossDomain();
+    /*true, [
         'Access-Control-Allow-Credentials' => 'true',
         'Access-Control-Allow-Origin'      => $refer['scheme'] . '://' . $refer['host'],
-    ]);
+    ]*/
 })
 ->bind('api')
 ->ext('html');

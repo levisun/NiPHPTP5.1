@@ -1,7 +1,29 @@
+<div id="app"></div>
+
 <div class="col-sm-12">
-    <dl class="list-unstyled row"></dl>
+    <dl class="list-unstyled row">
+    </dl>
 </div>
 {label:list}
+
+new Vue({
+    el: ".list-unstyled",
+    data: {
+        items: list
+    },
+    render: function(createElement) {
+        var html = "";
+
+    }
+});
+
+
+
+{/label:list}
+
+<!--
+
+
 var html = "";
 for(index in list){
     var data = list[index];
@@ -12,4 +34,41 @@ for(index in list){
 
     $(".list-unstyled").append("<dd class='col-sm-2'><a href='"+data.url+"' target='_blank'>"+data.title+"</a></dd>");
 }
-{/label:list}
+
+
+
+
+new Vue({
+    el: "#app",
+    data: {
+        items: list,
+    },
+    render: function (createElement) {
+        var html = "";
+        return createElement(
+            "dl",
+            {
+                attrs: {
+                    class: "list-unstyled row"
+                }
+            },
+            this.items.map(function(val){
+                if (html != val.type_name) {
+
+                    html = val.type_name;
+                } else {
+                    return createElement(
+                        "dd",
+                        {
+                            attrs: {
+                                class: "col-sm-2"
+                            }
+                        },
+                        createElement("a", val.title)
+                    );
+                }
+            })
+        );
+    }
+}); -->
+

@@ -25,8 +25,6 @@ function replace_meta($_content)
         ], '', $_content);
 
     $siteinfo = logic(request()->module() . '/siteinfo')->query();
-    $cdn = request()->scheme() . ':' . CDN_DOMAIN . '/';
-    $scheme = request()->scheme() . '://';
 
     $tpl_replace_string = config('template.tpl_replace_string');
 

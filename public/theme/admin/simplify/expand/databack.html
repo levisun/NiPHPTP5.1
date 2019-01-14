@@ -35,6 +35,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "expand.databack.query"
     },
     success: function(result){
@@ -69,6 +70,7 @@ $(document).on("click", ".np-btn-reduction", function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "expand.databack.reduction",
             id: id
         },
@@ -87,6 +89,7 @@ $(document).on("click", ".np-btn-remove", function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "expand.databack.remove",
             id: id
         },

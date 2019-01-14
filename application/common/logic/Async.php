@@ -283,6 +283,7 @@ class Async
         $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
         $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
         $this->method    = strtolower(input('param.method'));                   // 请求API方法名
+        $this->sid       = strtolower(input('param.sid'));                      // SESSIONID
         // $this->apiCache  = input('param.cache/b', true);                        // 缓存数据
         $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
 
@@ -348,6 +349,7 @@ class Async
                 'include'   => count(get_included_files()) . '个文件',
                 'async'     => $this->debugMsg,
                 'params'    => input('param.', [], 'trim'),
+                'cookie'    => $_COOKIE,
                 'method'    => $this->method
             ];
         }

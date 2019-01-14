@@ -7,10 +7,10 @@
 
             <form action="" method="post" id="np-login">
                 <div class="form-group m-bottom-md">
-                    <input type="text" name="username" class="form-control" placeholder="{:lang('username')}" validate-type="*" validate-msg="fffffff">
+                    <input type="text" name="username" class="form-control" placeholder="{:lang('username')}" value="levisun">
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password" class="form-control" placeholder="{:lang('password')}" validate-type="m" validate-msg="ddddddd">
+                    <input type="password" name="password" class="form-control" placeholder="{:lang('password')}" value="Horadric">
                 </div>
 
                 <div class="form-group captcha">
@@ -32,6 +32,7 @@ $("form").submit(function(){
     var form_data = "method=account.login.login";
         form_data += "&token={$Think.const.API_TOKEN}";
         form_data += "&timestamp=" + $.timestamp();
+        form_data += "&sid={$_COOKIE.PHPSESSID}";
         form_data += "&"+$(this).serialize();
 
     $.pjax({
@@ -41,9 +42,9 @@ $("form").submit(function(){
         data: form_data,
         success: function(result){
             if ("{$Request.param.back}") {
-                // handle(result, "{$Request.param.back}");
+                handle(result, "{$Request.param.back}");
             } else {
-                // handle(result, "{:url('settings/info')}");
+                handle(result, "{:url('settings/info')}");
             }
         }
     });

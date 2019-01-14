@@ -68,6 +68,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "content.banner.find",
         id: "{$Request.param.id}"
     },

@@ -52,6 +52,7 @@ $.pjax({
     data: {
         timestamp: $.timestamp(),
         token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
         method: "category.category.query",
         pid: "{$Request.param.pid}"
     },
@@ -120,6 +121,7 @@ $(document).on("click", ".np-btn-remove", function(){
         data: {
             timestamp: $.timestamp(),
             token: "{$Think.const.API_TOKEN}",
+            sid: "{$_COOKIE.PHPSESSID}",
             method: "category.category.remove",
             id: id
         },
