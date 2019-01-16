@@ -217,7 +217,7 @@ class Async
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             trace('[METHOD] request params error', 'error');
             trace('[METHOD] ' . $file_path, 'error');
-            $this->error('[METHOD] PARAMETER ERROR');
+            $this->error('[METHOD] METHOD NOT FOUND');
         }
 
         // 检查方法是否存在
@@ -230,7 +230,7 @@ class Async
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             trace('[METHOD] request params error', 'error');
             trace('[METHOD] ' . $file_path, 'error');
-            $this->error('[METHOD] PARAMETER ERROR');
+            $this->error('[METHOD] PARAMETER NOT FOUND');
         }
     }
 
