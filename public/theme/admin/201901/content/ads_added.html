@@ -1,0 +1,124 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('ads name')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-lg-2 control-label">{:lang('size')}</label>
+                    <div class="col-lg-10">
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <input type="text" name="width" id="width" class="form-control">
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="text" name="height" id="height" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-lg-2 control-label">{:lang('time')}</label>
+                    <div class="col-lg-10">
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <input type="text" name="start_time" id="start_time" class="form-control">
+                            </div>
+                            <div class="col-lg-2">
+                                <input type="text" name="end_time" id="end_time" class="form-control">
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+
+                        </script>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-lg-2 control-label">{:lang('ads image')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="image" id="image" class="form-control">
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload">{:lang('button upload')}</button>
+                        <img  id="img-image" width="100" style="display:none">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="col-lg-2 control-label">{:lang('ads url')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="url" id="url" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{css href="__STATIC__library/datetimepicker/css/bootstrap-datetimepicker.min.css" /}
+{js href="__STATIC__library/moment/moment.min.js" /}
+{js href="__STATIC__library/moment/locale/zh-cn.js" /}
+{js href="__STATIC__library/datetimepicker/js/bootstrap-datetimepicker.min.js" /}
+<script type="text/javascript">
+$(function () {
+    $('#start_time').datetimepicker({
+        format: 'Y-M-D', viewMode: 'years'
+    });
+    $('#end_time').datetimepicker({
+        format: 'Y-M-D', viewMode: 'years'
+    });
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "content.ads.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "ads");
+
+    $.upload({
+        url: request.ajax.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#image").val(dir);
+            $("#img-image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=content.ads.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url('content/ads')}");
+        }
+    });
+    return false;
+});
+</script>

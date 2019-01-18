@@ -1,0 +1,256 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('name')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="aliases" class="col-lg-2 control-label">{:lang('aliases')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="aliases" id="aliases" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="parent" class="col-lg-2 control-label">{:lang('parent')}</label>
+                    <div class="col-lg-10">
+                        <input type="hidden" name="pid" id="pid" value="">
+                        <input type="text" name="parent" id="parent" class="form-control" disabled value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="type_id" class="col-lg-2 control-label">{:lang('type')}</label>
+                    <div class="col-lg-10">
+                        <select name="type_id" id="type_id" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="model_id" class="col-lg-2 control-label">{:lang('model')}</label>
+                    <div class="col-lg-10">
+                        <select name="model_id" id="model_id" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="col-lg-2 control-label">{:lang('url')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="url" id="url" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="is_show" class="col-lg-2 control-label">{:lang('isshow')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs is_show1 checked">
+                                <input type="radio" id="is_show1" name="is_show" value="1" checked>
+                                <label for="is_show1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('show')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs is_show0">
+                                <input type="radio" id="is_show0" name="is_show" value="0">
+                                <label for="is_show0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('hide')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="is_channel" class="col-lg-2 control-label">{:lang('ischannel')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs is_channel1">
+                                <input type="radio" id="is_channel1" name="is_channel" value="1" >
+                                <label for="is_channel1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('yes')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs is_channel0 checked">
+                                <input type="radio" id="is_channel0" name="is_channel" value="0" checked>
+                                <label for="is_channel0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('no')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-lg-2 control-label">{:lang('image')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="image" id="image" class="form-control" value="">
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload">{:lang('button upload')}</button>
+                        <img id="img-image" width="100" style="display:none">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="seo_title" class="col-lg-2 control-label">{:lang('title')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="seo_title" id="seo_title" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="seo_keywords" class="col-lg-2 control-label">{:lang('keywords')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="seo_keywords" id="seo_keywords" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="seo_description" class="col-lg-2 control-label">{:lang('description')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="seo_description" id="seo_description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="access_id" class="col-lg-2 control-label">{:lang('access')}</label>
+                    <div class="col-lg-10">
+                        <select name="access_id" id="access_id" class="form-control">
+                            <option value="0">{:lang('select access')}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "category.category.parent",
+        pid: "{$Request.param.pid}"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            if (result.data) {
+                $("#pid").val(result.data.id);
+                $("#parent").val(result.data.name);
+            } else {
+                $("#pid").val("0");
+                $("#parent").val("{:lang('empty')}");
+            }
+        }
+    }
+});
+
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "category.category.type"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var type_option = eachToOption(result.data, "id", "name");
+            $("#type_id").html(type_option);
+        }
+    }
+});
+
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "category.category.models"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var models_option = eachToOption(result.data, "id", "model_name");
+            $("#model_id").html(models_option);
+        }
+    }
+});
+
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "category.category.level"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var level_option = eachToOption(result.data, "id", "name");
+            $("#access_id").append(level_option);
+        }
+    }
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "category.category.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "category");
+
+    $.upload({
+        url: request.ajax.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#image").val(dir);
+            $("#img-image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=category.category.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url('category/category')}");
+        }
+    });
+    return false;
+});
+
+</script>

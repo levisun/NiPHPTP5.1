@@ -25,7 +25,7 @@ class Label extends TagLib
         'catlist' => ['close' => 1, 'attr' => '', 'alias' => 'list'],
         'nav'     => ['close' => 1, 'attr' => 'type', 'alias' => 'category'],
         'bread'   => ['close' => 1, 'attr' => '', 'alias' => 'breadcrumb'],
-        'menu'    => ['close' => 0, 'attr' => '', 'alias' => 'sidebar'],
+        'menu'    => ['close' => 1, 'attr' => '', 'alias' => 'sidebar'],
         'ads'     => ['close' => 1, 'attr' => 'id', 'alias' => 'adv'],
         'banner'  => ['close' => 1, 'attr' => 'id', 'alias' => 'slide'],
         'query'   => ['close' => 1, 'attr' => 'sql', 'alias' => 'db'],
@@ -66,10 +66,10 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "tags.query",
-                            token: "{$Think.const.API_TOKEN}",
+                            token: Cookies.get("API_TOKEN"),
                             sign:   jQuery.sign({
                                 method: "tags.query",
-                                token: "{$Think.const.API_TOKEN}"
+                                token: Cookies.get("API_TOKEN")
                             })
                         },
                         success: function(result){
@@ -113,12 +113,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "search.query",
-                            token:  "{$Think.const.API_TOKEN}",
+                            token:  Cookies.get("API_TOKEN"),
                             q:      "' . $_tag['q'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:  jQuery.sign({
                                 method: "search.query",
-                                token:  "{$Think.const.API_TOKEN}",
+                                token:  Cookies.get("API_TOKEN"),
                                 q:      "' . $_tag['q'] . '",
                                 p:      "' . $_tag['p'] . '"
                             })
@@ -166,13 +166,13 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: "{$Think.const.API_TOKEN}",
+                            token: Cookies.get("API_TOKEN"),
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token: "{$Think.const.API_TOKEN}",
+                                token: Cookies.get("API_TOKEN"),
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -184,12 +184,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.query",
-                            token: "{$Think.const.API_TOKEN}",
+                            token: Cookies.get("API_TOKEN"),
                             cid:   "' . $_tag['cid'] . '",
                             id:    "' . $_tag['id'] . '",
                             sign:  jQuery.sign({
                                 method: "article.query",
-                                token: "{$Think.const.API_TOKEN}",
+                                token: Cookies.get("API_TOKEN"),
                                 cid:    "' . $_tag['cid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
@@ -230,13 +230,13 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: "{$Think.const.API_TOKEN}",
+                            token: Cookies.get("API_TOKEN"),
                             timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token: "{$Think.const.API_TOKEN}",
+                                token: Cookies.get("API_TOKEN"),
                                 timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
@@ -271,12 +271,12 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "catlist.query",
-                            token:  "{$Think.const.API_TOKEN}",
+                            token:  Cookies.get("API_TOKEN"),
                             cid:    "' . $_tag['cid'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:   jQuery.sign({
                                 method: "catlist.query",
-                                token:  "{$Think.const.API_TOKEN}",
+                                token:  Cookies.get("API_TOKEN"),
                                 cid:    "' . $_tag['cid'] . '",
                                 p:      "' . $_tag['p'] . '",
                             })
@@ -334,11 +334,11 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:   "banner.query",
-                            token:    "{$Think.const.API_TOKEN}",
+                            token:    Cookies.get("API_TOKEN"),
                             slide_id: "' . $_tag['id'] . '",
                             sign:     jQuery.sign({
                                 method:   "banner.query",
-                                token:    "{$Think.const.API_TOKEN}",
+                                token:    Cookies.get("API_TOKEN"),
                                 slide_id: "' . $_tag['id'] . '"
                             })
                         },
@@ -391,11 +391,11 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method:  "ads.query",
-                            token:   "{$Think.const.API_TOKEN}",
+                            token:   Cookies.get("API_TOKEN"),
                             ads_id:  "' . $_tag['id'] . '",
                             sign:    jQuery.sign({
                                 method: "ads.query",
-                                token:  "{$Think.const.API_TOKEN}",
+                                token:  Cookies.get("API_TOKEN"),
                                 ads_id: "' . $_tag['id'] . '"
                             })
                         },
@@ -433,9 +433,43 @@ class Label extends TagLib
      */
     public function tagMenu($_tag, $_content)
     {
-        $parseStr  = '<?php $menu = logic("cms/sidebar")->query();';
-        $parseStr .= 'if (is_null($menu)) {abort(404);} ?>';
-        $parseStr .= $_content;
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
+
+        if ($_tag['async'] == 'true') {
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input("param.cid/f")}';
+
+            $parseStr = '<script type="text/javascript">
+                $(function(){
+                    jQuery.pjax({
+                        url: request.api.query,
+                        type: "get",
+                        data: {
+                            method:  "sidebar.query",
+                            token:   Cookies.get("API_TOKEN"),
+                            cid:    "' . $_tag['cid'] . '",
+                            sign:    jQuery.sign({
+                                method: "sidebar.query",
+                                token:  Cookies.get("API_TOKEN"),
+                                cid:    "' . $_tag['cid'] . '"
+                            })
+                        },
+                        success: function(result){
+                            if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                ' . $_content . '
+                            }
+                        }
+                    });
+                });
+                </script>';
+        } else {
+            $parseStr  = '<?php $menu = logic("cms/sidebar")->query();';
+            $parseStr .= 'if (is_null($menu)) {abort(404);} ?>';
+            $parseStr .= $_content;
+        }
 
         return $parseStr;
     }
@@ -449,12 +483,49 @@ class Label extends TagLib
      */
     public function tagBread($_tag, $_content)
     {
-        $parseStr  = '<?php $bread = logic("cms/breadcrumb")->query();';
-        $parseStr .= 'if (is_null($bread)) {abort(404);}';
-        $parseStr .= '$count = count($bread);';
-        $parseStr .= 'foreach ($bread as $key => $vo) { ?>';
-        $parseStr .= $_content;
-        $parseStr .= '<?php } unset($bread, $count, $key, $vo); ?>';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
+
+        if ($_tag['async'] == 'true') {
+            $_tag['cid'] = !empty($_tag['cid']) ? (float) $_tag['cid'] : '{:input("param.cid/f")}';
+
+            $parseStr = '<script type="text/javascript">
+                $(function(){
+                    jQuery.pjax({
+                        url: request.api.query,
+                        type: "get",
+                        data: {
+                            method:  "breadcrumb.query",
+                            token:   Cookies.get("API_TOKEN"),
+                            cid:    "' . $_tag['cid'] . '",
+                            sign:    jQuery.sign({
+                                method: "breadcrumb.query",
+                                token:  Cookies.get("API_TOKEN"),
+                                cid:    "' . $_tag['cid'] . '"
+                            })
+                        },
+                        success: function(result){
+                            if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                for (var key in data) {
+                                    var vo = data[key];
+                                    ' . $_content . '
+                                }
+                            }
+                        }
+                    });
+                });
+                </script>';
+        } else {
+            $parseStr  = '<?php $bread = logic("cms/breadcrumb")->query();';
+            $parseStr .= 'if (is_null($bread)) {abort(404);}';
+            $parseStr .= '$count = count($bread);';
+            $parseStr .= 'foreach ($bread as $key => $vo) { ?>';
+            $parseStr .= $_content;
+            $parseStr .= '<?php } unset($bread, $count, $key, $vo); ?>';
+        }
 
         return $parseStr;
     }
@@ -469,13 +540,48 @@ class Label extends TagLib
     public function tagNav($_tag, $_content)
     {
         $_tag['type']  = !empty($_tag['type']) ? (float) $_tag['type'] : '2';
+        $_tag['async'] = !empty($_tag['async']) ? safe_filter($_tag['async']) : 'true';
 
-        $parseStr  = '<?php $nav = logic("cms/nav")->query(' . $_tag['type'] . ');';
-        $parseStr .= 'if (is_null($nav)) {abort(404);}';
-        $parseStr .= '$count = count($nav);';
-        $parseStr .= 'foreach ($nav as $key => $vo) { ?>';
-        $parseStr .= $_content;
-        $parseStr .= '<?php } unset($nav, $count, $key, $vo); ?>';
+        if ($_tag['async'] == 'true') {
+            $parseStr = '<script type="text/javascript">
+                $(function(){
+                    jQuery.pjax({
+                        url: request.api.query,
+                        type: "get",
+                        async: false,
+                        data: {
+                            method:  "nav.query",
+                            token:   Cookies.get("API_TOKEN"),
+                            type_id:  "' . $_tag['type'] . '",
+                            sign:    jQuery.sign({
+                                method: "nav.query",
+                                type_id:  "' . $_tag['type'] . '",
+                                token:  Cookies.get("API_TOKEN")
+                            })
+                        },
+                        success: function(result){
+                            if (result.code !== "SUCCESS") {
+                                return false;
+                            }
+                            if (result.data) {
+                                var data = result.data;
+                                for (var key in data) {
+                                    var vo = data[key];
+                                    ' . $_content . '
+                                }
+                            }
+                        }
+                    });
+                });
+                </script>';
+        } else {
+            $parseStr  = '<?php $nav = logic("cms/nav")->query(' . $_tag['type'] . ');';
+            $parseStr .= 'if (is_null($nav)) {abort(404);}';
+            $parseStr .= '$count = count($nav);';
+            $parseStr .= 'foreach ($nav as $key => $vo) { ?>';
+            $parseStr .= $_content;
+            $parseStr .= '<?php } unset($nav, $count, $key, $vo); ?>';
+        }
 
         return $parseStr;
     }

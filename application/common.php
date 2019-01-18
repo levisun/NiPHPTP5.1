@@ -21,14 +21,168 @@ use think\facade\Url;
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root());
 define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root());
-define('API_TOKEN', sha1(
-    Request::server('HTTP_USER_AGENT') .
-    Request::ip() .
-    Env::get('root_path') .
-    date('Ymd')
-));
+define('API_TOKEN', md5(Request::server('HTTP_USER_AGENT') . Request::ip() .Env::get('root_path') . date('Ymd')));
+setcookie('API_TOKEN', API_TOKEN, 0, '/', '.' . Request::rootDomain());
+empty($_COOKIE['PHPSESSID']) ? : setcookie('API_SID', $_COOKIE['PHPSESSID'], 0, '/', '.' . Request::rootDomain());
 define('NP_CACHE_PREFIX', substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7));
 define('NP_COOKIE_PREFIX', strtoupper(substr(md5(__DIR__), -3)));
+
+/**
+ * 模板head foot
+ * @param  array  $_site_info 网站信息
+ * @param  string $_content
+ * @return string
+ */
+function html_head_foot($_site_info, $_content, $_og = false)
+{
+    $_content = logic('common/SafeFilter')->enter($_content);
+
+    $head = '<!DOCTYPE html>' .
+            '<html lang="' . lang(':detect') . '">' .
+            '<head>' .
+            '<meta charset="utf-8" />' .
+            '<meta name="generator" content="NiPHP ' . NP_VERSION . '" />' .
+            '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' .
+            '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' .
+
+            '<meta name="fragment" content="!" />' .                            // 支持蜘蛛ajax
+
+            '<meta name="robots" content="all" />' .                            // 蜘蛛抓取
+            '<meta name="revisit-after" content="7 days" />' .                  // 蜘蛛重访
+            '<meta name="renderer" content="webkit" />' .                       // 强制使用webkit渲染
+            '<meta name="force-rendering" content="webkit" />' .
+
+            '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' .
+
+
+            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' .
+            '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' .
+            '<meta http-equiv="Cache-Control" content="no-siteapp" />' .        // 禁止baidu转码
+            '<meta http-equiv="Cache-Control" content="no-transform" />' .
+            // '<meta http-equiv="Widow-target" content="_top" />' .
+            '<meta http-equiv="x-dns-prefetch-control" content="on" />' .
+
+            '<link rel="dns-prefetch" href="' . CDN_DOMAIN . '" />' .
+            '<link rel="dns-prefetch" href="' . API_DOMAIN . '" />' .
+            '<link href="' . CDN_DOMAIN . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
+
+    if (!empty($_site_info['title'])) {
+        $head .= '<title>' . $_site_info['title'] . '</title>';
+    }
+    if (!empty($_site_info['website_keywords'])) {
+        $head .= '<meta name="keywords" content="' . $_site_info['website_keywords'] . '" />';
+    }
+    if (!empty($_site_info['website_description'])) {
+        $head .= '<meta name="description" content="' . $_site_info['website_description'] . '" />';
+    }
+
+    if ($_og) {
+        if (!empty($_site_info['website_name'])) {
+            $head .= '<meta property="og:site_name" content="' . $_site_info['website_name'] . '" />';
+        }
+        $head .= '<meta property="og:type" content="article" />' .
+                 '<meta property="og:url" content="' . request()->url(true) . '" />';
+        if (!empty($_site_info['title'])) {
+            $head .= '<meta property="og:title" content="' . $_site_info['title'] . '" />';
+        }
+        if (!empty($_site_info['website_description'])) {
+            $head .= '<meta property="og:description" content="' . $_site_info['website_description'] . '" />';
+        }
+    }
+
+
+    $tpl_replace_string = config('template.tpl_replace_string');
+    if (is_file(config('template.view_path') . 'config.json')) {
+        $config = file_get_contents(config('template.view_path') . 'config.json');
+        $config = safe_filter_strict($config);
+        $config = logic('common/SafeFilter')->decode($config);
+
+        $config = str_replace(array_keys($tpl_replace_string), array_values($tpl_replace_string), $config);
+        $config = json_decode($config, true);
+
+        if (!empty($config['meta'])) {
+            foreach ($config['meta'] as $meta) {
+                $head .= '<meta ' . $meta['type'] . ' ' . $meta['content'] . ' />';
+            }
+        }
+
+        if (!empty($config['css'])) {
+            foreach ($config['css'] as $css) {
+                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
+            }
+        }
+
+        if (!empty($config['js'])) {
+            foreach ($config['js'] as $js) {
+                $head .= '<script type="text/javascript" src="' . $js . '"></script>';
+            }
+        }
+    }
+
+    $head .= '<script type="text/javascript">' .
+             'var request = {' .
+                 'domain:"' . $tpl_replace_string['__DOMAIN__'] . '",' .
+                 'url:"' . url('', '', true) . '",' .
+                 'param:' . json_encode(request()->param()) . ',' .
+                 'c:"' . request()->controller(true) . '",' .
+                 'a:"' . request()->action() . '",' .
+                 'api:{' .
+                    'query:"' . API_DOMAIN . '/' . request()->module() . '/query.html",' .
+                    'handle:"' . API_DOMAIN . '/' . request()->module() . '/handle.html",' .
+                    'upload:"' . API_DOMAIN . '/' . request()->module() . '/upload.html"' .
+                 '},' .
+                 'static:"' . $tpl_replace_string['__STATIC__'] . '",' .
+                 'css:"' . $tpl_replace_string['__CSS__'] . '",' .
+                 'js:"' . $tpl_replace_string['__JS__'] . '",' .
+                 'img:"' . $tpl_replace_string['__IMG__'] . '"' .
+             '};' .
+             '</script>';
+
+    $head .= '</head><body>';
+
+    $foot = !empty($_site_info['script']) ? $_site_info['script'] : '';
+
+    // 插件加载
+    if (!empty($config['hook'])) {
+        foreach ($config['hook'] as $hook) {
+            $foot .= $hook;
+        }
+    }
+
+    $foot .= '<script type="text/javascript">' .
+             'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
+             '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
+             '\r\nCreate Date ' . date('Y-m-d H:i:s') .
+             '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒' .
+             '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");' .
+             '</script>' .
+             '<script type="text/javascript" src="' . API_DOMAIN . '/visit.html"></script>' .
+             '</body></html>';
+
+    $_content = $head . $_content . $foot;
+
+    // 生成HTML静态页
+    logic('common/HtmlFile')->write($_content);
+
+    return $_content;
+}
+
+/**
+ * HTML静态文件地址
+ * @return string
+ */
+function html_file_path()
+{
+    $path = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'html' .
+            DIRECTORY_SEPARATOR . request()->module() . DIRECTORY_SEPARATOR;
+    if (is_wechat_request()) {
+        $path .= 'wechat' . DIRECTORY_SEPARATOR;
+    } elseif (request()->isMobile()) {
+        $path .= 'mobile' . DIRECTORY_SEPARATOR;
+    }
+
+    return $path;
+}
 
 /**
  * emoji编码

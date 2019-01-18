@@ -1,0 +1,31 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <pre id="dataPre"></pre>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "expand.elog.find",
+        id: "{$Request.param.id}"
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        $("#dataPre").text(result.data);
+    }
+});
+</script>

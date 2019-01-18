@@ -1,0 +1,27 @@
+{
+    "css": [
+        "__STATIC__nipui/css/nipui.css",
+        "https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css",
+        "https://cdn.bootcss.com/font-awesome/4.1.0/css/font-awesome.min.css",
+        "https://cdn.bootcss.com/ionicons/1.5.2/css/ionicons.min.css",
+        "https://cdn.bootcss.com/morris.js/0.5.1/morris.css",
+        "https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css",
+        "__CSS__simplify.min.css"
+    ],
+    "js": [
+        "https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js",
+        "https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js",
+        "https://cdn.bootcss.com/flot/0.8.3/jquery.flot.min.js",
+        "https://cdn.bootcss.com/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js",
+        "https://cdn.bootcss.com/OwlCarousel2/2.3.4/owl.carousel.min.js",
+        "https://cdn.bootcss.com/modernizr/2.7.1/modernizr.min.js",
+        "https://cdn.bootcss.com/js-cookie/2.2.0/js.cookie.min.js",
+        "__JS__jquery.popupoverlay.min.js",
+        "__JS__simplify/simplify.js",
+        "__STATIC__nipui/js/nipui.js",
+        "__JS__main.js"
+    ],
+    "hook": [
+
+    ]
+}

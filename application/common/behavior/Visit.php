@@ -139,7 +139,7 @@ class Visit
         foreach ($result as $key => $value) {
             // $result[$key]['flag'] = encrypt($value['id']);
             // $result[$key]['title'] = htmlspecialchars_decode($value['title']);
-            $result[$key]['cat_url'] = url('list/' . $value['category_id'], '', true);
+            $result[$key]['cat_url'] = url('list/' . $value['category_id'], '', true, true);
 
             // 查询模型表名
             $table_name =
@@ -152,7 +152,7 @@ class Visit
             ->cache(__METHOD__ . 'TABLE_NAME' . $value['category_id'])
             ->value('table_name');
 
-            $result[$key]['url'] = url($table_name . '/' . $value['category_id'] . '/' . $value['id'], '', true);
+            $result[$key]['url'] = url($table_name . '/' . $value['category_id'] . '/' . $value['id'], '', true, true);
         }
 
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL .

@@ -25,8 +25,8 @@ class Base extends Controller
         // 模板设置
         $template = get_template_config(config('default_theme'));
         config('template.view_path', $template['view_path']);
+        config('template.tpl_replace_string', $template['tpl_replace_string']);
         $this->engine($template);
-        $this->filter('replace_meta');
 
         $assign = [];
 
@@ -50,5 +50,7 @@ class Base extends Controller
         $assign['SUB_TITLE']  = $tit_bre['sub_title'];
 
         $this->assign('SITE_DATA', $assign);
+
+        $this->filter('replace_meta');
     }
 }

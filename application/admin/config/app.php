@@ -25,7 +25,7 @@ return [
     ],
 
     // 模板
-    'default_theme'       => 'simplify',
+    'default_theme'       => '201901',
     // 默认语言
     'default_lang'        => 'zh-cn',
     // 是否开启多语言

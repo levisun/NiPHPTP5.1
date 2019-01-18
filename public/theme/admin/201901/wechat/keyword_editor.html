@@ -1,0 +1,139 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="keyword" class="col-lg-2 control-label">{:lang('keyword')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="keyword" id="keyword" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="title" class="col-lg-2 control-label">{:lang('title')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="title" id="title" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="content" class="col-lg-2 control-label">{:lang('reply')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="content" id="content" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-lg-2 control-label">{:lang('image')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="image" id="image" class="form-control" value="">
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload">{:lang('button upload')}</button>
+                        <img  id="img-image" width="100">
+                        <font class="grey align-t">{:lang('img info')}</font>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="col-lg-2 control-label">{:lang('url')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="url" id="url" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="status" class="col-lg-2 control-label">{:lang('status')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs checked">
+                                <input type="radio" id="status1" name="status" value="1" checked>
+                                <label for="status1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button open')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="status0" name="status" value="0">
+                                <label for="status0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button close')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="type" id="type" value="{$type}">
+                        <input type="hidden" name="id" id="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$.pjax({
+    url: request.ajax.query,
+    async: false,
+    animation: true,
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        method: "wechat.keyword.find",
+        id: "{$Request.param.id}"
+    },
+    success: function(result) {
+        if (result.code === "SUCCESS") {
+            eachToInput(result.data);
+        }
+    }
+});
+
+
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "wechat.keyword.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "portrait");
+
+    $.upload({
+        url: request.ajax.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#image").val(dir);
+            $("#img-image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=wechat.keyword.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url('wechat/keyword')}");
+        }
+    });
+    return false;
+});
+</script>

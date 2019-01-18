@@ -33,15 +33,16 @@ Route::pattern([
 Route::domain('api', function(){
     Route::miss('api/abort');
 
-    $refer = parse_url(request()->server('HTTP_ORIGIN'));
-    if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
-        abort(404, 'ORIGIN ERROR');
-    }
+    // $refer = parse_url(request()->server('HTTP_ORIGIN'));
+    // if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
+    //     abort(404, 'ORIGIN ERROR');
+    // }
 
     Route::group('', function(){
         $expire = config('cache.expire');
 
         Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
+        Route::rule('visit', 'api/visit')->cache(APP_DEBUG ? false : $expire);
 
 
         Route::rule('cms/query', 'api/index')->cache(APP_DEBUG ? false : $expire);

@@ -1,0 +1,105 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="username" class="col-lg-2 control-label">{:lang('username')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="username" id="username" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-lg-2 control-label">{:lang('password')}</label>
+                    <div class="col-lg-10">
+                        <input type="password" name="password" id="password" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="not_password" class="col-lg-2 control-label">{:lang('not password')}</label>
+                    <div class="col-lg-10">
+                        <input type="password" name="not_password" id="not_password" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-lg-2 control-label">{:lang('email')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="email" id="email" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="userrole" class="col-lg-2 control-label">{:lang('userrole')}</label>
+                    <div class="col-lg-10">
+                        <select name="role" id="role" class="form-control">
+                            <option value="">{:lang('userrole select')}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="id" id="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var editor_data = {};
+$.pjax({
+    url: request.ajax.query,
+    async: false,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        method: "user.admin.find",
+        id: "{$Request.param.id}"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
+    }
+});
+
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        method: "user.admin.role"
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+        var option = eachToOption(result.data, "id", "name", editor_data.role_id);
+        $("#role").append(option);
+    }
+});
+
+$("form").submit(function(){
+    var form_data = "method=user.admin.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url('user/admin')}");
+        }
+    });
+    return false;
+});
+</script>

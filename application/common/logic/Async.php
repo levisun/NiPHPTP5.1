@@ -117,7 +117,7 @@ class Async
      */
     protected function token()
     {
-        $referer = sha1(
+        $referer = md5(
             // $this->request->server('HTTP_ORIGIN') .
             $this->request->server('HTTP_USER_AGENT') .
             $this->request->ip() .
@@ -130,7 +130,7 @@ class Async
             trace('[ASYNC] request token error', 'error');
             trace('[ASYNC] self::token ' . $referer, 'error');
             trace('[ASYNC] request::token ' . $this->token, 'error');
-            $this->error('REQUEST TOKEN ERROR');
+            $this->error('[ASYNC] REQUEST TOKEN ERROR');
         }
 
         return $this;
@@ -145,7 +145,7 @@ class Async
     protected function sign()
     {
         if (!$this->sign) {
-            $this->error('sign error');
+            $this->error('[ASYNC] SIGN ERROR');
         }
 
         $params = input('param.', '', 'trim');
@@ -163,7 +163,7 @@ class Async
         if (!hash_equals($str, $this->sign)) {
             $this->debugMsg['sign'] = $str;
             trace('[SIGN] request sign error', 'error');
-            $this->error('SIGN ERROR');
+            $this->error('[ASYNC] SIGN ERROR');
         }
 
         return $this;
@@ -217,7 +217,7 @@ class Async
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             trace('[METHOD] request params error', 'error');
             trace('[METHOD] ' . $file_path, 'error');
-            $this->error('[METHOD] METHOD NOT FOUND');
+            $this->error('[ASYNC METHOD] METHOD NOT FOUND');
         }
 
         // 检查方法是否存在
@@ -230,7 +230,7 @@ class Async
             $this->debugMsg[] = '$' . $this->class . '->' . $this->action . '() logic doesn\'t exist';
             trace('[METHOD] request params error', 'error');
             trace('[METHOD] ' . $file_path, 'error');
-            $this->error('[METHOD] PARAMETER NOT FOUND');
+            $this->error('[ASYNC METHOD] PARAMETER NOT FOUND');
         }
     }
 
@@ -247,7 +247,7 @@ class Async
     {
         if (!$this->method) {
             trace('[METHOD] Undefined parameters', 'error');
-            $this->error('[METHOD] Undefined parameters');
+            $this->error('[ASYNC METHOD] Undefined parameters');
         }
 
         // 参数[模块名.业务分层名.类名.方法名]
@@ -284,7 +284,7 @@ class Async
         $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
         $this->method    = strtolower(input('param.method'));                   // 请求API方法名
         $this->sid       = strtolower(input('param.sid'));                      // SESSIONID
-        // $this->apiCache  = input('param.cache/b', true);                        // 缓存数据
+        $this->apiCache  = input('param.cache/b', APP_DEBUG);                   // 缓存数据
         $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
 
         $this->version   = input('param.version', null);                        // 版本号

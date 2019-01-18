@@ -1,0 +1,140 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('rolename')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="status" class="col-lg-2 control-label">{:lang('status')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs checked">
+                                <input type="radio" id="status1" name="status" value="1" checked>
+                                <label for="status1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button open')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs">
+                                <input type="radio" id="status0" name="status" value="0">
+                                <label for="status0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button close')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="remark" class="col-lg-2 control-label">{:lang('remark')}</label>
+                    <div class="col-lg-10">
+                        <textarea name="remark" id="remark" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-lg-2 control-label">{:lang('rolenode')}</label>
+                    <div class="col-lg-10">
+                        <div class="checkbox inline-block" id="role_node">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.pjax({
+    url: request.ajax.query,
+    async: false,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        method: "user.role.node",
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return false;
+        }
+
+        var input = "";
+        for (var index in result.data) {
+            var value = result.data[index];
+            input += "<input type='hidden' name='node["+value.level+"]["+value.name+"]' value='"+value.id+"' checked />";
+
+            for (var inde in value.child) {
+                var val = value.child[inde];
+                input += "<div>";
+                input += "<div class='custom-checkbox'>";
+                input += "<input type='checkbox' name='node["+val.level+"]["+val.name+"]' id='node"+val.level+val.name+"' class='checkbox-red' value='"+val.id+"'";
+                input += " /><label for='node"+val.level+val.name+"'></label>";
+                input += "</div>";
+
+                input += "<div class='inline-block vertical-top'>"+val.title+"</div>";
+
+                input += "<div style='padding-left: 2rem;'>";
+                for (var ind in val.child) {
+                    input += "<div>";
+                    var va = val.child[ind];
+                    input += "<div class='custom-checkbox'>";
+                    input += "<input type='checkbox' name='node["+va.level+"]["+val.name+"_"+va.name+"]' id='node"+va.level+val.name+"_"+va.name+"' class='checkbox-red' value='"+va.id+"'";
+                    input += " /><label for='node"+va.level+val.name+"_"+va.name+"'></label>";
+                    input += "</div>";
+
+                    input += "<div class='inline-block vertical-top'>"+va.title+"</div>";
+
+                    input += "<div style='padding-left: 3rem;'>";
+                    for (var i in va.child) {
+                        var v = va.child[i];
+                        input += "<div class='custom-checkbox'>";
+                        input += "<input type='checkbox' name='node["+v.level+"]["+va.name+"_"+v.name+"]' id='node"+v.level+va.name+"_"+v.name+"' class='checkbox-red' value='"+v.id+"' />";
+                        input += "<label for='node"+v.level+va.name+"_"+v.name+"'></label>";
+                        input += "</div>";
+
+                        input += "<div class='inline-block vertical-top'>"+v.title+"</div>";
+                    }
+                    input += "</div>";
+
+                    input += "</div>";
+                }
+                input += "</div>";
+                input += "</div>";
+            }
+        }
+        $("#role_node").prepend(input);
+    }
+});
+
+$("form").submit(function(){
+    var form_data = "method=user.role.added";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url('user/role')}");
+        }
+    });
+    return false;
+});
+</script>

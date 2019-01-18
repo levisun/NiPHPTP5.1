@@ -27,7 +27,7 @@ if (!is_file(__DIR__ . '/../runtime/install.lock')) {
     exit;
 }
 
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 define('NP_VERSION', '2.0.1_20181222 Alpha');                                   // 版本号
 define('TP_VERSION', '5.1.30 LTS');                                             // 支持最低TP版本
 header('X-Powered-By: NiPHP ' . NP_VERSION);

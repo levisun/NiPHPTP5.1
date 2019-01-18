@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>{__CONTENT__}</title>
     <style type="text/css">
         *{ padding: 0; margin: 0; }
         body{ background: #fff; font-family: "Microsoft Yahei","Helvetica Neue",Helvetica,Arial,sans-serif; color: #333; font-size: 16px; }
@@ -19,7 +19,7 @@
     <h1>:( {__CONTENT__}</h1>
     <p class="detail"></p>
     <p class="jump">
-        页面自动 <a id="href" href="{:request()->root(true)}">跳转</a> 等待时间： <b id="wait">3</b>
+        页面自动 <a id="href" href="//www.{:request()->rootDomain()}">跳转</a> 等待时间： <b id="wait">3</b>
     </p>
 </div>
 

@@ -12,7 +12,9 @@
  */
 namespace app\api\controller;
 
-class Api
+use app\common\logic\Async;
+
+class Api extends Async
 {
 
     public function index()
@@ -34,6 +36,18 @@ class Api
     {
         $result = logic('common/IpInfo')->getInfo(input('param.ip'));
         $this->success('QUERY SUCCESS', $result);
+    }
+
+    /**
+     * 访问记录
+     * @access public
+     * @param
+     * @return void
+     */
+    public function visit()
+    {
+        (new \app\common\behavior\Visit)->run();
+        die();
     }
 
     /**

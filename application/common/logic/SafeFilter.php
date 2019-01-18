@@ -16,6 +16,38 @@ class SafeFilter
 {
 
     /**
+     * 安全字符解译
+     * @access public
+     * @param  mixed   $_data
+     * @return mixed
+     */
+    public function decode($_data)
+    {
+        $pattern = [
+            // ASCII 安全字符
+            '!'  => '&#33;',
+            '%'  => '&#37;',
+            '('  => '&#40;',
+            ')'  => '&#41;',
+            '*'  => '&#42;',
+            '+'  => '&#43;',
+            ';'  => '&#59;',
+            '='  => '&#61;',
+            '\\' => '&#92;',
+            '^'  => '&#94;',
+            '`'  => '&#96;',
+            '|'  => '&#124;',
+            '~'  => '&#126;',
+            '?'  => '&#129;',
+            '‚'  => '&sbquo;',
+            // '\'' => '&quot;',
+        ];
+
+        $_data = str_replace(array_values($pattern), array_keys($pattern), $_data);
+        return htmlspecialchars_decode($_data);
+    }
+
+    /**
      * 安全过滤
      * @access public
      * @param  mixed   $_data
@@ -44,11 +76,11 @@ class SafeFilter
     /**
      * 转化全角字符
      * 转化特殊字符
-     * @access private
+     * @access public
      * @param  string $_content
      * @return string
      */
-    private function strToEncode($_content)
+    public function strToEncode($_content)
     {
         $pattern = [
             // 全角转半角
@@ -67,11 +99,11 @@ class SafeFilter
     /**
      * 过滤数据
      * 回车与空格
-     * @access private
+     * @access public
      * @param  string $_content
      * @return string
      */
-    private function enter($_content)
+    public function enter($_content)
     {
         $pattern = [
             '/( ){2,}/si'    => '',
@@ -84,12 +116,12 @@ class SafeFilter
     /**
      * SQL
      * 数据库注入
-     * @access private
+     * @access public
      * @param  string  $_content
      * @param  boolean $_strict  过滤HTML标签
      * @return string
      */
-    private function SQL($_content, $_strict)
+    public function SQL($_content, $_strict)
     {
         $_content = $_strict ? strip_tags($_content) : $_content;
         $_content = htmlspecialchars($_content);
@@ -124,11 +156,11 @@ class SafeFilter
     /**
      * XXE
      * XML 实体扩展攻击
-     * @access private
+     * @access public
      * @param  string $_content
      * @return string
      */
-    private function XXE($_content)
+    public function XXE($_content)
     {
         libxml_disable_entity_loader(true);
 
@@ -163,11 +195,11 @@ class SafeFilter
     /**
      * XSS
      * 跨站脚本攻击
-     * @access private
+     * @access public
      * @param  string $_content
      * @return string
      */
-    private function XSS($_content)
+    public function XSS($_content)
     {
         return preg_replace([
             '/on([a-zA-Z0-9 ]*?)(=[ ]*?)["|\'](.*?)["|\']/si',
@@ -183,11 +215,11 @@ class SafeFilter
     /**
      * PHP
      * PHP脚本攻击
-     * @access private
+     * @access public
      * @param  string $_content
      * @return string
      */
-    private function PHP($_content)
+    public function PHP($_content)
     {
         return preg_replace([
             '/<\?php(.*?)\?>/si',

@@ -1,0 +1,125 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                {eq name="Request.param.pid" value=""}
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">{:lang('banner name')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="name" id="name" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="width" class="col-lg-2 control-label">{:lang('width')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="width" id="width" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="height" class="col-lg-2 control-label">{:lang('height')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="height" id="height" class="form-control" value="">
+                    </div>
+                </div>
+                {else/}
+                <div class="form-group">
+                    <label for="title" class="col-lg-2 control-label">{:lang('banner title')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="title" id="title" class="form-control" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-lg-2 control-label">{:lang('banner image')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="image" id="image" class="form-control" value="">
+                        <button type="button" class="btn btn-success marginTB-xs" id="upload">{:lang('button upload')}</button>
+                        <img  id="img-image" width="100" style="display:none">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="col-lg-2 control-label">{:lang('banner url')}</label>
+                    <div class="col-lg-10">
+                        <input type="text" name="url" id="url" class="form-control" value="">
+                    </div>
+                </div>
+                <input type="hidden" name="pid" value="{$Request.param.pid}">
+                {/eq}
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="id" id="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var editor_data = {};
+$.pjax({
+    url: request.ajax.query,
+    async: false,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "content.banner.find",
+        id: "{$Request.param.id}"
+    },
+    success: function(result) {
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
+    }
+});
+
+$("form").submit(function(){
+    var form_data = "method=content.banner.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url('content/banner')}");
+        }
+    });
+    return false;
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "content.banner.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "banner");
+
+    $.upload({
+        url: request.ajax.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#image").val(dir);
+            $("#img-image").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
+    });
+});
+</script>

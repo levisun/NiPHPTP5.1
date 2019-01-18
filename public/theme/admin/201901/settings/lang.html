@@ -1,0 +1,116 @@
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="system" class="col-lg-2 control-label">{:lang('system website name')}</label>
+                    <div class="col-lg-10">
+                        <select name="system" id="system" class="form-control sys_default_lang">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="website" class="col-lg-2 control-label">{:lang('website default lang')}</label>
+                    <div class="col-lg-10">
+                        <select name="website" id="website" class="form-control web_default_lang">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lang_switch_on" class="col-lg-2 control-label">{:lang('domain auto')}</label>
+                    <div class="col-lg-10">
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs lang_switch_on1">
+                                <input type="radio" id="lang_switch_on1" name="lang_switch_on" value="1">
+                                <label for="lang_switch_on1"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button open')}
+                            </div>
+                        </div>
+                        <div class="radio inline-block">
+                            <div class="custom-radio m-right-xs lang_switch_on0">
+                                <input type="radio" id="lang_switch_on0" name="lang_switch_on" value="0">
+                                <label for="lang_switch_on0"></label>
+                            </div>
+                            <div class="inline-block vertical-top">
+                                {:lang('button close')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="button" value="{:lang('button save')}" class="btn btn-info marginTB-xs submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        method: "settings.lang.query"
+    },
+    success: function(result){
+        if (result.code !== "SUCCESS") {
+            return ;
+        }
+
+        $(".lang_switch_on"+result.data["lang_switch_on"]).addClass("checked");
+        $("#lang_switch_on"+result.data["lang_switch_on"]).attr("checked", "checked");
+
+        var option = '';
+        for (var index in result.data["lang_list"]) {
+            if (result.data["lang_list"][index] == result.data["sys_default_lang"]) {
+                checked = "selected='selected'";
+            } else {
+                checked = "";
+            }
+            option = option + "<option value='"+result.data["lang_list"][index]+"' "+checked+">"+result.data["lang_list"][index]+"</option>";
+        }
+        $(".sys_default_lang").html(option);
+
+        var option = '';
+        for (var index in result.data["lang_list"]) {
+            if (result.data["lang_list"][index] == result.data["web_default_lang"]) {
+                checked = "selected='selected'";
+            } else {
+                checked = "";
+            }
+            option = option + "<option value='"+result.data["lang_list"][index]+"' "+checked+">"+result.data["lang_list"][index]+"</option>";
+        }
+        $(".web_default_lang").html(option);
+    }
+});
+
+$(".submit").click(function(){
+    var form_data = "method=settings.lang.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$("form").serialize();
+
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            handle(result);
+        }
+    });
+    return false;
+});
+</script>

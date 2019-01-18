@@ -16,32 +16,24 @@
             </li>
             <!-- 主导航 开始 -->
             {label:nav type="2"}
-            {if !empty($vo.child)}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown{$vo.id}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {$vo.name}
-                </a>
-                <!-- 主导航 子导航 开始 -->
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown{$vo.id}">
-                    {foreach $vo.child as $v}
-                    <a class="dropdown-item" href="{$v.url}">{$v.name}</a>
-                    {/foreach}
-                </div>
-                <!-- 主导航 子导航 结束 -->
-            </li>
-            {else /}
-            <li class="nav-item">
-                <a class="nav-link" href="{$vo.url}">{$vo.name}</a>
-            </li>
-            {/if}
+            if (vo.child) {
+                jQuery(".navbar-nav").append("<li class='nav-item dropdown'>");
+                jQuery(".navbar-nav").append("<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown"+vo.id+"' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"+vo.name+"</a>");
+                jQuery(".navbar-nav").append("<div class='dropdown-menu navbarDropdown"+vo.id+"' aria-labelledby='navbarDropdown"+vo.id+"'>");
+                for (var i in vo.child) {
+                    var v = vo.child[i];
+                    jQuery(".navbarDropdown"+vo.id).append("<a class='dropdown-item' href='"+v.url+"'>"+v.name+"</a>");
+                }
+                jQuery(".navbar-nav").append("</div>");
+            } else {
+                jQuery(".navbar-nav").append("<li class='nav-item'><a class='nav-link' href='"+vo.url+"'>"+vo.name+"</a>");
+            }
             {/label:nav}
             <!-- 主导航 结束 -->
 
             <!-- 顶部导航 开始 -->
             {label:nav type="1"}
-            <li class="nav-item">
-                <a class="nav-link disabled" href="{$vo.url}">{$vo.name}</a>
-            </li>
+            jQuery(".navbar-nav").append("<li class='nav-item'><a class='nav-link disabled' href='"+vo.url+"'>"+vo.name+"</a></li>");
             {/label:nav}
             <!-- 顶部导航 结束 -->
         </ul>
@@ -56,18 +48,19 @@
 
 <main class="container-fluid">
     <div class="row">
-        {label:menu /}
-        {if isset($menu['name'])}
+    {neq name="Request.action" value="index"}
         <aside id="sidebar" class="col-sm-2">
             <nav class="row nav flex-column nav-pills">
-                <h5 class="nav-link side-title">{$menu.name}</h5>
-                {if isset($menu['child'])}
-                {foreach $menu.child as $vo}
-                <a class="nav-link" href="{$vo.url}"><font>{$vo.name}</font></a>
-                {/foreach}
-                {else /}
-                <a class="nav-link" href="{$menu.url}"><font>{$menu.name}</font></a>
-                {/if}
+                {label:menu}
+                jQuery("#sidebar nav").append("<h5 class='nav-link side-title'>"+data.name+"</h5>");
+                if (data.chlid) {
+                    for (var vo in data.chlid) {
+                        jQuery("#sidebar nav").append("<a class='nav-link' href='"+vo.url+"'><font>"+vo.name+"</font></a>");
+                    }
+                } else {
+                    jQuery("#sidebar nav").append("<a class='nav-link' href='"+data.url+"'><font>"+data.name+"</font></a>");
+                }
+                {/label:menu}
             </nav>
         </aside>
 
@@ -76,7 +69,7 @@
                 <ol class="breadcrumb col-sm-12">
                     <li class="breadcrumb-item"><a href="__DOMAIN__">首页</a></li>
                     {label:bread}
-                    <li class="breadcrumb-item"><a href="{$vo.url}">{$vo.name}</a></li>
+                    jQuery(".breadcrumb").append(" / <li class='breadcrumb-item'><a href='"+vo.url+"'>"+vo.name+"</a></li>");
                     {/label:bread}
                 </ol>
             </nav>
@@ -93,9 +86,9 @@
                 </div>
             </div>
         </div>
-        {else /}
+    {else/}
         {__CONTENT__}
-        {/if}
+    {/neq}
     </div>
 </main>
 

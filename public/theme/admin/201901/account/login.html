@@ -1,0 +1,60 @@
+<div class="wrapper no-navigation preload">
+    <div class="sign-in-wrapper">
+        <div class="sign-in-inner">
+            <div class="login-brand text-center">
+                <i class="fa fa-database m-right-xs"></i> NiPHP <strong class="text-skin">Admin</strong>
+            </div>
+
+            <form action="" method="post" id="np-login">
+                <div class="form-group m-bottom-md">
+                    <input type="text" name="username" class="form-control" placeholder="{:lang('username')}" value="levisun">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="{:lang('password')}" value="Horadric">
+                </div>
+
+                <div class="form-group captcha">
+                    <input type="text" name="captcha" class="form-control captcha" placeholder="{:lang('captcha')}">
+                </div>
+
+                <div class="m-top-md p-top-sm">
+                    {:token()}
+                    <input type="hidden" name="back" value="{$Request.param.back}">
+                    <input type="submit" class="btn btn-success btn-block np-login-btn" value="{:lang('button login')}">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+
+$("form").submit(function(){
+    var form_data = NIPHP.formParam($(this).serializeArray());
+    console.log(form_data);
+
+    $.pjax({
+        url: request.api.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            if ("{$Request.param.back}") {
+                handle(result, "{$Request.param.back}");
+            } else {
+                handle(result, "{:url('settings/info')}");
+            }
+        }
+    });
+    return false;
+});
+$(document).on("focus", "input.captcha", function(){
+    var val = $("input.captcha").val();
+    if (!val) {
+        $("div.captcha img").remove();
+        $("div.captcha").append('{:captcha_img()}');
+    }
+});
+</script>

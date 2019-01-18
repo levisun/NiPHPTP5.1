@@ -1,0 +1,216 @@
+{js href="__STATIC__ckeditor/ckeditor-11.1.1.js"}
+{js href="__STATIC__ckeditor/translations/zh-cn.js"}
+<div class="smart-widget">
+    <div class="smart-widget-header">
+        {$SITE_DATA.SUB_TITLE}
+    </div>
+    <div class="smart-widget-inner">
+        <div class="smart-widget-body">
+            <form action="" method="post" class="form-horizontal">
+                <ul class="nav nav-tabs nav-justified" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#CT-basic" id="tab-CT-basic" aria-controls="CT-basic" role="tab" data-toggle="tab">{:lang('basic')}</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#CT-content" id="tab-CT-content" aria-controls="CT-content" role="tab" data-toggle="tab">{:lang('content')}</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#CT-fields" id="tab-CT-fields" aria-controls="CT-fields" role="tab" data-toggle="tab">{:lang('fields')}</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="CT-basic">
+                        <div class="form-group">
+                            <label for="title" class="col-lg-2 control-label">{:lang('title')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="title" id="title" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="keywords" class="col-lg-2 control-label">{:lang('keywords')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="keywords" id="keywords" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="col-lg-2 control-label">{:lang('description')}</label>
+                            <div class="col-lg-10">
+                                <textarea name="description" id="description" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="thumb" class="col-lg-2 control-label">{:lang('thumb')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="thumb" id="thumb" class="form-control" value="">
+                                <button type="button" class="btn btn-info btn-sm np-upload" id="upload">{:lang('button upload')}</button>
+                                <img src="" id="img-thumb" width="100" style="display:none">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="type_id" class="col-lg-2 control-label">{:lang('type')}</label>
+                            <div class="col-lg-10">
+                                <select name="type_id" id="type_id" class="form-control">
+                                    <option value="0">{:lang('select type')}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="col-lg-2 control-label">{:lang('username')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="username" id="username" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="origin" class="col-lg-2 control-label">{:lang('origin')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="origin" id="origin" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tags" class="col-lg-2 control-label">{:lang('tags')}</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="tags" id="tags" class="form-control" placeholder="" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="access_id" class="col-lg-2 control-label">{:lang('access')}</label>
+                            <div class="col-lg-10">
+                                <select name="access_id" id="access_id" class="form-control">
+                                    <option value="0">{:lang('select access')}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="CT-content">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <textarea name="content" class="form-control" id="content"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="CT-fields">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-10">
+                        {:token()}
+                        <input type="hidden" name="category_id" id="category_id" value="">
+                        <input type="hidden" name="id" id="id" value="">
+                        <input type="submit" value="{:lang('button save')}" class="btn btn-info marginTB-xs">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+ClassicEditor.create(
+    document.querySelector('#content'),
+    {
+        language: 'zh-cn',
+        ckfinder: {
+            uploadUrl: request.ajax.upload + '?method='+request.controller+'.'+request.action+'.upload&type=ckeditor'
+        }
+    }
+);
+
+var editor_data = {};
+$.pjax({
+    url: request.ajax.query,
+    async: false,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "content.content.find",
+        cid: "{$Request.param.cid}",
+        id: "{$Request.param.cid}"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            editor_data = result.data;
+            eachToInput(editor_data);
+        }
+    }
+});
+$.pjax({
+    url: request.ajax.query,
+    async: false,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "content.content.type",
+        cid: "{$Request.param.cid}"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var type_option = eachToOption(result.data, "id", "name", editor_data.type_id);
+            $("#type_id").append(type_option);
+        }
+    }
+});
+$.pjax({
+    url: request.ajax.query,
+    type: "post",
+    data: {
+        timestamp: $.timestamp(),
+        token: "{$Think.const.API_TOKEN}",
+        sid: "{$_COOKIE.PHPSESSID}",
+        method: "category.category.level"
+    },
+    success: function(result){
+        if (result.code === "SUCCESS") {
+            var level_option = eachToOption(result.data, "id", "name");
+            $("#access_id").append(level_option);
+        }
+    }
+});
+
+$.uiPopup({
+    element: "#upload",
+    title:   "上传",
+    content: "<form id='uploadForm' enctype='multipart/form-data'><input type='file' name='upload' id='upload-file' /></form>",
+    footer:  "<input type='button' class='btn btn-info marginTB-xs upload-btn' />"
+});
+
+$(".upload-btn").click(function(){
+    var data = new FormData($("#uploadForm")[0]);
+        data.append("method", "content.content.upload");
+        data.append("timestamp", $.timestamp());
+        data.append("type", "{$Request.param.model}");
+
+    $.upload({
+        url: request.ajax.upload,
+        type: "post",
+        data: data,
+        success: function(result) {
+            var dir = result.data.save_dir + result.data.file_name;
+            $("#thumb").val(dir);
+            $("#img-thumb").attr("src",  result.data.domain + dir);
+            $.uiPopup({}, "hide");
+        }
+    });
+});
+
+$("form").submit(function(){
+    var form_data = "method=content.content.editor";
+        form_data += "&token={$Think.const.API_TOKEN}";
+        form_data += "&timestamp=" + $.timestamp();
+        form_data += "&"+$(this).serialize();
+    $.pjax({
+        url: request.ajax.handle,
+        async: false,
+        type: "post",
+        data: form_data,
+        success: function(result){
+            handle(result, "{:url()}");
+        }
+    });
+    return false;
+});
+</script>

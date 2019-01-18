@@ -21,8 +21,10 @@ class Nav
      * @param  int $_type_id
      * @return array
      */
-    public function query($_type_id = 2)
+    public function query($_type_id = 0)
     {
+        $_type_id = $_type_id ? (float) $_type_id : input('param.type_id/f');
+
         $result =
         model('common/category')
         ->field('id,name,pid,aliases,seo_title,seo_keywords,seo_description,image,url,is_channel,model_id')
@@ -89,6 +91,8 @@ class Nav
      */
     public function getUrl($_model_id, $_is_channel, $_cat_id)
     {
+        $path = html_file_path();
+
         if ($_is_channel) {
             $url = 'channel/' . $_cat_id;
         } else {
@@ -122,6 +126,12 @@ class Nav
             }
         }
 
-        return url($url);
+        $url = url($url);
+
+        // 判断HTML静态页面文件是否存在
+        // 链接地址替换成静态文件地址
+        $url = logic('common/HtmlFile')->redirect($url, 'cms');
+
+        return $url;
     }
 }
