@@ -27,6 +27,17 @@ class Api extends Async
     }
 
     /**
+     * 错误页面
+     * @access public
+     * @param
+     * @return
+     */
+    public function abort()
+    {
+        abort(404);
+    }
+
+    /**
      * 获得IP地址地区信息
      * @access public
      * @param
@@ -46,18 +57,35 @@ class Api extends Async
      */
     public function visit()
     {
-        (new \app\common\behavior\Visit)->run();
+        $visit = new \app\common\middleware\Visit;
+        $visit->addedVisit();
+        $visit->addedSearchengine();
+        $visit->createSitemap();
         die();
     }
 
     /**
-     * 错误页面
+     * 上传
      * @access public
      * @param
-     * @return
+     * @return json
      */
-    public function abort()
+    public function upload()
     {
-        abort(404);
+        $result = $this->run()->token()->methodAuth('upload')->auth()->send();
+        if ($result === false) {
+            return $this->error($this->errorMsg);
+        } elseif (is_string($result)) {
+            return $this->error($result);
+        } else {
+            if (input('param.type') === 'ckeditor') {
+                return json([
+                    'uploaded' => true,
+                    'url' => $result['domain'] . $result['save_dir'] . $result['file_name'],
+                ]);
+            } else {
+                $this->success(lang('upload success'), $result);
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root());
 define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root());
 define('API_TOKEN', md5(Request::server('HTTP_USER_AGENT') . Request::ip() .Env::get('root_path') . date('Ymd')));
 setcookie('API_TOKEN', API_TOKEN, 0, '/', '.' . Request::rootDomain());
-empty($_COOKIE['PHPSESSID']) ? : setcookie('API_SID', $_COOKIE['PHPSESSID'], 0, '/', '.' . Request::rootDomain());
+empty($_COOKIE['PHPSESSID']) ? : setcookie('API_SID', encrypt($_COOKIE['PHPSESSID']), 0, '/', '.' . Request::rootDomain());
 define('NP_CACHE_PREFIX', substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7));
 define('NP_COOKIE_PREFIX', strtoupper(substr(md5(__DIR__), -3)));
 
@@ -54,16 +54,18 @@ function html_head_foot($_site_info, $_content, $_og = false)
 
             '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' .
 
-
             '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' .
             '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' .
+
             '<meta http-equiv="Cache-Control" content="no-siteapp" />' .        // 禁止baidu转码
             '<meta http-equiv="Cache-Control" content="no-transform" />' .
-            // '<meta http-equiv="Widow-target" content="_top" />' .
-            '<meta http-equiv="x-dns-prefetch-control" content="on" />' .
 
+            // '<meta http-equiv="Widow-target" content="_top" />' .
+
+            '<meta http-equiv="x-dns-prefetch-control" content="on" />' .
             '<link rel="dns-prefetch" href="' . CDN_DOMAIN . '" />' .
             '<link rel="dns-prefetch" href="' . API_DOMAIN . '" />' .
+
             '<link href="' . CDN_DOMAIN . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
     if (!empty($_site_info['title'])) {
@@ -156,7 +158,7 @@ function html_head_foot($_site_info, $_content, $_og = false)
              '\r\nRuntime ' . number_format(microtime(true) - app()->getBeginTime(), 6) . '秒' .
              '\r\nMemory ' . number_format((memory_get_usage() - app()->getBeginMem()) / 1048576, 2) . 'MB");' .
              '</script>' .
-             '<script type="text/javascript" src="' . API_DOMAIN . '/visit.html"></script>' .
+             '<script type="text/javascript" src="' . API_DOMAIN . '/visit.html" defer></script>' .
              '</body></html>';
 
     $_content = $head . $_content . $foot;

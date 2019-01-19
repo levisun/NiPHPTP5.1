@@ -275,23 +275,27 @@ class Async
     private function init()
     {
         $this->module    = strtolower($this->request->module());                // 模块名称
+
         $this->appid     = input('param.appid/f');                              //
         $this->appsecret = input('param.appsecret');                            //
+
         $this->token     = input('param.token');                                // 令牌
+
         $this->sign      = input('param.sign');                                 // 请求数据签名
         $this->sign_type = strtolower(input('param.sign_type', 'md5'));         // 签名类型
         $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
         $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
         $this->method    = strtolower(input('param.method'));                   // 请求API方法名
-        $this->sid       = strtolower(input('param.sid'));                      // SESSIONID
-        $this->apiCache  = input('param.cache/b', APP_DEBUG);                   // 缓存数据
-        $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
+        $this->sid       = decrypt(input('param.sid'));                         // SESSIONID
 
         $this->version   = input('param.version', null);                        // 版本号
         if ($this->version) {
             list($major, $minor) = explode('.', $this->version, 3);
             $this->version = 'v' . $major . '.' . $minor;
         }
+
+        $this->apiCache  = input('param.cache/b', APP_DEBUG);                   // 缓存数据
+        $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
     }
 
     /**
@@ -337,7 +341,7 @@ class Async
             'message' => $_msg,
             'data'    => $_data,
             'time'    => date('Y-m-d H:i:s', $this->request->server('REQUEST_TIME')),
-            // 'ip'      => logic('common/IpInfo')->getInfo(),
+            'ip'      => logic('common/IpInfo')->getInfo(),
             'runtime' => number_format(microtime(true) - app()->getBeginTime(), 6) . '秒',
             'memory'  => number_format((memory_get_usage() - app()->getBeginMem()) / 1024 / 1024, 2) . 'MB',
         ];

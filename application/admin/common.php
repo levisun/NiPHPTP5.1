@@ -12,18 +12,6 @@
  */
 
 /**
- * 自动添加HTML文档中的meta等信息
- * @param  string $_content
- * @return string
- */
-function replace_meta($_content)
-{
-    // 网站标题与面包屑
-    $tit_bre = logic('admin/account/auth')->getTitBre();
-    return html_head_foot($tit_bre, $_content);
-}
-
-/**
  * 节点格式化
  * @param  array $_result
  * @param  int   $_pid

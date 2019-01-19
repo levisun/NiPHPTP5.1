@@ -37,7 +37,10 @@ class Base extends Controller
 
         $this->engine($template);
 
-        $this->filter('replace_meta');
+        $this->filter(function($_content){
+            $siteinfo = logic(request()->module() . '/siteinfo')->query();
+            return html_head_foot($siteinfo, $_content, true);
+        });
     }
 
     /**

@@ -13,7 +13,7 @@
 
 // 禁止cdn|css|img|js等二级域名直接访问网站
 Route::domain([
-    'cdn', 'css', 'img', 'js'
+    'cdn'
 ], function(){
     abort(404, '');
 });
@@ -28,37 +28,6 @@ Route::pattern([
     'id'      => '\d+',
     'p'       => '\d+',
 ]);
-
-// API 模块
-Route::domain('api', function(){
-    Route::miss('api/abort');
-
-    // $refer = parse_url(request()->server('HTTP_ORIGIN'));
-    // if (empty($refer['host']) || !in_array($refer['host'], config('whitelist'))) {
-    //     abort(404, 'ORIGIN ERROR');
-    // }
-
-    Route::group('', function(){
-        $expire = config('cache.expire');
-
-        Route::rule('getipinfo', 'api/getipinfo')->cache(APP_DEBUG ? false : $expire);
-        Route::rule('visit', 'api/visit')->cache(APP_DEBUG ? false : $expire);
-
-
-        Route::rule('cms/query', 'api/index')->cache(APP_DEBUG ? false : $expire);
-
-
-        Route::rule('admin/query', 'api/index');
-        Route::rule('admin/handle', 'api/index');
-    })
-    ->allowCrossDomain();
-    /*true, [
-        'Access-Control-Allow-Credentials' => 'true',
-        'Access-Control-Allow-Origin'      => $refer['scheme'] . '://' . $refer['host'],
-    ]*/
-})
-->bind('api')
-->ext('html');
 
 // CMS 模块
 Route::domain(['www', 'm'], function(){
@@ -89,6 +58,11 @@ Route::domain(['www', 'm'], function(){
 })
 ->bind('cms')
 ->ext('html')
+->middleware([
+    'app\\common\\middleware\\Concurrent::class',
+    'app\\common\\middleware\\Visit::class',
+    'app\\common\\middleware\\RemoveRunGarbage::class'
+])
 ->cache(false);
 
 // BOOK 模块
@@ -103,13 +77,9 @@ Route::domain('book', function(){
 })
 ->bind('book')
 ->ext('html')
-->cache(false);
-
-// ADMIN 模块
-Route::domain('admin', function(){
-    Route::get('/', 'account/login');
-    Route::get('index', 'account/login');
-})
-->bind('admin')
-->ext('html')
+->middleware([
+    'app\\common\\middleware\\Concurrent::class',
+    'app\\common\\middleware\\Visit::class',
+    'app\\common\\middleware\\RemoveRunGarbage::class'
+])
 ->cache(false);

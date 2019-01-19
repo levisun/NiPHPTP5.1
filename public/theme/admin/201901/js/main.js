@@ -11,6 +11,15 @@
         window.location.href = _url;
     }
 
+    NIPHP.toast = function (_result, _url) {
+        if (_result.code === "SUCCESS") {
+            jQuery.uiToast(_result.message, 3);
+            jQuery.redirect(_url);
+        } else {
+            jQuery.uiToast(_result.message, 3);
+        }
+    }
+
     /**
      * 组装请求参数
      * @param  array _param  jQuery.serializeArray()
@@ -23,8 +32,10 @@
             timestamp: NIPHP.timestamp(),
         };
 
-        for (var index in _param) {
-            data[_param[index]['name']] = _param[index]['value'];
+        if (typeof(_param) == "object") {
+            for (var index in _param) {
+                data[_param[index]['name']] = _param[index]['value'];
+            }
         }
 
         return data;

@@ -19,7 +19,9 @@
         "__JS__jquery.popupoverlay.min.js",
         "__JS__simplify/simplify.js",
         "__STATIC__nipui/js/nipui.js",
-        "__JS__main.js"
+        "__JS__main.js",
+        "https://cdn.bootcss.com/vue/2.5.21/vue.min.js",
+        "https://cdn.bootcss.com/vuex/3.1.0/vuex.min.js"
     ],
     "hook": [
 

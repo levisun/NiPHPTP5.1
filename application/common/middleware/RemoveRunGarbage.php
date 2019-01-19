@@ -1,18 +1,18 @@
 <?php
 /**
  *
- * 清理运行垃圾 - 行为
+ * 清理运行垃圾 - 中间件
  * 过期的数据缓存垃圾,模板编译垃圾
  *
  * @package   NiPHP
- * @category  application\common\behavior
+ * @category  application\common\middleware
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2018/9
  */
 
-namespace app\common\behavior;
+namespace app\common\middleware;
 
 class RemoveRunGarbage
 {
@@ -23,44 +23,43 @@ class RemoveRunGarbage
      * @param
      * @return void
      */
-    public function run()
+    public function handle($_request, \Closure $_next)
     {
+        $response = $_next($_request);
+
         // 减少频繁操作,每次请求百分之一几率运行操作
-        if (rand(1, 100) !== 1) {
-            return true;
-        }
-        // trace('[behavior] RemoveRunGarbage', 'warning');
+        if (rand(1, 100) === 1) {
+            $files = [
+                'runtime' . DIRECTORY_SEPARATOR . 'cache',
+                'runtime' . DIRECTORY_SEPARATOR . 'log',
+                // 'runtime' . DIRECTORY_SEPARATOR . 'temp',
+                'public'  . DIRECTORY_SEPARATOR . 'html',
+            ];
 
-        $files = [
-            'runtime' . DIRECTORY_SEPARATOR . 'cache',
-            'runtime' . DIRECTORY_SEPARATOR . 'log',
-            // 'runtime' . DIRECTORY_SEPARATOR . 'temp',
-            'public'  . DIRECTORY_SEPARATOR . 'html',
-        ];
+            $dir_path = [];
+            foreach ($files as $dir) {
+                $dir_path = array_merge($dir_path, (array) glob(env('root_path') . $dir . DIRECTORY_SEPARATOR . '*'));
+            }
 
-        $dir_path = [];
-        foreach ($files as $dir) {
-            $dir_path = array_merge($dir_path, (array) glob(env('root_path') . $dir . DIRECTORY_SEPARATOR . '*'));
-        }
+            $all_files = $this->getDir($dir_path);
 
-        $all_files = $this->getDir($dir_path);
+            // 为空
+            if (!empty($all_files)) {
+                // 随机抽取1000条信息
+                shuffle($all_files);
+                $all_files = array_slice($all_files, 0, 1000);
 
-        // 为空
-        if (empty($all_files)) {
-            return true;
-        }
-
-        // 随机抽取1000条信息
-        shuffle($all_files);
-        $all_files = array_slice($all_files, 0, 1000);
-
-        foreach ($all_files as $path) {
-            if (is_file($path)) {
-                @unlink($path);
-            } elseif (is_dir($path)) {
-                @rmdir($path);
+                foreach ($all_files as $path) {
+                    if (is_file($path)) {
+                        @unlink($path);
+                    } elseif (is_dir($path)) {
+                        @rmdir($path);
+                    }
+                }
             }
         }
+
+        return $response;
     }
 
     /**

@@ -49,11 +49,4 @@ return [
         500 => env('root_path') . 'public/theme/abort/500.html',           // 服务器错误
         502 => env('root_path') . 'public/theme/abort/502.html',           // 网关错误
     ],
-
-    // 跨域请求白名单
-    'whitelist'            => [
-        'admin.tp5.com',
-        'www.tp5.com',
-        'm.tp5.com'
-    ],
 ];

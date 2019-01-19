@@ -51,6 +51,10 @@ class Base extends Controller
 
         $this->assign('SITE_DATA', $assign);
 
-        $this->filter('replace_meta');
+        $this->filter(function($_content){
+            // 网站标题与面包屑
+            $tit_bre = logic('admin/account/auth')->getTitBre();
+            return html_head_foot($tit_bre, $_content);
+        });
     }
 }

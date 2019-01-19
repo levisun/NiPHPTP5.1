@@ -1,17 +1,17 @@
 <?php
 /**
  *
- * 访问记录 - 行为
+ * 访问记录 - 中间件
  *
  * @package   NiPHP
- * @category  application\common\behavior
+ * @category  application\common\middleware
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2018/9
  */
 
-namespace app\common\behavior;
+namespace app\common\middleware;
 
 class Visit
 {
@@ -21,11 +21,15 @@ class Visit
      * @param
      * @return void
      */
-    public function run()
+    public function handle($_request, \Closure $_next)
     {
+        $response = $_next($_request);
+
         $this->addedVisit();
         $this->addedSearchengine();
         $this->createSitemap();
+
+        return $response;
     }
 
     /**
@@ -139,7 +143,7 @@ class Visit
         foreach ($result as $key => $value) {
             // $result[$key]['flag'] = encrypt($value['id']);
             // $result[$key]['title'] = htmlspecialchars_decode($value['title']);
-            $result[$key]['cat_url'] = url('list/' . $value['category_id'], '', true, true);
+            $result[$key]['cat_url'] = url('list/' . $value['category_id'], '', true);
 
             // 查询模型表名
             $table_name =
@@ -152,13 +156,15 @@ class Visit
             ->cache(__METHOD__ . 'TABLE_NAME' . $value['category_id'])
             ->value('table_name');
 
-            $result[$key]['url'] = url($table_name . '/' . $value['category_id'] . '/' . $value['id'], '', true, true);
+            $result[$key]['url'] = url($table_name . '/' . $value['category_id'] . '/' . $value['id'], '', true);
         }
+
+        $domain = request()->scheme() . '//www.' . request()->rootDomain();
 
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL .
                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL .
                 '<url>' . PHP_EOL .
-                '<loc>' . request()->root(true) . '</loc>' . PHP_EOL .
+                '<loc>' . $domain . '</loc>' . PHP_EOL .
                 '<lastmod>' . date('Y-m-d H:i:s') . '</lastmod>' . PHP_EOL .
                 '<changefreq>daily</changefreq>' . PHP_EOL .
                 '<priority>1.00</priority>' . PHP_EOL .
@@ -170,7 +176,7 @@ class Visit
 
             if ($cat_url != $value['cat_url']) {
                 $xml .= '<url>' . PHP_EOL .
-                        '<loc>' . $value['cat_url'] . '</loc>' . PHP_EOL .
+                        '<loc>' . $domain . $value['cat_url'] . '</loc>' . PHP_EOL .
                         '<lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL .
                         '<changefreq>daily</changefreq>' . PHP_EOL .
                         '<priority>1.0</priority>' . PHP_EOL .
@@ -179,7 +185,7 @@ class Visit
             }
 
             $xml .= '<url>' . PHP_EOL .
-                    '<loc>' . $value['url'] . '</loc>' . PHP_EOL .
+                    '<loc>' . $domain . $value['url'] . '</loc>' . PHP_EOL .
                     '<lastmod>' . $value['update_time'] . '</lastmod>' . PHP_EOL .
                     '<changefreq>weekly</changefreq>' . PHP_EOL .
                     '<priority>0.8</priority>' . PHP_EOL .

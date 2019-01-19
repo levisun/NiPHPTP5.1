@@ -33,7 +33,7 @@
 
 $("form").submit(function(){
     var form_data = NIPHP.formParam($(this).serializeArray());
-    console.log(form_data);
+        form_data["method"] = "account.login.login";
 
     $.pjax({
         url: request.api.handle,
@@ -42,9 +42,9 @@ $("form").submit(function(){
         data: form_data,
         success: function(result){
             if ("{$Request.param.back}") {
-                handle(result, "{$Request.param.back}");
+                NIPHP.toast(result, "{$Request.param.back}");
             } else {
-                handle(result, "{:url('settings/info')}");
+                NIPHP.toast(result, "{:url('settings/info')}");
             }
         }
     });
