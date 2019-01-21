@@ -64,6 +64,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method: "tags.query",
                             token: Cookies.get("API_TOKEN"),
@@ -111,6 +116,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method: "search.query",
                             token:  Cookies.get("API_TOKEN"),
@@ -182,6 +192,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method: "article.query",
                             token: Cookies.get("API_TOKEN"),
@@ -228,6 +243,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method: "article.hits",
                             token: Cookies.get("API_TOKEN"),
@@ -269,6 +289,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method: "catlist.query",
                             token:  Cookies.get("API_TOKEN"),
@@ -332,6 +357,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method:   "banner.query",
                             token:    Cookies.get("API_TOKEN"),
@@ -389,6 +419,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method:  "ads.query",
                             token:   Cookies.get("API_TOKEN"),
@@ -443,6 +478,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method:  "sidebar.query",
                             token:   Cookies.get("API_TOKEN"),
@@ -493,6 +533,11 @@ class Label extends TagLib
                     jQuery.pjax({
                         url: request.api.query,
                         type: "get",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method:  "breadcrumb.query",
                             token:   Cookies.get("API_TOKEN"),
@@ -549,6 +594,11 @@ class Label extends TagLib
                         url: request.api.query,
                         type: "get",
                         async: false,
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-Request-Id": Cookies.get("API_SID"),
+                            "X-Request-Token": Cookies.get("API_TOKEN")
+                        },
                         data: {
                             method:  "nav.query",
                             token:   Cookies.get("API_TOKEN"),

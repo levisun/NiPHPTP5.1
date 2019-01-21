@@ -17,4 +17,7 @@ Route::domain('admin', function(){
 })
 ->bind('admin')
 ->ext('html')
+->middleware([
+    'app\\common\\middleware\\Concurrent::class'
+])
 ->cache(false);

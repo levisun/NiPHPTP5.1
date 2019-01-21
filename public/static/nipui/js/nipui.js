@@ -451,7 +451,7 @@
             scrollTo: false,                    // 是否回到顶部 可定义顶部像素
             requestUrl: window.location.href,   // 重写地址
             type: "GET",
-            contentType: "application/x-www-form-urlencoded"
+            contentType: "application/x-www-form-urlencoded; charset=utf-8"
         };
         _params = jQuery.extend(true, defaults, _params);
 

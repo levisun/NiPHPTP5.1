@@ -2,6 +2,7 @@
 /**
  *
  * 数据安全过滤 - 业务层
+ * 最好的过滤是,只允许指定的字符通过
  *
  * @package   NiPHP
  * @category  application\admin\logic\account

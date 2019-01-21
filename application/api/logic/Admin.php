@@ -57,7 +57,7 @@ class Admin extends Async
     {
         $this->apiCache = APP_DEBUG ? false : true;
 
-        $result = $this->run()->token()->methodAuth('query')->auth()->send();
+        $result = $this->run()->methodAuth('query')->auth()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
         } else {
@@ -73,7 +73,7 @@ class Admin extends Async
      */
     public function handle()
     {
-        $result = $this->run()->token()->methodAuth('handle')->auth()->send();
+        $result = $this->run()->methodAuth('handle')->auth()->send();
         if ($result === true) {
             $this->success(lang('exec success'), session_id());
         } else {
@@ -89,7 +89,7 @@ class Admin extends Async
      */
     public function upload()
     {
-        $result = $this->run()->token()->methodAuth('upload')->auth()->send();
+        $result = $this->run()->methodAuth('upload')->auth()->send();
         if ($result === false) {
             return $this->error($this->errorMsg);
         } elseif (is_string($result)) {

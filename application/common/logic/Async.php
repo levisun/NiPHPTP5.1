@@ -95,6 +95,8 @@ class Async
         $this->analysisMethod();                                                // 解析method参数
         $this->checkMethod();                                                   // method参数检查
         $this->loadLang();                                                      // 加载语言
+        $this->token();
+        $this->sid();
         return $this;
     }
 
@@ -107,33 +109,6 @@ class Async
     protected function auth()
     {
         abort(404);
-    }
-
-    /**
-     * 验证TOKEN
-     * @access protected
-     * @param
-     * @return object
-     */
-    protected function token()
-    {
-        $referer = md5(
-            // $this->request->server('HTTP_ORIGIN') .
-            $this->request->server('HTTP_USER_AGENT') .
-            $this->request->ip() .
-            env('root_path') .
-            date('Ymd')
-        );
-
-        if (!$this->token or !hash_equals($referer, $this->token)) {
-            $this->debugMsg[] = 'token=' . $referer;
-            trace('[ASYNC] request token error', 'error');
-            trace('[ASYNC] self::token ' . $referer, 'error');
-            trace('[ASYNC] request::token ' . $this->token, 'error');
-            $this->error('[ASYNC] REQUEST TOKEN ERROR');
-        }
-
-        return $this;
     }
 
     /**
@@ -164,6 +139,49 @@ class Async
             $this->debugMsg['sign'] = $str;
             trace('[SIGN] request sign error', 'error');
             $this->error('[ASYNC] SIGN ERROR');
+        }
+
+        return $this;
+    }
+
+    /**
+     * 验证SID
+     * @access protected
+     * @param
+     * @return object
+     */
+    protected function sid()
+    {
+        if (!preg_match('/^[A-Za-z0-9]+$/u', $this->sid)) {
+            trace('[ASYNC] request sid error', 'error');
+            $this->error('[ASYNC] REQUEST SID ERROR');
+        }
+
+        return $this;
+    }
+
+    /**
+     * 验证TOKEN
+     * @access protected
+     * @param
+     * @return object
+     */
+    protected function token()
+    {
+        $referer = sha1(
+            // $this->request->server('HTTP_ORIGIN') .
+            $this->request->server('HTTP_USER_AGENT') .
+            $this->request->ip() .
+            env('root_path') .
+            date('Ymd')
+        );
+
+        if (!$this->token or !hash_equals($referer, $this->token)) {
+            $this->debugMsg[] = 'token=' . $referer;
+            trace('[ASYNC] request token error', 'error');
+            trace('[ASYNC] self::token ' . $referer, 'error');
+            trace('[ASYNC] request::token ' . $this->token, 'error');
+            $this->error('[ASYNC] REQUEST TOKEN ERROR');
         }
 
         return $this;
@@ -279,14 +297,21 @@ class Async
         $this->appid     = input('param.appid/f');                              //
         $this->appsecret = input('param.appsecret');                            //
 
-        $this->token     = input('param.token');                                // 令牌
+        $this->token     = $this->request->header('x-request-token');           // 令牌
+        $this->token     = logic('common/SafeFilter')->filter($this->token, true);
+
+        $this->sid       = $this->request->header('x-request-id');              // SESSIONID
+        $this->sid       = logic('common/SafeFilter')->filter($this->sid, true);
+        $this->sid       = decrypt($this->sid);
+
+        $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
+        $this->timestamp = $this->request->header('x-request-timestamp');       // 请求时间戳
+        $this->timestamp = (float) $this->timestamp;
 
         $this->sign      = input('param.sign');                                 // 请求数据签名
         $this->sign_type = strtolower(input('param.sign_type', 'md5'));         // 签名类型
-        $this->timestamp = input('param.timestamp/f', time());                  // 请求时间戳
         $this->format    = strtolower(input('param.format', 'json'));           // 返回数据类型
         $this->method    = strtolower(input('param.method'));                   // 请求API方法名
-        $this->sid       = decrypt(input('param.sid'));                         // SESSIONID
 
         $this->version   = input('param.version', null);                        // 版本号
         if ($this->version) {
@@ -294,7 +319,7 @@ class Async
             $this->version = 'v' . $major . '.' . $minor;
         }
 
-        $this->apiCache  = input('param.cache/b', APP_DEBUG);                   // 缓存数据
+        $this->apiCache  = input('param.cache/b', !APP_DEBUG);                  // 缓存数据
         $this->apiDebug  = APP_DEBUG;                                           // 显示调试信息
     }
 
@@ -354,7 +379,8 @@ class Async
                 'async'     => $this->debugMsg,
                 'params'    => input('param.', [], 'trim'),
                 'cookie'    => $_COOKIE,
-                'method'    => $this->method
+                'method'    => $this->method,
+                'header'    => $this->request->header()
             ];
         }
 

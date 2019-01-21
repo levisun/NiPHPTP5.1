@@ -5,7 +5,7 @@
                 <i class="fa fa-database m-right-xs"></i> NiPHP <strong class="text-skin">Admin</strong>
             </div>
 
-            <form action="" method="post" id="np-login">
+            <form action="" method="post" id="np-admin-login">
                 <div class="form-group m-bottom-md">
                     <input type="text" name="username" class="form-control" placeholder="{:lang('username')}" value="levisun">
                 </div>
@@ -28,26 +28,19 @@
 </div>
 
 <script type="text/javascript">
-
-
-
-$("form").submit(function(){
+$("form#np-admin-login").submit(function(){
     var form_data = NIPHP.formParam($(this).serializeArray());
         form_data["method"] = "account.login.login";
 
-    $.pjax({
-        url: request.api.handle,
-        async: false,
-        type: "post",
-        data: form_data,
-        success: function(result){
-            if ("{$Request.param.back}") {
-                NIPHP.toast(result, "{$Request.param.back}");
-            } else {
-                NIPHP.toast(result, "{:url('settings/info')}");
-            }
+    NIPHP.handle(form_data, function(result){
+        if (result.code === "SUCCESS") {
+            jQuery.uiToast(result.message);
+            jQuery.reload();
+        } else {
+            jQuery.uiToast(result.message, 3);
         }
-    });
+    })
+
     return false;
 });
 $(document).on("focus", "input.captcha", function(){

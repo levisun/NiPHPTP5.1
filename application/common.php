@@ -21,7 +21,7 @@ use think\facade\Url;
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root());
 define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root());
-define('API_TOKEN', md5(Request::server('HTTP_USER_AGENT') . Request::ip() .Env::get('root_path') . date('Ymd')));
+define('API_TOKEN', sha1(Request::server('HTTP_USER_AGENT') . Request::ip() .Env::get('root_path') . date('Ymd')));
 setcookie('API_TOKEN', API_TOKEN, 0, '/', '.' . Request::rootDomain());
 empty($_COOKIE['PHPSESSID']) ? : setcookie('API_SID', encrypt($_COOKIE['PHPSESSID']), 0, '/', '.' . Request::rootDomain());
 define('NP_CACHE_PREFIX', substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7));

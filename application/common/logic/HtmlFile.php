@@ -27,6 +27,10 @@ class HtmlFile
      */
     public function write($_content)
     {
+        if (in_array(request()->module(), ['admin'])) {
+            return false;
+        }
+
         $path = request()->path();
         $path = $path ? $path : 'index';
         $path = str_replace('/', DIRECTORY_SEPARATOR, $path) . '.html';
@@ -45,7 +49,7 @@ class HtmlFile
     public function redirect($_url, $_module)
     {
         $_module = $_module ? $_module : request()->module();
-        $days = APP_DEBUG ? strtotime('-20 minute') : strtotime('-1 hour');
+        $days = APP_DEBUG ? strtotime('-20 minute') : strtotime('-30 days');
 
         $_url = trim($_url, '/');
         $_url = str_replace('/', DIRECTORY_SEPARATOR, $_url);

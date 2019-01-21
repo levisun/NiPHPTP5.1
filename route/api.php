@@ -31,5 +31,9 @@ Route::domain('api', function(){
     'app\\common\\middleware\\RemoveRunGarbage::class'
 ])
 ->ext('html')
-->cache(false)
-->allowCrossDomain();
+->allowCrossDomain(true, [
+    'Access-Control-Allow-Origin'  => '*',
+    'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With, X-Request-Id, X-Request-Token, X-Request-Timestamp',
+    'Access-Control-Max-Age' => 86400,
+]);

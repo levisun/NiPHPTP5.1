@@ -6,31 +6,13 @@
         SID: Cookies.get("API_SID")
     };
 
-
-    NIPHP.redirect = function (_url) {
-        window.location.href = _url;
-    }
-
-    NIPHP.toast = function (_result, _url) {
-        if (_result.code === "SUCCESS") {
-            jQuery.uiToast(_result.message, 3);
-            jQuery.redirect(_url);
-        } else {
-            jQuery.uiToast(_result.message, 3);
-        }
-    }
-
     /**
      * 组装请求参数
      * @param  array _param  jQuery.serializeArray()
      * @return array
      */
     NIPHP.formParam = function (_param) {
-        var data = {
-            token: NIPHP.API_TOKEN,
-            sid: NIPHP.SID,
-            timestamp: NIPHP.timestamp(),
-        };
+        var data = {};
 
         if (typeof(_param) == "object") {
             for (var index in _param) {
@@ -39,6 +21,45 @@
         }
 
         return data;
+    }
+
+    /**
+     * 交互
+     * 请求
+     * @param  array    _param
+     * @param  function _callback
+     * @return void
+     */
+    NIPHP.query = function (_param, _callback) {
+        jQuery.pjax({
+            url: request.api.query,
+            headers: NIPHP.HEADER,
+            type: "get",
+            data: _param,
+            success: function(result){
+                _callback(result);
+            }
+        });
+    }
+
+    /**
+     * 交互
+     * 操作
+     * @param  array    _param
+     * @param  function _callback
+     * @return void
+     */
+    NIPHP.handle = function (_param, _callback) {
+        jQuery.pjax({
+            url: request.api.handle,
+            headers: NIPHP.HEADER,
+            async: false,
+            type: "post",
+            data: _param,
+            success: function(result){
+                _callback(result);
+            }
+        });
     }
 
     /**
@@ -59,6 +80,13 @@
         var timestamp = Date.parse(new Date());
         return timestamp /1000;
     }
+
+    NIPHP.HEADER = {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-Request-Id": Cookies.get("API_SID"),
+        "X-Request-Token": Cookies.get("API_TOKEN"),
+        "X-Request-Timestamp": NIPHP.timestamp()
+    };
 
     window.NIPHP = NIPHP;
 
