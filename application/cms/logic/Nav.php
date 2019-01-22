@@ -91,8 +91,6 @@ class Nav
      */
     public function getUrl($_model_id, $_is_channel, $_cat_id)
     {
-        $path = html_file_path();
-
         if ($_is_channel) {
             $url = 'channel/' . $_cat_id;
         } else {
@@ -127,10 +125,6 @@ class Nav
         }
 
         $url = url($url);
-
-        // 判断HTML静态页面文件是否存在
-        // 链接地址替换成静态文件地址
-        $url = logic('common/HtmlFile')->redirect($url, 'cms');
 
         return $url;
     }

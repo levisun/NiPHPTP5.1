@@ -100,6 +100,9 @@ class Visit
 
     public function createSitemap()
     {
+        if (APP_DEBUG) {
+            return false;
+        }
         $file = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
         if (is_file($file) && filectime($file) >= strtotime('-1 days')) {
             return false;

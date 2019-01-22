@@ -71,10 +71,8 @@ class Label extends TagLib
                         },
                         data: {
                             method: "tags.query",
-                            token: Cookies.get("API_TOKEN"),
                             sign:   jQuery.sign({
-                                method: "tags.query",
-                                token: Cookies.get("API_TOKEN")
+                                method: "tags.query"
                             })
                         },
                         success: function(result){
@@ -123,12 +121,10 @@ class Label extends TagLib
                         },
                         data: {
                             method: "search.query",
-                            token:  Cookies.get("API_TOKEN"),
                             q:      "' . $_tag['q'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:  jQuery.sign({
                                 method: "search.query",
-                                token:  Cookies.get("API_TOKEN"),
                                 q:      "' . $_tag['q'] . '",
                                 p:      "' . $_tag['p'] . '"
                             })
@@ -176,14 +172,10 @@ class Label extends TagLib
                         type: "get",
                         data: {
                             method: "article.hits",
-                            token: Cookies.get("API_TOKEN"),
-                            timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token: Cookies.get("API_TOKEN"),
-                                timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
                             })
@@ -199,12 +191,10 @@ class Label extends TagLib
                         },
                         data: {
                             method: "article.query",
-                            token: Cookies.get("API_TOKEN"),
                             cid:   "' . $_tag['cid'] . '",
                             id:    "' . $_tag['id'] . '",
                             sign:  jQuery.sign({
                                 method: "article.query",
-                                token: Cookies.get("API_TOKEN"),
                                 cid:    "' . $_tag['cid'] . '",
                                 id:     "' . $_tag['id'] . '"
                             })
@@ -250,14 +240,10 @@ class Label extends TagLib
                         },
                         data: {
                             method: "article.hits",
-                            token: Cookies.get("API_TOKEN"),
-                            timestamp: "' . $time . '",
                             cid:       "' . $_tag['cid'] . '",
                             id:        "' . $_tag['id'] . '",
                             sign:      jQuery.sign({
                                 method:    "article.hits",
-                                token: Cookies.get("API_TOKEN"),
-                                timestamp: "' . $time . '",
                                 cid:       "' . $_tag['cid'] . '",
                                 id:        "' . $_tag['id'] . '"
                             })
@@ -296,12 +282,10 @@ class Label extends TagLib
                         },
                         data: {
                             method: "catlist.query",
-                            token:  Cookies.get("API_TOKEN"),
                             cid:    "' . $_tag['cid'] . '",
                             p:      "' . $_tag['p'] . '",
                             sign:   jQuery.sign({
                                 method: "catlist.query",
-                                token:  Cookies.get("API_TOKEN"),
                                 cid:    "' . $_tag['cid'] . '",
                                 p:      "' . $_tag['p'] . '",
                             })
@@ -364,11 +348,9 @@ class Label extends TagLib
                         },
                         data: {
                             method:   "banner.query",
-                            token:    Cookies.get("API_TOKEN"),
                             slide_id: "' . $_tag['id'] . '",
                             sign:     jQuery.sign({
                                 method:   "banner.query",
-                                token:    Cookies.get("API_TOKEN"),
                                 slide_id: "' . $_tag['id'] . '"
                             })
                         },
@@ -426,11 +408,9 @@ class Label extends TagLib
                         },
                         data: {
                             method:  "ads.query",
-                            token:   Cookies.get("API_TOKEN"),
                             ads_id:  "' . $_tag['id'] . '",
                             sign:    jQuery.sign({
                                 method: "ads.query",
-                                token:  Cookies.get("API_TOKEN"),
                                 ads_id: "' . $_tag['id'] . '"
                             })
                         },
@@ -485,11 +465,9 @@ class Label extends TagLib
                         },
                         data: {
                             method:  "sidebar.query",
-                            token:   Cookies.get("API_TOKEN"),
                             cid:    "' . $_tag['cid'] . '",
                             sign:    jQuery.sign({
                                 method: "sidebar.query",
-                                token:  Cookies.get("API_TOKEN"),
                                 cid:    "' . $_tag['cid'] . '"
                             })
                         },
@@ -540,11 +518,9 @@ class Label extends TagLib
                         },
                         data: {
                             method:  "breadcrumb.query",
-                            token:   Cookies.get("API_TOKEN"),
                             cid:    "' . $_tag['cid'] . '",
                             sign:    jQuery.sign({
                                 method: "breadcrumb.query",
-                                token:  Cookies.get("API_TOKEN"),
                                 cid:    "' . $_tag['cid'] . '"
                             })
                         },
@@ -601,12 +577,10 @@ class Label extends TagLib
                         },
                         data: {
                             method:  "nav.query",
-                            token:   Cookies.get("API_TOKEN"),
                             type_id:  "' . $_tag['type'] . '",
                             sign:    jQuery.sign({
                                 method: "nav.query",
-                                type_id:  "' . $_tag['type'] . '",
-                                token:  Cookies.get("API_TOKEN")
+                                type_id:  "' . $_tag['type'] . '"
                             })
                         },
                         success: function(result){

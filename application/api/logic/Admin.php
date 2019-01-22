@@ -55,8 +55,6 @@ class Admin extends Async
      */
     public function query()
     {
-        $this->apiCache = APP_DEBUG ? false : true;
-
         $result = $this->run()->methodAuth('query')->auth()->send();
         if (!is_null($result)) {
             $this->success('QUERY SUCCESS', $result);
@@ -75,7 +73,7 @@ class Admin extends Async
     {
         $result = $this->run()->methodAuth('handle')->auth()->send();
         if ($result === true) {
-            $this->success(lang('exec success'), session_id());
+            $this->success(lang('exec success'));
         } else {
             $this->error($result);
         }

@@ -21,11 +21,15 @@ use think\facade\Url;
 defined('APP_DEBUG') or define('APP_DEBUG', true);
 define('CDN_DOMAIN', '//cdn.' . Request::rootDomain() . Request::root());
 define('API_DOMAIN', '//api.' . Request::rootDomain() . Request::root());
-define('API_TOKEN', sha1(Request::server('HTTP_USER_AGENT') . Request::ip() .Env::get('root_path') . date('Ymd')));
-setcookie('API_TOKEN', API_TOKEN, 0, '/', '.' . Request::rootDomain());
-empty($_COOKIE['PHPSESSID']) ? : setcookie('API_SID', encrypt($_COOKIE['PHPSESSID']), 0, '/', '.' . Request::rootDomain());
-define('NP_CACHE_PREFIX', substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7));
-define('NP_COOKIE_PREFIX', strtoupper(substr(md5(__DIR__), -3)));
+
+if (!Request::header('X-Request-Token', null)) {
+    define('API_TOKEN', sha1(Request::server('HTTP_USER_AGENT') . Request::ip() .Env::get('root_path') . date('Ymd')));
+    setcookie('API_TOKEN', API_TOKEN, 0, '/', '.' . Request::rootDomain());
+
+    if (!empty($_COOKIE['PHPSESSID'])) {
+        setcookie('API_SID', encrypt($_COOKIE['PHPSESSID']), 0, '/', '.' . Request::rootDomain());
+    }
+}
 
 /**
  * 模板head foot
@@ -164,26 +168,9 @@ function html_head_foot($_site_info, $_content, $_og = false)
     $_content = $head . $_content . $foot;
 
     // 生成HTML静态页
-    logic('common/HtmlFile')->write($_content);
+    // logic('common/HtmlFile')->write($_content);
 
     return $_content;
-}
-
-/**
- * HTML静态文件地址
- * @return string
- */
-function html_file_path()
-{
-    $path = env('root_path') . 'public' . DIRECTORY_SEPARATOR . 'html' .
-            DIRECTORY_SEPARATOR . request()->module() . DIRECTORY_SEPARATOR;
-    if (is_wechat_request()) {
-        $path .= 'wechat' . DIRECTORY_SEPARATOR;
-    } elseif (request()->isMobile()) {
-        $path .= 'mobile' . DIRECTORY_SEPARATOR;
-    }
-
-    return $path;
 }
 
 /**

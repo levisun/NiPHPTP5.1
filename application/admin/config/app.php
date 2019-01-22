@@ -28,8 +28,6 @@ return [
     'default_theme'       => '201901',
     // 默认语言
     'default_lang'        => 'zh-cn',
-    // 是否开启多语言
-    'lang_switch_on'      => true,
 
     // 默认控制器名
     'default_controller'  => 'account',

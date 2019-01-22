@@ -152,7 +152,7 @@ class Async
      */
     protected function sid()
     {
-        if (!preg_match('/^[A-Za-z0-9]+$/u', $this->sid)) {
+        if ($this->sid && !preg_match('/^[A-Za-z0-9]+$/u', $this->sid)) {
             trace('[ASYNC] request sid error', 'error');
             $this->error('[ASYNC] REQUEST SID ERROR');
         }
@@ -170,6 +170,7 @@ class Async
     {
         $referer = sha1(
             // $this->request->server('HTTP_ORIGIN') .
+            // $this->request->header('Referer') .
             $this->request->server('HTTP_USER_AGENT') .
             $this->request->ip() .
             env('root_path') .
@@ -178,6 +179,7 @@ class Async
 
         if (!$this->token or !hash_equals($referer, $this->token)) {
             $this->debugMsg[] = 'token=' . $referer;
+            $this->debugMsg[] = $this->request->header('Referer');
             trace('[ASYNC] request token error', 'error');
             trace('[ASYNC] self::token ' . $referer, 'error');
             trace('[ASYNC] request::token ' . $this->token, 'error');

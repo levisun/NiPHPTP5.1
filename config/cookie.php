@@ -13,7 +13,7 @@
 
 return [
     // cookie 名称前缀
-    'prefix'    => NP_COOKIE_PREFIX . '_',
+    'prefix'    => strtoupper(substr(md5(__DIR__), -3)) . '_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径

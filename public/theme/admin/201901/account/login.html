@@ -28,8 +28,8 @@
 </div>
 
 <script type="text/javascript">
-$("form#np-admin-login").submit(function(){
-    var form_data = NIPHP.formParam($(this).serializeArray());
+jQuery("form#np-admin-login").submit(function(){
+    var form_data = NIPHP.formParam(jQuery(this).serializeArray());
         form_data["method"] = "account.login.login";
 
     NIPHP.handle(form_data, function(result){
@@ -43,7 +43,7 @@ $("form#np-admin-login").submit(function(){
 
     return false;
 });
-$(document).on("focus", "input.captcha", function(){
+jQuery(document).on("focus", "input.captcha", function(){
     var val = $("input.captcha").val();
     if (!val) {
         $("div.captcha img").remove();

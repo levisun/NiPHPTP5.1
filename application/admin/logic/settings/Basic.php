@@ -35,7 +35,7 @@ class Basic
 
         $data = [];
         foreach ($result as $value) {
-            $data[$value['name']] = $value['value'];
+            $data[$value['name']] = htmlspecialchars_decode($value['value']);
         }
 
         return $data;
@@ -54,7 +54,7 @@ class Basic
             'website_keywords'    => input('post.website_keywords'),
             'website_description' => input('post.website_description'),
             'bottom_message'      => input('post.bottom_message', '', config('content_filter')),
-            'copyright'           => input('post.copyright'),
+            'copyright'           => input('post.copyright', '', config('content_filter')),
             'script'              => input('post.script', '', 'trim,htmlspecialchars'),
             '__token__'           => input('post.__token__'),
         ];

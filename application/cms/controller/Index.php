@@ -22,6 +22,7 @@ class Index extends Base
      */
     public function index()
     {
+        print_r($_SERVER);die();
         return $this->fetch('index');
     }
 

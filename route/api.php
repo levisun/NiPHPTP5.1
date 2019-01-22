@@ -24,16 +24,24 @@ Route::domain('api', function(){
 
 
     Route::rule('cms/query', 'api/index')->cache(APP_DEBUG ? false : $expire);
+
+
+    // 跨域头部设置
+    $headers = [
+        'Access-Control-Allow-Origin'  => request()->server('HTTP_ORIGIN', '*'),
+        'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
+        // 'Access-Control-Allow-Credentials' => true,
+        'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With, X-Request-Id, X-Request-Token, X-Request-Timestamp'
+    ];
+    if (request()->isOptions()) {
+        $headers['Access-Control-Max-Age'] = 1728000;
+    }
+
+    Route::allowCrossDomain(true, $headers);
 })
 ->bind('api')
 ->middleware([
     'app\\common\\middleware\\Concurrent::class',
     'app\\common\\middleware\\RemoveRunGarbage::class'
 ])
-->ext('html')
-->allowCrossDomain(true, [
-    'Access-Control-Allow-Origin'  => '*',
-    'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With, X-Request-Id, X-Request-Token, X-Request-Timestamp',
-    'Access-Control-Max-Age' => 86400,
-]);
+->ext('html');

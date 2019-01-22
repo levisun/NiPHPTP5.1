@@ -51,15 +51,21 @@ class HtmlFile
         $_module = $_module ? $_module : request()->module();
         $days = APP_DEBUG ? strtotime('-20 minute') : strtotime('-30 days');
 
-        $_url = trim($_url, '/');
-        $_url = str_replace('/', DIRECTORY_SEPARATOR, $_url);
+        $html_url = trim($_url, '/');
+        $html_url = str_replace('/', DIRECTORY_SEPARATOR, $html_url);
 
-        $path = $this->htmlPath($_module) . $_url;
+        $path = $this->htmlPath($_module) . $html_url;
 
-        if (is_file($path) && filectime($path) >= strtotime($days)) {
-            return '/html/' . $_module . '/' . str_replace(DIRECTORY_SEPARATOR, '/', $_url);
+        if (!APP_DEBUG && is_file($path) && filectime($path) >= strtotime($days)) {
+            $sub = '';
+            if (is_wechat_request()) {
+                $sub = 'wechat';
+            } elseif (request()->isMobile()) {
+                $sub = 'mobile';
+            }
+            return '/html/' . $_module . '/' . $sub . '/' . str_replace(DIRECTORY_SEPARATOR, '/', $html_url);
         } else {
-            return '/' . str_replace(DIRECTORY_SEPARATOR, '/', $_url);
+            return $_url;
         }
     }
 

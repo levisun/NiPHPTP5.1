@@ -15,7 +15,7 @@
 Route::domain([
     'cdn'
 ], function(){
-    abort(404, '');
+    abort(404);
 });
 
 // 全局变量规则
@@ -63,7 +63,7 @@ Route::domain(['www', 'm'], function(){
     'app\\common\\middleware\\Visit::class',
     'app\\common\\middleware\\RemoveRunGarbage::class'
 ])
-->cache(false);
+->cache(!APP_DEBUG);
 
 // BOOK 模块
 Route::domain('book', function(){
@@ -82,4 +82,4 @@ Route::domain('book', function(){
     'app\\common\\middleware\\Visit::class',
     'app\\common\\middleware\\RemoveRunGarbage::class'
 ])
-->cache(false);
+->cache(!APP_DEBUG);

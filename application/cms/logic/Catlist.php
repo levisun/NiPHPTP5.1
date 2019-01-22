@@ -85,9 +85,6 @@ class Catlist
             $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
             $result[$key]->cat_url = url('list/' . $value->category_id);
 
-            $result[$key]->url = logic('common/HtmlFile')->redirect($result[$key]->url, 'cms');
-            $result[$key]->cat_url = logic('common/HtmlFile')->redirect($result[$key]->cat_url, 'cms');
-
             // 查询自定义字段
             $fields =
             model('common/' . $_table_name . 'Data')
@@ -172,11 +169,9 @@ class Catlist
                 $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
             } else {
                 $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
-                $result[$key]->url = logic('common/HtmlFile')->redirect($result[$key]->url, 'cms');
             }
 
             $result[$key]->cat_url = url('list/' . $value->category_id);
-            $result[$key]->cat_url = logic('common/HtmlFile')->redirect($result[$key]->cat_url, 'cms');
 
             // 查询自定义字段
             $fields =
@@ -286,11 +281,9 @@ class Catlist
                 $result[$key]->url = url('go/' . $value->category_id . '/' . $value->id);
             } else {
                 $result[$key]->url = url($_table_name . '/' . $value->category_id . '/' . $value->id);
-                $result[$key]->url = logic('common/HtmlFile')->redirect($result[$key]->url, 'cms');
             }
 
             $result[$key]->cat_url = url('list/' . $value->category_id);
-            $result[$key]->cat_url = logic('common/HtmlFile')->redirect($result[$key]->cat_url, 'cms');
 
             // 查询自定义字段
             $fields =

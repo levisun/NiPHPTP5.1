@@ -149,7 +149,7 @@ class SafeFilter
             // '\'' => '&quot;',
         ];
 
-        $_content = str_replace(array_keys($pattern), array_values($pattern), $_content);
+        // $_content = str_replace(array_keys($pattern), array_values($pattern), $_content);
 
         return $_content;
     }
@@ -188,8 +188,6 @@ class SafeFilter
             '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',       '/<(\/?layer.*?)>/si',
             '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',   '/<(\/?bgsound.*?)>/si',
             '/<(form.*?)>(.*?)<(\/form.*?)>/si',         '/<(\/?form.*?)>/si',
-
-            '/<\!--.*?-->/si',
         ], '', $_content);
     }
 

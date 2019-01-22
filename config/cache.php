@@ -15,7 +15,7 @@ return [
     // 驱动方式
     'type'         => 'File',
     // 缓存前缀
-    'prefix'       => NP_CACHE_PREFIX,
+    'prefix'       => substr(sha1(__DIR__ . request()->rootDomain() . date('Ym')), 0, 7),
     // 缓存有效期 0表示永久缓存
     'expire'       => 1200,
     'cache_subdir' => false,
