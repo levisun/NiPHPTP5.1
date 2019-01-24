@@ -43,9 +43,9 @@ Temporary Items
 .apdisk
 
 #Project
-*.back
-*.log
-# *.json
-think
+.travis.yml
 build.php
-json.php
+composer.json
+composer.lock
+convention.php
+think
