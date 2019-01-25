@@ -20,9 +20,9 @@ return [
     // 应用地址
     'app_host'              => '',
     // 应用调试模式
-    'app_debug'             => false,
+    'app_debug'             => true,
     // 应用Trace
-    'app_trace'             => false,
+    'app_trace'             => true,
     // 默认输出类型
     'default_return_type'   => 'html',
     // 默认AJAX 数据返回格式,可选json xml ...
