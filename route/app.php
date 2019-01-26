@@ -18,4 +18,4 @@ Route::get('think', function () {
 
 
 
-// Route::get('hello', 'index/Index/hello');
+Route::get('hello', 'index/Index/hello');

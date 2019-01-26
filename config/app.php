@@ -20,9 +20,9 @@ return [
     // 应用地址
     'app_host'              => '',
     // 应用调试模式
-    'app_debug'             => true,
+    'app_debug'             => APP_DEBUG,
     // 应用Trace
-    'app_trace'             => true,
+    'app_trace'             => APP_DEBUG,
     // 默认输出类型
     'default_return_type'   => 'html',
     // 默认AJAX 数据返回格式,可选json xml ...
@@ -34,7 +34,7 @@ return [
     // 默认时区
     'default_timezone'      => 'Asia/Shanghai',
     // 是否开启多语言
-    'lang_switch_on'        => false,
+    'lang_switch_on'        => true,
     // 默认全局过滤方法 用逗号分隔多个
     'default_filter'        => '',
     // 默认语言

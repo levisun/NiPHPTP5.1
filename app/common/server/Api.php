@@ -2,14 +2,16 @@
 /**
  *
  * 异步请求实现 - 服务层
- *
+ * Async
  * @package   NiPHP
  * @category  app\common\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
- * @since     2018/7
+ * @since     2019
  */
+declare (strict_types = 1);
+
 namespace app\common\server;
 
 use think\Response;
@@ -20,7 +22,7 @@ use think\facade\Lang;
 use think\facade\Request;
 use think\facade\Session;
 
-class Async
+class Api
 {
     private   $request;
     private   $params = [
@@ -71,14 +73,34 @@ class Async
         $this->params = array_merge($this->params, $params);
     }
 
-    public function __set($_name, $_value)
+    public function __set($_name, $_value): void
     {
         $this->params[$_name] = $_value;
     }
 
+    /**
+     * 发送数据
+     * @access protected
+     * @param
+     * @return
+     */
+    public function send()
+    {
+        $class = '\app\\' . $this->params['method'];
+        $class = new $class;
+        $object = call_user_func_array([$class, $this->params['action']], []);
+        unset($class);
+    }
+
+    /**
+     * 运行
+     * @access protected
+     * @param
+     * @return object
+     */
     public function run()
     {
-        $this->analysis();
+        $this->parse();
 
         // 校验方法是否存在
         if (is_file(Env::get('root_path') . 'app' . DIRECTORY_SEPARATOR . $this->params['method'] . '.php')) {
@@ -105,7 +127,63 @@ class Async
             Session::init(Config::get('session.'));
         }
 
-        print_r($lang_path);
+        // 执行初始化方法
+        if (method_exists($this, 'initialize')) {
+            $this->initialize();
+        }
+
+        return $this;
+    }
+
+    /**
+     * 初始化
+     * @access protected
+     * @param
+     * @return
+     */
+    protected function initialize()
+    {
+        # code...
+    }
+
+    /**
+     * 验证权限
+     * @access protected
+     * @param
+     * @return object
+     */
+    protected function auth()
+    {
+        abort(404);
+    }
+
+    /**
+     * 验证签名
+     * @access protected
+     * @param
+     * @return object
+     */
+    protected function sign()
+    {
+        if ($this->params['sign'] && preg_match('/^[A-Za-z0-9]+$/u', $this->params['sign'])) {
+            $params = $this->request->param('', '', 'trim');
+            ksort($params);
+
+            $str = '';
+            foreach ($params as $key => $value) {
+                if (is_string($value) && !in_array($key, ['sign'])) {
+                    $str .= $key . '=' . $value . '&';
+                }
+            }
+            $str = trim($str, '&');
+            $str = call_user_func($this->params['sign_type'], $str);
+
+            if (!hash_equals($str, $this->params['sign'])) {
+                $this->error('SIGN参数错误');
+            }
+        } else {
+            $this->error('SIGN参数错误');
+        }
 
         return $this;
     }
@@ -116,7 +194,7 @@ class Async
      * @param
      * @return void
      */
-    private function analysis()
+    private function parse(): void
     {
         // 解析TOKEN令牌和SID
         if ($this->params['auth'] && preg_match('/^[A-Za-z0-9.]+$/u', $this->params['auth'])) {
@@ -130,11 +208,13 @@ class Async
                        Env::get('root_path') . strtotime(date('Ymd'));
 
             if (!hash_equals(sha1($referer), $this->params['token'])) {
-                $this->error('TOKEN参数错误');
+                $this->error('TOKEN参数错误'.sha1($referer));
             }
         } else {
             $this->error('TOKEN参数错误');
         }
+
+
 
         // 解析版本号与数据类型
         $accept = str_replace('application/vnd.', '', $this->params['accept']);
@@ -147,8 +227,6 @@ class Async
 
         list($this->params['version'], $this->params['format']) = explode('+', $accept, 2);
         unset($accept);
-
-
 
         // 解析校验版本号
         if ($this->params['version'] && preg_match('/^[v0-9.]+$/u', $this->params['version'])) {
@@ -171,6 +249,13 @@ class Async
         } else {
             $this->error('METHOD参数错误');
         }
+
+
+
+        // 校验签名加密方法
+        if ($this->params['sign_type'] && !function_exists($this->params['sign_type'])) {
+            $this->error('SIGN_TYPE参数错误');
+        }
     }
 
     /**
@@ -180,7 +265,7 @@ class Async
      * @param  string $_link
      * @return void
      */
-    protected function debug($_msg, $_link)
+    protected function debug(string $_msg, int $_link): void
     {
         $this->debugLog[] = [
             '{LINK: ' . $_link . '}   LOG: ' . $_msg
@@ -196,7 +281,7 @@ class Async
      * @return void
      * @throws HttpResponseException
      */
-    protected function success($_msg, $_data = [], $_code = 'SUCCESS')
+    protected function success(string $_msg, array $_data = [], string $_code = 'SUCCESS'): void
     {
         $this->result($_msg, $_data, $_code);
     }
@@ -209,7 +294,7 @@ class Async
      * @return void
      * @throws HttpResponseException
      */
-    protected function error($_msg, $_data = [], $_code = 'ERROR')
+    protected function error(string $_msg, array $_data = [], string $_code = 'ERROR'): void
     {
         $this->result($_msg, $_data, $_code);
     }
@@ -223,7 +308,7 @@ class Async
      * @return void
      * @throws HttpResponseException
      */
-    protected function result($_msg, $_data = [], $_code = 'SUCCESS')
+    protected function result(string $_msg, array $_data = [], string $_code = 'success'): void
     {
         $result = [
             'code'    => $_code,

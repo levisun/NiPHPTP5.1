@@ -5,14 +5,17 @@ class Index
 {
     public function index()
     {
-
+        $data = \app\common\library\Base64::encrypt(['123'=>'222','222'=>'中国']);
+        $data = \app\common\library\Base64::decrypt($data);
+        $data = \app\common\library\Base64::password('$data');
+        print_r($data);
 
         return '<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><script>$.ajax({
-            url: "http://api.tp5.com/NiPHPTP5.1/public/index/hello.html",
+            url: "http://www.tp5.com/index/index/hello.html",
             type: "get",
             headers: {
                 "accept": "application/vnd.tp5.v1.0.1+json",
-                "authentication": "1272f22c5371f751b7738eeae69e1816a170b122",
+                "authentication": "f0c4b4105d740747d44ac6dcd78624f906202706",
             },
             data: {
                 method: "account.user.login"
@@ -23,8 +26,8 @@ class Index
 
     public function hello()
     {
-        $a = new \app\common\server\Async;
+        $a = new \app\common\server\Api;
         $a->app_name = 'admin';
-        $a->run();
+        $a->run()->send();
     }
 }

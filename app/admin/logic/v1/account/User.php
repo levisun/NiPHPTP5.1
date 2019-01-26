@@ -16,6 +16,6 @@ class User
 {
     public function login()
     {
-        # code...
+        return __METHOD__;
     }
 }

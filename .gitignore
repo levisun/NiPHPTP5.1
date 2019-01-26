@@ -43,6 +43,7 @@ Temporary Items
 .apdisk
 
 #Project
+.env
 .travis.yml
 build.php
 composer.json
