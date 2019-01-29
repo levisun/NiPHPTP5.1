@@ -41,10 +41,8 @@ class Session implements SessionHandlerInterface
      * @param  string    $_savePath
      * @param  mixed     $_sessName
      */
-    public function open($_savePath, $_sessName)
+    public function open($_savePath, $_sessName): bool
     {
-        $this->handler = new SessionModel;
-
         return true;
     }
 
@@ -52,10 +50,9 @@ class Session implements SessionHandlerInterface
      * 关闭Session
      * @access public
      */
-    public function close()
+    public function close(): bool
     {
         $this->gc(ini_get('session.gc_maxlifetime'));
-        $this->handler = null;
         return true;
     }
 
@@ -64,7 +61,7 @@ class Session implements SessionHandlerInterface
      * @access public
      * @param  string $_sessID
      */
-    public function read($_sessID)
+    public function read($_sessID): string
     {
         $map = [
             ['session_id', '=', $this->prefix . $_sessID]
@@ -74,12 +71,10 @@ class Session implements SessionHandlerInterface
             $map[] = ['update_time', '>=', time() - $this->expire];
         }
         $result =
-        $this->handler
-        ->where($map)
+        SessionModel::where($map)
         ->value('data');
 
-        $result = json_decode($result, true);
-        return serialize($result);
+        return $result;
     }
 
     /**
@@ -89,28 +84,31 @@ class Session implements SessionHandlerInterface
      * @param  string    $_sessData
      * @return bool
      */
-    public function write($_sessID, $_sessData)
+    public function write($_sessID, $_sessData): bool
     {
         $result =
-        $this->handler
-        ->where([
+        SessionModel::where([
             ['session_id', '=', $this->prefix . $_sessID]
         ])
-        ->find();
+        ->find()
+        ->toArray();
 
         $data = [
             'session_id'  => $this->prefix . $_sessID,
-            'data'        => $_sessData ? json_encode($_sessData) : '',
+            'data'        => $_sessData ? $_sessData : '',
             'update_time' => time()
         ];
 
-        if ($result) {
-            $res = $this->handler->editor($data);
+        if (!empty($result)) {
+            SessionModel::where([
+                ['session_id', '=', $this->prefix . $_sessID,],
+            ])
+            ->update($data);
+            return !!SessionModel::getNumRows();
         } else {
-            $res = $this->handler->added($data);
+            SessionModel::insert($data);
+            return !!SessionModel::getLastInsID();
         }
-
-        return $res ? true : false;
     }
 
     /**
@@ -119,13 +117,14 @@ class Session implements SessionHandlerInterface
      * @param  string $_sessID
      * @return bool
      */
-    public function destroy($_sessID)
+    public function destroy($_sessID): bool
     {
-        return
-        $this->handler
-        ->remove([
-            'session_id' => $this->prefix . $_sessID,
-        ]);
+        SessionModel::where([
+            ['session_id', '=', $this->prefix . $_sessID]
+        ])
+        ->delete();
+        return !!SessionModel::getNumRows();
+
     }
 
     /**
@@ -134,7 +133,7 @@ class Session implements SessionHandlerInterface
      * @param  string $sessMaxLifeTime
      * @return true
      */
-    public function gc($_sessMaxLifeTime)
+    public function gc($_sessMaxLifeTime): bool
     {
         if ($this->expire != 0) {
             $map = [
@@ -147,11 +146,8 @@ class Session implements SessionHandlerInterface
             ];
         }
 
-        $result =
-        $this->handler
-        ->where($map)
+        SessionModel::where($map)
         ->delete();
-
-        return $result ? true : false;
+        return !!SessionModel::getNumRows();
     }
 }

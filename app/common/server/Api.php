@@ -141,7 +141,7 @@ class Api
      * @param
      * @return
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         # code...
     }

@@ -29,13 +29,13 @@ class Base64
      * @param  string $_type
      * @return string
      */
-    public static function password(string $_str, string $_salt = '', string $_type = 'md5')
+    public static function password(string $_str, string $_salt = '', string $_type = 'md5'): string
     {
         $_salt = sha1($_salt . AUTHKEY);
 
         if (function_exists($_type)) {
             $_str = trim($_str);
-            $_str = base64_encode($_str . $_type);
+            $_str = base64_encode($_str . $_salt . $_type);
             $_str = call_user_func($_type, $_str . $_salt);
             return $_str;
         } else {

@@ -5,10 +5,10 @@ class Index
 {
     public function index()
     {
-        $data = \app\common\library\Base64::encrypt(['123'=>'222','222'=>'中国']);
-        $data = \app\common\library\Base64::decrypt($data);
-        $data = \app\common\library\Base64::password('$data');
-        print_r($data);
+        // $s = new \app\common\model\Session;
+        // $s->
+        session("t", time());
+        return '';
 
         return '<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><script>$.ajax({
             url: "http://www.tp5.com/index/index/hello.html",

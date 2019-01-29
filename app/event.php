@@ -22,7 +22,9 @@ return [
             'think\listener\CheckRequestCache',
         ],
         'ActionBegin'  => [],
-        'AppEnd'       => [],
+        'AppEnd'       => [
+            'app\common\library\Garbage'
+        ],
         'LogLevel'     => [],
         'LogWrite'     => [],
         'ResponseSend' => [],

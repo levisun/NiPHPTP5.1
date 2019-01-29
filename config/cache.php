@@ -1,17 +1,17 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+/**
+ *
+ * 缓存设置
+ *
+ * @package   NiPHP
+ * @category  config
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @link      www.NiPHP.com
+ * @since     2019
+ */
 
-// +----------------------------------------------------------------------
-// | 缓存设置
-// +----------------------------------------------------------------------
+use think\facade\Request;
 
 return [
     // 驱动方式
@@ -19,7 +19,7 @@ return [
     // 缓存保存目录
     'path'   => '',
     // 缓存前缀
-    'prefix' => '',
+    'prefix' => substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7),
     // 缓存有效期 0表示永久缓存
-    'expire' => 0,
+    'expire' => 1200,
 ];

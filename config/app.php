@@ -36,7 +36,7 @@ return [
     // 是否开启多语言
     'lang_switch_on'        => true,
     // 默认全局过滤方法 用逗号分隔多个
-    'default_filter'        => '',
+    'default_filter'        => 'safeFilter',
     // 默认语言
     'default_lang'          => 'zh-cn',
     // 默认控制器名

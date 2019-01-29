@@ -10,3 +10,8 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+
+function safeFilter($_data)
+{
+    return \app\common\library\Filter::filter($_data);
+}

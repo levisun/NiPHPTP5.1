@@ -1,26 +1,27 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006~2018 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+/**
+ *
+ * Cookie设置
+ *
+ * @package   NiPHP
+ * @category  config
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @link      www.NiPHP.com
+ * @since     2019
+ */
 
-// +----------------------------------------------------------------------
-// | Cookie设置
-// +----------------------------------------------------------------------
+use think\facade\Request;
+
 return [
     // cookie 名称前缀
-    'prefix'    => '',
+    'prefix'    => strtoupper(substr(sha1(__DIR__ . Request::rootDomain()), -3)) . '_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径
     'path'      => '/',
     // cookie 有效域名
-    'domain'    => '',
+    'domain'    => '.' . Request::rootDomain(),
     //  cookie 启用安全传输
     'secure'    => false,
     // httponly设置
