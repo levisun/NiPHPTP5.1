@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * SESSION表 - 数据层
+ * 节点表 - 数据层
  *
  * @package   NiPHP
  * @category  app\common\model
@@ -14,18 +14,26 @@ namespace app\common\model;
 
 use think\Model;
 
-class Session extends Model
+class Node extends Model
 {
-    protected $name = 'session';
+    protected $name = 'node';
     protected $autoWriteTimestamp = false;
-    protected $updateTime = 'update_time';
-    protected $pk = 'session_id';
+    protected $updateTime = false;
+    protected $pk = 'id';
     protected $type = [
-        // 'count' => 'integer',
+        'status' => 'integer',
+        'sort'   => 'integer',
+        'pid'    => 'integer',
+        'level'  => 'integer',
     ];
     protected $field = [
-        'session_id',
-        'data',
-        'update_time',
+        'id',
+        'name',
+        'title',
+        'status',
+        'remark',
+        'sort',
+        'pid',
+        'level',
     ];
 }

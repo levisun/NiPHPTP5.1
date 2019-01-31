@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * IP信息类 - 方法库
+ * IP信息类 - 服务层
  *
  * @package   NiPHP
- * @category  app\common\library
+ * @category  app\common\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -12,23 +12,50 @@
  */
 declare (strict_types = 1);
 
-namespace app\common\library;
+namespace app\common\server;
 
 // use think\App;
 // use think\facade\Env;
 use think\facade\Request;
 
+use app\common\library\Filter;
 use app\common\model\IpInfo;
+use app\common\model\Region;
 
 class Ip
 {
 
-
+    /**
+     * 查询IP地址信息
+     * @access public
+     * @param  string 请求IP地址
+     * @return array
+     */
     public static function info(string $_ip = null)
     {
         $_ip = $_ip ? $_ip : Request::ip();
 
-        if (self::validate() === false) {
+        if (self::validate($_ip) === true) {
+            // 查询IP地址库
+            $region = self::query($_ip);
+
+            // 存在更新信息
+            if (!empty($region) && $region['update_time'] <= strtotime('-7 days')) {
+                self::update($_ip);
+            }
+
+            // 不存在新建信息
+            if (empty($region)) {
+                $result = self::added($_ip);
+                if ($result !== false) {
+                    $region = $result;
+                }
+            } else {
+                unset($region['id'], $region['update_time']);
+            }
+
+            return $region;
+        } else {
             return [
                 'ip'          => $_ip,
                 'country'     => 'ERROR',
@@ -44,8 +71,33 @@ class Ip
             ];
         }
 
+
+
+        // if (self::validate() === false) {
+        //     return [
+        //         'ip'          => $_ip,
+        //         'country'     => 'ERROR',
+        //         'province'    => 'ERROR',
+        //         'city'        => 'ERROR',
+        //         'area'        => 'ERROR',
+        //         'country_id'  => '',
+        //         'province_id' => '',
+        //         'city_id'     => '',
+        //         'area_id'     => '',
+        //         'region'      => '',
+        //         'isp'         => '',
+        //     ];
+        // }
+
     }
 
+    /**
+     * 验证IP
+     * @access private
+     * @static
+     * @param  string  $_ip
+     * @return array
+     */
     private static function validate(string $_ip): bool
     {
         $_ip = explode('.', $_ip);
@@ -87,7 +139,7 @@ class Ip
      */
     private static function query($_ip)
     {
-        $result =
+        return
         IpInfo::view('ipinfo i', ['id', 'ip', 'isp', 'update_time'])
         ->view('region country', ['id' => 'country_id', 'name' => 'country'], 'country.id=i.country_id')
         ->view('region region', ['id' => 'region_id', 'name' => 'region'], 'region.id=i.province_id')
@@ -97,8 +149,92 @@ class Ip
             ['i.ip', '=', $_ip]
         ])
         ->cache(__METHOD__ . $_ip)
-        ->find();
+        ->find()
+        ->toArray();
+    }
 
-        return $result ? $result->toArray() : [];
+    /**
+     * 查询地址ID
+     * @access private
+     * @static
+     * @param  string  $_name
+     * @return int
+     */
+    private static function queryRegion($_name, $_pid)
+    {
+        $_name = Filter::filter($_name, true);
+
+        $result =
+        Region::where([
+            ['pid', '=', $_pid],
+            ['name', 'LIKE', $_name . '%']
+        ])
+        ->cache(__METHOD__ . $_name . $_pid, 28800)
+        ->value('id');
+
+        return $result ? $result : 0;
+    }
+
+    /**
+     * 插入IP地址库
+     * @access private
+     * @static
+     * @param
+     * @return array|false
+     */
+    private static function added($_ip)
+    {
+        $result = file_get_contents('http://ip.taobao.com/service/getIpInfo.php?ip=' . $_ip);
+
+        if (!is_null($result) && $ip = json_decode($result, true)) {
+            if (!empty($ip) && $ip['code'] == 0) {
+                $country = self::queryRegion($ip['data']['country'], 0);
+                $isp     = Filter::filter($ip['data']['isp'], true);
+
+                if ($country) {
+                    $province = self::queryRegion($ip['data']['region'], $country);
+                    $city     = self::queryRegion($ip['data']['city'], $province);
+                    if ($ip['data']['area']) {
+                        $area = self::queryRegion($ip['data']['area'], $city);
+                    } else {
+                        $area = 0;
+                    }
+
+                    $has =
+                    IpInfo::where([
+                        ['ip', '=', $_ip]
+                    ])
+                    ->value('id');
+
+                    if (!$has) {
+                        IpInfo::insert([
+                            'ip'          => $_ip,
+                            'country_id'  => $country,
+                            'province_id' => $province,
+                            'city_id'     => $city,
+                            'area_id'     => $area,
+                            'isp'         => $isp,
+                            'update_time' => time(),
+                            'create_time' => time()
+                        ]);
+                    }
+                }
+            } else {
+                return [
+                    'ip'          => $_ip,
+                    'country'     => $ip['data']['country'],
+                    'province'    => $ip['data']['region'],
+                    'city'        => $ip['data']['city'],
+                    'area'        => $ip['data']['area'],
+                    'country_id'  => '',
+                    'province_id' => '',
+                    'city_id'     => '',
+                    'area_id'     => '',
+                    'isp'         => $isp,
+                ];
+            }
+        } else {
+            return false;
+        }
     }
 }

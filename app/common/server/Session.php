@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * 数据安全过滤 - 业务层
+ * 数据安全过滤 - 服务层
  *
  * @package   NiPHP
  * @category  app\common\server
@@ -61,7 +61,7 @@ class Session implements SessionHandlerInterface
      * @access public
      * @param  string $_sessID
      */
-    public function read($_sessID): string
+    public function read($_sessID)
     {
         $map = [
             ['session_id', '=', $this->prefix . $_sessID]
@@ -74,7 +74,7 @@ class Session implements SessionHandlerInterface
         SessionModel::where($map)
         ->value('data');
 
-        return $result;
+        return $result ? $result : '';
     }
 
     /**
@@ -101,13 +101,13 @@ class Session implements SessionHandlerInterface
 
         if (!empty($result)) {
             SessionModel::where([
-                ['session_id', '=', $this->prefix . $_sessID,],
+                ['session_id', '=', $this->prefix . $_sessID],
             ])
             ->update($data);
             return !!SessionModel::getNumRows();
         } else {
             SessionModel::insert($data);
-            return !!SessionModel::getLastInsID();
+            return !!SessionModel::getNumRows();
         }
     }
 

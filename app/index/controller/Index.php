@@ -1,13 +1,14 @@
 <?php
 namespace app\index\controller;
 
+use think\facade\Request;
+
 class Index
 {
     public function index()
     {
-        // $s = new \app\common\model\Session;
-        // $s->
-        session("t", time());
+        // \app\common\server\Ip::info('113.132.9.255');
+
         return '';
 
         return '<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><script>$.ajax({

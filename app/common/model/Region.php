@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * SESSION表 - 数据层
+ * 地区表 - 数据层
  *
  * @package   NiPHP
  * @category  app\common\model
@@ -14,18 +14,18 @@ namespace app\common\model;
 
 use think\Model;
 
-class Session extends Model
+class Region extends Model
 {
-    protected $name = 'session';
+    protected $name = 'region';
     protected $autoWriteTimestamp = false;
-    protected $updateTime = 'update_time';
-    protected $pk = 'session_id';
+    protected $updateTime = false;
+    protected $pk = 'id';
     protected $type = [
-        // 'count' => 'integer',
+        'pid' => 'integer',
     ];
     protected $field = [
-        'session_id',
-        'data',
-        'update_time',
+        'id',
+        'pid',
+        'name'
     ];
 }
