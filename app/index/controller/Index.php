@@ -7,9 +7,11 @@ class Index
 {
     public function index()
     {
-        // \app\common\server\Ip::info('113.132.9.255');
+        $html = new \app\common\library\Html;
 
-        return '';
+        $page = $html->meta();
+        $page .= $html->foot();
+        return $page;
 
         return '<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><script>$.ajax({
             url: "http://www.tp5.com/index/index/hello.html",

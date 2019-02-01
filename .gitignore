@@ -50,3 +50,4 @@ composer.json
 composer.lock
 convention.php
 think
+/public/sitemap.xml

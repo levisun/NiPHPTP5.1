@@ -14,10 +14,7 @@ declare (strict_types = 1);
 
 namespace app\common\server;
 
-// use think\App;
-// use think\facade\Env;
 use think\facade\Request;
-
 use app\common\library\Filter;
 use app\common\model\IpInfo;
 use app\common\model\Region;
