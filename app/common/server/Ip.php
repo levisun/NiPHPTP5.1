@@ -159,7 +159,7 @@ class Ip
      */
     private static function queryRegion($_name, $_pid)
     {
-        $_name = Filter::filter($_name, true);
+        $_name = Filter::default($_name, true);
 
         $result =
         Region::where([
@@ -186,7 +186,7 @@ class Ip
         if (!is_null($result) && $ip = json_decode($result, true)) {
             if (!empty($ip) && $ip['code'] == 0) {
                 $country = self::queryRegion($ip['data']['country'], 0);
-                $isp     = Filter::filter($ip['data']['isp'], true);
+                $isp     = Filter::default($ip['data']['isp'], true);
 
                 if ($country) {
                     $province = self::queryRegion($ip['data']['region'], $country);

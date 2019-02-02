@@ -15,7 +15,7 @@ use think\facade\Request;
 
 return [
     // cookie 名称前缀
-    'prefix'    => strtoupper(substr(sha1(__DIR__ . Request::rootDomain()), -3)) . '_',
+    'prefix'    => substr(sha1(__DIR__ . Request::rootDomain()), -3) . '_',
     // cookie 保存时间
     'expire'    => 0,
     // cookie 保存路径

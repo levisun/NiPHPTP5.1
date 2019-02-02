@@ -19,7 +19,7 @@ use app\common\library\Filter;
 
 function safeFilter($_data)
 {
-    return Filter::filter($_data, true);
+    return Filter::default($_data, true);
 }
 
 /**

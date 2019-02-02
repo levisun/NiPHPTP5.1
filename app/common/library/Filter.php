@@ -19,11 +19,11 @@ use think\exception\HttpException;
 class Filter
 {
 
-    public static function filter($_data, $_strict = true)
+    public static function default($_data, $_strict = true)
     {
         if (is_array($_data)) {
             foreach ($_data as $key => $value) {
-                $_data[$key] = self::filter($value);
+                $_data[$key] = self::default($value);
             }
         } else {
             // XXE实体扩展攻击

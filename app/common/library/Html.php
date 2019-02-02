@@ -14,6 +14,7 @@ declare (strict_types = 1);
 
 namespace app\common\library;
 
+use think\exception\HttpException;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
@@ -32,7 +33,7 @@ class Html
 
     public function __construct()
     {
-        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/';
+        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/';
 
         $this->replace = [
             '__CSS__'    => $cdn . Request::app() . '/' . Config::get(Request::app() . '_theme', 'default') . '/css/',
@@ -48,19 +49,28 @@ class Html
                 'config.json';
         if (is_file($path)) {
             $this->themeConfig = file_get_contents($path);
-            $this->themeConfig = Filter::filter($this->themeConfig, true);
+            $this->themeConfig = Filter::default($this->themeConfig, true);
             $this->themeConfig = str_replace(
                 array_keys($this->replace),
                 array_values($this->replace),
                 $this->themeConfig
             );
             $this->themeConfig = json_decode($this->themeConfig, true);
+            if (!$this->themeConfig) {
+                throw new HttpException(400, '模板配置文件错误[config.json]');
+            }
         }
 
         unset($cdn, $path);
     }
 
-    public function meta(): string
+    /**
+     * 头部HTML
+     * @access public
+     * @param
+     * @return string
+     */
+    public function meta(string $_title = null, string $_keywords = null, string $_description = null): string
     {
         $meta = '<!DOCTYPE html>' .
         '<html lang="' . Lang::detect() . '">' .
@@ -84,10 +94,15 @@ class Html
         '<meta http-equiv="Cache-Control" content="no-transform" />' .
 
         '<meta http-equiv="x-dns-prefetch-control" content="on" />' .
+
         '<link rel="dns-prefetch" href="//api.' . Request::rootDomain() . Request::root() . '" />' .
         '<link rel="dns-prefetch" href="//cdn.' . Request::rootDomain() . Request::root() . '" />' .
 
         '<link href="//cdn.' . Request::rootDomain() . Request::root() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
+
+        $meta .= $_title ? '<title>' . $_title . '</title>' : '';
+        $meta .= $_keywords ? '<meta name="keywords" content="' . $_keywords . '" />' : '';
+        $meta .= $_description ? '<meta name="description" content="' . $_description . '" />' : '';
 
         if (!empty($this->themeConfig['meta'])) {
             foreach ($this->themeConfig['meta'] as $m) {
@@ -104,7 +119,13 @@ class Html
         return $meta . '</head><body>';
     }
 
-    public function foot()
+    /**
+     * 底部HTML
+     * @access public
+     * @param
+     * @return string
+     */
+    public function foot(): string
     {
         $foot = '<script type="text/javascript">' .
         'var request = {' .
@@ -112,7 +133,7 @@ class Html
             'url:"' . url() . '",' .
             'param:' . json_encode(Request::param()) . ',' .
             'c:"' . Request::controller(true) . '",' .
-            'a:"' . Request::action() . '",' .
+            'a:"' . Request::action(true) . '",' .
             'api:{' .
                 'query:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::app() . '/query.html",' .
                 'handle:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::app() . '/handle.html",' .
@@ -129,13 +150,12 @@ class Html
 
         // 插件加载
 
-        $foot .= '<script type="text/javascript">' .
-         'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
-         '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
-         '\r\nCreate Date ' . date('Y-m-d H:i:s') . '");' .
-         '</script>';
-         // '<script type="text/javascript" src="' . API_DOMAIN . '/visit.html" defer></script>' .
 
+        $foot .= '<script type="text/javascript">' .
+        'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
+        '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
+        '\r\nCreate Date ' . date('Y-m-d H:i:s') . '");' .
+        '</script>';
 
         return $foot . '</body></html>';
     }

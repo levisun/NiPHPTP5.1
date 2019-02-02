@@ -13,6 +13,9 @@
 // | 模板设置
 // +----------------------------------------------------------------------
 
+use think\facade\Env;
+use think\facade\Request;
+
 return [
     // 模板引擎类型 支持 php think 支持扩展
     'type'         => 'Think',
@@ -32,4 +35,7 @@ return [
     'taglib_begin' => '{',
     // 标签库标签结束标记
     'taglib_end'   => '}',
+
+    'cache_path'   => Env::get('runtime_path') . DIRECTORY_SEPARATOR . 'compiler' . DIRECTORY_SEPARATOR,
+    'cache_prefix' => substr(sha1(__DIR__ . Request::rootDomain()), -7) . DIRECTORY_SEPARATOR,
 ];
