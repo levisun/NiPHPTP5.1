@@ -14,6 +14,8 @@ declare (strict_types = 1);
 
 namespace app\common\library;
 
+use think\App;
+use think\Response;
 use think\exception\HttpException;
 use think\facade\Config;
 use think\facade\Env;
@@ -30,6 +32,11 @@ class Html
         '__JS__'     => '',
         '__STATIC__' => '',
     ];
+
+    public function handle($event, App $app):void
+    {
+        $this->redirect();
+    }
 
     public function __construct()
     {
@@ -158,5 +165,64 @@ class Html
         '</script>';
 
         return $foot . '</body></html>';
+    }
+
+    /**
+     * 创建静态文件
+     * @access public
+     * @param
+     * @return string
+     */
+    public function build(string $_data): void
+    {
+        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
+                'html' . DIRECTORY_SEPARATOR;
+        $path .= Request::app() !== 'index' ? Request::app() . DIRECTORY_SEPARATOR : '';
+
+        if (isWechat()) {
+            $path .= 'wechat' . DIRECTORY_SEPARATOR;
+        } elseif (Request::isMobile()) {
+            $path .= 'mobile' . DIRECTORY_SEPARATOR;
+        }
+        if (!is_dir($path)) {
+            mkdir($path, 777, true);
+        }
+        $url = Request::path();
+        $url = explode('/', $url);
+        $url = array_unique($url);
+        $path .= implode('_', $url) . '.html';
+
+        file_put_contents($path, $_data);
+    }
+
+    /**
+     * [redirect description]
+     * @return [type] [description]
+     */
+    public function redirect()
+    {
+        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
+                'html' . DIRECTORY_SEPARATOR;
+        $path .= Request::app() !== 'index' ? Request::app() . DIRECTORY_SEPARATOR : '';
+
+        $redirect = Request::domain() . Request::root() . '/html/';
+        if (isWechat()) {
+            $path .= 'wechat' . DIRECTORY_SEPARATOR;
+            $redirect .= 'wechat/';
+        } elseif (Request::isMobile()) {
+            $path .= 'mobile' . DIRECTORY_SEPARATOR;
+            $redirect .= 'mobile/';
+        }
+
+        $url = Request::path();
+        $url = explode('/', $url);
+        $url = array_unique($url);
+        $url = implode('_', $url) . '.html';
+        $path .= $url;
+        $redirect .= $url;
+        if (is_file($path)) {
+            Response::create($redirect, 'redirect', 302)->send();
+            die();
+        }
     }
 }

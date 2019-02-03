@@ -3,7 +3,8 @@
         "__STATIC__layui/css/layui.css"
     ],
     "js": [
-        "__STATIC__layui/layui.js"
+        "__STATIC__layui/layui.js",
+        "__JS__demo.js"
     ],
     "hook": [
 

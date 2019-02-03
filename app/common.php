@@ -12,11 +12,43 @@
 // 应用公共文件
 
 use think\facade\Cookie;
+use think\facade\Request;
 use think\facade\Session;
-
+use think\facade\Url;
 use app\common\library\Base64;
 use app\common\library\Filter;
 
+/**
+ * Url生成
+ * @param string        $url 路由地址
+ * @param array         $vars 变量
+ * @param bool|string   $suffix 生成的URL后缀
+ * @param bool|string   $domain 域名
+ * @return string
+ */
+function url(string $url = '', array $vars = [], $suffix = true, $domain = false)
+{
+    return Url::build($url, $vars, $suffix, $domain);
+}
+
+/**
+ * 是否微信请求
+ * @param
+ * @return boolean
+ */
+function isWechat()
+{
+    return strpos(
+        Request::server('HTTP_USER_AGENT'),
+        'MicroMessenger'
+    ) !== false ? true : false;
+}
+
+/**
+ * 安全过滤
+ * @param  [type] $_data [description]
+ * @return [type]        [description]
+ */
 function safeFilter($_data)
 {
     return Filter::default($_data, true);

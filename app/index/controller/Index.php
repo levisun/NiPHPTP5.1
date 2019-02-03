@@ -36,7 +36,10 @@ class Index extends ViewController
             $_content = Filter::FUN($_content);
 
             $html = new Html;
-            return $html->meta() . trim($_content) . $html->foot();
+            $_content = $html->meta() . trim($_content) . $html->foot();
+            $html->build($_content);
+
+            return $_content;
         });
     }
 
