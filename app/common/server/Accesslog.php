@@ -14,6 +14,7 @@ declare (strict_types = 1);
 
 namespace app\common\server;
 
+use think\App;
 use think\facade\Env;
 use think\facade\Request;
 use app\common\model\Searchengine;
@@ -25,6 +26,12 @@ class Accesslog
     private $user_agent;
     private $ip;
 
+    public function handle($event, App $app): void
+    {
+        if (Request::isGet()) {
+            $this->record();
+        }
+    }
 
     /**
      * 记录访问
@@ -115,11 +122,11 @@ class Accesslog
 
     /**
      * 判断搜索引擎蜘蛛
-     * @access private
+     * @access public
      * @param
      * @return mixed
      */
-    private function isSpider()
+    public function isSpider()
     {
         $searchengine = [
             'GOOGLE'         => 'googlebot',
@@ -134,6 +141,7 @@ class Accesslog
             'SOGOU'          => 'sogou push spider',
             'YISOU'          => 'yisouspider',
         ];
+        $this->user_agent = $this->user_agent ? $this->user_agent : Request::server('HTTP_USER_AGENT');
 
         $user_agent = strtolower($this->user_agent);
         foreach ($searchengine as $key => $value) {

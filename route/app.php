@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
+halt(1);
 Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
@@ -19,3 +20,9 @@ Route::get('think', function () {
 
 
 Route::get('hello', 'index/Index/hello');
+
+
+Route::domain('api', function(){
+    // die();
+})
+->bind('api');

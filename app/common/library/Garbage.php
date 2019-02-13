@@ -17,6 +17,7 @@ namespace app\common\library;
 use think\App;
 use think\facade\Env;
 use think\facade\Request;
+use app\common\library\Base64;
 
 class Garbage
 {
@@ -42,7 +43,7 @@ class Garbage
         $files = [
             Env::get('runtime_path') . 'cache' . DIRECTORY_SEPARATOR,
             Env::get('runtime_path') . 'log' . DIRECTORY_SEPARATOR,
-            Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR. Request::app() . DIRECTORY_SEPARATOR,
+            Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR,
         ];
 
         $dirOrPath = [];

@@ -17,11 +17,17 @@ namespace app\common\library;
 use think\App;
 use think\Response;
 use think\exception\HttpException;
+use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
+use think\facade\Log;
 use think\facade\Request;
+use app\common\library\Base64;
 use app\common\library\Filter;
+use app\common\library\Garbage;
+use app\common\library\Siteinfo;
+use app\common\server\Accesslog;
 
 class Html
 {
@@ -35,24 +41,71 @@ class Html
 
     public function handle($event, App $app):void
     {
-        $this->redirect();
+
+        // 减轻并发压力
+        if (Request::isGet() && (new Accesslog)->isSpider() === false) {
+            // 千分之一抛出异常
+            if (rand(1, 1000) === 1) {
+                Log::record('并发', 'alert');
+                throw new HttpException(502);
+            } else {
+                $key = Request::server('HTTP_USER_AGENT') . Request::ip() . date('Y-m-d');
+                $key = md5($key);
+
+                if (Cache::has($key)) {
+                    $intercept = Cache::get($key);
+                } else {
+                    $intercept = [
+                        'expire'  => 60,
+                        'runtime' => time(),
+                        'total'   => 0,
+                    ];
+                }
+
+                // 非法请求
+                if ($intercept['total'] >= 50) {
+                    Log::record('非法请求', 'alert');
+                    throw new HttpException(502);
+                }
+                // 更新请求数
+                elseif ($intercept['runtime'] + $intercept['expire'] >= time()) {
+                    $intercept['total']++;
+                }
+                // 还原请求
+                else {
+                    $intercept = [
+                        'expire'  => 60,
+                        'runtime' => time(),
+                        'total'   => 0,
+                    ];
+                }
+
+                Cache::set($key, $intercept, 0);
+            }
+        }
+
+        if (Request::isGet()) {
+            $this->redirect();
+        }
     }
 
     public function __construct()
     {
         $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/';
 
+        $theme_name = Siteinfo::theme();
+
         $this->replace = [
-            '__CSS__'    => $cdn . Request::app() . '/' . Config::get(Request::app() . '_theme', 'default') . '/css/',
-            '__IMG__'    => $cdn . Request::app() . '/' . Config::get(Request::app() . '_theme', 'default') . '/img/',
-            '__JS__'     => $cdn . Request::app() . '/' . Config::get(Request::app() . '_theme', 'default') . '/js/',
+            '__CSS__'    => $cdn . Request::app() . '/' . $theme_name . '/css/',
+            '__IMG__'    => $cdn . Request::app() . '/' . $theme_name . '/img/',
+            '__JS__'     => $cdn . Request::app() . '/' . $theme_name . '/js/',
             '__STATIC__' => $cdn . 'static/',
         ];
 
         $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
                 'theme' . DIRECTORY_SEPARATOR .
                 Request::app() . DIRECTORY_SEPARATOR .
-                Config::get(Request::app() . '_theme', 'default') . DIRECTORY_SEPARATOR .
+                $theme_name . DIRECTORY_SEPARATOR .
                 'config.json';
         if (is_file($path)) {
             $this->themeConfig = file_get_contents($path);
@@ -77,7 +130,7 @@ class Html
      * @param
      * @return string
      */
-    public function meta(string $_title = null, string $_keywords = null, string $_description = null): string
+    public function meta(): string
     {
         $meta = '<!DOCTYPE html>' .
         '<html lang="' . Lang::detect() . '">' .
@@ -107,9 +160,14 @@ class Html
 
         '<link href="//cdn.' . Request::rootDomain() . Request::root() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
-        $meta .= $_title ? '<title>' . $_title . '</title>' : '';
-        $meta .= $_keywords ? '<meta name="keywords" content="' . $_keywords . '" />' : '';
-        $meta .= $_description ? '<meta name="description" content="' . $_description . '" />' : '';
+        // 网站标题
+        $meta .= '<title>' . Siteinfo::title() . '</title>';
+
+        // 网站关键词
+        $meta .= '<meta name="keywords" content="' . Siteinfo::keywords() . '" />';
+
+        // 网站描述
+        $meta .= '<meta name="description" content="' . Siteinfo::description() . '" />';
 
         if (!empty($this->themeConfig['meta'])) {
             foreach ($this->themeConfig['meta'] as $m) {
@@ -157,7 +215,11 @@ class Html
 
         // 插件加载
 
+        // 底部JS脚本
+        $script = Siteinfo::script();
+        $foot .= $script ? $script : '';
 
+        // 附加信息
         $foot .= '<script type="text/javascript">' .
         'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
         '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
@@ -175,9 +237,7 @@ class Html
      */
     public function build(string $_data): void
     {
-        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                'html' . DIRECTORY_SEPARATOR;
-        $path .= Request::app() !== 'index' ? Request::app() . DIRECTORY_SEPARATOR : '';
+        $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
 
         if (isWechat()) {
             $path .= 'wechat' . DIRECTORY_SEPARATOR;
@@ -190,7 +250,8 @@ class Html
         $url = Request::path();
         $url = explode('/', $url);
         $url = array_unique($url);
-        $path .= implode('_', $url) . '.html';
+        $url = implode('_', $url);
+        $path .= $url ? $url . '.html' : 'index.html';
 
         file_put_contents($path, $_data);
     }
@@ -201,27 +262,25 @@ class Html
      */
     public function redirect()
     {
-        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                'html' . DIRECTORY_SEPARATOR;
-        $path .= Request::app() !== 'index' ? Request::app() . DIRECTORY_SEPARATOR : '';
+        $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
 
-        $redirect = Request::domain() . Request::root() . '/html/';
         if (isWechat()) {
             $path .= 'wechat' . DIRECTORY_SEPARATOR;
-            $redirect .= 'wechat/';
         } elseif (Request::isMobile()) {
             $path .= 'mobile' . DIRECTORY_SEPARATOR;
-            $redirect .= 'mobile/';
         }
 
-        $url = Request::path();
-        $url = explode('/', $url);
+        $url = explode('/', Request::path());
         $url = array_unique($url);
-        $url = implode('_', $url) . '.html';
-        $path .= $url;
-        $redirect .= $url;
-        if (is_file($path)) {
-            Response::create($redirect, 'redirect', 302)->send();
+        $url = implode('_', $url);
+        $path .= $url ? $url . '.html' : 'index.html';
+
+        if (is_file($path) && filemtime($path) >= strtotime('-' . rand(20, 120) . ' minute')) {
+            (new Accesslog)->record();
+            (new Garbage)->remove();
+            Response::create(file_get_contents($path))
+            ->allowCache(true)
+            ->send();
             die();
         }
     }

@@ -69,7 +69,7 @@ return [
     // 是否开启路由延迟解析
     'url_lazy_route'        => false,
     // 是否强制使用路由
-    'url_route_must'        => false,
+    'url_route_must'        => true,
     // 合并路由规则
     'route_rule_merge'      => false,
     // 路由是否完全匹配
@@ -105,8 +105,7 @@ return [
     // 错误显示信息,非调试模式有效
     'error_message'         => '页面错误！请稍后再试～',
     // 显示错误信息
-    'show_error_msg'        => false,
+    'show_error_msg'        => APP_DEBUG,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'      => '',
-
 ];

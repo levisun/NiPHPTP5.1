@@ -23,4 +23,4 @@ define('AUTHKEY', '1286755f348733a76a252efb3848fbab9f3e9f81');
 require __DIR__ . '/../vendor/autoload.php';
 
 // 执行应用并响应
-(new App())->autoMulti()->run()->send();
+(new App())->debug(APP_DEBUG)->run()->send();

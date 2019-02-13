@@ -11,7 +11,7 @@
  * @since     2019
  */
 
-use think\facade\Request;
+use app\common\library\Base64;
 
 return [
     // 驱动方式
@@ -19,7 +19,7 @@ return [
     // 缓存保存目录
     'path'   => '',
     // 缓存前缀
-    'prefix' => substr(sha1(__DIR__ . Request::rootDomain() . date('Ym')), 0, 7),
+    'prefix' => Base64::flag(date('Ym')),
     // 缓存有效期 0表示永久缓存
     'expire' => 1200,
 ];

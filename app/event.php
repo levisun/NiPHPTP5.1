@@ -15,6 +15,7 @@ return [
     ],
     'listen'    => [
         'AppInit'      => [
+            // 'app\common\library\Html',
             'think\listener\LoadLangPack',
             'think\listener\RouteCheck',
         ],
@@ -23,7 +24,8 @@ return [
         ],
         'ActionBegin'  => [],
         'AppEnd'       => [
-            'app\common\library\Garbage'
+            'app\common\library\Garbage',
+            'app\common\server\Accesslog'
         ],
         'LogLevel'     => [],
         'LogWrite'     => [],
