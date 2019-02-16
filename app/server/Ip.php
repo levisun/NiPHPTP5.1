@@ -4,7 +4,7 @@
  * IP信息类 - 服务层
  *
  * @package   NiPHP
- * @category  app\common\server
+ * @category  app\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -12,12 +12,12 @@
  */
 declare (strict_types = 1);
 
-namespace app\common\server;
+namespace app\server;
 
 use think\facade\Request;
-use app\common\library\Filter;
-use app\common\model\IpInfo;
-use app\common\model\Region;
+use app\server\Filter;
+use app\model\IpInfo;
+use app\model\Region;
 
 class Ip
 {

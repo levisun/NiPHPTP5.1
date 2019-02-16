@@ -11,7 +11,7 @@
  * @since     2019
  */
 
-use app\common\library\Base64;
+use app\server\Base64;
 
 return [
     // 驱动方式

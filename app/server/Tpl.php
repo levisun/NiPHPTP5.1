@@ -4,7 +4,7 @@
  * HTML类 - 方法库
  *
  * @package   NiPHP
- * @category  app\common\library
+ * @category  app\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -12,7 +12,7 @@
  */
 declare (strict_types = 1);
 
-namespace app\common\library;
+namespace app\server;
 
 use think\App;
 use think\Response;
@@ -23,25 +23,19 @@ use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Log;
 use think\facade\Request;
-use app\common\library\Base64;
-use app\common\library\Filter;
-use app\common\library\Garbage;
-use app\common\library\Siteinfo;
-use app\common\server\Accesslog;
+use app\server\Base64;
+use app\server\Filter;
+use app\server\Garbage;
+use app\server\Siteinfo;
+use app\server\Accesslog;
 
-class Html
+class Tpl
 {
     private $themeConfig;
-    private $replace = [
-        '__CSS__'    => '',
-        '__IMG__'    => '',
-        '__JS__'     => '',
-        '__STATIC__' => '',
-    ];
+    private $replace;
 
     public function handle($event, App $app):void
     {
-
         // 减轻并发压力
         if (Request::isGet() && (new Accesslog)->isSpider() === false) {
             // 千分之一抛出异常
@@ -84,31 +78,55 @@ class Html
             }
         }
 
-        if (Request::isGet()) {
+        if (Request::isGet() && APP_DEBUG === false) {
             $this->redirect();
         }
     }
 
-    public function __construct()
+    /**
+     * 加载模板输出
+     * @access public
+     * @param  string $_template 模板文件名
+     * @param  array  $_vars     模板输出变量
+     * @return mixed
+     */
+    public function fetch(string $_template = '', array $_vars = []): void
     {
-        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/';
+        $tpl_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
+                    'theme' . DIRECTORY_SEPARATOR .
+                    Request::controller(true) . DIRECTORY_SEPARATOR .
+                    Siteinfo::theme() . DIRECTORY_SEPARATOR;
 
-        $theme_name = Siteinfo::theme();
+        if (isWechat()) {
+            $tpl_path .= 'wechat' . DIRECTORY_SEPARATOR;
+        } elseif (Request::isMobile()) {
+            $tpl_path .= 'mobile' . DIRECTORY_SEPARATOR;
+        }
+
+        $_template = $_template ? $_template . '.html' : Request::action(true) . '.html';
+
+        if (!is_file($tpl_path . $_template)) {
+            throw new HttpException(200, '模板文件未找到!' . $_template);
+        }
+
+        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/' .
+               Request::controller(true) . '/' . Siteinfo::theme() . '/';
 
         $this->replace = [
-            '__CSS__'    => $cdn . Request::app() . '/' . $theme_name . '/css/',
-            '__IMG__'    => $cdn . Request::app() . '/' . $theme_name . '/img/',
-            '__JS__'     => $cdn . Request::app() . '/' . $theme_name . '/js/',
-            '__STATIC__' => $cdn . 'static/',
+            '__CSS__'         => $cdn . 'css/',
+            '__IMG__'         => $cdn . 'img/',
+            '__JS__'          => $cdn . 'js/',
+            '__STATIC__'      => '//cdn.' . Request::rootDomain() . Request::root() . '/theme/static/',
+            '__TITLE__'       => Siteinfo::title(),
+            '__KEYWORDS__'    => Siteinfo::keywords(),
+            '__DESCRIPTION__' => Siteinfo::description(),
+            '__BOTTOM_MSG__'  => Siteinfo::bottom(),
+            '__COPYRIGHT__'   => Siteinfo::copyright()
         ];
 
-        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                'theme' . DIRECTORY_SEPARATOR .
-                Request::app() . DIRECTORY_SEPARATOR .
-                $theme_name . DIRECTORY_SEPARATOR .
-                'config.json';
-        if (is_file($path)) {
-            $this->themeConfig = file_get_contents($path);
+        // 模板配置
+        if (is_file($tpl_path . 'config.json')) {
+            $this->themeConfig = file_get_contents($tpl_path . 'config.json');
             $this->themeConfig = Filter::default($this->themeConfig, true);
             $this->themeConfig = str_replace(
                 array_keys($this->replace),
@@ -117,20 +135,67 @@ class Html
             );
             $this->themeConfig = json_decode($this->themeConfig, true);
             if (!$this->themeConfig) {
-                throw new HttpException(400, '模板配置文件错误[config.json]');
+                throw new HttpException(200, '模板配置文件错误[config.json]');
             }
         }
 
-        unset($cdn, $path);
+        // 布局模板
+        if (!empty($this->themeConfig['layout']) && $this->themeConfig['layout'] && is_file($tpl_path . 'layout.html')) {
+            $content = file_get_contents($tpl_path . 'layout.html');
+            $content = str_replace('__CONTENT__', file_get_contents($tpl_path . $_template), $content);
+        } else {
+            $content = file_get_contents($tpl_path . $_template);
+        }
+
+        // 替换字符
+        $content = str_replace(array_keys($this->replace), array_values($this->replace), $content);
+        // 去除html空格与换行
+        $replace    = [
+            '~>\s+<~'       => '><',
+            '~>(\s+\n|\r)~' => '>',
+
+            // '~//[ a-zA-Z\u4e00-\u9fa5^\x00-\xff]?(\n|\r)+~' => '',
+        ];
+        $content = preg_replace(array_keys($replace), array_values($replace), $content);
+
+        // PHP代码安全
+        $content = preg_replace([
+            '/<\?php(.*?)\?>/si',
+            '/<\?(.*?)\?>/si',
+            '/<%(.*?)%>/si',
+            '/<\?php|<\?|\?>|<%|%>/si',
+        ], '', $content);
+
+
+        $html = $this->meta() . $content . $this->foot();
+
+        // 添加HTML生成记录
+        $html .= '<!-- ' . json_encode([
+            'url'      => url(),
+            'layout'   => $this->themeConfig['layout'] ? 'true' : 'false',
+            'template' => Siteinfo::theme() . '/' . $_template,
+            'date'     => date('Y-m-d H:i:s'),
+            'static'   => APP_DEBUG ? 'false' : 'true',
+            ''
+        ]) . ' -->';
+
+        Response::create($html)
+        ->allowCache(true)
+        ->send();
+
+        $this->build($html);
+
+        unset($tpl_path, $cdn, $content, $html);
+        die();
     }
 
     /**
      * 头部HTML
-     * @access public
+     * @access protected
      * @param
      * @return string
      */
-    public function meta(): string
+    protected function meta(): string
     {
         $meta = '<!DOCTYPE html>' .
         '<html lang="' . Lang::detect() . '">' .
@@ -148,7 +213,6 @@ class Html
         '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' .
 
         '<meta http-equiv="Window-target" content="_blank">' .
-        '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />' .
         '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' .
         '<meta http-equiv="Cache-Control" content="no-siteapp" />' .            // 禁止baidu转码
         '<meta http-equiv="Cache-Control" content="no-transform" />' .
@@ -160,13 +224,9 @@ class Html
 
         '<link href="//cdn.' . Request::rootDomain() . Request::root() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
-        // 网站标题
+        // 网站标题 关键词 描述
         $meta .= '<title>' . Siteinfo::title() . '</title>';
-
-        // 网站关键词
         $meta .= '<meta name="keywords" content="' . Siteinfo::keywords() . '" />';
-
-        // 网站描述
         $meta .= '<meta name="description" content="' . Siteinfo::description() . '" />';
 
         if (!empty($this->themeConfig['meta'])) {
@@ -174,6 +234,7 @@ class Html
                 $meta .= '<meta ' . $m['type'] . ' ' . $m['content'] . ' />';
             }
         }
+        // <meta name="apple-itunes-app" content="app-id=1191720421, app-argument=sspai://sspai.com">
 
         if (!empty($this->themeConfig['css'])) {
             foreach ($this->themeConfig['css'] as $css) {
@@ -186,11 +247,11 @@ class Html
 
     /**
      * 底部HTML
-     * @access public
+     * @access protected
      * @param
      * @return string
      */
-    public function foot(): string
+    protected function foot(): string
     {
         $foot = '<script type="text/javascript">' .
         'var request = {' .
@@ -200,9 +261,9 @@ class Html
             'c:"' . Request::controller(true) . '",' .
             'a:"' . Request::action(true) . '",' .
             'api:{' .
-                'query:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::app() . '/query.html",' .
-                'handle:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::app() . '/handle.html",' .
-                'upload:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::app() . '/upload.html"' .
+                'query:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::controller(true) . '/query.html",' .
+                'handle:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::controller(true) . '/handle.html",' .
+                'upload:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::controller(true) . '/upload.html"' .
             '}' .
         '};' .
         '</script>';
@@ -231,19 +292,15 @@ class Html
 
     /**
      * 创建静态文件
-     * @access public
+     * @access protected
      * @param
      * @return string
      */
-    public function build(string $_data): void
+    protected function build(string $_data): void
     {
         $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
+        $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
 
-        if (isWechat()) {
-            $path .= 'wechat' . DIRECTORY_SEPARATOR;
-        } elseif (Request::isMobile()) {
-            $path .= 'mobile' . DIRECTORY_SEPARATOR;
-        }
         if (!is_dir($path)) {
             mkdir($path, 777, true);
         }
@@ -263,12 +320,7 @@ class Html
     public function redirect()
     {
         $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
-
-        if (isWechat()) {
-            $path .= 'wechat' . DIRECTORY_SEPARATOR;
-        } elseif (Request::isMobile()) {
-            $path .= 'mobile' . DIRECTORY_SEPARATOR;
-        }
+        $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
 
         $url = explode('/', Request::path());
         $url = array_unique($url);

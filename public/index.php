@@ -1,24 +1,30 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006-2018 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
+/**
+ *
+ * 应用入口文件
+ *
+ * @package   NiPHPCMS
+ * @author    失眠小枕头 [levisun.mail@gmail.com]
+ * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
+ * @link      www.NiPHP.com
+ * @since     2019
+ *
+ * CB|Alpha 内测版
+ * RC|Beta  正式候选版
+ * Demo     演示版
+ * Stable   稳定版
+ * Release  正式版
+ */
 
-// [ 应用入口文件 ]
 namespace think;
 
-version_compare(PHP_VERSION, '7.1.0', '>=') or die('PHP VERSION >= 7.1.0!');
-if (!extension_loaded('PDO')) die('PDO');
 define('APP_DEBUG', true);
-define('NP_VERSION', '2.0.1.20181222 Alpha');
+define('NP_VERSION', '2.1.0 CB');
 define('AUTHKEY', '1286755f348733a76a252efb3848fbab9f3e9f81');
 
-
+// 环境要求
+version_compare(PHP_VERSION, '7.1.0', '>=') or die('PHP VERSION >= 7.1.0!');
+if (!extension_loaded('PDO')) die('PDO');
 
 require __DIR__ . '/../vendor/autoload.php';
 

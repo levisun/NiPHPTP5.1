@@ -15,8 +15,8 @@ use think\facade\Cookie;
 use think\facade\Request;
 use think\facade\Session;
 use think\facade\Url;
-use app\common\library\Base64;
-use app\common\library\Filter;
+use app\server\Base64;
+use app\server\Filter;
 
 /**
  * Url生成
@@ -26,9 +26,9 @@ use app\common\library\Filter;
  * @param bool|string   $domain 域名
  * @return string
  */
-function url(string $url = '', array $vars = [], $suffix = true, $domain = false)
+function url(string $url = '', array $vars = [])
 {
-    return Url::build($url, $vars, $suffix, $domain);
+    return Url::build($url, $vars, true, true);
 }
 
 /**

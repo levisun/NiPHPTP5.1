@@ -4,17 +4,17 @@
  * 数据安全过滤 - 服务层
  *
  * @package   NiPHP
- * @category  app\common\server
+ * @category  app\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
  * @since     2019
  */
-namespace app\common\server;
+namespace app\server;
 
 use SessionHandlerInterface;
 use think\facade\Config;
-use app\common\model\Session as SessionModel;
+use app\model\Session as SessionModel;
 
 class Session implements SessionHandlerInterface
 {

@@ -15,17 +15,17 @@ return [
     ],
     'listen'    => [
         'AppInit'      => [
-            // 'app\common\library\Html',
-            'think\listener\LoadLangPack',
+            // 'think\listener\LoadLangPack',
             'think\listener\RouteCheck',
+            'app\server\Tpl',
         ],
         'AppBegin'     => [
-            'think\listener\CheckRequestCache',
+            // 'think\listener\CheckRequestCache',
         ],
         'ActionBegin'  => [],
         'AppEnd'       => [
-            'app\common\library\Garbage',
-            'app\common\server\Accesslog'
+            'app\server\Garbage',
+            'app\server\Accesslog'
         ],
         'LogLevel'     => [],
         'LogWrite'     => [],

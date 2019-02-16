@@ -4,7 +4,7 @@
  * 删除运行垃圾文件 - 方法库
  *
  * @package   NiPHP
- * @category  app\common\library
+ * @category  app\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -12,12 +12,12 @@
  */
 declare (strict_types = 1);
 
-namespace app\common\library;
+namespace app\server;
 
 use think\App;
 use think\facade\Env;
 use think\facade\Request;
-use app\common\library\Base64;
+use app\server\Base64;
 
 class Garbage
 {

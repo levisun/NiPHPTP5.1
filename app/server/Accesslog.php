@@ -4,7 +4,7 @@
  * 访问日志 - 服务层
  *
  * @package   NiPHP
- * @category  app\common\server
+ * @category  app\server
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -12,14 +12,14 @@
  */
 declare (strict_types = 1);
 
-namespace app\common\server;
+namespace app\server;
 
 use think\App;
 use think\facade\Env;
 use think\facade\Request;
-use app\common\model\Searchengine;
-use app\common\model\Visit;
-use app\common\server\Ip;
+use app\model\Searchengine;
+use app\model\Visit;
+use app\server\Ip;
 
 class Accesslog
 {
