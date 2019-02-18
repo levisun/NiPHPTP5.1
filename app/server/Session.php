@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 数据安全过滤 - 服务层
+ * 服务层
+ * 数据安全过滤
  *
  * @package   NiPHP
  * @category  app\server

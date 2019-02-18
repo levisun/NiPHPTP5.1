@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 删除运行垃圾文件 - 方法库
+ * 服务层
+ * 删除运行垃圾文件
  *
  * @package   NiPHP
  * @category  app\server

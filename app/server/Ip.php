@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * IP信息类 - 服务层
+ * 服务层
+ * IP信息类
  *
  * @package   NiPHP
  * @category  app\server

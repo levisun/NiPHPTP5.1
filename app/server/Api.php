@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 异步请求实现 - 服务层
+ * 服务层
+ * 异步请求实现
  * Async
  * @package   NiPHP
  * @category  app\server
@@ -14,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\server;
 
+use think\Container;
 use think\Response;
 use think\exception\HttpResponseException;
 use think\facade\Config;
@@ -90,13 +92,29 @@ class Api
      */
     private $module = 'cms';
 
+    /**
+     * 调试信息
+     * @var array
+     */
+    private $debugLog = [];
+
+    /**
+     * 调试开关
+     * @var bool
+     */
+    protected $debug = true;
+
+    /**
+     * 浏览器数据缓存开关
+     * @var bool
+     */
+    protected $cache = true;
+
+
     private $appid;
     private $appsecret;
     private $timestamp;
     private $method;
-
-    private   $debugLog = [];
-    protected $apiCache = false;
 
     /**
      * 构造方法
@@ -114,7 +132,11 @@ class Api
         return $this;
     }
 
-    public function run()
+    /**
+     * 运行
+     * @return void
+     */
+    public function run(): void
     {
         $this->analysisHeader();
         $this->checkSign();
@@ -123,29 +145,52 @@ class Api
         // 校验请求时间
         $this->timestamp = Request::param('timestamp/f', null);
         if (!$this->timestamp || $this->timestamp <= time() - 10) {
-            // $this->error('request error');
+            $this->error('request timeout');
         }
 
         // 校验API方法
         $this->method = Request::param('method');
         if ($this->method && preg_match('/^[a-z.]+$/u', $this->method)) {
-            $method = 'app\logic\\' .
-                      'version' . $this->version['major'] .
-                      $this->module . '\\' .
-                      'major' . $this->version['major'] . '\\' .
-                      'minor' . $this->version['minor'] . '\\' .
-                      str_replace('.', '\\', $this->method);
-            // list($logic, $controller, $action) = explode('.', $this->method, 3);
-            halt($method);
-            # code...
+            list($logic, $class, $action) = explode('.', $this->method, 3);
+
+            $method = 'app\api\\' . $this->module . '\\' .
+                      'v' . $this->version['major'] . '_' . $this->version['minor'] . '\\' .
+                      $logic . '\\' . ucfirst($class);
+
+            // 校验类是否存在
+            if (!class_exists($method)) {
+                $this->debugLog['method not found'] = $method;
+                $this->error('method not found');
+            }
+
+            // 校验类方法是否存在
+            if (!method_exists($method, $action)) {
+                $this->error('class ' . $method . ' does not have a method ' . $action);
+            }
+
+            // 加载语言包
+            $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
+                    $this->module . DIRECTORY_SEPARATOR .
+                    'v' . $this->version['major'] . '_' . $this->version['minor'] . DIRECTORY_SEPARATOR .
+                    'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
+            Lang::load($lang);
+
+            // 执行类方法
+            $result = call_user_func_array([(new $method), $action], []);
+
+            if (!in_array($result, ['msg', 'data', 'debug', 'cache'])) {
+                $this->error($method . '::' . $action . '() 返回数据错误');
+            }
+
+            // 调试与缓存设置
+            $this->debug = isset($result['debug']) ? !!$result['debug'] : false;
+            $this->cache = isset($result['cache']) ? !!$result['cache'] : false;
+            $this->cache = $this->debug ? false : $this->cache;
+
+            $this->success($result['msg'], isset($result['data']) ? $result['data'] : []);
         } else {
             $this->error('params-method error');
         }
-
-
-        $this->initialize();
-
-        return $this;
     }
 
     /**
@@ -201,7 +246,7 @@ class Api
                 ksort($params);
 
                 $str = '';
-                $c_f = ['appid', 'appsecret', 'sign_type', 'timestamp', 'method'];
+                $c_f = ['appid', 'sign_type', 'timestamp', 'method'];
                 foreach ($params as $key => $value) {
                     if (is_string($value) && !is_null($value) && in_array($key, $c_f)) {
                         $str .= $key . '=' . $value . '&';
@@ -350,9 +395,17 @@ class Api
             'time'    => date('Y-m-d H:i:s', Request::server('REQUEST_TIME'))
         ];
 
-        $result['debug'] = $this->debugLog;
-
-        $response = Response::create($result, $this->format, 200)->allowCache($this->apiCache);
+        if ($this->debug === true) {
+            $result['debug'] = array_merge([
+                '文件加载:' . count(get_included_files()),
+                '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . ' s',
+                '内存消耗:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . ' KB',
+                '查询信息:' . Container::pull('db')->getQueryTimes() . ' queries',
+                '缓存信息:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes',
+            ], $this->debugLog);
+        }
+        // Container::pull('request')->cache(true);
+        $response = Response::create($result, $this->format, 200)->allowCache($this->cache);
 
         throw new HttpResponseException($response);
     }

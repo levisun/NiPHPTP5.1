@@ -28,10 +28,18 @@ Route::domain('www', function(){
 ->bind('index')
 ->ext('html');
 
+Route::domain('admin', function(){
+    Route::get('/', 'admin/index');
+    Route::get('/:logic/:name$', 'admin/index');
+})
+->bind('admin')
+->ext('html');
+
 Route::domain('api', function(){
-    Route::miss('index/abort');
-    Route::rule('query', 'api/query');
-    Route::rule('handle', 'api/handle');
+    Route::miss('api/abort');
+    Route::rule('query/:name$', 'api/query');
+    Route::rule('handle/:name$', 'api/handle');
+    Route::rule('upload/:name$', 'api/upload');
 
     $headers= [
         'Access-Control-Allow-Origin'  => Request::server('HTTP_ORIGIN', '*'),

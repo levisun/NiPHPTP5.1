@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 访问日志 - 服务层
+ * 服务层
+ * 访问日志
  *
  * @package   NiPHP
  * @category  app\server

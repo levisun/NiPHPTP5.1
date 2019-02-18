@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * HTML类 - 方法库
+ * 服务层
+ * HTML类
  *
  * @package   NiPHP
  * @category  app\server
@@ -106,7 +107,7 @@ class Tpl
         $_template = $_template ? $_template . '.html' : Request::action(true) . '.html';
 
         if (!is_file($tpl_path . $_template)) {
-            throw new HttpException(200, '模板文件未找到!' . $_template);
+            throw new HttpException(200, '模板文件未找到!' . Request::controller(true) . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR . $_template);
         }
 
         $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/' .
@@ -121,7 +122,9 @@ class Tpl
             '__KEYWORDS__'    => Siteinfo::keywords(),
             '__DESCRIPTION__' => Siteinfo::description(),
             '__BOTTOM_MSG__'  => Siteinfo::bottom(),
-            '__COPYRIGHT__'   => Siteinfo::copyright()
+            '__COPYRIGHT__'   => Siteinfo::copyright(),
+            '__:CONTROLLER__' => $cdn . 'js/' . Request::controller(true),
+            '__:ACTION__'     => $cdn . 'js/' . Request::action(true),
         ];
 
         // 模板配置
@@ -136,6 +139,9 @@ class Tpl
             $this->themeConfig = json_decode($this->themeConfig, true);
             if (!$this->themeConfig) {
                 throw new HttpException(200, '模板配置文件错误[config.json]');
+            }
+            if (!isset($this->themeConfig['version'])) {
+                $this->themeConfig['version'] = date('YmdHis', filemtime($tpl_path . 'config.json'));
             }
         }
 
@@ -174,9 +180,9 @@ class Tpl
             'url'      => url(),
             'layout'   => $this->themeConfig['layout'] ? 'true' : 'false',
             'template' => Siteinfo::theme() . '/' . $_template,
+            'version'  => $this->themeConfig['version'],
             'date'     => date('Y-m-d H:i:s'),
-            'static'   => APP_DEBUG ? 'false' : 'true',
-            ''
+            'static'   => APP_DEBUG ? 'false' : 'true'
         ]) . ' -->';
 
         Response::create($html)
@@ -238,7 +244,7 @@ class Tpl
 
         if (!empty($this->themeConfig['css'])) {
             foreach ($this->themeConfig['css'] as $css) {
-                $meta .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
+                $meta .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . $this->themeConfig['version'] . '" />';
             }
         }
 
@@ -270,7 +276,7 @@ class Tpl
 
         if (!empty($this->themeConfig['js'])) {
             foreach ($this->themeConfig['js'] as $js) {
-                $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
+                $foot .= '<script type="text/javascript" src="' . $js . '?v=' . $this->themeConfig['version'] . '"></script>';
             }
         }
 

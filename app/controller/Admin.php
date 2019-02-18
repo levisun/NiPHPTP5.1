@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Api - 控制层层
+ * admin - 控制层层
  *
  * @package   NiPHP
  * @category  app\controller
@@ -14,18 +14,13 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
-use app\server\Api as ServerApi;
+use app\server\Tpl;
 
-class Api extends ServerApi
+class admin
 {
 
-    public function query(string $name = 'cms')
+    public function index(string $logic = 'account', string $name = 'login')
     {
-        $this->setModule($name)->run();
-    }
-
-    public function abort(int $code = 404)
-    {
-        throw new HttpException($code);
+        return (new Tpl)->fetch($logic . DIRECTORY_SEPARATOR . $name);
     }
 }

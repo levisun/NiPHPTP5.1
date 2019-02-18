@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 权限校验类 - 服务层
+ * 服务层
+ * 权限校验类
  *
  * @package   NiPHP
  * @category  app\server

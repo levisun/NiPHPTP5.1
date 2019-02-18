@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 加密类 - 方法库
+ * 服务层
+ * 加密类
  *
  * @package   NiPHP
  * @category  app\server

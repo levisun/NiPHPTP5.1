@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 网站信息 - 方法库
+ * 服务层
+ * 网站信息
  *
  * @package   NiPHP
  * @category  app\server
