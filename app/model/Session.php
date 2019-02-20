@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * SESSION表 - 数据层
+ * 数据层
+ * SESSION表
  *
  * @package   NiPHP
  * @category  app\model

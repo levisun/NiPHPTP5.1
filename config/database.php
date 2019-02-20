@@ -25,7 +25,15 @@ return [
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
-    'params'          => [],
+    'params'          => [
+        \PDO::ATTR_CASE                     => \PDO::CASE_NATURAL,              // 列名按照原始
+        \PDO::ATTR_ERRMODE                  => \PDO::ERRMODE_EXCEPTION,         // 错误静默模式
+        \PDO::ATTR_ORACLE_NULLS             => \PDO::NULL_NATURAL,              // 不转换
+        \PDO::ATTR_STRINGIFY_FETCHES        => false,
+        \PDO::ATTR_EMULATE_PREPARES         => false,
+        \PDO::ATTR_PERSISTENT               => false,                           // 长链接
+        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,                            // 查询缓存
+    ],
     // 数据库编码默认采用utf8
     'charset'         => 'utf8',
     // 数据库表前缀
@@ -49,7 +57,7 @@ return [
     // 时间字段取出后的默认时间格式
     'datetime_format' => 'Y-m-d H:i:s',
     // 是否需要进行SQL性能分析
-    'sql_explain'     => APP_DEBUG,
+    'sql_explain'     => true,
     // Builder类
     'builder'         => '',
     // Query类

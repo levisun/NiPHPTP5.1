@@ -3,10 +3,10 @@ $(document).ready(function(){
         url: NIPHP.api.url + "/query/cms.html",
         method: "get",
         data: {
-            method: "article.news.query",
+            method: "site.nav.main",
             // timestamp: $.timestamp(),
             sign: $.sign({
-                method: "article.news.query",
+                method: "site.nav.main",
                 // timestamp: $.timestamp()
             })
         }

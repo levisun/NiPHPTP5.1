@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 搜索引擎 - 数据层
+ * 数据层
+ * 搜索引擎
  *
  * @package   NiPHP
  * @category  app\model

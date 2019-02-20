@@ -64,8 +64,8 @@
 
         // 设置头部
         _params.beforeSend = function (xhr) {
-            xhr.setRequestHeader("Accept", "application/vnd.tp5.v1.0.1+json");
-            xhr.setRequestHeader("Authentication", "5b823d82f3f7fe904a926f89fb84850a452efd90");
+            xhr.setRequestHeader("Accept", "application/vnd."+NIPHP.api.root+".v"+NIPHP.api.version+"+json");
+            xhr.setRequestHeader("Authentication", NIPHP.api.token);
 
             // xhr.setRequestHeader("HTTP_X_PJAX", true);
         }

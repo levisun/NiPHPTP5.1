@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 配置表 - 数据层
+ * 数据层
+ * 配置表
  *
  * @package   NiPHP
  * @category  ap\model

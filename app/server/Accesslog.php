@@ -29,7 +29,7 @@ class Accesslog
 
     public function handle($event, App $app): void
     {
-        if (Request::isGet()) {
+        if (Request::isGet() && !in_array(Request::subDomain(), ['admin', 'api', 'cdn'])) {
             $this->record();
         }
     }

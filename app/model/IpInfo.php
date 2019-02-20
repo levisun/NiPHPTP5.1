@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * IP地域信息表 - 数据层
+ * 数据层
+ * IP地域信息表
  *
  * @package   NiPHP
  * @category  ap\model

@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 地区表 - 数据层
+ * 数据层
+ * 地区表
  *
  * @package   NiPHP
  * @category  app\model

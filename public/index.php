@@ -22,9 +22,11 @@ define('APP_DEBUG', true);
 define('NP_VERSION', '2.1.0 CB');
 define('AUTHKEY', '1286755f348733a76a252efb3848fbab9f3e9f81');
 
-// 环境要求
 version_compare(PHP_VERSION, '7.1.0', '>=') or die('PHP VERSION >= 7.1.0!');
 if (!extension_loaded('PDO')) die('PDO');
+set_time_limit(30);
+ini_set('memory_limit', '32M');
+header('X-Powered-By: CB');
 
 require __DIR__ . '/../vendor/autoload.php';
 

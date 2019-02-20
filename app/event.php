@@ -15,12 +15,12 @@ return [
     ],
     'listen'    => [
         'AppInit'      => [
-            // 'think\listener\LoadLangPack',
+            'think\listener\LoadLangPack',
             'think\listener\RouteCheck',
             'app\server\Tpl',
         ],
         'AppBegin'     => [
-            // 'think\listener\CheckRequestCache',
+            'think\listener\CheckRequestCache',
         ],
         'ActionBegin'  => [],
         'AppEnd'       => [

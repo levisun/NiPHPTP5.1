@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 访问表 - 数据层
+ * 数据层
+ * 访问表
  *
  * @package   NiPHP
  * @category  app\model

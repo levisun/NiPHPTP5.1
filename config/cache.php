@@ -21,5 +21,5 @@ return [
     // 缓存前缀
     'prefix' => Base64::flag(date('Ym')),
     // 缓存有效期 0表示永久缓存
-    'expire' => 1200,
+    'expire' => 1140,
 ];

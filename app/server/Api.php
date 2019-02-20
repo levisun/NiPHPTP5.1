@@ -110,6 +110,12 @@ class Api
      */
     protected $cache = true;
 
+    /**
+     * 浏览器数据缓存时间
+     * @var int
+     */
+    protected $expire = 1140;
+
 
     private $appid;
     private $appsecret;
@@ -143,7 +149,7 @@ class Api
         $this->checkAuth();
 
         // 校验请求时间
-        $this->timestamp = Request::param('timestamp/f', null);
+        $this->timestamp = Request::param('timestamp/f', time());
         if (!$this->timestamp || $this->timestamp <= time() - 10) {
             $this->error('request timeout');
         }
@@ -178,14 +184,21 @@ class Api
             // 执行类方法
             $result = call_user_func_array([(new $method), $action], []);
 
-            if (!in_array($result, ['msg', 'data', 'debug', 'cache'])) {
+            if (!is_array($result) && !isset($result['msg'])) {
                 $this->error($method . '::' . $action . '() 返回数据错误');
             }
 
             // 调试与缓存设置
-            $this->debug = isset($result['debug']) ? !!$result['debug'] : false;
-            $this->cache = isset($result['cache']) ? !!$result['cache'] : false;
+            // 调试模式 返回数据没有指定默认关闭
+            $this->debug  = isset($result['debug']) ? !!$result['debug'] : false;
+
+            // 浏览器缓存 返回数据没有指定默认开启
+            $this->cache  = isset($result['cache']) ? !!$result['cache'] : true;
+            // 当调试模式开启时关闭缓存
             $this->cache = $this->debug ? false : $this->cache;
+
+            // 浏览器缓存时间 返回数据没有指定默认1140秒
+            $this->expire = isset($result['expire']) ? $result['expire'] : $this->expire;
 
             $this->success($result['msg'], isset($result['data']) ? $result['data'] : []);
         } else {
@@ -339,7 +352,7 @@ class Api
                 $this->error('header-accept version error');
             }
             // 校验返回数据类型
-            if (!in_array($this->format, ['json', 'pjson', 'xml'])) {
+            if (!in_array($this->format, ['json', 'xml'])) {
                 $this->debugLog['format'] = $this->format;
                 $this->error('header-accept format error');
             }
@@ -386,16 +399,19 @@ class Api
      * @return void
      * @throws HttpResponseException
      */
-    protected function result(string $_msg, array $_data = [], string $_code = 'success'): void
+    protected function result(string $_msg, array $_data = [], string $_code = 'SUCCESS'): void
     {
         $result = [
             'code'    => $_code,
+            'expire'  => date('Y-m-d H:i:s', time() + $this->expire + 60),
             'message' => $_msg,
-            'data'    => $_data,
-            'time'    => date('Y-m-d H:i:s', Request::server('REQUEST_TIME'))
         ];
 
-        if ($this->debug === true) {
+        if (!empty($_data)) {
+            $result['data'] = $_data;
+        }
+
+        if ($this->debug === true && $_code == 'SUCCESS') {
             $result['debug'] = array_merge([
                 '文件加载:' . count(get_included_files()),
                 '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . ' s',
@@ -404,9 +420,17 @@ class Api
                 '缓存信息:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes',
             ], $this->debugLog);
         }
-        // Container::pull('request')->cache(true);
-        $response = Response::create($result, $this->format, 200)->allowCache($this->cache);
 
+        $headers = [];
+        if ($this->cache === true && $_code == 'SUCCESS') {
+            $headers = [
+                'Cache-Control' => 'max-age=' . $this->expire . ',must-revalidate',
+                'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+                'Expires'       => gmdate('D, d M Y H:i:s', Request::server('REQUEST_TIME') + $this->expire) . ' GMT'
+            ];
+        }
+
+        $response = Response::create($result, $this->format, 200)->header($headers);
         throw new HttpResponseException($response);
     }
 }

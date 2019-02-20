@@ -12,6 +12,7 @@
 // 应用公共文件
 
 use think\facade\Cookie;
+use think\facade\Lang;
 use think\facade\Request;
 use think\facade\Session;
 use think\facade\Url;
@@ -22,13 +23,24 @@ use app\server\Filter;
  * Url生成
  * @param string        $url 路由地址
  * @param array         $vars 变量
- * @param bool|string   $suffix 生成的URL后缀
- * @param bool|string   $domain 域名
  * @return string
  */
 function url(string $url = '', array $vars = [])
 {
-    return Url::build($url, $vars, true, true);
+    return '//' . Request::rootDomain() .
+           Url::build($url, $vars, true, false);
+}
+
+/**
+ * 获取语言变量值
+ * @param string    $name 语言变量名
+ * @param array     $vars 动态变量值
+ * @param string    $lang 语言
+ * @return mixed
+ */
+function lang(string $name, array $vars = [], string $lang = '')
+{
+    return Lang::get($name, $vars, $lang);
 }
 
 /**

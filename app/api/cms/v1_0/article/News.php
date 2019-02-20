@@ -21,10 +21,11 @@ class News
     public function query(): array
     {
         return [
-            'debug' => true,
-            'cache' => true,
-            'msg' => '请求成功',
-            'data' => []
+            'debug' => false,
+            'msg' => lang('success'),
+            'data' => [
+                'url' => url()
+            ]
         ];
     }
 }

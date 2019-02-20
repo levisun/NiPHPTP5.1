@@ -46,10 +46,10 @@ class Siteinfo
 
         $result .=
         MConfig::where([
-            ['name', '=', Request::app() . '_description'],
+            ['name', '=', Request::controller(true) . '_description'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_description')
+        ->cache(__METHOD__ . Request::controller(true) . '_description', null, 'SITEINFO')
         ->value('value', '');
 
         return $result;
@@ -77,10 +77,10 @@ class Siteinfo
 
         $result .=
         MConfig::where([
-            ['name', '=', Request::app() . '_keywords'],
+            ['name', '=', Request::controller(true) . '_keywords'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_keywords')
+        ->cache(__METHOD__ . Request::controller(true) . '_keywords', null, 'SITEINFO')
         ->value('value', '');
 
         return $result;
@@ -108,10 +108,10 @@ class Siteinfo
 
         $result .=
         MConfig::where([
-            ['name', '=', Request::app() . '_sitename'],
+            ['name', '=', Request::controller(true) . '_sitename'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_sitename')
+        ->cache(__METHOD__ . Request::controller(true) . '_sitename', null, 'SITEINFO')
         ->value('value', 'NIPHP CMS');
 
         return $result;
@@ -128,13 +128,13 @@ class Siteinfo
     {
         $result =
         MConfig::where([
-            ['name', '=', Request::app() . '_copyright'],
+            ['name', '=', Request::controller(true) . '_copyright'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_copyright')
-        ->value('value', 'Copyright &copy; 2013-' . date('Y') . ' <a href="http://www.NiPHP.com" target="_blank" rel="nofollow">失眠小枕头</a>, All rights reserved');
+        ->cache(__METHOD__ . Request::controller(true) . '_copyright', null, 'SITEINFO')
+        ->value('value', '');
 
-        return htmlspecialchars_decode($result);
+        return htmlspecialchars_decode($result) . '<p>Powered by <a href="http://www.niphp.com" target="_blank" rel="nofollow">NiPHP</a></p>';
     }
 
     /**
@@ -148,10 +148,10 @@ class Siteinfo
     {
         $result =
         MConfig::where([
-            ['name', '=', Request::app() . '_bottom'],
+            ['name', '=', Request::controller(true) . '_bottom'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_bottom')
+        ->cache(__METHOD__ . Request::controller(true) . '_bottom', null, 'SITEINFO')
         ->value('value', 'bottom');
 
         return htmlspecialchars_decode($result);
@@ -168,10 +168,10 @@ class Siteinfo
     {
         $result =
         MConfig::where([
-            ['name', '=', Request::app() . '_script'],
+            ['name', '=', Request::controller(true) . '_script'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_script')
+        ->cache(__METHOD__ . Request::controller(true) . '_script', null, 'SITEINFO')
         ->value('value', '');
 
         return htmlspecialchars_decode($result);
@@ -188,10 +188,10 @@ class Siteinfo
     {
         return
         MConfig::where([
-            ['name', '=', Request::app() . '_theme'],
+            ['name', '=', Request::controller(true) . '_theme'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::app() . '_theme')
+        ->cache(__METHOD__ . Request::controller(true) . '_theme', null, 'SITEINFO')
         ->value('value', 'default');
     }
 }

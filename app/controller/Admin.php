@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * admin - 控制层层
+ * 控制层
+ * admin
  *
  * @package   NiPHP
  * @category  app\controller

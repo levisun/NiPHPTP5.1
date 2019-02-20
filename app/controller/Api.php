@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * Api - 控制层层
+ * 控制层
+ * Api
  *
  * @package   NiPHP
  * @category  app\controller
@@ -22,6 +23,22 @@ class Api extends ServerApi
     public function query(string $name = 'cms')
     {
         $this->setModule($name)->run();
+    }
+
+    public function handle(string $name = 'cms')
+    {
+        # code...
+    }
+
+    /**
+     * 上传接口
+     * @access public
+     * @param  string $name API分层名
+     * @return void
+     */
+    public function upload(string $name = 'cms')
+    {
+        $this->setModule($name);
     }
 
     public function abort(int $code = 404)

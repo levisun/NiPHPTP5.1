@@ -18,17 +18,17 @@ namespace app\server;
 use think\App;
 use think\Response;
 use think\exception\HttpException;
+use think\exception\HttpResponseException;
 use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Log;
 use think\facade\Request;
+use app\server\Accesslog;
 use app\server\Base64;
 use app\server\Filter;
-use app\server\Garbage;
 use app\server\Siteinfo;
-use app\server\Accesslog;
 
 class Tpl
 {
@@ -159,6 +159,7 @@ class Tpl
         $replace    = [
             '~>\s+<~'       => '><',
             '~>(\s+\n|\r)~' => '>',
+            // '~font-size:(.*?);~' => '',
 
             // '~//[ a-zA-Z\u4e00-\u9fa5^\x00-\xff]?(\n|\r)+~' => '',
         ];
@@ -173,26 +174,19 @@ class Tpl
         ], '', $content);
 
 
-        $html = $this->meta() . $content . $this->foot();
+        $content = $this->meta() . $content . $this->foot();
 
         // 添加HTML生成记录
-        $html .= '<!-- ' . json_encode([
-            'url'      => url(),
+        $content .= '<!-- ' . json_encode([
             'layout'   => $this->themeConfig['layout'] ? 'true' : 'false',
             'template' => Siteinfo::theme() . '/' . $_template,
-            'version'  => $this->themeConfig['version'],
-            'date'     => date('Y-m-d H:i:s'),
-            'static'   => APP_DEBUG ? 'false' : 'true'
+            'date'     => date('Y-m-d H:i:s')
         ]) . ' -->';
 
-        Response::create($html)
-        ->allowCache(true)
-        ->send();
+        $this->build($content);
 
-        $this->build($html);
-
-        unset($tpl_path, $cdn, $content, $html);
-        die();
+        $response = Response::create($content);
+        throw new HttpResponseException($response);
     }
 
     /**
@@ -244,7 +238,7 @@ class Tpl
 
         if (!empty($this->themeConfig['css'])) {
             foreach ($this->themeConfig['css'] as $css) {
-                $meta .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . $this->themeConfig['version'] . '" />';
+                $meta .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
             }
         }
 
@@ -259,38 +253,42 @@ class Tpl
      */
     protected function foot(): string
     {
+        list($root) = explode('.', Request::rootDomain(), 2);
+        $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
+        $token .= session_id() ? '.' . session_id() : '';
         $foot = '<script type="text/javascript">' .
-        'var request = {' .
-            'domain:"' . Request::scheme() . '://' . Request::rootDomain() . Request::root() . '",' .
+        'var NIPHP = {' .
+            'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
+            'api:{' .
+                'url:"//api.' . Request::rootDomain() . Request::root() . '",'.
+                'root:"' . $root . '",' .
+                'version:"' . $this->themeConfig['version'] . '",' .
+                'token:"' . $token . '"' .
+            '},'.
             'url:"' . url() . '",' .
             'param:' . json_encode(Request::param()) . ',' .
             'c:"' . Request::controller(true) . '",' .
-            'a:"' . Request::action(true) . '",' .
-            'api:{' .
-                'query:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::controller(true) . '/query.html",' .
-                'handle:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::controller(true) . '/handle.html",' .
-                'upload:"//api.' . Request::rootDomain() . Request::root() . '/' . Request::controller(true) . '/upload.html"' .
-            '}' .
+            'a:"' . Request::action(true) . '"' .
         '};' .
         '</script>';
+        unset($root, $token);
 
         if (!empty($this->themeConfig['js'])) {
             foreach ($this->themeConfig['js'] as $js) {
-                $foot .= '<script type="text/javascript" src="' . $js . '?v=' . $this->themeConfig['version'] . '"></script>';
+                $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
             }
         }
 
         // 插件加载
 
         // 底部JS脚本
-        $script = Siteinfo::script();
-        $foot .= $script ? $script : '';
+        $foot .= Siteinfo::script();
 
         // 附加信息
         $foot .= '<script type="text/javascript">' .
-        'console.log("Copyright © 2013-' . date('Y') . ' http://www.NiPHP.com' .
-        '\r\nAuthor 失眠小枕头 levisun.mail@gmail.com' .
-        '\r\nCreate Date ' . date('Y-m-d H:i:s') . '");' .
+        'console.log("Powered by NiPHP");' .
+        'console.log("失眠小枕头 levisun.mail@gmail.com");' .
+        'console.log("Copyright © 2013-' . date('Y') .'");' .
         '</script>';
 
         return $foot . '</body></html>';
@@ -325,6 +323,10 @@ class Tpl
      */
     public function redirect()
     {
+        if (in_array(Request::subDomain(), ['api', 'cdn'])) {
+            return false;
+        }
+
         $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
         $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
 
@@ -333,13 +335,15 @@ class Tpl
         $url = implode('_', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        if (is_file($path) && filemtime($path) >= strtotime('-' . rand(20, 120) . ' minute')) {
-            (new Accesslog)->record();
-            (new Garbage)->remove();
-            Response::create(file_get_contents($path))
-            ->allowCache(true)
-            ->send();
-            die();
+        if (is_file($path) && filemtime($path) >= time() - rand(1140, 3000)) {
+            $headers = [
+                'Cache-Control' => 'max-age=1140,must-revalidate',
+                'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+                'Expires'       => gmdate('D, d M Y H:i:s', Request::server('REQUEST_TIME') + 1140) . ' GMT'
+            ];
+
+            $response = Response::create(file_get_contents($path))->header($headers);
+            throw new HttpResponseException($response);
         }
     }
 }

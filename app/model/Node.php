@@ -1,7 +1,8 @@
 <?php
 /**
  *
- * 节点表 - 数据层
+ * 数据层
+ * 节点表
  *
  * @package   NiPHP
  * @category  app\model
