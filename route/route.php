@@ -8,8 +8,13 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
+use think\exception\HttpException;
+use think\facade\Config;
 use think\facade\Request;
 use think\facade\Route;
+
+
+
 
 Route::miss('index/abort');
 
@@ -24,6 +29,7 @@ Route::domain('www', function(){
     Route::get('/:name$', 'index/index');
     Route::get('/:name/:cid$', 'index/index');
     Route::get('/:name/:cid/:id$', 'index/index');
+
     // Route::cache(true);
 })
 ->bind('index')
@@ -37,6 +43,10 @@ Route::domain('admin', function(){
 ->ext('html');
 
 Route::domain('api', function(){
+    Route::rule('/', function(){
+        throw new HttpException(404);
+    });
+
     Route::miss('api/abort');
     Route::rule('query/:name$', 'api/query');
     Route::rule('handle/:name$', 'api/handle');

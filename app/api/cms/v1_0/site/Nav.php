@@ -52,7 +52,7 @@ class Nav
         }
 
         return [
-            'debug' => true,
+            'debug' => false,
             'msg'   => Lang::get('success'),
             'data'  => $result
         ];

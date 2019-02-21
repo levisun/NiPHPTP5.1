@@ -15,6 +15,8 @@ declare (strict_types = 1);
 
 namespace app\api\cms\v1_0\article;
 
+use think\facade\Lang;
+
 class News
 {
 
@@ -22,7 +24,7 @@ class News
     {
         return [
             'debug' => false,
-            'msg' => lang('success'),
+            'msg' => Lang::get('success'),
             'data' => [
                 'url' => url()
             ]

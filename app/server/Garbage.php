@@ -42,9 +42,10 @@ class Garbage
         }
 
         $files = [
-            Env::get('runtime_path') . 'cache' . DIRECTORY_SEPARATOR,
-            Env::get('runtime_path') . 'log' . DIRECTORY_SEPARATOR,
-            Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR,
+            Env::get('runtime_path') . 'backup' . Base64::flag() . DIRECTORY_SEPARATOR,
+            Env::get('runtime_path') . 'cache' . Base64::flag() . DIRECTORY_SEPARATOR,
+            Env::get('runtime_path') . 'log' . Base64::flag() . DIRECTORY_SEPARATOR,
+            Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR,
         ];
 
         $dirOrPath = [];
@@ -80,7 +81,7 @@ class Garbage
      */
     private function getAll($_dirOrPath): array
     {
-        $days = strtotime('-3 days');
+        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-7 days');
 
         $allFiles = [];
         foreach ($_dirOrPath as $key => $path) {

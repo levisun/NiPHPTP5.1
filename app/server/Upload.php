@@ -36,6 +36,14 @@ class Upload
         'img' => [
             'size' => 100*1024,
             'ext'  => ['jpg', 'gif', 'png']
+        ],
+        'zip' => [
+            'size' => 100*1024,
+            'ext'  => ['zip', 'rar']
+        ],
+        'office' => [
+            'size' => 100*1024,
+            'ext'  => ['doc', 'ppt']
         ]
     ];
 
@@ -52,14 +60,47 @@ class Upload
         $this->savePath = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
                           'uploads' . DIRECTORY_SEPARATOR .
                           date('Ym') . DIRECTORY_SEPARATOR;
+
+        $this->tempPath = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
+                          'temp' . DIRECTORY_SEPARATOR;
     }
 
-    public function image()
+    public function img()
     {
         $file = Request::file('upload');
         $file->validate($this->validate['img'])->rule('uniqid');
 
-        if ($result = $file->move($this->savePath)) {
+        if ($result = $file->move($this->tempPath)) {
+            # code...
+        }
+    }
+
+    public function images()
+    {
+        $file = Request::file('upload');
+        $file->validate($this->validate['img'])->rule('uniqid');
+
+        if ($result = $file->move($this->tempPath)) {
+            # code...
+        }
+    }
+
+    public function zip()
+    {
+        $file = Request::file('upload');
+        $file->validate($this->validate['zip'])->rule('uniqid');
+
+        if ($result = $file->move($this->tempPath)) {
+            # code...
+        }
+    }
+
+    public function office()
+    {
+        $file = Request::file('upload');
+        $file->validate($this->validate['office'])->rule('uniqid');
+
+        if ($result = $file->move($this->tempPath)) {
             # code...
         }
     }

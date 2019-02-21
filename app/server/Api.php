@@ -93,6 +93,12 @@ class Api
     private $module = 'cms';
 
     /**
+     * 执行类与方法
+     * @var array
+     */
+    protected $exec = [];
+
+    /**
      * 调试信息
      * @var array
      */
@@ -117,10 +123,11 @@ class Api
     protected $expire = 1140;
 
 
-    private $appid;
-    private $appsecret;
-    private $timestamp;
-    private $method;
+    protected $appid;
+    protected $appsecret;
+    protected $timestamp;
+    protected $method;
+
 
     /**
      * 构造方法
@@ -143,6 +150,39 @@ class Api
      * @return void
      */
     public function run(): void
+    {
+        $this->initialize();
+
+        // 执行类方法
+        $result = call_user_func_array([(new $this->exec['class']), $this->exec['action']], []);
+
+        if (!is_array($result) && empty($result['msg'])) {
+            $this->error($this->exec['class'] . '::' . $this->exec['action'] . '() 返回数据错误');
+        }
+
+        // 调试与缓存设置
+        // 调试模式 返回数据没有指定默认关闭
+        $this->debug  = isset($result['debug']) ? !!$result['debug'] : false;
+
+        // 浏览器缓存 返回数据没有指定默认开启
+        $this->cache  = isset($result['cache']) ? !!$result['cache'] : true;
+        // 当调试模式开启时关闭缓存
+        $this->cache = $this->debug ? false : $this->cache;
+
+        // 浏览器缓存时间 返回数据没有指定默认1140秒
+        $this->expire = isset($result['expire']) ? $result['expire'] : $this->expire;
+        $this->expire = $this->expire <= 0 ? 1140 : $this->expire;
+
+        $this->success($result['msg'], isset($result['data']) ? $result['data'] : []);
+    }
+
+    /**
+     * 初始化
+     * @access protected
+     * @param
+     * @return
+     */
+    protected function initialize(): void
     {
         $this->analysisHeader();
         $this->checkSign();
@@ -181,39 +221,14 @@ class Api
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
             Lang::load($lang);
 
-            // 执行类方法
-            $result = call_user_func_array([(new $method), $action], []);
-
-            if (!is_array($result) && !isset($result['msg'])) {
-                $this->error($method . '::' . $action . '() 返回数据错误');
-            }
-
-            // 调试与缓存设置
-            // 调试模式 返回数据没有指定默认关闭
-            $this->debug  = isset($result['debug']) ? !!$result['debug'] : false;
-
-            // 浏览器缓存 返回数据没有指定默认开启
-            $this->cache  = isset($result['cache']) ? !!$result['cache'] : true;
-            // 当调试模式开启时关闭缓存
-            $this->cache = $this->debug ? false : $this->cache;
-
-            // 浏览器缓存时间 返回数据没有指定默认1140秒
-            $this->expire = isset($result['expire']) ? $result['expire'] : $this->expire;
-
-            $this->success($result['msg'], isset($result['data']) ? $result['data'] : []);
+            $this->exec = [
+                'class'  => $method,
+                'action' => $action
+            ];
         } else {
             $this->error('params-method error');
         }
     }
-
-    /**
-     * 初始化
-     * @access protected
-     * @param
-     * @return
-     */
-    protected function initialize(): void
-    {}
 
     /**
      * 校验权限
@@ -422,11 +437,11 @@ class Api
         }
 
         $headers = [];
-        if ($this->cache === true && $_code == 'SUCCESS') {
+        if (APP_DEBUG === false && $this->cache === true && $_code == 'SUCCESS') {
             $headers = [
                 'Cache-Control' => 'max-age=' . $this->expire . ',must-revalidate',
                 'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-                'Expires'       => gmdate('D, d M Y H:i:s', Request::server('REQUEST_TIME') + $this->expire) . ' GMT'
+                'Expires'       => gmdate('D, d M Y H:i:s', time() + $this->expire) . ' GMT'
             ];
         }
 

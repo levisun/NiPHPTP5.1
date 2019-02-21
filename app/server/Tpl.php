@@ -79,8 +79,8 @@ class Tpl
             }
         }
 
-        if (Request::isGet() && APP_DEBUG === false) {
-            $this->redirect();
+        if (Request::isGet() && !in_array(Request::subDomain(), ['api', 'cdn'])) {
+            $this->read();
         }
     }
 
@@ -298,36 +298,38 @@ class Tpl
      * 创建静态文件
      * @access protected
      * @param
-     * @return string
+     * @return void
      */
     protected function build(string $_data): void
     {
-        $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
+        $path = Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
         $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
 
         if (!is_dir($path)) {
             mkdir($path, 777, true);
         }
-        $url = Request::path();
-        $url = explode('/', $url);
+
+        $url = explode('/', Request::path());
         $url = array_unique($url);
         $url = implode('_', $url);
         $path .= $url ? $url . '.html' : 'index.html';
+
+        if (function_exists('gzcompress')) {
+            $_data = gzcompress($_data, 3);
+        }
 
         file_put_contents($path, $_data);
     }
 
     /**
-     * [redirect description]
-     * @return [type] [description]
+     * 读取静态文件
+     * @access protected
+     * @param
+     * @return void
      */
-    public function redirect()
+    protected function read()
     {
-        if (in_array(Request::subDomain(), ['api', 'cdn'])) {
-            return false;
-        }
-
-        $path = Env::get('runtime_path') . 'html_' . Base64::flag() . DIRECTORY_SEPARATOR;
+        $path = Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
         $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
 
         $url = explode('/', Request::path());
@@ -335,14 +337,20 @@ class Tpl
         $url = implode('_', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        if (is_file($path) && filemtime($path) >= time() - rand(1140, 3000)) {
+        // 模板存在并在缓存期内
+        // 读取缓存
+        if (APP_DEBUG === false && is_file($path) && filemtime($path) >= time() - rand(1140, 3000)) {
             $headers = [
                 'Cache-Control' => 'max-age=1140,must-revalidate',
                 'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-                'Expires'       => gmdate('D, d M Y H:i:s', Request::server('REQUEST_TIME') + 1140) . ' GMT'
+                'Expires'       => gmdate('D, d M Y H:i:s', time() + 1140) . ' GMT'
             ];
 
-            $response = Response::create(file_get_contents($path))->header($headers);
+            $content = file_get_contents($path);
+            if (function_exists('gzcompress')) {
+                $content = gzuncompress($content);
+            }
+            $response = Response::create($content)->header($headers);
             throw new HttpResponseException($response);
         }
     }
