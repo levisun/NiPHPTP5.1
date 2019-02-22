@@ -432,7 +432,7 @@ class Api
                 '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . ' s',
                 '内存消耗:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . ' KB',
                 '查询信息:' . Container::pull('db')->getQueryTimes() . ' queries',
-                '缓存信息:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes',
+                // '缓存信息:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes',
             ], $this->debugLog);
         }
 

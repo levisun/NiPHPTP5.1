@@ -1,12 +1,43 @@
-<header>header</header>
-
+<header class="layui-bg-white">
+    <div class="layui-container">
+        <section class="layui-row">
+            <hgroup class="layui-col-md2">
+                <a href="/">logo</a>
+            </hgroup>
+            <nav class="layui-col-md10">
+                <ul id="header-nav" class="layui-nav layui-bg-white" lay-filter="">
+                    <li class="layui-nav-item layui-this">
+                        <a href="/">首页</a>
+                    </li>
+                    <template v-for="vo in main_nav">
+                    <li class="layui-nav-item">
+                        <a v-html="vo.name" v-bind:href="vo.url"></a>
+                        <template v-if="vo.child">
+                        <dl class="layui-nav-child">
+                            <dd v-for="ch in vo.child">
+                                <a v-html="ch.name" v-bind:href="ch.url"></a>
+                            </dd>
+                        </dl>
+                        </template>
+                    </li>
+                    </template>
+                </ul>
+            </nav>
+        </section>
+    </div>
+</header>
 
 
 __CONTENT__
 
 
-
-<footer>
-    <p>__BOTTOM_MSG__</p>
-    <p>__COPYRIGHT__</p>
+<footer class="layui-bg-black">
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <p>__BOTTOM_MSG__</p>
+                <p>__COPYRIGHT__</p>
+            </div>
+        </div>
+    </div>
 </footer>

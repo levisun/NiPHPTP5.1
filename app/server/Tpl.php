@@ -264,7 +264,13 @@ class Tpl
                 'root:"' . $root . '",' .
                 'version:"' . $this->themeConfig['version'] . '",' .
                 'token:"' . $token . '"' .
-            '},'.
+            '},' .
+            'cdn:{' .
+                'css:"' . $this->replace['__CSS__'] . '",' .
+                'img:"' . $this->replace['__IMG__'] . '",' .
+                'js:"' . $this->replace['__JS__'] . '",' .
+                'static:"' . $this->replace['__STATIC__'] . '",' .
+            '},' .
             'url:"' . url() . '",' .
             'param:' . json_encode(Request::param()) . ',' .
             'c:"' . Request::controller(true) . '",' .

@@ -1,14 +1,32 @@
-$(document).ready(function(){
-    $.pjax({
-        url: NIPHP.api.url + "/query/cms.html",
-        method: "get",
+layui.extend({
+    np: '{/}' + NIPHP.cdn.js + 'np' // {/}的意思即代表采用自有路径，即不跟随 base 路径
+})
+layui.use(['jquery', 'np'], function(){
+    var jQuery = layui.jquery;
+    var np = layui.np;
+
+    // 初始化导航
+    np.pjax({
+        url: NIPHP.api.url + '/query/cms.html',
+        method: 'get',
         data: {
-            method: "site.nav.main",
-            // timestamp: $.timestamp(),
-            sign: $.sign({
-                method: "site.nav.main",
-                // timestamp: $.timestamp()
+            method: 'nav.main.query',
+            sign: np.sign({
+                method: 'nav.main.query'
             })
+        },
+        success: function(result) {
+            if (result.code == 'SUCCESS') {
+                new Vue({
+                    el: '#header-nav',
+                    data: {
+                        main_nav: result.data
+                    }
+                });
+                layui.use('element', function(){
+                    layui.element.render('nav');
+                });
+            }
         }
     });
 });

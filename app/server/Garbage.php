@@ -81,7 +81,7 @@ class Garbage
      */
     private function getAll($_dirOrPath): array
     {
-        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-7 days');
+        $days = APP_DEBUG ? strtotime('-3 hour') : strtotime('-7 days');
 
         $allFiles = [];
         foreach ($_dirOrPath as $key => $path) {

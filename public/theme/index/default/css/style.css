@@ -1,0 +1,35 @@
+.layui-bg-white,
+.layui-nav.layui-bg-white {
+    background-color: #f8f9fa!important;
+    color: #ccc;
+}
+.layui-nav.layui-bg-white .layui-nav-item a:hover,
+.layui-nav.layui-bg-white .layui-this a {
+    color: #777;
+}
+.layui-nav.layui-bg-white .layui-nav-item a {
+    color: #333;
+}
+.layui-nav.layui-bg-white .layui-nav-more {
+    border-color: #333 transparent transparent;
+}
+.layui-nav.layui-bg-white .layui-nav-mored {
+    border-color: transparent transparent #333 ;
+}
+
+footer.layui-bg-black a:hover,
+footer.layui-bg-black a {
+    color: #fff;
+}
+
+
+
+
+footer {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

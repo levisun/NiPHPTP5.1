@@ -25,9 +25,9 @@ use app\server\Filter;
  * @param array         $vars 变量
  * @return string
  */
-function url(string $url = '', array $vars = [])
+function url(string $url = '', array $vars = [], string $sub = 'www')
 {
-    return '//' . Request::rootDomain() .
+    return '//' . $sub . '.' . Request::rootDomain() .
            Url::build($url, $vars, true, false);
 }
 

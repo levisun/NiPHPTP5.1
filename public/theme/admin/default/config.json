@@ -1,7 +1,8 @@
 {
     "layout": true,
     "css": [
-        "__STATIC__layui/css/layui.css"
+        "__STATIC__layui/css/layui.css",
+        "__CSS__style.css"
     ],
     "js": [
         "__STATIC__layui/layui.js"
