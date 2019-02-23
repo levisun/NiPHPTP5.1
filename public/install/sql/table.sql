@@ -76,8 +76,8 @@ DROP TABLE IF EXISTS `np_category`;
 CREATE TABLE IF NOT EXISTS `np_category` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `pid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父ID',
-  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '栏目名',
-  `aliases` varchar(50) NOT NULL DEFAULT '' COMMENT '别名',
+  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '栏目名',
+  `aliases` varchar(20) NOT NULL DEFAULT '' COMMENT '别名',
   `seo_title` varchar(50) NOT NULL DEFAULT '' COMMENT 'SEO标题',
   `seo_keywords` varchar(100) NOT NULL DEFAULT '' COMMENT 'SEO关键词',
   `seo_description` varchar(300) NOT NULL DEFAULT '' COMMENT 'SEO描述',
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `np_category` (
   `url` varchar(100) NOT NULL DEFAULT '' COMMENT '外链地址',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `lang` varchar(20) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
+  `lang` varchar(10) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `aliases` (`aliases`),
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `np_config` (
   `id` smallint(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL DEFAULT '' COMMENT '名称',
   `value` varchar(500) NOT NULL DEFAULT '' COMMENT '值',
-  `lang` varchar(20) NOT NULL DEFAULT '' COMMENT '语言 niphp为全局设置',
+  `lang` varchar(10) NOT NULL DEFAULT '' COMMENT '语言 niphp为全局设置',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `value` (`value`(191)),
@@ -288,7 +288,3 @@ CREATE TABLE IF NOT EXISTS `np_visit` (
   KEY `ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='访问表';
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

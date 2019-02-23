@@ -18,7 +18,8 @@ namespace app\server;
 use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
-use app\model\Config as MConfig;
+use app\model\Config as ModelConfig;
+use app\model\Category as ModelCategory;
 
 class Siteinfo
 {
@@ -35,22 +36,27 @@ class Siteinfo
     {
         $result = '';
 
-        // 文章名
-        if ($id = Request::param('id/f', false)) {
+        // 文章描述
+        if ($id = Request::param('id/f', null)) {
             # code...
         }
-        // 栏目名
-        elseif ($cid = Request::param('cid/f', false)) {
-            # code...
+        // 栏目描述
+        elseif ($cid = Request::param('cid/f', null)) {
+            $result =
+            ModelCategory::where([
+                ['id', '=', $cid]
+            ])
+            ->value('description', '');
         }
-
-        $result .=
-        MConfig::where([
-            ['name', '=', Request::controller(true) . '_description'],
-            ['lang', '=', Lang::detect()]
-        ])
-        ->cache(__METHOD__ . Request::controller(true) . '_description', null, 'SITEINFO')
-        ->value('value', '');
+        else {
+            $result .=
+            ModelConfig::where([
+                ['name', '=', Request::controller(true) . '_description'],
+                ['lang', '=', Lang::detect()]
+            ])
+            ->cache(__METHOD__ . Request::controller(true) . '_description', null, 'SITEINFO')
+            ->value('value', '');
+        }
 
         return $result;
     }
@@ -66,22 +72,27 @@ class Siteinfo
     {
         $result = '';
 
-        // 文章名
+        // 文章关键词
         if ($id = Request::param('id/f', false)) {
             # code...
         }
-        // 栏目名
-        if ($cid = Request::param('cid/f', false)) {
-            # code...
+        // 栏目关键词
+        elseif ($cid = Request::param('cid/f', false)) {
+            $result =
+            ModelCategory::where([
+                ['id', '=', $cid]
+            ])
+            ->value('keywords', '');
         }
-
-        $result .=
-        MConfig::where([
-            ['name', '=', Request::controller(true) . '_keywords'],
-            ['lang', '=', Lang::detect()]
-        ])
-        ->cache(__METHOD__ . Request::controller(true) . '_keywords', null, 'SITEINFO')
-        ->value('value', '');
+        else {
+            $result .=
+            ModelConfig::where([
+                ['name', '=', Request::controller(true) . '_keywords'],
+                ['lang', '=', Lang::detect()]
+            ])
+            ->cache(__METHOD__ . Request::controller(true) . '_keywords', null, 'SITEINFO')
+            ->value('value', '');
+        }
 
         return $result;
     }
@@ -102,17 +113,22 @@ class Siteinfo
             # code...
         }
         // 栏目名
-        if ($cid = Request::param('cid/f', false)) {
-            # code...
+        elseif ($cid = Request::param('cid/f', false)) {
+            $result =
+            ModelCategory::where([
+                ['id', '=', $cid]
+            ])
+            ->value('name', '');
         }
-
-        $result .=
-        MConfig::where([
-            ['name', '=', Request::controller(true) . '_sitename'],
-            ['lang', '=', Lang::detect()]
-        ])
-        ->cache(__METHOD__ . Request::controller(true) . '_sitename', null, 'SITEINFO')
-        ->value('value', 'NIPHP CMS');
+        else {
+            $result .=
+            ModelConfig::where([
+                ['name', '=', Request::controller(true) . '_sitename'],
+                ['lang', '=', Lang::detect()]
+            ])
+            ->cache(__METHOD__ . Request::controller(true) . '_sitename', null, 'SITEINFO')
+            ->value('value', 'NIPHP CMS');
+        }
 
         return $result;
     }
@@ -127,7 +143,7 @@ class Siteinfo
     public static function copyright(): string
     {
         $result =
-        MConfig::where([
+        ModelConfig::where([
             ['name', '=', Request::controller(true) . '_copyright'],
             ['lang', '=', Lang::detect()]
         ])
@@ -147,7 +163,7 @@ class Siteinfo
     public static function bottom(): string
     {
         $result =
-        MConfig::where([
+        ModelConfig::where([
             ['name', '=', Request::controller(true) . '_bottom'],
             ['lang', '=', Lang::detect()]
         ])
@@ -167,7 +183,7 @@ class Siteinfo
     public static function script(): string
     {
         $result =
-        MConfig::where([
+        ModelConfig::where([
             ['name', '=', Request::controller(true) . '_script'],
             ['lang', '=', Lang::detect()]
         ])
@@ -187,7 +203,7 @@ class Siteinfo
     public static function theme(): string
     {
         return
-        MConfig::where([
+        ModelConfig::where([
             ['name', '=', Request::controller(true) . '_theme'],
             ['lang', '=', Lang::detect()]
         ])

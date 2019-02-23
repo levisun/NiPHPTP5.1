@@ -43,39 +43,6 @@ class Tpl
             if (rand(1, 1000) === 1) {
                 Log::record('并发', 'alert');
                 throw new HttpException(502);
-            } else {
-                $key = Request::server('HTTP_USER_AGENT') . Request::ip() . date('Y-m-d');
-                $key = md5($key);
-
-                if (Cache::has($key)) {
-                    $intercept = Cache::get($key);
-                } else {
-                    $intercept = [
-                        'expire'  => 60,
-                        'runtime' => time(),
-                        'total'   => 0,
-                    ];
-                }
-
-                // 非法请求
-                if ($intercept['total'] >= 50) {
-                    Log::record('非法请求', 'alert');
-                    throw new HttpException(502);
-                }
-                // 更新请求数
-                elseif ($intercept['runtime'] + $intercept['expire'] >= time()) {
-                    $intercept['total']++;
-                }
-                // 还原请求
-                else {
-                    $intercept = [
-                        'expire'  => 60,
-                        'runtime' => time(),
-                        'total'   => 0,
-                    ];
-                }
-
-                Cache::set($key, $intercept, 0);
             }
         }
 
@@ -93,6 +60,21 @@ class Tpl
      */
     public function fetch(string $_template = '', array $_vars = []): void
     {
+        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/' .
+               Request::controller(true) . '/' . Siteinfo::theme() . '/';
+        $this->replace = [
+            '__CSS__'         => $cdn . 'css/',
+            '__IMG__'         => $cdn . 'img/',
+            '__JS__'          => $cdn . 'js/',
+            '__STATIC__'      => '//cdn.' . Request::rootDomain() . Request::root() . '/theme/static/',
+            '__TITLE__'       => Siteinfo::title(),
+            '__KEYWORDS__'    => Siteinfo::keywords(),
+            '__DESCRIPTION__' => Siteinfo::description(),
+            '__BOTTOM_MSG__'  => Siteinfo::bottom(),
+            '__COPYRIGHT__'   => Siteinfo::copyright(),
+            '__:ACTION__'     => $_template,
+        ];
+
         $tpl_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
                     'theme' . DIRECTORY_SEPARATOR .
                     Request::controller(true) . DIRECTORY_SEPARATOR .
@@ -109,23 +91,6 @@ class Tpl
         if (!is_file($tpl_path . $_template)) {
             throw new HttpException(200, '模板文件未找到!' . Request::controller(true) . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR . $_template);
         }
-
-        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/' .
-               Request::controller(true) . '/' . Siteinfo::theme() . '/';
-
-        $this->replace = [
-            '__CSS__'         => $cdn . 'css/',
-            '__IMG__'         => $cdn . 'img/',
-            '__JS__'          => $cdn . 'js/',
-            '__STATIC__'      => '//cdn.' . Request::rootDomain() . Request::root() . '/theme/static/',
-            '__TITLE__'       => Siteinfo::title(),
-            '__KEYWORDS__'    => Siteinfo::keywords(),
-            '__DESCRIPTION__' => Siteinfo::description(),
-            '__BOTTOM_MSG__'  => Siteinfo::bottom(),
-            '__COPYRIGHT__'   => Siteinfo::copyright(),
-            '__:CONTROLLER__' => $cdn . 'js/' . Request::controller(true),
-            '__:ACTION__'     => $cdn . 'js/' . Request::action(true),
-        ];
 
         // 模板配置
         if (is_file($tpl_path . 'config.json')) {
@@ -272,9 +237,7 @@ class Tpl
                 'static:"' . $this->replace['__STATIC__'] . '",' .
             '},' .
             'url:"' . url() . '",' .
-            'param:' . json_encode(Request::param()) . ',' .
-            'c:"' . Request::controller(true) . '",' .
-            'a:"' . Request::action(true) . '"' .
+            'param:' . json_encode(Request::param()) .
         '};' .
         '</script>';
         unset($root, $token);

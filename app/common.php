@@ -27,6 +27,8 @@ use app\server\Filter;
  */
 function url(string $url = '', array $vars = [], string $sub = 'www')
 {
+    return '//' . $sub . '.' . Request::rootDomain() . '/' . $url . '.html';
+
     return '//' . $sub . '.' . Request::rootDomain() .
            Url::build($url, $vars, true, false);
 }

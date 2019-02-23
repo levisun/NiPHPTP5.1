@@ -11,7 +11,7 @@
         "https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js",
         "__STATIC__layui/layui.js",
         "__JS__core.js",
-        "__:ACTION__.js"
+        "__JS____:ACTION__.js"
     ],
     "hook": [
 

@@ -51,7 +51,7 @@ class Base64
      * @param  int|integer $_length
      * @return string
      */
-    public static function flag(string $_authkey = '', int $_length = 7)
+    public static function flag($_authkey = '', int $_length = 7)
     {
         $_authkey = sha1(__DIR__ . AUTHKEY . $_authkey);
         $_length = $_length > 40 ? 40 : $_length;

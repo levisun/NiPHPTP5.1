@@ -26,7 +26,6 @@ Route::get('think', function () {
 Route::domain('www', function(){
     Route::miss('index/abort');
     Route::get('/', 'index/index');
-    Route::get('/:name$', 'index/index');
     Route::get('/:name/:cid$', 'index/index');
     Route::get('/:name/:cid/:id$', 'index/index');
 

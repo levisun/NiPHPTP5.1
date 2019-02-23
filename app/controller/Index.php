@@ -18,9 +18,16 @@ class Index
 
     }
 
-    public function index(string $name = 'index')
+    public function index(string $name = 'index', int $cid = 0, int $id = 0)
     {
-        return (new Tpl)->fetch($name);
+        if ($cid) {
+            $tpl_name = 'list_' . $name;
+        } elseif ($cid && $id) {
+            $tpl_name = 'details_' . $name;
+        } else {
+            $tpl_name = $name;
+        }
+        return (new Tpl)->fetch($tpl_name);
     }
 
     public function abort(int $code = 404)

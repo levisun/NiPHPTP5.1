@@ -10,9 +10,10 @@ layui.use(['jquery', 'np'], function(){
         url: NIPHP.api.url + '/query/cms.html',
         method: 'get',
         data: {
-            method: 'catalog.article.news',
+            method: 'article.catalog.query',
+            cid: 1,
             sign: np.sign({
-                method: 'catalog.article.news'
+                method: 'article.catalog.query'
             })
         },
         success: function(result) {

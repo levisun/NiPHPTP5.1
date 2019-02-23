@@ -44,7 +44,7 @@ class Other
         ->toArray();
 
         foreach ($result as $key => $value) {
-            $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
+            $value['url'] = url($value['action_name'] . '/' . $value['id']);
             $value['child'] = $this->child($value['id'], 4);
             if (empty($value['child'])) {
                 unset($value['child']);
@@ -85,7 +85,7 @@ class Other
         ->toArray();
 
         foreach ($result as $key => $value) {
-            $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
+            $value['url'] = url($value['action_name'] . '/' . $value['id']);
             $value['child'] = $this->child($value['id'], 2);
 
             unset($value['action_name']);
