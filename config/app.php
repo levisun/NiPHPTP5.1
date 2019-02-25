@@ -9,12 +9,23 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 use think\facade\Env;
+use think\facade\Request;
 
 // +----------------------------------------------------------------------
 // | 应用设置
 // +----------------------------------------------------------------------
 
 return [
+    // API接口地址
+    'api_host' => '//api.' . Request::rootDomain() . Request::root(),
+    // CDN地址
+    'cdn_host' => '//cdn.' . Request::rootDomain() . Request::root(),
+    // 主站地址
+    'www_host' => '//www.' . Request::rootDomain() . Request::root(),
+    // 后台管理地址
+    'admin_host' => '//admin.' . Request::rootDomain() . Request::root(),
+
+
     // 应用名称
     'app_name'              => '',
     // 应用地址

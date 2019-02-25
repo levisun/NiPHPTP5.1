@@ -20,10 +20,10 @@ class Index
 
     public function index(string $name = 'index', int $cid = 0, int $id = 0)
     {
-        if ($cid) {
-            $tpl_name = 'list_' . $name;
-        } elseif ($cid && $id) {
+        if ($cid && $id) {
             $tpl_name = 'details_' . $name;
+        } elseif ($cid) {
+            $tpl_name = 'list_' . $name;
         } else {
             $tpl_name = $name;
         }

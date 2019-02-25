@@ -2,7 +2,7 @@
 /**
  *
  * API接口层
- * 网站导航
+ * 文章列表
  *
  * @package   NiPHP
  * @category  app\api\cms\v1_0\article
@@ -15,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\api\cms\v1_0\article;
 
+use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
 use app\model\Article as ModelArticle;
@@ -62,11 +63,13 @@ class Catalog
         // ->cache(__METHOD__ . md5(var_export($map, true)) . Request::param('page/f', 1), null, 'ARTICLE')
         ->paginate();
         $list = $result->toArray();
+        $list['render'] = $result->render();
 
         foreach ($list['data'] as $key => $value) {
             $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
             $value['url'] = url($value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
             $value['cat_url']  = url($value['action_name'] . '/' . $value['category_id']);
+            $value['thumb'] = empty($value['thumb']) ? Config::get('cdn_host') . $value['thumb'] : '';
 
             $list['data'][$key] = $value;
         }
@@ -80,7 +83,7 @@ class Catalog
                 'per_page'     => $list['per_page'],
                 'current_page' => $list['current_page'],
                 'last_page'    => $list['last_page'],
-                'page'         => $result->render() ? $result->render() : '',
+                'page'         => $list['render'],
             ]
         ];
     }

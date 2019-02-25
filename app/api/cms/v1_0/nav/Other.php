@@ -15,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\api\cms\v1_0\nav;
 
+use think\facade\Config;
 use think\facade\Lang;
 use app\model\Category as ModelCategory;
 
@@ -44,6 +45,7 @@ class Other
         ->toArray();
 
         foreach ($result as $key => $value) {
+            $value['image'] = !empty($value['image']) ? Config::get('cdn_host') . $value['image'] : '';
             $value['url'] = url($value['action_name'] . '/' . $value['id']);
             $value['child'] = $this->child($value['id'], 4);
             if (empty($value['child'])) {

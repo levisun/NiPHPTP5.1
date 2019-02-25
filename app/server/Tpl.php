@@ -60,13 +60,13 @@ class Tpl
      */
     public function fetch(string $_template = '', array $_vars = []): void
     {
-        $cdn = '//cdn.' . Request::rootDomain() . Request::root() . '/theme/' .
+        $cdn = Config::get('cdn_host') . '/theme/' .
                Request::controller(true) . '/' . Siteinfo::theme() . '/';
         $this->replace = [
             '__CSS__'         => $cdn . 'css/',
             '__IMG__'         => $cdn . 'img/',
             '__JS__'          => $cdn . 'js/',
-            '__STATIC__'      => '//cdn.' . Request::rootDomain() . Request::root() . '/theme/static/',
+            '__STATIC__'      => Config::get('cdn_host') . '/theme/static/',
             '__TITLE__'       => Siteinfo::title(),
             '__KEYWORDS__'    => Siteinfo::keywords(),
             '__DESCRIPTION__' => Siteinfo::description(),
@@ -184,10 +184,10 @@ class Tpl
 
         '<meta http-equiv="x-dns-prefetch-control" content="on" />' .
 
-        '<link rel="dns-prefetch" href="//api.' . Request::rootDomain() . Request::root() . '" />' .
-        '<link rel="dns-prefetch" href="//cdn.' . Request::rootDomain() . Request::root() . '" />' .
+        '<link rel="dns-prefetch" href="' . Config::get('api_host') . '" />' .
+        '<link rel="dns-prefetch" href="' . Config::get('cdn_host') . '" />' .
 
-        '<link href="//cdn.' . Request::rootDomain() . Request::root() . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
+        '<link href="' . Config::get('cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
         // 网站标题 关键词 描述
         $meta .= '<title>' . Siteinfo::title() . '</title>';
@@ -225,7 +225,7 @@ class Tpl
         'var NIPHP = {' .
             'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
             'api:{' .
-                'url:"//api.' . Request::rootDomain() . Request::root() . '",'.
+                'url:"' . Config::get('api_host') . '",'.
                 'root:"' . $root . '",' .
                 'version:"' . $this->themeConfig['version'] . '",' .
                 'token:"' . $token . '"' .
