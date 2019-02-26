@@ -139,7 +139,7 @@ class Tpl
         ], '', $content);
 
 
-        $content = $this->meta() . $content . $this->foot();
+        $content = $this->head() . $content . $this->foot();
 
         // 添加HTML生成记录
         $content .= '<!-- ' . json_encode([
@@ -160,9 +160,9 @@ class Tpl
      * @param
      * @return string
      */
-    protected function meta(): string
+    protected function head(): string
     {
-        $meta = '<!DOCTYPE html>' .
+        $head = '<!DOCTYPE html>' .
         '<html lang="' . Lang::detect() . '">' .
         '<head>' .
         '<meta charset="utf-8" />' .
@@ -190,24 +190,29 @@ class Tpl
         '<link href="' . Config::get('cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
         // 网站标题 关键词 描述
-        $meta .= '<title>' . Siteinfo::title() . '</title>';
-        $meta .= '<meta name="keywords" content="' . Siteinfo::keywords() . '" />';
-        $meta .= '<meta name="description" content="' . Siteinfo::description() . '" />';
+        $head .= '<title>' . Siteinfo::title() . '</title>';
+        $head .= '<meta name="keywords" content="' . Siteinfo::keywords() . '" />';
+        $head .= '<meta name="description" content="' . Siteinfo::description() . '" />';
 
         if (!empty($this->themeConfig['meta'])) {
             foreach ($this->themeConfig['meta'] as $m) {
-                $meta .= '<meta ' . $m['type'] . ' ' . $m['content'] . ' />';
+                $head .= '<meta ' . $m['type'] . ' ' . $m['content'] . ' />';
             }
         }
         // <meta name="apple-itunes-app" content="app-id=1191720421, app-argument=sspai://sspai.com">
 
         if (!empty($this->themeConfig['css'])) {
             foreach ($this->themeConfig['css'] as $css) {
-                $meta .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
+                $style = file_get_contents($css);
+                $style = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $style);
+                $style = preg_replace('/(\n|\r)/si', '', $style);
+                $style = preg_replace('/( ){2,}/si', '', $style);
+                $head .= '<style type="text/css" id="' . md5($css) . '">' . $style . '</style>';
+                // $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
             }
         }
 
-        return $meta . '</head><body>';
+        return $head . '</head><body>';
     }
 
     /**
@@ -244,6 +249,9 @@ class Tpl
 
         if (!empty($this->themeConfig['js'])) {
             foreach ($this->themeConfig['js'] as $js) {
+                // $script = file_get_contents($js);
+                // $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
+                // $foot .= '<script type="text/javascript" id="' . md5($js) . '">' . $script . '</script>';
                 $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
             }
         }
@@ -283,10 +291,6 @@ class Tpl
         $url = implode('_', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        if (function_exists('gzcompress')) {
-            $_data = gzcompress($_data, 3);
-        }
-
         file_put_contents($path, $_data);
     }
 
@@ -316,9 +320,7 @@ class Tpl
             ];
 
             $content = file_get_contents($path);
-            if (function_exists('gzcompress')) {
-                $content = gzuncompress($content);
-            }
+
             $response = Response::create($content)->header($headers);
             throw new HttpResponseException($response);
         }

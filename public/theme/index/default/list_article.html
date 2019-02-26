@@ -1,0 +1,26 @@
+<script>
+window.onload=function(){
+    layui.use(['jquery', 'np'], function(){
+        var jQuery = layui.jquery;
+        var np = layui.np;
+
+
+        np.pjax({
+            url: NIPHP.api.url + '/cms.html',
+            method: 'get',
+            data: {
+                method: 'article.catalog.query',
+                cid: NIPHP.param.cid,
+                sign: np.sign({
+                    method: 'article.catalog.query'
+                })
+            },
+            success: function(result) {
+                if (result.code == 'SUCCESS') {
+
+                }
+            }
+        });
+    });
+}
+</script>

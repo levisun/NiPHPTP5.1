@@ -47,7 +47,7 @@ Route::domain('api', function(){
     });
 
     Route::miss('api/abort');
-    Route::rule('query/:name$', 'api/query');
+    Route::rule(':name$', 'api/query');
     Route::rule('handle/:name$', 'api/handle');
     Route::rule('upload/:name$', 'api/upload');
 

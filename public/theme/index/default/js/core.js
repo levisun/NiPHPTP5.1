@@ -7,7 +7,7 @@ layui.use(['jquery', 'np'], function(){
 
     // 初始化导航
     np.pjax({
-        url: NIPHP.api.url + '/query/cms.html',
+        url: NIPHP.api.url + '/cms.html',
         method: 'get',
         data: {
             method: 'nav.main.query',
@@ -27,6 +27,18 @@ layui.use(['jquery', 'np'], function(){
                     layui.element.render('nav');
                 });
             }
+        }
+    });
+
+    np.pjax({
+        url: NIPHP.api.url + '/cms.html',
+        method: 'get',
+        data: {
+            method: 'nav.sidebar.query',
+            cid: NIPHP.param.cid,
+            sign: np.sign({
+                method: 'nav.sidebar.query'
+            })
         }
     });
 });

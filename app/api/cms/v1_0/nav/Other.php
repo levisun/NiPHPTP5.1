@@ -2,7 +2,7 @@
 /**
  *
  * API接口层
- * 网站导航
+ * 其他导航
  *
  * @package   NiPHP
  * @category  app\api\cms\v1_0\nav

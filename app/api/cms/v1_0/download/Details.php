@@ -45,7 +45,7 @@ class Details
         $result =
         ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=3')
         ->where($map)
         ->find();
         $result = $result->toArray();

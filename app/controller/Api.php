@@ -20,6 +20,12 @@ use app\server\Api as ServerApi;
 class Api extends ServerApi
 {
 
+    /**
+     * 查询接口
+     * @access public
+     * @param  string $name API分层名
+     * @return void
+     */
     public function query(string $name = 'cms')
     {
         $this->setModule($name)->run();
