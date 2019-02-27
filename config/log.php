@@ -20,7 +20,16 @@ return [
     // 日志保存目录
     'path'        => Env::get('runtime_path') . 'log' . Base64::flag(),
     // 日志记录级别
-    'level'       => [],
+    'level'       => [
+        'emergency',
+        'alert',
+        'critical',
+        'error',
+        'warning',
+        'notice',
+        'sql',
+        // 'info',
+    ],
     // 单文件日志写入
     'single'      => false,
     // 独立日志级别

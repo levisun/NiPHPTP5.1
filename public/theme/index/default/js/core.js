@@ -1,7 +1,9 @@
-layui.extend({
-    np: '{/}' + NIPHP.cdn.js + 'np' // {/}的意思即代表采用自有路径，即不跟随 base 路径
-})
-layui.use(['jquery', 'np'], function(){
+layui.config({
+    dir: '/theme/static/layui/' //layui.js 所在路径
+}).extend({
+    np: '{/}' + NIPHP.cdn.js + 'np', // {/}的意思即代表采用自有路径，即不跟随 base 路径
+});
+layui.use(['jquery', 'laypage', 'np'], function(){
     var jQuery = layui.jquery;
     var np = layui.np;
 
@@ -30,15 +32,17 @@ layui.use(['jquery', 'np'], function(){
         }
     });
 
-    np.pjax({
-        url: NIPHP.api.url + '/cms.html',
-        method: 'get',
-        data: {
-            method: 'nav.sidebar.query',
-            cid: NIPHP.param.cid,
-            sign: np.sign({
-                method: 'nav.sidebar.query'
-            })
-        }
-    });
+    if (NIPHP.param.cid) {
+        np.pjax({
+            url: NIPHP.api.url + '/cms.html',
+            method: 'get',
+            data: {
+                method: 'nav.sidebar.query',
+                cid: NIPHP.param.cid,
+                sign: np.sign({
+                    method: 'nav.sidebar.query'
+                })
+            }
+        });
+    }
 });

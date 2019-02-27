@@ -171,7 +171,7 @@ class Api
 
         // 浏览器缓存时间 返回数据没有指定默认1140秒
         $this->expire = isset($result['expire']) ? $result['expire'] : $this->expire;
-        $this->expire = $this->expire <= 0 ? 1140 : $this->expire;
+        $this->expire = $this->expire <= 0 ? 0 : $this->expire;
 
         $this->success($result['msg'], isset($result['data']) ? $result['data'] : []);
     }
@@ -200,7 +200,7 @@ class Api
             list($logic, $class, $action) = explode('.', $this->method, 3);
 
             $method = 'app\api\\' . $this->module . '\\' .
-                      'v' . $this->version['major'] . '_' . $this->version['minor'] . '\\' .
+                      'v' . $this->version['major'] . 'm' . $this->version['minor'] . '\\' .
                       $logic . '\\' . ucfirst($class);
 
             // 校验类是否存在
@@ -217,7 +217,7 @@ class Api
             // 加载语言包
             $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
                     $this->module . DIRECTORY_SEPARATOR .
-                    'v' . $this->version['major'] . '_' . $this->version['minor'] . DIRECTORY_SEPARATOR .
+                    'v' . $this->version['major'] . 'm' . $this->version['minor'] . DIRECTORY_SEPARATOR .
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
             Lang::load($lang);
 
@@ -418,7 +418,7 @@ class Api
     {
         $result = [
             'code'    => $_code,
-            'expire'  => date('Y-m-d H:i:s', time() + $this->expire + 60),
+            'expire'  => date('Y-m-d H:i:s', time() + $this->expire + 30),
             'message' => $_msg,
         ];
 
@@ -438,7 +438,7 @@ class Api
         }
 
         $headers = [];
-        if (APP_DEBUG === false && $this->cache === true && $_code == 'SUCCESS') {
+        if (APP_DEBUG === false && $this->expire && $this->cache === true && $_code == 'SUCCESS') {
             $headers = [
                 'Cache-Control' => 'max-age=' . $this->expire . ',must-revalidate',
                 'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',

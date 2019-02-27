@@ -2,10 +2,10 @@
 /**
  *
  * API接口层
- * 文章列表
+ * 留言列表
  *
  * @package   NiPHP
- * @category  app\api\cms\v1_0\download
+ * @category  app\api\cms\v1m0\message
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,7 +13,7 @@
  */
 declare (strict_types = 1);
 
-namespace app\api\cms\v1_0\download;
+namespace app\api\cms\v1m0\message;
 
 use think\facade\Config;
 use think\facade\Lang;
@@ -55,9 +55,9 @@ class Catalog
         }
 
         $result =
-        ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'update_time'])
+        ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'access_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=3')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=6')
         ->where($map)
         ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort DESC, article.id DESC')
         // ->cache(__METHOD__ . md5(var_export($map, true)) . Request::param('page/f', 1), null, 'ARTICLE')

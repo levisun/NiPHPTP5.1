@@ -150,125 +150,15 @@ class Tpl
 
         $this->build($content);
 
-        $response = Response::create($content);
+        $headers = [];
+        if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
+            $content = gzencode($content, 4);
+            $headers['Content-Encoding'] = 'gzip';
+            $headers['Content-Length'] = strlen($content);
+        }
+
+        $response = Response::create($content)->header($headers);
         throw new HttpResponseException($response);
-    }
-
-    /**
-     * 头部HTML
-     * @access protected
-     * @param
-     * @return string
-     */
-    protected function head(): string
-    {
-        $head = '<!DOCTYPE html>' .
-        '<html lang="' . Lang::detect() . '">' .
-        '<head>' .
-        '<meta charset="utf-8" />' .
-        '<meta name="fragment" content="!" />' .                                // 支持蜘蛛ajax
-        '<meta name="robots" content="all" />' .                                // 蜘蛛抓取
-        '<meta name="revisit-after" content="1 days" />' .                      // 蜘蛛重访
-        '<meta name="renderer" content="webkit" />' .                           // 强制使用webkit渲染
-        '<meta name="force-rendering" content="webkit" />' .
-        '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' .
-
-        '<meta name="generator" content="NiPHP" />' .
-        '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' .
-        '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' .
-
-        '<meta http-equiv="Window-target" content="_blank">' .
-        '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' .
-        '<meta http-equiv="Cache-Control" content="no-siteapp" />' .            // 禁止baidu转码
-        '<meta http-equiv="Cache-Control" content="no-transform" />' .
-
-        '<meta http-equiv="x-dns-prefetch-control" content="on" />' .
-
-        '<link rel="dns-prefetch" href="' . Config::get('api_host') . '" />' .
-        '<link rel="dns-prefetch" href="' . Config::get('cdn_host') . '" />' .
-
-        '<link href="' . Config::get('cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
-
-        // 网站标题 关键词 描述
-        $head .= '<title>' . Siteinfo::title() . '</title>';
-        $head .= '<meta name="keywords" content="' . Siteinfo::keywords() . '" />';
-        $head .= '<meta name="description" content="' . Siteinfo::description() . '" />';
-
-        if (!empty($this->themeConfig['meta'])) {
-            foreach ($this->themeConfig['meta'] as $m) {
-                $head .= '<meta ' . $m['type'] . ' ' . $m['content'] . ' />';
-            }
-        }
-        // <meta name="apple-itunes-app" content="app-id=1191720421, app-argument=sspai://sspai.com">
-
-        if (!empty($this->themeConfig['css'])) {
-            foreach ($this->themeConfig['css'] as $css) {
-                $style = file_get_contents($css);
-                $style = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $style);
-                $style = preg_replace('/(\n|\r)/si', '', $style);
-                $style = preg_replace('/( ){2,}/si', '', $style);
-                $head .= '<style type="text/css" id="' . md5($css) . '">' . $style . '</style>';
-                // $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
-            }
-        }
-
-        return $head . '</head><body>';
-    }
-
-    /**
-     * 底部HTML
-     * @access protected
-     * @param
-     * @return string
-     */
-    protected function foot(): string
-    {
-        list($root) = explode('.', Request::rootDomain(), 2);
-        $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
-        $token .= session_id() ? '.' . session_id() : '';
-        $foot = '<script type="text/javascript">' .
-        'var NIPHP = {' .
-            'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
-            'api:{' .
-                'url:"' . Config::get('api_host') . '",'.
-                'root:"' . $root . '",' .
-                'version:"' . $this->themeConfig['version'] . '",' .
-                'token:"' . $token . '"' .
-            '},' .
-            'cdn:{' .
-                'css:"' . $this->replace['__CSS__'] . '",' .
-                'img:"' . $this->replace['__IMG__'] . '",' .
-                'js:"' . $this->replace['__JS__'] . '",' .
-                'static:"' . $this->replace['__STATIC__'] . '",' .
-            '},' .
-            'url:"' . url() . '",' .
-            'param:' . json_encode(Request::param()) .
-        '};' .
-        '</script>';
-        unset($root, $token);
-
-        if (!empty($this->themeConfig['js'])) {
-            foreach ($this->themeConfig['js'] as $js) {
-                // $script = file_get_contents($js);
-                // $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
-                // $foot .= '<script type="text/javascript" id="' . md5($js) . '">' . $script . '</script>';
-                $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
-            }
-        }
-
-        // 插件加载
-
-        // 底部JS脚本
-        $foot .= Siteinfo::script();
-
-        // 附加信息
-        $foot .= '<script type="text/javascript">' .
-        'console.log("Powered by NiPHP");' .
-        'console.log("失眠小枕头 levisun.mail@gmail.com");' .
-        'console.log("Copyright © 2013-' . date('Y') .'");' .
-        '</script>';
-
-        return $foot . '</body></html>';
     }
 
     /**
@@ -312,17 +202,141 @@ class Tpl
 
         // 模板存在并在缓存期内
         // 读取缓存
-        if (APP_DEBUG === false && is_file($path) && filemtime($path) >= time() - rand(1140, 3000)) {
+        if (APP_DEBUG === false && is_file($path) && filemtime($path) >= time() - rand(3600, 7200)) {
             $headers = [
-                'Cache-Control' => 'max-age=1140,must-revalidate',
+                'Cache-Control' => 'max-age=3600,must-revalidate',
                 'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
-                'Expires'       => gmdate('D, d M Y H:i:s', time() + 1140) . ' GMT'
+                'Expires'       => gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT'
             ];
 
             $content = file_get_contents($path);
 
+
+            if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
+                $content = gzencode($content, 4);
+                $headers['Content-Encoding'] = 'gzip';
+                $headers['Content-Length'] = strlen($content);
+            }
+
             $response = Response::create($content)->header($headers);
             throw new HttpResponseException($response);
         }
+    }
+
+    /**
+     * 头部HTML
+     * @access protected
+     * @param
+     * @return string
+     */
+    protected function head(): string
+    {
+        $head = '<!DOCTYPE html>' .
+        '<html lang="' . Lang::detect() . '">' .
+        '<head>' .
+        '<meta charset="utf-8" />' .
+        '<meta name="fragment" content="!" />' .                                // 支持蜘蛛ajax
+        '<meta name="robots" content="all" />' .                                // 蜘蛛抓取
+        '<meta name="revisit-after" content="1 days" />' .                      // 蜘蛛重访
+        '<meta name="renderer" content="webkit" />' .                           // 强制使用webkit渲染
+        '<meta name="force-rendering" content="webkit" />' .
+        '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />' .
+
+        '<meta name="generator" content="NiPHP" />' .
+        '<meta name="author" content="失眠小枕头 levisun.mail@gmail.com" />' .
+        '<meta name="copyright" content="2013-' . date('Y') . ' NiPHP 失眠小枕头" />' .
+
+        '<meta http-equiv="Window-target" content="_blank">' .
+        '<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />' .
+
+        '<meta http-equiv="Cache-Control" content="no-siteapp" />' .            // 禁止baidu转码
+        '<meta http-equiv="Cache-Control" content="no-transform" />' .
+
+        '<meta http-equiv="x-dns-prefetch-control" content="on" />' .           // DNS缓存
+        '<link rel="dns-prefetch" href="' . Config::get('api_host') . '" />' .
+        '<link rel="dns-prefetch" href="' . Config::get('cdn_host') . '" />' .
+
+        '<link href="' . Config::get('cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
+
+        // 网站标题 关键词 描述
+        $head .= '<title>' . Siteinfo::title() . '</title>';
+        $head .= '<meta name="keywords" content="' . Siteinfo::keywords() . '" />';
+        $head .= '<meta name="description" content="' . Siteinfo::description() . '" />';
+
+        if (!empty($this->themeConfig['meta'])) {
+            foreach ($this->themeConfig['meta'] as $m) {
+                $head .= '<meta ' . $m['type'] . ' ' . $m['content'] . ' />';
+            }
+        }
+        // <meta name="apple-itunes-app" content="app-id=1191720421, app-argument=sspai://sspai.com">
+
+        if (!empty($this->themeConfig['css'])) {
+            foreach ($this->themeConfig['css'] as $css) {
+                $style = file_get_contents($css);
+                $style = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $style);
+                $style = preg_replace('/(\n|\r)/si', '', $style);
+                $style = preg_replace('/( ){2,}/si', '', $style);
+                $head .= '<style type="text/css" class="' . md5($css) . '">' . $style . '</style>';
+                // $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
+            }
+        }
+
+        return $head . '</head><body>';
+    }
+
+    /**
+     * 底部HTML
+     * @access protected
+     * @param
+     * @return string
+     */
+    protected function foot(): string
+    {
+        list($root) = explode('.', Request::rootDomain(), 2);
+        $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
+        $token .= session_id() ? '.' . session_id() : '';
+        $foot = '<script type="text/javascript">' .
+        'var NIPHP = {' .
+            'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
+            'api:{' .
+                'url:"' . Config::get('api_host') . '",'.
+                'root:"' . $root . '",' .
+                'version:"' . $this->themeConfig['version'] . '",' .
+                'token:"' . $token . '"' .
+            '},' .
+            'cdn:{' .
+                'css:"' . $this->replace['__CSS__'] . '",' .
+                'img:"' . $this->replace['__IMG__'] . '",' .
+                'js:"' . $this->replace['__JS__'] . '",' .
+                'static:"' . $this->replace['__STATIC__'] . '",' .
+            '},' .
+            'url:"' . url() . '",' .
+            'param:' . json_encode(Request::param()) .
+        '};' .
+        '</script>';
+        unset($root, $token);
+
+        if (!empty($this->themeConfig['js'])) {
+            foreach ($this->themeConfig['js'] as $js) {
+                $script = file_get_contents($js);
+                $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
+                $foot .= '<script type="text/javascript" class="' . md5($js) . '">' . $script . '</script>';
+                // $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
+            }
+        }
+
+        // 插件加载
+
+        // 底部JS脚本
+        $foot .= Siteinfo::script();
+
+        // 附加信息
+        $foot .= '<script type="text/javascript">' .
+        'console.log("Powered by NiPHP");' .
+        'console.log("失眠小枕头 levisun.mail@gmail.com");' .
+        'console.log("Copyright © 2013-' . date('Y') .'");' .
+        '</script>';
+
+        return $foot . '</body></html>';
     }
 }

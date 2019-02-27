@@ -5,7 +5,7 @@
  * 文章列表
  *
  * @package   NiPHP
- * @category  app\api\cms\v1_0\picture
+ * @category  app\api\cms\v1m0\article
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,18 +13,20 @@
  */
 declare (strict_types = 1);
 
-namespace app\api\cms\v1_0\picture;
+namespace app\api\cms\v1m0\article;
 
 use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
 use app\model\Article as ModelArticle;
+use app\model\ArticleData as ModelArticleData;
+use app\model\TagsArticle as ModelTagsArticle;
 use app\server\Base64;
 
 class Catalog
 {
 
-    public function query()
+    public function query(): array
     {
         $map = [
             ['article.is_pass', '=', '1'],
@@ -55,12 +57,12 @@ class Catalog
         }
 
         $result =
-        ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'update_time'])
+        ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'access_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=2')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
         ->where($map)
         ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort DESC, article.id DESC')
-        // ->cache(__METHOD__ . md5(var_export($map, true)) . Request::param('page/f', 1), null, 'ARTICLE')
+        // ->cache(__METHOD__ . md5(var_export($map, true)) . Request::param('page/f', 1), null, ''CATALOG'')
         ->paginate();
         $list = $result->toArray();
         $list['render'] = $result->render();
@@ -70,6 +72,33 @@ class Catalog
             $value['url'] = url($value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
             $value['cat_url']  = url($value['action_name'] . '/' . $value['category_id']);
             $value['thumb'] = empty($value['thumb']) ? Config::get('cdn_host') . $value['thumb'] : '';
+
+
+            // 附加字段数据
+            $fields =
+            ModelArticleData::view('article_data data', ['data'])
+            ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
+            ->where([
+                ['data.main_id', '=', $value['id']],
+            ])
+            ->cache('modelarticledata' . $value['id'], null, 'CATALOG')
+            ->select()
+            ->toArray();
+            foreach ($fields as $val) {
+               $value[$val['fields_name']] = $val['data'];
+            }
+
+
+            // 标签
+            $value['tags'] =
+            ModelTagsArticle::view('tags_article article', ['tags_id'])
+            ->view('tags tags', ['name'], 'tags.id=article.tags_id')
+            ->where([
+                ['article.article_id', '=', $value['id']],
+            ])
+            ->cache('modeltagsarticle' . $value['id'], null, 'CATALOG')
+            ->select()
+            ->toArray();
 
             $list['data'][$key] = $value;
         }

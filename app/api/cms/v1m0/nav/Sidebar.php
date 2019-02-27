@@ -5,7 +5,7 @@
  * 侧导航
  *
  * @package   NiPHP
- * @category  app\api\cms\v1_0\nav
+ * @category  app\api\cms\v1m0\nav
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,7 +13,7 @@
  */
 declare (strict_types = 1);
 
-namespace app\api\cms\v1_0\nav;
+namespace app\api\cms\v1m0\nav;
 
 use think\facade\Config;
 use think\facade\Lang;

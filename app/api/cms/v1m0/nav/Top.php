@@ -2,10 +2,10 @@
 /**
  *
  * API接口层
- * 其他导航
+ * 顶导航
  *
  * @package   NiPHP
- * @category  app\api\cms\v1_0\nav
+ * @category  app\api\cms\v1m0\nav
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,13 +13,13 @@
  */
 declare (strict_types = 1);
 
-namespace app\api\cms\v1_0\nav;
+namespace app\api\cms\v1m0\nav;
 
 use think\facade\Config;
 use think\facade\Lang;
 use app\model\Category as ModelCategory;
 
-class Other
+class Top
 {
 
     /**
@@ -35,7 +35,7 @@ class Other
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
         ->where([
             ['c.is_show', '=', 1],
-            ['c.type_id', '=', 4],
+            ['c.type_id', '=', 1],
             ['c.pid', '=', 0],
             ['c.lang', '=', Lang::detect()]
         ])
@@ -47,7 +47,7 @@ class Other
         foreach ($result as $key => $value) {
             $value['image'] = !empty($value['image']) ? Config::get('cdn_host') . $value['image'] : '';
             $value['url'] = url($value['action_name'] . '/' . $value['id']);
-            $value['child'] = $this->child($value['id'], 4);
+            $value['child'] = $this->child($value['id'], 1);
             if (empty($value['child'])) {
                 unset($value['child']);
             }

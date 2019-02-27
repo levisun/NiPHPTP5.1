@@ -1,0 +1,26 @@
+<font style="font-size: 12px;">font</font>
+<script>
+window.onload=function(){
+    layui.use(['jquery', 'np'], function(){
+        var jQuery = layui.jquery;
+        var np = layui.np;
+
+
+        np.pjax({
+            url: NIPHP.api.url + '/admin.html',
+            method: 'get',
+            data: {
+                method: 'account.login.login',
+                sign: np.sign({
+                    method: 'account.login.login'
+                })
+            },
+            success: function(result) {
+                if (result.code == 'SUCCESS') {
+
+                }
+            }
+        });
+    });
+}
+</script>

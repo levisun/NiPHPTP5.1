@@ -31,6 +31,7 @@ class Api extends ServerApi
         $this->setModule($name)->run();
     }
 
+
     public function handle(string $name = 'cms')
     {
         # code...
@@ -39,12 +40,12 @@ class Api extends ServerApi
     /**
      * 上传接口
      * @access public
-     * @param  string $name API分层名
+     * @param
      * @return void
      */
-    public function upload(string $name = 'cms')
+    public function upload()
     {
-        $this->setModule($name);
+
     }
 
     public function abort(int $code = 404)
