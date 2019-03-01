@@ -15,10 +15,23 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
-use app\server\Tpl;
+use app\library\Tpl;
 
 class admin
 {
+
+    /**
+     * 构造方法
+     * @access public
+     * @param  App  $app  应用对象
+     * @return void
+     */
+    public function __construct()
+    {
+        // 开启session
+        Config::set('session.auto_start', true);
+        session(Config::get('session.'));
+    }
 
     public function index(string $logic = 'account', string $name = 'login')
     {

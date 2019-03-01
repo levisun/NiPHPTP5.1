@@ -21,7 +21,7 @@ use think\facade\Request;
 use app\model\Article as ModelArticle;
 use app\model\ArticleData as ModelArticleData;
 use app\model\TagsArticle as ModelTagsArticle;
-use app\server\Base64;
+use app\library\Base64;
 
 class Details
 {
@@ -39,6 +39,7 @@ class Details
         } else {
             return [
                 'debug' => false,
+                'cache' => false,
                 'msg'   => Lang::get('param error'),
                 'data'  => Request::param('', [], 'trim')
             ];
@@ -58,6 +59,7 @@ class Details
             $result['url'] = url($result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
             $result['cat_url']  = url($result['action_name'] . '/' . $result['category_id']);
             $result['thumb'] = empty($result['thumb']) ? Config::get('cdn_host') . $result['thumb'] : '';
+
 
             // 上一篇
             // 下一篇
@@ -99,6 +101,7 @@ class Details
         } else {
             return [
                 'debug' => false,
+                'cache' => false,
                 'msg'   => Lang::get('article not'),
                 'data'  => Request::param('', [], 'trim')
             ];
@@ -124,6 +127,7 @@ class Details
         } else {
             return [
                 'debug' => false,
+                'cache' => false,
                 'msg'   => Lang::get('param error'),
                 'data'  => Request::param('', [], 'trim')
             ];
@@ -140,6 +144,7 @@ class Details
 
         return [
             'debug' => false,
+            'expire' => 30,
             'msg'   => Lang::get('success'),
             'data'  => $result
         ];
@@ -160,7 +165,7 @@ class Details
             ['id', '>', $_id]
         ])
         ->order('is_top, is_hot, is_com, sort DESC, id DESC')
-        ->cache(__METHOD__ . 'min' . $_id, null 'DETAILS')
+        ->cache(__METHOD__ . 'min' . $_id, null, 'DETAILS')
         ->min('id');
 
         $result =
@@ -172,7 +177,7 @@ class Details
             ['article.show_time', '<=', time()],
             ['article.id', '=', $next_id]
         ])
-        ->cache(__METHOD__ . 'eq' . $_id, null 'DETAILS')
+        ->cache(__METHOD__ . 'eq' . $_id, null, 'DETAILS')
         ->find()
         ->toArray();
 
@@ -200,7 +205,7 @@ class Details
             ['id', '<', $_id]
         ])
         ->order('is_top, is_hot, is_com, sort DESC, id DESC')
-        ->cache(__METHOD__ . 'max' . $_id, null 'DETAILS')
+        ->cache(__METHOD__ . 'max' . $_id, null, 'DETAILS')
         ->max('id');
 
         $result =
@@ -212,7 +217,7 @@ class Details
             ['article.show_time', '<=', time()],
             ['article.id', '=', $prev_id]
         ])
-        ->cache(__METHOD__ . 'eq' . $_id, null 'DETAILS')
+        ->cache(__METHOD__ . 'eq' . $_id, null, 'DETAILS')
         ->find()
         ->toArray();
 

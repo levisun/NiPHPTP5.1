@@ -12,7 +12,7 @@
  */
 
 use think\facade\Env;
-use app\server\Base64;
+use app\library\Base64;
 
 return [
     // 日志记录方式，内置 file socket 支持扩展

@@ -16,8 +16,8 @@ use think\facade\Lang;
 use think\facade\Request;
 use think\facade\Session;
 use think\facade\Url;
-use app\server\Base64;
-use app\server\Filter;
+use app\library\Base64;
+use app\library\Filter;
 
 /**
  * Url生成

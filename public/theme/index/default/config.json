@@ -3,14 +3,14 @@
     "theme": "default",
     "version": "1.0.1",
     "css": [
-        "__STATIC__layui/css/layui.css",
-        "__CSS__style.css"
+        "{:__STATIC__}layui/css/layui.css",
+        "{:__CSS__}style.css"
     ],
     "js": [
         "https://cdn.bootcss.com/vue/2.5.21/vue.min.js",
         "https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js",
-        "__STATIC__layui/layui.js",
-        "__JS__core.js"
+        "{:__STATIC__}layui/layui.js",
+        "{:__JS__}core.js"
     ],
     "hook": [
 

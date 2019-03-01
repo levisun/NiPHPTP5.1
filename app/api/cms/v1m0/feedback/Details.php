@@ -19,7 +19,7 @@ use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
 use app\model\Article as ModelArticle;
-use app\server\Base64;
+use app\library\Base64;
 
 class Details
 {

@@ -15,9 +15,9 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
-use app\server\Api as ServerApi;
+use app\library\Api as LibraryApi;
 
-class Api extends ServerApi
+class Api extends LibraryApi
 {
 
     /**

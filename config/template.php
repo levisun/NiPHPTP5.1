@@ -15,7 +15,7 @@
 
 use think\facade\Env;
 use think\facade\Request;
-use app\server\Base64;
+use app\library\Base64;
 
 return [
     // 模板引擎类型 支持 php think 支持扩展

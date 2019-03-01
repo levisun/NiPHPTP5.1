@@ -12,7 +12,7 @@
  */
 
 use think\facade\Env;
-use app\server\Base64;
+use app\library\Base64;
 
 return [
     // 驱动方式

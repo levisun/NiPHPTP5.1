@@ -5,7 +5,7 @@
  * 数据安全过滤类
  *
  * @package   NiPHP
- * @category  app\server
+ * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,7 +13,7 @@
  */
 declare (strict_types = 1);
 
-namespace app\server;
+namespace app\library;
 
 use think\exception\HttpException;
 

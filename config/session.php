@@ -21,9 +21,11 @@ return [
     'type'           => 'app\server\Session',
     // 是否自动开启 SESSION
     'auto_start'     => false,
+
+    // 'use_lock'       => false,
     // Session配置参数
     'options'        => [
-        'domain' => '.' . Request::rootDomain(),
-        'expire' => 0,
+        // 'domain' => '.' . Request::rootDomain(),
+        // 'expire' => 0,
     ],
 ];

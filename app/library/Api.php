@@ -5,7 +5,7 @@
  * 异步请求实现
  * Async
  * @package   NiPHP
- * @category  app\server
+ * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,7 +13,7 @@
  */
 declare (strict_types = 1);
 
-namespace app\server;
+namespace app\library;
 
 use think\Container;
 use think\Response;
@@ -23,6 +23,7 @@ use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
 use think\facade\Session;
+use app\model\Session as SessionModel;
 
 class Api
 {
@@ -251,8 +252,26 @@ class Api
             $this->error('auth-appid error');
         }
 
+        // 开启session
         if ($this->sid) {
-            $this->error('auth sid error');
+            // 校验session合法性
+            $session_id =
+            SessionModel::where([
+                ['session_id', '=', $this->sid]
+            ])
+            ->value('session_id');
+            if ($session_id) {
+                // 开启session
+                if (!session_id()) {
+                    Config::set('session.auto_start', true);
+                    Config::set('session.id', $this->sid);
+                    session_id($this->sid);
+                    session_start();
+                    session_write_close();
+                }
+            } else {
+                $this->error('auth sid error');
+            }
         }
     }
 
@@ -316,11 +335,6 @@ class Api
             // token和session_id
             else {
                 list($this->token, $this->sid) = explode('.', $this->authentication);
-
-                // 开启session
-                Config::set('session.auto_start', true);
-                Config::set('session.id', $this->sid);
-                Session::init(Config::get('session.'));
             }
 
             // 校验token合法性
@@ -418,8 +432,10 @@ class Api
     {
         $result = [
             'code'    => $_code,
-            'expire'  => date('Y-m-d H:i:s', time() + $this->expire + 30),
+            'expire'  => $this->cache ? date('Y-m-d H:i:s', time() + $this->expire + 30) : '0',
             'message' => $_msg,
+            'usage'   => number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
+                         number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb'
         ];
 
         if (!empty($_data)) {
@@ -429,8 +445,8 @@ class Api
         if ($this->debug === true && $_code == 'SUCCESS') {
             $result['debug'] = array_merge([
                 '文件加载:' . count(get_included_files()),
-                '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . ' s',
-                '内存消耗:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . ' KB',
+                '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's',
+                '内存消耗:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb',
                 '查询信息:' . Container::pull('db')->getQueryTimes() . ' queries',
                 '缓存信息:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes',
                 '请求参数:' . json_encode(Request::param('', '', 'trim')),

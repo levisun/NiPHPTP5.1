@@ -5,7 +5,7 @@
  * HTML类
  *
  * @package   NiPHP
- * @category  app\server
+ * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,7 +13,7 @@
  */
 declare (strict_types = 1);
 
-namespace app\server;
+namespace app\library;
 
 use think\App;
 use think\Response;
@@ -25,10 +25,10 @@ use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Log;
 use think\facade\Request;
-use app\server\Accesslog;
-use app\server\Base64;
-use app\server\Filter;
-use app\server\Siteinfo;
+use app\library\Accesslog;
+use app\library\Base64;
+use app\library\Filter;
+use app\library\Siteinfo;
 
 class Tpl
 {
@@ -80,14 +80,16 @@ class Tpl
                     Request::controller(true) . DIRECTORY_SEPARATOR .
                     Siteinfo::theme() . DIRECTORY_SEPARATOR;
 
-        if (isWechat()) {
-            $tpl_path .= 'wechat' . DIRECTORY_SEPARATOR;
-        } elseif (Request::isMobile()) {
-            $tpl_path .= 'mobile' . DIRECTORY_SEPARATOR;
-        }
-
         $_template = $_template ? $_template . '.html' : Request::action(true) . '.html';
 
+        // 微信和移动端访问时,判断模板是否存在.
+        if (isWechat() && is_file($tpl_path . 'wechat' . DIRECTORY_SEPARATOR . $_template)) {
+            $_template = 'wechat' . DIRECTORY_SEPARATOR . $_template;
+        } elseif (Request::isMobile() && is_file($tpl_path . 'mobile' . DIRECTORY_SEPARATOR . $_template)) {
+            $_template = 'mobile' . DIRECTORY_SEPARATOR . $_template;
+        }
+
+        // 校验模板
         if (!is_file($tpl_path . $_template)) {
             throw new HttpException(200, '模板文件未找到!' . Request::controller(true) . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR . $_template);
         }
@@ -145,10 +147,15 @@ class Tpl
         $content .= '<!-- ' . json_encode([
             'layout'   => $this->themeConfig['layout'] ? 'true' : 'false',
             'template' => Siteinfo::theme() . '/' . $_template,
-            'date'     => date('Y-m-d H:i:s')
+            'date'     => date('Y-m-d H:i:s'),
+            'cache'    => APP_DEBUG ? 'false' : 'true',
         ]) . ' -->';
 
         $this->build($content);
+
+        $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
+        $token .= session_id() ? '.' . session_id() : '';
+        $content = str_replace('__TOKEN__', $token, $content);
 
         $headers = [];
         if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
@@ -211,6 +218,9 @@ class Tpl
 
             $content = file_get_contents($path);
 
+            $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
+            $token .= session_id() ? '.' . session_id() : '';
+            $content = str_replace('__TOKEN__', $token, $content);
 
             if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
                 $content = gzencode($content, 4);
@@ -293,8 +303,7 @@ class Tpl
     protected function foot(): string
     {
         list($root) = explode('.', Request::rootDomain(), 2);
-        $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
-        $token .= session_id() ? '.' . session_id() : '';
+
         $foot = '<script type="text/javascript">' .
         'var NIPHP = {' .
             'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
@@ -302,7 +311,8 @@ class Tpl
                 'url:"' . Config::get('api_host') . '",'.
                 'root:"' . $root . '",' .
                 'version:"' . $this->themeConfig['version'] . '",' .
-                'token:"' . $token . '"' .
+                // 'token:"' . $token . '"' .
+                'token:"__TOKEN__"' .
             '},' .
             'cdn:{' .
                 'css:"' . $this->replace['__CSS__'] . '",' .
@@ -318,10 +328,10 @@ class Tpl
 
         if (!empty($this->themeConfig['js'])) {
             foreach ($this->themeConfig['js'] as $js) {
-                $script = file_get_contents($js);
-                $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
-                $foot .= '<script type="text/javascript" class="' . md5($js) . '">' . $script . '</script>';
-                // $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
+                // $script = file_get_contents($js);
+                // $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
+                // $foot .= '<script type="text/javascript" class="' . md5($js) . '">' . $script . '</script>';
+                $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
             }
         }
 

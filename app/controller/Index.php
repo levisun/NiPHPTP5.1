@@ -2,7 +2,9 @@
 namespace app\controller;
 
 use think\exception\HttpException;
-use app\server\Tpl;
+use think\facade\Config;
+use app\library\Tpl;
+use app\library\Template;
 
 class Index
 {
@@ -27,7 +29,7 @@ class Index
         } else {
             $tpl_name = $name;
         }
-        return (new Tpl)->fetch($tpl_name);
+        return (new Template)->fetch($tpl_name);
     }
 
     public function abort(int $code = 404)

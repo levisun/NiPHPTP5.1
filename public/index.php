@@ -18,7 +18,7 @@
 
 namespace think;
 
-define('APP_DEBUG', true);
+define('APP_DEBUG', false);
 define('NP_VERSION', '2.1.0 CB');
 define('AUTHKEY', '1286755f348733a76a252efb3848fbab9f3e9f81');
 

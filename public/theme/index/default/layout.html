@@ -23,7 +23,7 @@
                     </template>
                 </ul>
             </nav>
-            <div class="layui-col-md2">
+            <div class="layui-col-md2 layui-hide-xs">
                 <input type="text" name="title" placeholder="搜索内容" class="layui-input">
             </div>
         </section>
@@ -31,15 +31,15 @@
 </header>
 
 
-__CONTENT__
+{:__CONTENT__}
 
 
 <footer class="layui-bg-black">
     <div class="layui-container">
         <div class="layui-row">
             <div class="layui-col-md12">
-                <p>__BOTTOM_MSG__</p>
-                <p>__COPYRIGHT__</p>
+                <p>{:__BOTTOM_MSG__}</p>
+                <p>{:__COPYRIGHT__}</p>
             </div>
         </div>
     </div>

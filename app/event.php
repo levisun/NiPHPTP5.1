@@ -18,15 +18,14 @@ return [
         'AppInit'      => [
             'think\listener\LoadLangPack',
             'think\listener\RouteCheck',
-            'app\server\Tpl',
         ],
         'AppBegin'     => [
             'think\listener\CheckRequestCache',
         ],
         'ActionBegin'  => [],
         'AppEnd'       => [
-            'app\server\Garbage',
-            'app\server\Accesslog'
+            'app\library\Garbage',
+            'app\library\Accesslog'
         ],
         'LogLevel'     => [],
         'LogWrite'     => [],
