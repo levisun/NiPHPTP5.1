@@ -18,9 +18,8 @@
 
 namespace think;
 
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 define('NP_VERSION', '2.1.0 CB');
-define('AUTHKEY', '1286755f348733a76a252efb3848fbab9f3e9f81');
 
 version_compare(PHP_VERSION, '7.1.0', '>=') or die('PHP VERSION >= 7.1.0!');
 if (!extension_loaded('PDO')) die('PDO');

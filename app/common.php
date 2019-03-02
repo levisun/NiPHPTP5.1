@@ -52,10 +52,8 @@ function lang(string $name, array $vars = [], string $lang = '')
  */
 function isWechat()
 {
-    return strpos(
-        Request::server('HTTP_USER_AGENT'),
-        'MicroMessenger'
-    ) !== false ? true : false;
+    return
+    strpos(Request::server('HTTP_USER_AGENT'), 'MicroMessenger') !== false ? true : false;
 }
 
 /**
@@ -88,9 +86,7 @@ function cookie($name, $value = '', $option = null)
         return
         0 === strpos($name, '?') ?
             Cookie::has(substr($name, 1), $option) :
-            Base64::decrypt(
-                Cookie::get($name)
-            );
+            Base64::decrypt(Cookie::get($name));
     } elseif (is_null($value)) {
         // 删除
         return Cookie::delete($name);
@@ -120,9 +116,7 @@ function session($name, $value = '', $prefix = null)
         return
         0 === strpos($name, '?') ?
             Session::has(substr($name, 1), $prefix) :
-            Base64::decrypt(
-                Session::get($name, $prefix)
-            );
+            Base64::decrypt(Session::get($name, $prefix));
     } elseif (is_null($value)) {
         // 删除
         return Session::delete($name, $prefix);

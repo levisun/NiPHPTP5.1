@@ -19,7 +19,7 @@ use think\facade\Config;
 use think\facade\Request;
 use think\facade\Session;
 use app\library\Base64;
-use app\model\Node;
+use app\model\Node as ModelNode;
 
 class Rbac
 {
@@ -161,7 +161,7 @@ class Rbac
     {
         if ($this->params['auth_founder'] == $_userid) {
             $result =
-            Node::field(['id', 'name'])
+            ModelNode::field(['id', 'name'])
             ->where([
                 ['status', '=', 1],
                 ['level', '=', $_level],
@@ -172,7 +172,7 @@ class Rbac
             ->toArray();
         } else {
             $result =
-            Node::view('node', ['id', 'name'])
+            ModelNode::view('node', ['id', 'name'])
             ->view('role_admin', [], '(role_admin.user_id=' . $_userid . ')')
             ->view('role', [], '(role.status=1 AND role.id=role_admin.role_id)')
             ->view('access', [], '(access.role_id=role.id AND access.node_id=node.id)')

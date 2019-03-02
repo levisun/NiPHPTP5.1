@@ -35,18 +35,14 @@ layui.define('jquery', function(exports){
                 scrollTo: false,                    // 是否回到顶部 可定义顶部像素
                 requestUrl: window.location.href,   // 重写地址
                 type: 'GET',
-                contentType: 'application/x-www-form-urlencoded',
-                // headers: {
-                //     accept: "application/vnd.tp5.v1.0.1+json",
-                //     authentication: "5b823d82f3f7fe904a926f89fb84850a452efd90",
-                // },
+                contentType: 'application/x-www-form-urlencoded'
             };
             _params = jQuery.extend(true, defaults, _params);
 
             // 设置头部
             _params.beforeSend = function (xhr) {
                 xhr.setRequestHeader('Accept', 'application/vnd.' + NIPHP.api.root + '.v' + NIPHP.api.version + '+json');
-                xhr.setRequestHeader('Authentication', NIPHP.api.token);
+                xhr.setRequestHeader('Authorization', NIPHP.api.authorization);
 
                 // xhr.setRequestHeader("HTTP_X_PJAX", true);
             }

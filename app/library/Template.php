@@ -62,6 +62,12 @@ class Template
         $this->templateConfig = $this->parseTemplateConfig();
     }
 
+    /**
+     * 返回模板
+     * @access public
+     * @param
+     * @return Response
+     */
     public function fetch(string $_template, array $_vars = [])
     {
         if (!$content = $this->templateBuildRead()) {
@@ -95,7 +101,7 @@ class Template
 
         $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
         $token .= session_id() ? '.' . session_id() : '';
-        $content = str_replace('{:__TOKEN__}', $token, $content);
+        $content = str_replace('{:__AUTHORIZATION__}', $token, $content);
 
         $content .= '<!-- ' . json_encode([
             $this->templateConfig['layout'] ? 'true' : 'false',
@@ -119,7 +125,13 @@ class Template
         // throw new HttpResponseException($response);
     }
 
-    public function templateBuildRead(): string
+    /**
+     * 读取模板静态文件
+     * @access private
+     * @param
+     * @return string HTML
+     */
+    private function templateBuildRead(): string
     {
         $path = Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
         $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
@@ -140,7 +152,13 @@ class Template
         }
     }
 
-    public function templateBuild(string $_content)
+    /**
+     * 生成模板静态文件
+     * @access private
+     * @param  string $_content
+     * @return void
+     */
+    private function templateBuild(string $_content)
     {
         $path = Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
         $path .= Request::subDomain() . DIRECTORY_SEPARATOR;
@@ -157,7 +175,13 @@ class Template
         file_put_contents($path, $_content);
     }
 
-    public function parseTemplateFoot(): string
+    /**
+     * 解析foot
+     * @access private
+     * @param
+     * @return string 底部HTML
+     */
+    private function parseTemplateFoot(): string
     {
         list($root) = explode('.', Request::rootDomain(), 2);
 
@@ -168,7 +192,7 @@ class Template
                 'url:"' . Config::get('api_host') . '",'.
                 'root:"' . $root . '",' .
                 'version:"' . $this->templateConfig['version'] . '",' .
-                'token:"{:__TOKEN__}"' .
+                'authorization:"{:__AUTHORIZATION__}"' .
             '},' .
             'cdn:{' .
                 'css:"' . $this->templateReplace['{:__CSS__}'] . '",' .
@@ -187,7 +211,7 @@ class Template
                 // $script = file_get_contents($js);
                 // $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
                 // $foot .= '<script type="text/javascript" class="' . md5($js) . '">' . $script . '</script>';
-                $foot .= '<script type="text/javascript" src="' . $js . '"></script>';
+                $foot .= '<script type="text/javascript" src="' . $js . '?v=' . time() . '"></script>';
             }
         }
 
@@ -199,7 +223,13 @@ class Template
         return $foot . '</body></html>';
     }
 
-    public function parseTemplateHead(): string
+    /**
+     * 解析head
+     * @access private
+     * @param
+     * @return string 头部HTML
+     */
+    private function parseTemplateHead(): string
     {
         $head =
         '<!DOCTYPE html>' .
@@ -244,11 +274,13 @@ class Template
         if (!empty($this->templateConfig['css'])) {
             foreach ($this->templateConfig['css'] as $css) {
                 // $style = file_get_contents($css);
+                // $style = Filter::XSS($style);
+                // $style = Filter::XXE($style);
                 // $style = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $style);
                 // $style = preg_replace('/(\n|\r)/si', '', $style);
                 // $style = preg_replace('/( ){2,}/si', '', $style);
                 // $head .= '<style type="text/css" class="' . md5($css) . '">' . $style . '</style>';
-                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '" />';
+                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . time() . '" />';
             }
         }
 
@@ -282,7 +314,7 @@ class Template
     {
         if (is_file($this->templatePath . 'config.json')) {
             $config = file_get_contents($this->templatePath . 'config.json');
-            $config = Filter::default($config, true);
+            $config = strip_tags($config);
             $config = str_replace(array_keys($this->templateReplace), array_values($this->templateReplace), $config);
             $config = json_decode($config, true);
             if (!empty($config) && is_array($config)) {

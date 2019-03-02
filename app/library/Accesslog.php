@@ -17,10 +17,12 @@ namespace app\library;
 
 use think\App;
 use think\facade\Env;
+use think\facade\Lang;
 use think\facade\Request;
 use app\library\Ip;
-use app\model\Searchengine;
-use app\model\Visit;
+use app\model\Article as ModelArticle;
+use app\model\Searchengine as ModelSearchengine;
+use app\model\Visit as ModelVisit;
 
 class Accesslog
 {
@@ -48,7 +50,7 @@ class Accesslog
         // 蜘蛛
         if ($spider = $this->isSpider()) {
             $has =
-            Searchengine::where([
+            ModelSearchengine::where([
                 ['name', '=', $spider],
                 ['user_agent', '=', $this->user_agent],
                 ['date', '=', strtotime(date('Y-m-d'))]
@@ -57,7 +59,7 @@ class Accesslog
             ->value('name');
 
             if ($has) {
-                Searchengine::where([
+                ModelSearchengine::where([
                     ['name', '=', $spider],
                     ['user_agent', '=', $this->user_agent],
                     ['date', '=', strtotime(date('Y-m-d'))]
@@ -65,7 +67,7 @@ class Accesslog
                 ->inc('count')
                 ->update();
             } else {
-                Searchengine::insert([
+                ModelSearchengine::insert([
                     'name'       => $spider,
                     'user_agent' => $this->user_agent,
                     'date'       => strtotime(date('Y-m-d'))
@@ -76,7 +78,7 @@ class Accesslog
         // 访问
         else {
             $has =
-            Visit::where([
+            ModelVisit::where([
                 ['ip', '=', $this->ip['ip']],
                 ['user_agent', '=', $this->user_agent],
                 ['date', '=', strtotime(date('Y-m-d'))]
@@ -85,7 +87,7 @@ class Accesslog
             ->value('ip');
 
             if ($has) {
-                Visit::where([
+                ModelVisit::where([
                     ['ip', '=', $this->ip['ip']],
                     ['user_agent', '=', $this->user_agent],
                     ['date', '=', strtotime(date('Y-m-d'))]
@@ -93,7 +95,7 @@ class Accesslog
                 ->inc('count')
                 ->update();
             } else {
-                Visit::insert([
+                ModelVisit::insert([
                     'ip'         => $this->ip['ip'],
                     'ip_attr'    => $this->ip['country'] .  $this->ip['region'] . $this->ip['city'] .  $this->ip['area'],
                     'user_agent' => $this->user_agent,
@@ -104,13 +106,13 @@ class Accesslog
 
         // 删除过期信息
         if (rand(0, 100) === 0) {
-            Searchengine::where([
+            ModelSearchengine::where([
                 ['date', '<=', strtotime('-90 days')]
             ])
             ->limit(100)
             ->delete();
 
-            Visit::where([
+            ModelVisit::where([
                 ['date', '<=', strtotime('-90 days')]
             ])
             ->limit(100)
@@ -167,6 +169,7 @@ class Accesslog
             return false;
         }
 
+        // 第一次生成查询10万条数据,其后每次更新查询100条数据
         $limit = is_file($path) ? 100 : 10000;
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL .
@@ -178,6 +181,46 @@ class Accesslog
                '<priority>1.00</priority>' . PHP_EOL .
                '</url>' . PHP_EOL;
 
+        $article =
+        ModelArticle::view('article article', ['id', 'category_id', 'url', 'update_time'])
+        ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
+        ->where([
+            ['article.is_pass', '=', '1'],
+            ['article.show_time', '<=', time()],
+            ['article.lang', '=', Lang::detect()]
+        ])
+        ->order('article.id DESC')
+        ->limit($limit)
+        ->select()
+        ->toArray();
+
+        $cat_url = '';
+        foreach ($article as $key => $value) {
+            $value['cat_url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/' .
+                                $value['action_name'] . '/' . $value['category_id'] . '.html';
+
+            if ($cat_url !== $value['cat_url']) {
+                 $xml .= '<url>' . PHP_EOL .
+                         '<loc>' . $value['cat_url'] . '</loc>' . PHP_EOL .
+                         '<lastmod>' . $value['update_time'] . '</lastmod>' . PHP_EOL .
+                         '<changefreq>daily</changefreq>' . PHP_EOL .
+                         '<priority>1.0</priority>' . PHP_EOL .
+                         '</url>' . PHP_EOL;
+                $cat_url = $value['cat_url'];
+            }
+
+            $value['url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/' .
+                            $value['action_name'] . '/' . $value['category_id'] . '/' .
+                            $value['id'] . '.html';
+
+            $xml .= '<url>' . PHP_EOL .
+                    '<loc>' . $value['url'] . '</loc>' . PHP_EOL .
+                    '<lastmod>' . $value['update_time'] . '</lastmod>' . PHP_EOL .
+                    '<changefreq>weekly</changefreq>' . PHP_EOL .
+                    '<priority>0.8</priority>' . PHP_EOL .
+                    '</url>' . PHP_EOL;
+        }
 
         $xml .= '</urlset>';
 

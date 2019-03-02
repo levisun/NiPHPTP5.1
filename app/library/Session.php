@@ -15,7 +15,7 @@ namespace app\library;
 
 use SessionHandlerInterface;
 use think\facade\Config;
-use app\model\Session as SessionModel;
+use app\model\Session as ModelSession;
 
 class Session implements SessionHandlerInterface
 {
@@ -72,7 +72,7 @@ class Session implements SessionHandlerInterface
             $map[] = ['update_time', '>=', time() - $this->expire];
         }
         $result =
-        SessionModel::where($map)
+        ModelSession::where($map)
         ->value('data');
 
         return $result ? $result : '';
@@ -88,7 +88,7 @@ class Session implements SessionHandlerInterface
     public function write($_sessID, $_sessData): bool
     {
         $result =
-        SessionModel::where([
+        ModelSession::where([
             ['session_id', '=', $this->prefix . $_sessID]
         ])
         ->find()
@@ -101,14 +101,14 @@ class Session implements SessionHandlerInterface
         ];
 
         if (!empty($result)) {
-            SessionModel::where([
+            ModelSession::where([
                 ['session_id', '=', $this->prefix . $_sessID],
             ])
             ->update($data);
-            return !!SessionModel::getNumRows();
+            return !!ModelSession::getNumRows();
         } else {
-            SessionModel::insert($data);
-            return !!SessionModel::getNumRows();
+            ModelSession::insert($data);
+            return !!ModelSession::getNumRows();
         }
     }
 
@@ -120,11 +120,11 @@ class Session implements SessionHandlerInterface
      */
     public function destroy($_sessID): bool
     {
-        SessionModel::where([
+        ModelSession::where([
             ['session_id', '=', $this->prefix . $_sessID]
         ])
         ->delete();
-        return !!SessionModel::getNumRows();
+        return !!ModelSession::getNumRows();
 
     }
 
@@ -147,8 +147,8 @@ class Session implements SessionHandlerInterface
             ];
         }
 
-        SessionModel::where($map)
+        ModelSession::where($map)
         ->delete();
-        return !!SessionModel::getNumRows();
+        return !!ModelSession::getNumRows();
     }
 }

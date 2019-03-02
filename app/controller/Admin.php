@@ -15,7 +15,7 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
-use app\library\Tpl;
+use app\library\Template;
 
 class admin
 {
@@ -35,6 +35,8 @@ class admin
 
     public function index(string $logic = 'account', string $name = 'login')
     {
-        return (new Tpl)->fetch($logic . DIRECTORY_SEPARATOR . $name);
+
+
+        return (new Template)->fetch($logic . DIRECTORY_SEPARATOR . $name);
     }
 }

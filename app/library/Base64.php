@@ -33,12 +33,14 @@ class Base64
     public static function password(string $_str, string $_salt = '', string $_type = 'md5'): string
     {
         if (function_exists($_type)) {
-            // 第一次密码加密
+            // 第一次加密
             $_str = trim($_str);
             $_str = call_user_func($_type, $_str);
 
-            // 第二次密码加密
-            $_salt = sha1($_salt . $_type);
+            // 第二次加密
+            $_str = sha1($_str . $_salt . $_type);
+
+            // 第三次加密
             return call_user_func($_type, $_str . $_salt . $_type);
         } else {
             throw new HttpException(502, '参数错误');
@@ -53,7 +55,7 @@ class Base64
      */
     public static function flag($_authkey = '', int $_length = 7)
     {
-        $_authkey = sha1(__DIR__ . AUTHKEY . $_authkey);
+        $_authkey = sha1(__DIR__ . $_authkey);
         $_length = $_length > 40 ? 40 : $_length;
         return substr(sha1($_authkey), 0, $_length);
     }
@@ -68,7 +70,7 @@ class Base64
      */
     public static function encrypt($_data, string $_authkey = '')
     {
-        $_authkey = sha1(__DIR__ . AUTHKEY . $_authkey);
+        $_authkey = sha1(__DIR__ . $_authkey);
 
         if (is_array($_data)) {
             $encrypt = [];
@@ -100,7 +102,7 @@ class Base64
      */
     public static function decrypt($_data, string $_authkey = '')
     {
-        $_authkey = sha1(__DIR__ . AUTHKEY . $_authkey);
+        $_authkey = sha1(__DIR__ . $_authkey);
 
         if (is_array($_data)) {
             $encrypt = [];

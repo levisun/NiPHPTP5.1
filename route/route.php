@@ -54,7 +54,7 @@ Route::domain('api', function(){
     $headers = [
         'Access-Control-Allow-Origin'  => Request::server('HTTP_ORIGIN', '*'),
         'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE',
-        'Access-Control-Allow-Headers' => 'Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With, Authentication, Accept'
+        'Access-Control-Allow-Headers' => 'Accept, Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With'
     ];
     if (Request::isOptions()) {
         $headers['Access-Control-Max-Age'] = 1728000;

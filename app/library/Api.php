@@ -42,7 +42,7 @@ class Api
      * f0c4b4105d740747d44ac6dcd78624f906202706.
      * @var string
      */
-    private $authentication;
+    private $authorization;
 
     /**
      * 版本号
@@ -325,16 +325,16 @@ class Api
     private function analysisHeader(): void
     {
         // 解析token令牌和session_id
-        $this->authentication = Request::header('authentication');
-        if ($this->authentication && preg_match('/^[A-Za-z0-9.]+$/u', $this->authentication)) {
+        $this->authorization = Request::header('authorization');
+        if ($this->authorization && preg_match('/^[A-Za-z0-9.]+$/u', $this->authorization)) {
             // 单token值
-            if (false === strpos($this->authentication, '.')) {
-                $this->token = $this->authentication;
+            if (false === strpos($this->authorization, '.')) {
+                $this->token = $this->authorization;
             }
 
             // token和session_id
             else {
-                list($this->token, $this->sid) = explode('.', $this->authentication);
+                list($this->token, $this->sid) = explode('.', $this->authorization);
             }
 
             // 校验token合法性
@@ -344,11 +344,11 @@ class Api
                 $this->debugLog['referer'] = $referer;
                 $this->debugLog['referer::sha1'] = sha1($referer);
                 $this->debugLog['this::token'] = $this->token;
-                $this->error('header-authentication token error');
+                $this->error('header-authorization token error');
             }
         } else {
-            $this->debugLog['authentication'] = $this->authentication;
-            $this->error('header-authentication error');
+            $this->debugLog['authorization'] = $this->authorization;
+            $this->error('header-authorization error');
         }
 
 

@@ -118,7 +118,7 @@ class Siteinfo
             ModelCategory::where([
                 ['id', '=', $cid]
             ])
-            ->value('name', '');
+            ->value('name', 'NIPHP CMS');
         }
         else {
             $result .=
