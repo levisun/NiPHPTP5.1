@@ -15,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\library;
 
+use think\Container;
 use think\Response;
 use think\exception\HttpException;
 use think\exception\HttpResponseException;
@@ -72,6 +73,8 @@ class Template
     {
         if (!$content = $this->templateBuildRead()) {
             $content = file_get_contents($this->parseTemplateFile($_template));
+            $content = Filter::default($content, false);
+            $content = htmlspecialchars_decode($content);
             $content = str_replace(array_keys($this->templateReplace), array_values($this->templateReplace), $content);
 
             if ($this->templateConfig['layout'] && strpos($content, '{:NOT_LAYOUT}') === false) {
@@ -96,18 +99,19 @@ class Template
             ];
             $content = preg_replace($replace, '', $content);
 
+            $content .= '<!-- ' . json_encode([
+                'static' => !APP_DEBUG ? 'open' : 'close',
+                'layout' => $this->templateConfig['layout'] ? 'open' : 'close',
+                'theme'  => Siteinfo::theme() . '/' . $_template,
+                'date'   => date('Y-m-d H:i:s'),
+                '----'   => number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
+                            number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb'
+            ]) . ' -->';
+
             $this->templateBuild($content);
         }
 
-        $token = sha1(Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd')));
-        $token .= session_id() ? '.' . session_id() : '';
-        $content = str_replace('{:__AUTHORIZATION__}', $token, $content);
-
-        $content .= '<!-- ' . json_encode([
-            $this->templateConfig['layout'] ? 'true' : 'false',
-            Siteinfo::theme() . '/' . $_template,
-            date('Y-m-d H:i:s')
-        ]) . ' -->';
+        $content = str_replace('{:__AUTHORIZATION__}', createAuthorization(), $content);
 
         $headers = [
             'Cache-Control' => 'max-age=3600,must-revalidate',
@@ -142,10 +146,10 @@ class Template
 
         $url = explode('/', Request::path());
         $url = array_unique($url);
-        $url = implode('_', $url);
+        $url = implode('-', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        if (APP_DEBUG === false && is_file($path) && filemtime($path) >= time() - rand(3600, 7200)) {
+        if (is_file($path) && filemtime($path) >= time() - rand(3600, 7200)) {
             return file_get_contents($path);
         } else {
             return '';
@@ -169,10 +173,13 @@ class Template
 
         $url = explode('/', Request::path());
         $url = array_unique($url);
-        $url = implode('_', $url);
+        $url = implode('-', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        file_put_contents($path, $_content);
+        // 调试模式不生成静态文件
+        if (APP_DEBUG === false) {
+            file_put_contents($path, $_content);
+        }
     }
 
     /**
@@ -191,7 +198,7 @@ class Template
             'api:{' .
                 'url:"' . Config::get('api_host') . '",'.
                 'root:"' . $root . '",' .
-                'version:"' . $this->templateConfig['version'] . '",' .
+                'version:"' . $this->templateConfig['api_version'] . '",' .
                 'authorization:"{:__AUTHORIZATION__}"' .
             '},' .
             'cdn:{' .
@@ -211,7 +218,7 @@ class Template
                 // $script = file_get_contents($js);
                 // $script = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $script);
                 // $foot .= '<script type="text/javascript" class="' . md5($js) . '">' . $script . '</script>';
-                $foot .= '<script type="text/javascript" src="' . $js . '?v=' . time() . '"></script>';
+                $foot .= '<script type="text/javascript" src="' . $js . '?v=' . $this->templateConfig['theme_version'] . '"></script>';
             }
         }
 
@@ -280,7 +287,7 @@ class Template
                 // $style = preg_replace('/(\n|\r)/si', '', $style);
                 // $style = preg_replace('/( ){2,}/si', '', $style);
                 // $head .= '<style type="text/css" class="' . md5($css) . '">' . $style . '</style>';
-                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . time() . '" />';
+                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . $this->templateConfig['theme_version'] . '" />';
             }
         }
 
@@ -318,6 +325,20 @@ class Template
             $config = str_replace(array_keys($this->templateReplace), array_values($this->templateReplace), $config);
             $config = json_decode($config, true);
             if (!empty($config) && is_array($config)) {
+                $keys = array_keys($config);
+                if (!in_array('layout', $keys)) {
+                    throw new HttpException(200, '模板配置文件错误.');
+                } elseif (!in_array('api_version', $keys)) {
+                    throw new HttpException(200, '模板配置文件错误.');
+                } elseif (!in_array('theme_version', $keys)) {
+                    throw new HttpException(200, '模板配置文件错误.');
+                }
+
+                // foreach ($config as $key => $value) {
+                //     if (!in_array($key, ['layout', 'api_version', 'theme_version'])) {
+                //         throw new HttpException(200, '模板配置文件错误.');
+                //     }
+                // }
                 return $config;
             }
         }
@@ -335,6 +356,14 @@ class Template
     {
         $_template  = str_replace(['\\', ':'], DIRECTORY_SEPARATOR, $_template);
         $_template .= '.html';
+
+        // 微信和移动端访问时,判断模板是否存在.
+        if (isWechat() && is_file($this->templatePath . 'wechat' . DIRECTORY_SEPARATOR . $_template)) {
+            $_template = 'wechat' . DIRECTORY_SEPARATOR . $_template;
+        } elseif (Request::isMobile() && is_file($this->templatePath . 'mobile' . DIRECTORY_SEPARATOR . $_template)) {
+            $_template = 'mobile' . DIRECTORY_SEPARATOR . $_template;
+        }
+
         if (is_file($this->templatePath . $_template)) {
             return $this->templatePath . $_template;
         }

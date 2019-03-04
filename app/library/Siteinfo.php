@@ -54,7 +54,7 @@ class Siteinfo
                 ['name', '=', Request::controller(true) . '_description'],
                 ['lang', '=', Lang::detect()]
             ])
-            ->cache(__METHOD__ . Request::controller(true) . '_description', null, 'SITEINFO')
+            ->cache(__METHOD__ . Request::controller(true) . '_description' . Lang::detect(), null, 'SITEINFO')
             ->value('value', '');
         }
 
@@ -90,11 +90,11 @@ class Siteinfo
                 ['name', '=', Request::controller(true) . '_keywords'],
                 ['lang', '=', Lang::detect()]
             ])
-            ->cache(__METHOD__ . Request::controller(true) . '_keywords', null, 'SITEINFO')
+            ->cache(__METHOD__ . Request::controller(true) . '_keywords' . Lang::detect(), null, 'SITEINFO')
             ->value('value', '');
         }
 
-        return $result;
+        return strip_tags($result);
     }
 
     /**
@@ -126,11 +126,11 @@ class Siteinfo
                 ['name', '=', Request::controller(true) . '_sitename'],
                 ['lang', '=', Lang::detect()]
             ])
-            ->cache(__METHOD__ . Request::controller(true) . '_sitename', null, 'SITEINFO')
+            ->cache(__METHOD__ . Request::controller(true) . '_sitename' . Lang::detect(), null, 'SITEINFO')
             ->value('value', 'NIPHP CMS');
         }
 
-        return $result;
+        return strip_tags($result);
     }
 
     /**
@@ -147,7 +147,7 @@ class Siteinfo
             ['name', '=', Request::controller(true) . '_copyright'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::controller(true) . '_copyright', null, 'SITEINFO')
+        ->cache(__METHOD__ . Request::controller(true) . '_copyright' . Lang::detect(), null, 'SITEINFO')
         ->value('value', '');
 
         return htmlspecialchars_decode($result) . '<p>Powered by <a href="http://www.niphp.com" target="_blank" rel="nofollow">NiPHP</a></p>';
@@ -167,7 +167,7 @@ class Siteinfo
             ['name', '=', Request::controller(true) . '_bottom'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::controller(true) . '_bottom', null, 'SITEINFO')
+        ->cache(__METHOD__ . Request::controller(true) . '_bottom' . Lang::detect(), null, 'SITEINFO')
         ->value('value', 'bottom');
 
         return htmlspecialchars_decode($result);
@@ -187,7 +187,7 @@ class Siteinfo
             ['name', '=', Request::controller(true) . '_script'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::controller(true) . '_script', null, 'SITEINFO')
+        ->cache(__METHOD__ . Request::controller(true) . '_script' . Lang::detect(), null, 'SITEINFO')
         ->value('value', '');
 
         return htmlspecialchars_decode($result);
@@ -207,7 +207,7 @@ class Siteinfo
             ['name', '=', Request::controller(true) . '_theme'],
             ['lang', '=', Lang::detect()]
         ])
-        ->cache(__METHOD__ . Request::controller(true) . '_theme', null, 'SITEINFO')
+        ->cache(__METHOD__ . Request::controller(true) . '_theme' . Lang::detect(), null, 'SITEINFO')
         ->value('value', 'default');
     }
 }

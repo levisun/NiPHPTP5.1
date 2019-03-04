@@ -23,13 +23,11 @@ class TagsArticle extends Model
     protected $pk = 'id';
     protected $type = [
         'tags_id'     => 'integer',
-        'category_id' => 'integer',
         'article_id'  => 'integer',
     ];
     protected $field = [
         'id',
         'tags_id',
-        'category_id',
         'article_id',
     ];
 }

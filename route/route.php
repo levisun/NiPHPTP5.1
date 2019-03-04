@@ -16,23 +16,31 @@ use think\facade\Route;
 
 
 
-Route::miss('index/abort');
+
 
 
 Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
 
-Route::domain('www', function(){
-    Route::miss('index/abort');
-    Route::get('/', 'index/index');
-    Route::get('/:name/:cid$', 'index/index');
-    Route::get('/:name/:cid/:id$', 'index/index');
+
+
+Route::miss('abort/error');
+Route::get('error/:code', 'abort/error');
+
+
+
+Route::domain(['www', 'm'], function(){
+    Route::get('/', 'cms/index');
+    Route::get('/:name/:cid$', 'cms/index');
+    Route::get('/:name/:cid/:id$', 'cms/index');
 
     // Route::cache(true);
 })
-->bind('index')
+->bind('cms')
 ->ext('html');
+
+
 
 Route::domain('admin', function(){
     Route::get('/', 'admin/index');
@@ -40,6 +48,8 @@ Route::domain('admin', function(){
 })
 ->bind('admin')
 ->ext('html');
+
+
 
 Route::domain('api', function(){
     Route::rule('/', function(){

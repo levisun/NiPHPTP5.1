@@ -51,7 +51,7 @@ class Filter
     public static function XSS(string $_data): string
     {
         return preg_replace([
-            '/on([a-zA-Z0-9 ]*?)(=[ ]*?)["|\'](.*?)["|\']/si',
+            '/on([a-zA-Z0-9]*?)([ ]*?=[ ]*?)["|\'](.*?)["|\']/si',
             '/(javascript:)(.*?)(\))/si',
             '/<(javascript.*?)>(.*?)<(\/javascript.*?)>/si', '/<(\/?javascript.*?)>/si',
             '/<(script.*?)>(.*?)<(\/script.*?)>/si',         '/<(\/?script.*?)>/si',
@@ -94,7 +94,7 @@ class Filter
             '/<(ilayer.*?)>(.*?)<(\/ilayer.*?)>/si',     '/<(\/?ilayer.*?)>/si',
             '/<(layer.*?)>(.*?)<(\/layer.*?)>/si',       '/<(\/?layer.*?)>/si',
             '/<(bgsound.*?)>(.*?)<(\/bgsound.*?)>/si',   '/<(\/?bgsound.*?)>/si',
-            '/<(form.*?)>(.*?)<(\/form.*?)>/si',         '/<(\/?form.*?)>/si',
+            // '/<(form.*?)>(.*?)<(\/form.*?)>/si',         '/<(\/?form.*?)>/si',
         ], '', $_data);
 
         // HTML转实体

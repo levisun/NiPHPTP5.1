@@ -12,6 +12,7 @@
  */
 
 use think\facade\Cookie;
+use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
 use think\facade\Session;
@@ -27,6 +28,7 @@ use app\library\Filter;
  */
 function url(string $url = '', array $vars = [], string $sub = 'www')
 {
+    $url = str_replace('/', '-', $url);
     return '//' . $sub . '.' . Request::rootDomain() . '/' . $url . '.html';
 
     return '//' . $sub . '.' . Request::rootDomain() .
@@ -64,6 +66,19 @@ function isWechat()
 function safeFilter($_data)
 {
     return Filter::default($_data, true);
+}
+
+/**
+ * API授权字符串
+ * @param
+ * @return string
+ */
+function createAuthorization()
+{
+    $authorization = Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd'));
+    $authorization = sha1(Base64::encrypt($authorization, 'authorization'));
+    $authorization .= session_id() ? '.' . session_id() : '';
+    return Base64::encrypt($authorization, 'authorization');
 }
 
 /**

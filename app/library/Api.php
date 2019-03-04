@@ -23,6 +23,7 @@ use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
 use think\facade\Session;
+use app\library\Base64;
 use app\model\Session as SessionModel;
 
 class Api
@@ -53,6 +54,12 @@ class Api
         'major' => '1',
         'minor' => '0'
     ];
+
+    /**
+     * 开启版本控制
+     * @var bool
+     */
+    private $openVersion = false;
 
     /**
      * 返回数据类型
@@ -200,9 +207,15 @@ class Api
         if ($this->method && preg_match('/^[a-z.]+$/u', $this->method)) {
             list($logic, $class, $action) = explode('.', $this->method, 3);
 
-            $method = 'app\api\\' . $this->module . '\\' .
+            if ($this->openVersion) {
+                $method = 'app\server\\' . $this->module . '\\' .
                       'v' . $this->version['major'] . 'm' . $this->version['minor'] . '\\' .
                       $logic . '\\' . ucfirst($class);
+            } else {
+                $method = 'app\server\\' . $this->module . '\\' .
+                      $logic . '\\' . ucfirst($class);
+            }
+
 
             // 校验类是否存在
             if (!class_exists($method)) {
@@ -216,10 +229,17 @@ class Api
             }
 
             // 加载语言包
-            $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
+            if ($this->openVersion) {
+                $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
                     $this->module . DIRECTORY_SEPARATOR .
                     'v' . $this->version['major'] . 'm' . $this->version['minor'] . DIRECTORY_SEPARATOR .
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
+            } else {
+                $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
+                    $this->module . DIRECTORY_SEPARATOR .
+                    'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
+            }
+
             Lang::load($lang);
 
             $this->exec = [
@@ -303,7 +323,7 @@ class Api
 
                 if (!hash_equals(call_user_func($this->signType, $str), $this->sign)) {
                     $this->debugLog['sign_str'] = $str;
-                    $this->debugLog['sign'] = $this->sign;
+                    $this->debugLog['sign'] = call_user_func($this->signType, $str);
                     $this->error('params-sign check error');
                 }
             } else {
@@ -327,6 +347,8 @@ class Api
         // 解析token令牌和session_id
         $this->authorization = Request::header('authorization');
         if ($this->authorization && preg_match('/^[A-Za-z0-9.]+$/u', $this->authorization)) {
+            $this->authorization = Base64::decrypt($this->authorization, 'authorization');
+
             // 单token值
             if (false === strpos($this->authorization, '.')) {
                 $this->token = $this->authorization;
@@ -340,9 +362,9 @@ class Api
             // 校验token合法性
             $referer = Request::header('USER-AGENT') . Request::ip() .
                        Env::get('root_path') . strtotime(date('Ymd'));
-            if (!hash_equals(sha1($referer), $this->token)) {
+            if (!hash_equals(sha1(Base64::encrypt($referer, 'authorization')), $this->token)) {
                 $this->debugLog['referer'] = $referer;
-                $this->debugLog['referer::sha1'] = sha1($referer);
+                $this->debugLog['referer::sha1'] = sha1(Base64::encrypt($referer, 'authorization'));
                 $this->debugLog['this::token'] = $this->token;
                 $this->error('header-authorization token error');
             }
@@ -442,7 +464,7 @@ class Api
             $result['data'] = $_data;
         }
 
-        if ($this->debug === true && $_code == 'SUCCESS') {
+        if ($this->debug === true) {
             $result['debug'] = array_merge([
                 '文件加载:' . count(get_included_files()),
                 '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's',

@@ -68,7 +68,7 @@ return [
     // 兼容PATH_INFO获取
     'pathinfo_fetch'        => ['ORIG_PATH_INFO', 'REDIRECT_PATH_INFO', 'REDIRECT_URL'],
     // pathinfo分隔符
-    'pathinfo_depr'         => '/',
+    'pathinfo_depr'         => '-',
     // HTTPS代理标识
     'https_agent_name'      => '',
     // URL伪静态后缀
