@@ -57,7 +57,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
             url: NIPHP.api.url + '/cms.html',
             method: 'get',
             data: {
-                method: 'article.breadcrumb.query',
+                method: 'nav.breadcrumb.query',
                 cid: NIPHP.param.cid
             },
             success: function(result) {

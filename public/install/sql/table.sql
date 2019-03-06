@@ -1,7 +1,3 @@
---
--- 数据库： `niphp`
---
-
 -- --------------------------------------------------------
 
 --
@@ -98,13 +94,6 @@ CREATE TABLE IF NOT EXISTS `np_article` (
   KEY `show_time` (`show_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='文章表';
 
---
--- 转存表中的数据 `np_article`
---
-
-INSERT INTO `np_article` (`id`, `title`, `keywords`, `description`, `content`, `thumb`, `category_id`, `type_id`, `is_pass`, `is_com`, `is_top`, `is_hot`, `sort`, `hits`, `username`, `origin`, `user_id`, `url`, `is_link`, `show_time`, `update_time`, `delete_time`, `create_time`, `access_id`, `lang`) VALUES
-(1, 'CSS之文本两端对齐', 'HTML/CSS, 前端开发, 技巧资源', '说起text-align，大家一定都不觉得陌生，我们常用关键字left、right、center实现行内元素相对父元素左、右、居中对齐，当然我们也使用justify来实现文本两端对齐。    如上图，两端对齐相对于左对齐，视觉上显得整齐有序。但justify对最后一行无效，通常这样的排版对整段文字是极好的，我们并不希望当最后一行只有两个字时也两端对齐，毕竟这是不便于阅读的，那么当我们只有一行文本，', '说起text-align，大家一定都不觉得陌生，我们常用关键字left、right、center实现行内元素相对父元素左、右、居中对齐，当然我们也使用justify来实现文本两端对齐。    如上图，两端对齐相对于左对齐，视觉上显得整齐有序。但justify对最后一行无效，通常这样的排版对整段文字是极好的，我们并不希望当最后一行只有两个字时也两端对齐，毕竟这是不便于阅读的，那么当我们只有一行文本，', '', 1, 0, 1, 0, 0, 0, 0, 0, '', '', 0, '', 0, 1550901712, 1550901712, 0, 1550901712, 0, 'zh-cn');
-
 -- --------------------------------------------------------
 
 --
@@ -159,15 +148,7 @@ CREATE TABLE IF NOT EXISTS `np_category` (
   KEY `sort` (`sort`),
   KEY `access_id` (`access_id`),
   KEY `lang` (`lang`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='栏目表';
-
---
--- 转存表中的数据 `np_category`
---
-
-INSERT INTO `np_category` (`id`, `pid`, `name`, `aliases`, `title`, `keywords`, `description`, `image`, `type_id`, `model_id`, `is_show`, `is_channel`, `sort`, `access_id`, `url`, `update_time`, `create_time`, `lang`) VALUES
-(1, 0, '前端', '', '', '', '', '', 2, 1, 1, 0, 0, 0, '', 0, 0, 'zh-cn'),
-(2, 0, '编程', '', '', '', '', '', 2, 1, 1, 0, 0, 0, '', 0, 0, 'zh-cn');
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='栏目表';
 
 -- --------------------------------------------------------
 
@@ -194,11 +175,11 @@ CREATE TABLE IF NOT EXISTS `np_config` (
 INSERT INTO `np_config` (`id`, `name`, `value`, `lang`) VALUES
 (1, 'index_theme', 'default', 'zh-cn'),
 (2, 'index_script', '', 'zh-cn'),
-(3, 'index_bottom', '', 'zh-cn'),
-(4, 'index_copyright', '', 'zh-cn'),
-(5, 'index_sitename', '', 'zh-cn'),
-(6, 'index_keywords', '', 'zh-cn'),
-(7, 'index_description', '', 'zh-cn');
+(3, 'index_bottom', '&lt;a href=&quot;http://www.miitbeian.gov.cn&quot; target=&quot;_blank&quot;&gt;陕icp备15001502号-1&lt;/a&gt;', 'zh-cn'),
+(4, 'index_copyright', 'copyright &amp;copy; 2014-2015 &lt;a href=&quot;http://www.niphp.com&quot; target=&quot;_blank&quot;&gt;niphp.com&lt;/a&gt;版权所有', 'zh-cn'),
+(5, 'index_sitename', '腐朽的木屋', 'zh-cn'),
+(6, 'index_keywords', 'php, javascript, js, html, css, thinkphp, tp', 'zh-cn'),
+(7, 'index_description', '开发WEB应用时的笔记、问题和学习资料。', 'zh-cn');
 
 -- --------------------------------------------------------
 
@@ -320,6 +301,36 @@ CREATE TABLE IF NOT EXISTS `np_ipinfo` (
   UNIQUE KEY `ip` (`ip`),
   KEY `update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IP地域信息';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `np_level`
+--
+
+DROP TABLE IF EXISTS `np_level`;
+CREATE TABLE IF NOT EXISTS `np_level` (
+  `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '组名',
+  `credit` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '积分',
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '状态',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
+  PRIMARY KEY (`id`),
+  KEY `credit` (`credit`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='会员组';
+
+--
+-- 转存表中的数据 `np_level`
+--
+
+INSERT INTO `np_level` (`id`, `name`, `credit`, `status`, `remark`) VALUES
+(1, '钻石会员', 500000000, 1, ''),
+(2, '黄金会员', 30000000, 1, ''),
+(3, '白金会员', 500000, 1, ''),
+(4, 'VIP会员', 3000, 1, ''),
+(5, '高级会员', 500, 1, ''),
+(6, '普通会员', 0, 1, '');
 
 -- --------------------------------------------------------
 
@@ -3987,6 +3998,63 @@ CREATE TABLE IF NOT EXISTS `np_session` (
   `update_time` varchar(80) NOT NULL DEFAULT '' COMMENT '刷新时间',
   PRIMARY KEY (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='session';
+
+--
+-- 转存表中的数据 `np_session`
+--
+
+INSERT INTO `np_session` (`session_id`, `data`, `update_time`) VALUES
+('v9m9imltao04da7ug27vlofi4t', 'test|s:4:\"CQsB\";', '1551410536');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `np_tags`
+--
+
+DROP TABLE IF EXISTS `np_tags`;
+CREATE TABLE IF NOT EXISTS `np_tags` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '标签名',
+  `count` int(11) UNSIGNED NOT NULL DEFAULT '1' COMMENT '标签文章数量',
+  `lang` varchar(20) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `count` (`count`),
+  KEY `lang` (`lang`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签表';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `np_tags_article`
+--
+
+DROP TABLE IF EXISTS `np_tags_article`;
+CREATE TABLE IF NOT EXISTS `np_tags_article` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tags_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '标签ID',
+  `article_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '文章ID',
+  PRIMARY KEY (`id`),
+  KEY `tags_id` (`tags_id`),
+  KEY `article_id` (`article_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签文章关联表';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `np_type`
+--
+
+DROP TABLE IF EXISTS `np_type`;
+CREATE TABLE IF NOT EXISTS `np_type` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category_id` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目ID',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名',
+  `description` varchar(555) NOT NULL DEFAULT '' COMMENT '描述',
+  PRIMARY KEY (`id`),
+  KEY `category_id` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类';
 
 -- --------------------------------------------------------
 

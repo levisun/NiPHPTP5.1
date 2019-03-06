@@ -56,6 +56,7 @@ class Details
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
         ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
         ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
+        ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
         ->where($map)
         ->cache(__METHOD__ . $id, null, 'DETAILS')
         ->find()
@@ -70,8 +71,8 @@ class Details
 
             // 上一篇
             // 下一篇
-            $result['next_article'] = $this->next($result['id']);
-            $result['prev_article'] = $this->prev($result['id']);
+            $result['next'] = $this->next($result['id']);
+            $result['prev'] = $this->prev($result['id']);
 
 
             // 附加字段数据

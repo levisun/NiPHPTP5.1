@@ -18,14 +18,20 @@ namespace app\server\cms\download;
 use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
+use app\library\Base64;
 use app\model\Article as ModelArticle;
 use app\model\ArticleData as ModelArticleData;
 use app\model\TagsArticle as ModelTagsArticle;
-use app\library\Base64;
 
 class Details
 {
 
+    /**
+     * 查询内容
+     * @access public
+     * @param
+     * @return array
+     */
     public function query(): array
     {
         $map = [
@@ -48,7 +54,9 @@ class Details
         $result =
         ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url' => 'go_url', 'keywords', 'description', 'access_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=3')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
+        ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
+        ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
         ->where($map)
         ->cache(__METHOD__ . $id, null, 'DETAILS')
         ->find()
@@ -56,15 +64,15 @@ class Details
 
         if ($result) {
             $result['flag'] = Base64::flag($result['category_id'] . $result['id'], 7);
+            $result['thumb'] = imgUrl($result['thumb']);
+            $result['cat_url'] = url($result['action_name'] . '/' . $result['category_id']);
             $result['url'] = url($result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
-            $result['cat_url']  = url($result['action_name'] . '/' . $result['category_id']);
-            $result['thumb'] = empty($result['thumb']) ? Config::get('cdn_host') . $result['thumb'] : '';
 
 
             // 上一篇
             // 下一篇
-            $result['next_article'] = $this->next($result['id']);
-            $result['prev_article'] = $this->prev($result['id']);
+            $result['next'] = $this->next($result['id']);
+            $result['prev'] = $this->prev($result['id']);
 
 
             // 附加字段数据
@@ -171,7 +179,7 @@ class Details
         $result =
         ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'access_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=3')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
         ->where([
             ['article.is_pass', '=', 1],
             ['article.show_time', '<=', time()],
@@ -211,7 +219,7 @@ class Details
         $result =
         ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url', 'keywords', 'description', 'access_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=3')
+        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
         ->where([
             ['article.is_pass', '=', 1],
             ['article.show_time', '<=', time()],

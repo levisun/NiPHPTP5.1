@@ -32,13 +32,13 @@ class Breadcrumb
      */
     public function query(): array
     {
-        $cid = Request::param('cid/f', 0);
-        $this->parent($cid);
+        $cid = Request::param('cid/f', null);
+        $this->parentCate($cid);
 
         return [
             'debug' => false,
             'msg'   => Lang::get('success'),
-            'data'  => $this->bread;
+            'data'  => $this->bread
         ];
     }
 
@@ -49,10 +49,10 @@ class Breadcrumb
      * @param
      * @return array
      */
-    private function parent(int $_pid)
+    private function parentCate($_pid)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
+        ModelCategory::view('category c', ['id', 'name', 'pid', 'aliases', 'image', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
         ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
@@ -74,7 +74,7 @@ class Breadcrumb
 
             $this->bread[] = $result;
             if ($result['pid']) {
-                $this->parent($result['pid']);
+                $this->parentCate($result['pid']);
             }
         }
     }

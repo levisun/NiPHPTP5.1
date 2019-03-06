@@ -43,14 +43,10 @@ Temporary Items
 .apdisk
 
 #Project
-.env
-# .travis.yml
-# build.php
-# convention.php
-think
-
+*.env
 *.json
 *.lock
 *.xml
 *.yml
 /*.php
+think

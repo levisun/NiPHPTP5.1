@@ -149,7 +149,8 @@ class Template
         $url = implode('-', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        if (is_file($path) && filemtime($path) >= time() - rand(3600, 7200)) {
+        $time = APP_DEBUG ? 1140 : 3600;
+        if (is_file($path) && filemtime($path) >= time() - rand($time, $time*4)) {
             return file_get_contents($path);
         } else {
             return '';
@@ -176,10 +177,7 @@ class Template
         $url = implode('-', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        // 调试模式不生成静态文件
-        if (APP_DEBUG === false) {
-            file_put_contents($path, $_content);
-        }
+        file_put_contents($path, $_content);
     }
 
     /**
@@ -280,14 +278,14 @@ class Template
 
         if (!empty($this->templateConfig['css'])) {
             foreach ($this->templateConfig['css'] as $css) {
-                // $style = file_get_contents($css);
-                // $style = Filter::XSS($style);
-                // $style = Filter::XXE($style);
-                // $style = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $style);
-                // $style = preg_replace('/(\n|\r)/si', '', $style);
-                // $style = preg_replace('/( ){2,}/si', '', $style);
-                // $head .= '<style type="text/css" class="' . md5($css) . '">' . $style . '</style>';
-                $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . $this->templateConfig['theme_version'] . '" />';
+                $style = file_get_contents($css);
+                $style = Filter::XSS($style);
+                $style = Filter::XXE($style);
+                $style = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $style);
+                $style = preg_replace('/(\n|\r)/si', '', $style);
+                $style = preg_replace('/( ){2,}/si', '', $style);
+                $head .= '<style type="text/css" class="' . md5($css) . '">' . $style . '</style>';
+                // $head .= '<link rel="stylesheet" type="text/css" href="' . $css . '?v=' . $this->templateConfig['theme_version'] . '" />';
             }
         }
 

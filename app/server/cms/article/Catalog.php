@@ -71,6 +71,7 @@ class Catalog
             ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
             ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
             ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
+            ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
             ->where($map)
             ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort DESC, article.id DESC')
             ->paginate();

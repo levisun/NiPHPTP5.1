@@ -455,32 +455,19 @@ class Api
     {
         $result = [
             'code'    => $_code,
+            'data'    => $_data,
+            'debug'   => $this->debugLog,
             'expire'  => $this->cache ? date('Y-m-d H:i:s', time() + $this->expire + 30) : '0',
             'message' => $_msg
         ];
+        $result = array_filter($result);
 
-        if (!empty($_data)) {
-            $result['data'] = $_data;
+        if ($this->debug === false) {
+            unset($result['debug']);
         }
 
         // 调试模式记录日志
-        if (APP_DEBUG === true) {
-            Log::record(
-                '[API] IP:' . Request::ip() .
-                ' TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
-                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb' .
-                ' CACHE:' . Container::pull('cache')->getReadTimes() . 'reads,' . Container::pull('cache')->getWriteTimes() . 'writes',
-                'debug'
-            );
-            Log::record('[API] PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE), 'debug');
-            // Log::record('[API] CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes', 'debug');
-            Log::record('[API] DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE), 'debug');
-            Log::record('[API] RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE), 'debug');
-        }
-
-        if ($this->debug === true) {
-            $result['debug'] = $this->debugLog;
-        }
+        $this->debugLog($result);
 
         $headers = [];
         if (APP_DEBUG === false && $this->expire && $this->cache === true && $_code == 'SUCCESS') {
@@ -493,5 +480,23 @@ class Api
 
         $response = Response::create($result, $this->format, 200)->header($headers);
         throw new HttpResponseException($response);
+    }
+
+    /**
+     * 调试日志
+     * @access private
+     * @param
+     * @return void
+     */
+    private function debugLog(array $result)
+    {
+        Log::record('[API] IP:' . Request::ip(), 'debug');
+        Log::record('[API] TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ', 'debug');
+        Log::record('[API] MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb', 'debug');
+        Log::record('[API] CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes', 'debug');
+        Log::record('[API] PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE), 'debug');
+        Log::record('[API] DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE), 'debug');
+
+        // if ($this->debug === true) Log::record('[API] RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE), 'debug');
     }
 }
