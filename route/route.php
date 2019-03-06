@@ -14,11 +14,6 @@ use think\facade\Request;
 use think\facade\Route;
 
 
-
-
-
-
-
 Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
@@ -26,16 +21,26 @@ Route::get('think', function () {
 
 
 Route::miss('abort/error');
+
+// 错误页面
+// code错误代码
+// 403 404
 Route::get('error/:code', 'abort/error');
+// 权限错误页
+Route::get('authority', 'abort/authority');
 
 
 
 Route::domain(['www', 'm'], function(){
-    Route::get('/', 'cms/index');
-    Route::get('/:name/:cid$', 'cms/index');
-    Route::get('/:name/:cid/:id$', 'cms/index');
 
-    // Route::cache(true);
+    Route::get('/', 'cms/index');
+
+
+    Route::get(':name/:cid$', 'cms/catalog');
+    Route::get(':name/:cid/:id$', 'cms/details');
+
+    // Route::get('/:name/:cid$', 'cms/index');
+
 })
 ->bind('cms')
 ->ext('html');

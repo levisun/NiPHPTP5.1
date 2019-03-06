@@ -15,8 +15,8 @@ declare (strict_types = 1);
 
 namespace app\server\cms\nav;
 
-use think\facade\Config;
 use think\facade\Lang;
+use app\library\Base64;
 use app\model\Category as ModelCategory;
 
 class Foot
@@ -33,6 +33,7 @@ class Foot
         $result =
         ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
+        ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
             ['c.is_show', '=', 1],
             ['c.type_id', '=', 3],
@@ -45,14 +46,16 @@ class Foot
         ->toArray();
 
         foreach ($result as $key => $value) {
-            $value['image'] = !empty($value['image']) ? Config::get('cdn_host') . $value['image'] : '';
-            $value['url'] = url($value['action_name'] . '/' . $value['id']);
-            $value['child'] = $this->child($value['id'], 3);
+            $value['image'] = imgUrl($value['image']);
+            $value['flag'] = Base64::flag($value['id'], 7);
+            $value['child'] = $this->child($value['id'], 2);
             if (empty($value['child'])) {
                 unset($value['child']);
             }
 
+            $value['url'] = url($value['action_name'] . '/' . $value['id']);
             unset($value['action_name']);
+
             $result[$key] = $value;
         }
 
@@ -73,8 +76,9 @@ class Foot
     private function child(int $_pid, int $_type_id)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image'])
+        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
+        ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
             ['c.is_show', '=', 1],
             ['c.type_id', '=', $_type_id],
@@ -87,10 +91,14 @@ class Foot
         ->toArray();
 
         foreach ($result as $key => $value) {
+            $value['image'] = imgUrl($value['image']);
+            $value['flag'] = Base64::flag($value['id'], 7);
+
             $value['url'] = url($value['action_name'] . '/' . $value['id']);
+            unset($value['action_name']);
+
             $value['child'] = $this->child($value['id'], 2);
 
-            unset($value['action_name']);
             $result[$key] = $value;
         }
 

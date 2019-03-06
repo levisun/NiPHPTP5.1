@@ -47,9 +47,4 @@ class Api extends LibraryApi
     {
 
     }
-
-    public function abort(int $code = 404)
-    {
-        throw new HttpException($code);
-    }
 }

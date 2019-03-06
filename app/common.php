@@ -11,6 +11,7 @@
  * @since     2019
  */
 
+use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Env;
 use think\facade\Lang;
@@ -20,31 +21,67 @@ use think\facade\Url;
 use app\library\Base64;
 use app\library\Filter;
 
+
+
+
 /**
- * Url生成
- * @param string        $url 路由地址
- * @param array         $vars 变量
+ * 栏目授权地址
+ * @param  int    $_access_id 指定权限 0为公开
+ * @param  string $_url       地址
  * @return string
  */
-function url(string $url = '', array $vars = [], string $sub = 'www')
+function authorityUrl(int $_access_id, string $_url): string
 {
-    $url = str_replace('/', '-', $url);
-    return '//' . $sub . '.' . Request::rootDomain() . '/' . $url . '.html';
+    if ($_access_id == 0) {
+        $url = url($_url, [], 'www');
+    }
 
-    return '//' . $sub . '.' . Request::rootDomain() .
-           Url::build($url, $vars, true, false);
+    elseif (session('?member_level') && session('member_level') <= $_access_id) {
+        $url = url($_url, [], 'www');
+    }
+
+    else {
+        $url = url('authority', ['level' => $_access_id], [], 'www');
+    }
+
+    return $url;
+}
+
+/**
+ * 拼接图片地址
+ * @param  string $_img
+ * @return string
+ */
+function imgUrl(string $_img): string
+{
+    return !empty($_img) ? Config::get('cdn_host') . $_img : '';
+}
+
+/**
+ * Url生成
+ * @param  string  $_url       路由地址
+ * @param  array   $_vars      变量
+ * @param  string  $_sub_domain 子域名
+ * @return string
+ */
+function url(string $_url = '', array $_vars = [], string $_sub_domain = 'www')
+{
+    $_url = Url::build($_url, $_vars, true, true);
+    $_url = str_replace('//api', '//' .$_sub_domain, $_url);
+    // echo($url);
+    return $_url;
 }
 
 /**
  * 获取语言变量值
- * @param string    $name 语言变量名
- * @param array     $vars 动态变量值
- * @param string    $lang 语言
+ * @param string    $_name 语言变量名
+ * @param array     $_vars 动态变量值
+ * @param string    $_lang 语言
  * @return mixed
  */
-function lang(string $name, array $vars = [], string $lang = '')
+function lang(string $_name, array $_vars = [], string $_lang = '')
 {
-    return Lang::get($name, $vars, $lang);
+    return Lang::get($_name, $_vars, $_lang);
 }
 
 /**
@@ -83,60 +120,60 @@ function createAuthorization()
 
 /**
  * Cookie管理
- * @param string|array  $name cookie名称，如果为数组表示进行cookie设置
- * @param mixed         $value cookie值
- * @param mixed         $option 参数
+ * @param string|array  $_name cookie名称，如果为数组表示进行cookie设置
+ * @param mixed         $_value cookie值
+ * @param mixed         $_option 参数
  * @return mixed
  */
-function cookie($name, $value = '', $option = null)
+function cookie($_name, $_value = '', $_option = null)
 {
-    if (is_array($name)) {
+    if (is_array($_name)) {
         // 初始化
-        Cookie::init($name);
-    } elseif (is_null($name)) {
+        Cookie::init($_name);
+    } elseif (is_null($_name)) {
         // 清除
-        Cookie::clear($value);
-    } elseif ('' === $value) {
+        Cookie::clear($_value);
+    } elseif ('' === $_value) {
         // 获取
         return
-        0 === strpos($name, '?') ?
-            Cookie::has(substr($name, 1), $option) :
-            Base64::decrypt(Cookie::get($name));
-    } elseif (is_null($value)) {
+        0 === strpos($_name, '?') ?
+            Cookie::has(substr($_name, 1), $_option) :
+            Base64::decrypt(Cookie::get($_name));
+    } elseif (is_null($_value)) {
         // 删除
-        return Cookie::delete($name);
+        return Cookie::delete($_name);
     } else {
         // 设置
-        return Cookie::set($name, Base64::encrypt($value), $option);
+        return Cookie::set($_name, Base64::encrypt($_value), $_option);
     }
 }
 
 /**
  * Session管理
- * @param string|array  $name session名称，如果为数组表示进行session设置
- * @param mixed         $value session值
- * @param string        $prefix 前缀
+ * @param string|array  $_name session名称，如果为数组表示进行session设置
+ * @param mixed         $_value session值
+ * @param string        $_prefix 前缀
  * @return mixed
  */
-function session($name, $value = '', $prefix = null)
+function session($_name, $_value = '', $_prefix = null)
 {
-    if (is_array($name)) {
+    if (is_array($_name)) {
         // 初始化
-        Session::init($name);
-    } elseif (is_null($name)) {
+        Session::init($_name);
+    } elseif (is_null($_name)) {
         // 清除
-        Session::clear($value);
-    } elseif ('' === $value) {
+        Session::clear($_value);
+    } elseif ('' === $_value) {
         // 判断或获取
         return
-        0 === strpos($name, '?') ?
-            Session::has(substr($name, 1), $prefix) :
-            Base64::decrypt(Session::get($name, $prefix));
-    } elseif (is_null($value)) {
+        0 === strpos($_name, '?') ?
+            Session::has(substr($_name, 1), $_prefix) :
+            Base64::decrypt(Session::get($_name, $_prefix));
+    } elseif (is_null($_value)) {
         // 删除
-        return Session::delete($name, $prefix);
+        return Session::delete($_name, $_prefix);
     } else {
         // 设置
-        return Session::set($name, Base64::encrypt($value), $prefix);
+        return Session::set($_name, Base64::encrypt($_value), $_prefix);
     }
 }

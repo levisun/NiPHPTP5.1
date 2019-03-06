@@ -43,7 +43,7 @@ class Auth
 
         halt($this->className);
         // 用户权限校验
-        if (session('?user_auth_key')) {
+        if (session('?admin_auth_key')) {
             // (new Rbac)->authenticate('admin', __CLASS__)
         }
     }

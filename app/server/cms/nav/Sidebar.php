@@ -15,9 +15,9 @@ declare (strict_types = 1);
 
 namespace app\server\cms\nav;
 
-use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
+use app\library\Base64;
 use app\model\Category as ModelCategory;
 
 class Sidebar
@@ -35,6 +35,7 @@ class Sidebar
             $result =
             ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
             ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
+            ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
             ->where([
                 ['c.is_show', '=', 1],
                 ['c.id', '=', $cid],
@@ -45,13 +46,14 @@ class Sidebar
             ->toArray();
 
 
-            $result['image'] = !empty($result['image']) ? Config::get('cdn_host') . $result['image'] : '';
-            $result['url'] = url($result['action_name'] . '/' . $result['id']);
+            $result['image'] = imgUrl($result['image']);
+            $result['flag'] = Base64::flag($result['id'], 7);
             $result['child'] = $this->child($result['id']);
             if (empty($result['child'])) {
                 unset($result['child']);
             }
 
+            $result['url'] = url($result['action_name'] . '/' . $result['id']);
             unset($result['action_name']);
 
             return [
@@ -70,30 +72,34 @@ class Sidebar
     /**
      * 获得子导航
      * @access private
-     * @param  int    $_pid     父ID
+     * @param  int    $_id      ID
      * @param  int    $_type_id 类型
      * @return array
      */
-    private function child(int $_pid)
+    private function child(int $_id)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image'])
+        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
+        ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
             ['c.is_show', '=', 1],
-            ['c.pid', '=', $_pid],
+            ['c.pid', '=', $_id],
             ['c.lang', '=', Lang::detect()]
         ])
         ->order('c.sort ASC, c.id DESC')
-        ->cache(__METHOD__ . $_pid, null, 'NAV')
+        ->cache(__METHOD__ . $_id, null, 'NAV')
         ->select()
         ->toArray();
 
         foreach ($result as $key => $value) {
-            $value['url'] = url($value['action_name'] . '/' . $value['id']);
-            $value['child'] = $this->child($value['id'], 2);
+            $value['image'] = imgUrl($value['image']);
+            $value['flag'] = Base64::flag($value['id'], 7);
+            $value['child'] = $this->child($value['id']);
 
+            $value['url'] = url($value['action_name'] . '/' . $value['id']);
             unset($value['action_name']);
+
             $result[$key] = $value;
         }
 

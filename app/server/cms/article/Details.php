@@ -55,6 +55,7 @@ class Details
         ModelArticle::view('article article', ['id', 'category_id', 'title', 'thumb', 'url' => 'go_url', 'keywords', 'description', 'access_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
         ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
+        ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
         ->where($map)
         ->cache(__METHOD__ . $id, null, 'DETAILS')
         ->find()
@@ -62,9 +63,9 @@ class Details
 
         if ($result) {
             $result['flag'] = Base64::flag($result['category_id'] . $result['id'], 7);
+            $result['thumb'] = imgUrl($result['thumb']);
+            $result['cat_url'] = url($result['action_name'] . '/' . $result['category_id']);
             $result['url'] = url($result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
-            $result['cat_url']  = url($result['action_name'] . '/' . $result['category_id']);
-            $result['thumb'] = empty($result['thumb']) ? Config::get('cdn_host') . $result['thumb'] : '';
 
 
             // 上一篇

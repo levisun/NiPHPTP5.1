@@ -21,6 +21,7 @@ use think\exception\HttpResponseException;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
+use think\facade\Log;
 use think\facade\Request;
 use think\facade\Session;
 use app\library\Base64;
@@ -455,24 +456,30 @@ class Api
         $result = [
             'code'    => $_code,
             'expire'  => $this->cache ? date('Y-m-d H:i:s', time() + $this->expire + 30) : '0',
-            'message' => $_msg,
-            'usage'   => number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
-                         number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb'
+            'message' => $_msg
         ];
 
         if (!empty($_data)) {
             $result['data'] = $_data;
         }
 
+        // 调试模式记录日志
+        if (APP_DEBUG === true) {
+            Log::record(
+                '[API] IP:' . Request::ip() .
+                ' TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
+                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb' .
+                ' CACHE:' . Container::pull('cache')->getReadTimes() . 'reads,' . Container::pull('cache')->getWriteTimes() . 'writes',
+                'debug'
+            );
+            Log::record('[API] PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE), 'debug');
+            // Log::record('[API] CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes', 'debug');
+            Log::record('[API] DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE), 'debug');
+            Log::record('[API] RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE), 'debug');
+        }
+
         if ($this->debug === true) {
-            $result['debug'] = array_merge([
-                '文件加载:' . count(get_included_files()),
-                '运行时间:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's',
-                '内存消耗:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb',
-                '查询信息:' . Container::pull('db')->getQueryTimes() . ' queries',
-                '缓存信息:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes',
-                '请求参数:' . json_encode(Request::param('', '', 'trim')),
-            ], $this->debugLog);
+            $result['debug'] = $this->debugLog;
         }
 
         $headers = [];

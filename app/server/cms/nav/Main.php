@@ -15,7 +15,6 @@ declare (strict_types = 1);
 
 namespace app\server\cms\nav;
 
-use think\facade\Config;
 use think\facade\Lang;
 use app\library\Base64;
 use app\model\Category as ModelCategory;
@@ -34,6 +33,7 @@ class Main
         $result =
         ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
+        ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
             ['c.is_show', '=', 1],
             ['c.type_id', '=', 2],
@@ -46,18 +46,16 @@ class Main
         ->toArray();
 
         foreach ($result as $key => $value) {
-            $value['image'] = !empty($value['image']) ? Config::get('cdn_host') . $value['image'] : '';
+            $value['image'] = imgUrl($value['image']);
             $value['flag'] = Base64::flag($value['id'], 7);
+
+
+            $value['url'] = url($value['action_name'] . '/' . $value['id']);
+            unset($value['action_name']);
+
             $value['child'] = $this->child($value['id'], 2);
             if (empty($value['child'])) {
                 unset($value['child']);
-            }
-
-            if ($value['access_id'] && session('?member_level') && session('member_level') <= $value['access_id']) {
-                $value['url'] = url($value['action_name'] . '/' . $value['id']);
-                unset($value['action_name']);
-            } else {
-                $value['url'] = url('error/auto');
             }
 
             $result[$key] = $value;
@@ -80,8 +78,9 @@ class Main
     private function child(int $_pid, int $_type_id)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image'])
+        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
+        ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
             ['c.is_show', '=', 1],
             ['c.type_id', '=', $_type_id],
@@ -94,10 +93,14 @@ class Main
         ->toArray();
 
         foreach ($result as $key => $value) {
+            $value['image'] = imgUrl($value['image']);
+            $value['flag'] = Base64::flag($value['id'], 7);
+
             $value['url'] = url($value['action_name'] . '/' . $value['id']);
+            unset($value['action_name']);
+
             $value['child'] = $this->child($value['id'], 2);
 
-            unset($value['action_name']);
             $result[$key] = $value;
         }
 

@@ -38,7 +38,37 @@ layui.use(['jquery', 'laypage', 'np'], function(){
                 cid: NIPHP.param.cid
             }
         });
+
+        np.pjax({
+            url: NIPHP.api.url + '/cms.html',
+            method: 'get',
+            data: {
+                method: 'article.catalog.query',
+                cid: NIPHP.param.cid
+            },
+            success: function(result) {
+                if (result.code == 'SUCCESS') {
+
+                }
+            }
+        });
+
+        np.pjax({
+            url: NIPHP.api.url + '/cms.html',
+            method: 'get',
+            data: {
+                method: 'article.breadcrumb.query',
+                cid: NIPHP.param.cid
+            },
+            success: function(result) {
+                if (result.code == 'SUCCESS') {
+
+                }
+            }
+        });
     }
+
+
 
     np.pjax({
         url: NIPHP.api.url + '/cms.html',

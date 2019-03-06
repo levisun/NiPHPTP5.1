@@ -2,7 +2,7 @@
 /**
  *
  * 控制层
- * 调度控制器
+ * CMS
  *
  * @package   NiPHP
  * @category  app\controller
@@ -16,7 +16,7 @@ declare (strict_types = 1);
 namespace app\controller;
 
 use think\Response;
-use think\exception\HttpException;
+use think\exception\HttpResponseException;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Request;
@@ -36,33 +36,50 @@ class Cms
     {
         if (isWechat() && Request::subDomain() !== 'wechat') {
             $url = Request::scheme() . '://wechat.' . Request::rootDomain() . Request::root();
-            echo Response::create($url, 'redirect', 302)->send();
-            die();
+            $response = Response::create($url, 'redirect', 302);
+            throw new HttpResponseException($response);
         }
 
         elseif (Request::isMobile() && Request::subDomain() !== 'm') {
             $url = Request::scheme() . '://m.' . Request::rootDomain() . Request::root();
-            echo Response::create($url, 'redirect', 302)->send();
-            die();
+            $response = Response::create($url, 'redirect', 302);
+            throw new HttpResponseException($response);
         }
     }
 
     /**
      * CMS
+     * @access public
+     * @param
+     * @return mixed        HTML文档
+     */
+    public function index()
+    {
+        return (new Template)->fetch('index');
+    }
+
+    /**
+     * 列表页
+     * @access public
+     * @param  string $name 分层名
+     * @param  int    $cid  栏目ID
+     * @return mixed        HTML文档
+     */
+    public function catalog(string $name = 'article', int $cid = 0)
+    {
+        return (new Template)->fetch('list_' . $name);
+    }
+
+    /**
+     * 详情页
+     * @access public
      * @param  string $name 分层名
      * @param  int    $cid  栏目ID
      * @param  int    $id   文章ID
      * @return mixed        HTML文档
      */
-    public function index(string $name = 'index', int $cid = 0, int $id = 0)
+    public function details(string $name = 'article', int $cid = 0, int $id = 0)
     {
-        if ($cid && $id) {
-            $tpl_name = 'details_' . $name;
-        } elseif ($cid) {
-            $tpl_name = 'list_' . $name;
-        } else {
-            $tpl_name = $name;
-        }
-        return (new Template)->fetch($tpl_name);
+        return (new Template)->fetch('details_' . $name);
     }
 }

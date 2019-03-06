@@ -75,7 +75,7 @@ class Catalog
             $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
             $value['url'] = url($value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
             $value['cat_url']  = url($value['action_name'] . '/' . $value['category_id']);
-            $value['thumb'] = empty($value['thumb']) ? Config::get('cdn_host') . $value['thumb'] : '';
+            $value['thumb'] = imgUrl($value['thumb']);
 
             $list['data'][$key] = $value;
         }
