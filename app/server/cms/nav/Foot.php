@@ -53,7 +53,7 @@ class Foot
                 unset($value['child']);
             }
 
-            $value['url'] = url($value['action_name'] . '/' . $value['id']);
+            $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
             unset($value['action_name']);
 
             $result[$key] = $value;
@@ -94,7 +94,7 @@ class Foot
             $value['image'] = imgUrl($value['image']);
             $value['flag'] = Base64::flag($value['id'], 7);
 
-            $value['url'] = url($value['action_name'] . '/' . $value['id']);
+            $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
             unset($value['action_name']);
 
             $value['child'] = $this->child($value['id'], 2);

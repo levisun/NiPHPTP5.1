@@ -23,7 +23,6 @@ use app\library\Filter;
 
 
 
-
 /**
  * 栏目授权地址
  * @param  int    $_access_id 指定权限 0为公开
@@ -54,7 +53,7 @@ function authorityUrl(int $_access_id, string $_url): string
  */
 function imgUrl(string $_img): string
 {
-    return !empty($_img) ? Config::get('cdn_host') . $_img : '';
+    return !empty($_img) ? Config::get('app.cdn_host') . $_img : '';
 }
 
 /**
@@ -66,10 +65,8 @@ function imgUrl(string $_img): string
  */
 function url(string $_url = '', array $_vars = [], string $_sub_domain = 'www')
 {
-    $_url = Url::build($_url, $_vars, true, true);
-    $_url = str_replace('//api', '//' .$_sub_domain, $_url);
-    // echo($url);
-    return $_url;
+    $_url = Url::build('/' . $_url, $_vars, true, true);
+    return str_replace('://api', '://' .$_sub_domain, $_url);
 }
 
 /**
@@ -91,8 +88,7 @@ function lang(string $_name, array $_vars = [], string $_lang = '')
  */
 function isWechat()
 {
-    return
-    strpos(Request::server('HTTP_USER_AGENT'), 'MicroMessenger') !== false ? true : false;
+    return strpos(Request::server('HTTP_USER_AGENT'), 'MicroMessenger') !== false ? true : false;
 }
 
 /**

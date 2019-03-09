@@ -22,6 +22,7 @@ use think\exception\HttpResponseException;
 use think\facade\Config;
 use think\facade\Env;
 use think\facade\Lang;
+use think\facade\Log;
 use think\facade\Request;
 use app\library\Base64;
 use app\library\Filter;
@@ -49,10 +50,10 @@ class Template
         $this->templatePath .= Siteinfo::theme() . DIRECTORY_SEPARATOR;
 
         $this->templateReplace = [
-            '{:__CSS__}'         => Config::get('cdn_host') . '/theme/' . Request::controller(true) . '/' . Siteinfo::theme() . '/css/',
-            '{:__IMG__}'         => Config::get('cdn_host') . '/theme/' . Request::controller(true) . '/' . Siteinfo::theme() . '/img/',
-            '{:__JS__}'          => Config::get('cdn_host') . '/theme/' . Request::controller(true) . '/' . Siteinfo::theme() . '/js/',
-            '{:__STATIC__}'      => Config::get('cdn_host') . '/theme/static/',
+            '{:__CSS__}'         => Config::get('app.cdn_host') . '/theme/' . Request::controller(true) . '/' . Siteinfo::theme() . '/css/',
+            '{:__IMG__}'         => Config::get('app.cdn_host') . '/theme/' . Request::controller(true) . '/' . Siteinfo::theme() . '/img/',
+            '{:__JS__}'          => Config::get('app.cdn_host') . '/theme/' . Request::controller(true) . '/' . Siteinfo::theme() . '/js/',
+            '{:__STATIC__}'      => Config::get('app.cdn_host') . '/static/',
             '{:__TITLE__}'       => Siteinfo::title(),
             '{:__KEYWORDS__}'    => Siteinfo::keywords(),
             '{:__DESCRIPTION__}' => Siteinfo::description(),
@@ -79,6 +80,8 @@ class Template
 
             if ($this->templateConfig['layout'] && strpos($content, '{:NOT_LAYOUT}') === false) {
                 $content = str_replace('{:__CONTENT__}', $content, $this->parseTemplateLayout());
+            } else {
+                $content = str_replace('{:NOT_LAYOUT}', '', $content);
             }
 
             $content = $this->parseTemplateHead() . $content . $this->parseTemplateFoot();
@@ -118,15 +121,15 @@ class Template
             'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
             'Expires'       => gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT'
         ];
-        if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
+        if (!APP_DEBUG && !headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
             $content = gzencode($content, 4);
             $headers['Content-Encoding'] = 'gzip';
             $headers['Content-Length'] = strlen($content);
         }
 
         $response = Response::create($content)->header($headers);
-        return $response->send();
-        // throw new HttpResponseException($response);
+        // return $response->send();
+        throw new HttpResponseException($response);
     }
 
     /**
@@ -149,8 +152,7 @@ class Template
         $url = implode('-', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        $time = APP_DEBUG ? 1140 : 3600;
-        if (is_file($path) && filemtime($path) >= time() - rand($time, $time*4)) {
+        if (is_file($path) && filemtime($path) >= time() - rand(3600, 3600*4)) {
             return file_get_contents($path);
         } else {
             return '';
@@ -177,7 +179,7 @@ class Template
         $url = implode('-', $url);
         $path .= $url ? $url . '.html' : 'index.html';
 
-        file_put_contents($path, $_content);
+        APP_DEBUG or file_put_contents($path, $_content);
     }
 
     /**
@@ -194,7 +196,7 @@ class Template
         'var NIPHP = {' .
             'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
             'api:{' .
-                'url:"' . Config::get('api_host') . '",'.
+                'url:"' . Config::get('app.api_host') . '",'.
                 'root:"' . $root . '",' .
                 'version:"' . $this->templateConfig['api_version'] . '",' .
                 'authorization:"{:__AUTHORIZATION__}"' .
@@ -259,10 +261,10 @@ class Template
         '<meta http-equiv="Cache-Control" content="no-transform" />' .
 
         '<meta http-equiv="x-dns-prefetch-control" content="on" />' .           // DNS缓存
-        '<link rel="dns-prefetch" href="' . Config::get('api_host') . '" />' .
-        '<link rel="dns-prefetch" href="' . Config::get('cdn_host') . '" />' .
+        '<link rel="dns-prefetch" href="' . Config::get('app.api_host') . '" />' .
+        '<link rel="dns-prefetch" href="' . Config::get('app.cdn_host') . '" />' .
 
-        '<link href="' . Config::get('cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
+        '<link href="' . Config::get('app.cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
         // 网站标题 关键词 描述
         $head .= '<title>' . Siteinfo::title() . '</title>';
@@ -332,11 +334,6 @@ class Template
                     throw new HttpException(200, '模板配置文件错误.');
                 }
 
-                // foreach ($config as $key => $value) {
-                //     if (!in_array($key, ['layout', 'api_version', 'theme_version'])) {
-                //         throw new HttpException(200, '模板配置文件错误.');
-                //     }
-                // }
                 return $config;
             }
         }

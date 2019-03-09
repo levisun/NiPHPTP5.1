@@ -15,6 +15,9 @@ declare (strict_types = 1);
 
 namespace app\controller;
 
+use think\Response;
+use think\exception\HttpResponseException;
+use think\facade\Request;
 use app\library\Api as LibraryApi;
 
 class Api extends LibraryApi
@@ -28,13 +31,26 @@ class Api extends LibraryApi
      */
     public function query(string $name = 'cms')
     {
-        $this->setModule($name)->run();
+        if (Request::isGet()) {
+            $this->setModule($name)->run();
+        } else {
+            $this->illegal();
+        }
     }
 
-
+    /**
+     * 操作接口
+     * @access public
+     * @param  string $name API分层名
+     * @return void
+     */
     public function handle(string $name = 'cms')
     {
-        # code...
+        if (Request::isPost()) {
+            $this->setModule($name)->run();
+        } else {
+            $this->illegal();
+        }
     }
 
     /**
@@ -43,8 +59,28 @@ class Api extends LibraryApi
      * @param
      * @return void
      */
-    public function upload()
+    public function upload(string $name = 'cms')
     {
+        if (Request::isPost() && !empty($_FILES)) {
+            $this->setModule($name)->run();
+        } else {
+            $this->illegal();
+        }
+    }
 
+    /**
+     * 非法请求
+     * @access private
+     * @param
+     * @return void
+     */
+    private function illegal()
+    {
+        $response = Response::create([
+            'code'    => 'ERROR',
+            'expire'  => date('Y-m-d H:i:s', time() + 30),
+            'message' => Request::param('method') . ' does not have a method'
+        ], 'json', 200);
+        throw new HttpResponseException($response);
     }
 }

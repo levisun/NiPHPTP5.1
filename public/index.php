@@ -19,7 +19,7 @@
 namespace think;
 
 define('APP_DEBUG', true);
-define('NP_VERSION', '2.1.0 CB');
+define('NP_VERSION', '1.5.2 CB 212');
 
 version_compare(PHP_VERSION, '7.1.0', '>=') or die('PHP VERSION >= 7.1.0!');
 if (!extension_loaded('PDO')) die('PDO');

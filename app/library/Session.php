@@ -25,12 +25,12 @@ class Session implements SessionHandlerInterface
     /**
      * 构造方法
      * @access public
-     * @param  Request $_request Request对象
+     * @param
      * @return void
      */
-    public function __construct($_config = '')
+    public function __construct($_config = [])
     {
-        $this->config = $_config ? $_config : Config::get('session.');
+        $this->config = !empty($_config) ? $_config : Config::get('session.');
 
         $this->prefix = Config::get('session.prefix');
         $this->expire = Config::get('session.expire');
@@ -41,6 +41,7 @@ class Session implements SessionHandlerInterface
      * @access public
      * @param  string    $_savePath
      * @param  mixed     $_sessName
+     * @return boolean
      */
     public function open($_savePath, $_sessName): bool
     {
@@ -50,6 +51,8 @@ class Session implements SessionHandlerInterface
     /**
      * 关闭Session
      * @access public
+     * @param
+     * @return boolean
      */
     public function close(): bool
     {
@@ -61,6 +64,7 @@ class Session implements SessionHandlerInterface
      * 读取Session
      * @access public
      * @param  string $_sessID
+     * @return mixed
      */
     public function read($_sessID)
     {

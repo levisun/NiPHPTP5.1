@@ -26,6 +26,9 @@ class Filter
             foreach ($_data as $key => $value) {
                 $_data[$key] = self::default($value);
             }
+        } elseif (is_object($_data)) {
+            # code...
+            return $_data;
         } else {
             // XSS跨域攻击
             $_data = self::XSS($_data);

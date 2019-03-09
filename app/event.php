@@ -17,9 +17,10 @@ return [
     'listen'    => [
         'AppInit'      => [
             'think\listener\LoadLangPack',
-            'think\listener\RouteCheck',
+            // 'think\listener\RouteCheck',
         ],
         'AppBegin'     => [
+            // 'app\library\Concurrent',
             'think\listener\CheckRequestCache',
         ],
         'ActionBegin'  => [],

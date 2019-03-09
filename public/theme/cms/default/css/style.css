@@ -9,22 +9,37 @@ header hgroup {
     text-align: center;
 }
 header.layui-bg-white,
-header .layui-nav.layui-bg-white {
+.layui-nav.layui-bg-white {
     background-color: #f8f9fa!important;
     color: #ccc;
 }
-header .layui-nav.layui-bg-white .layui-nav-item a:hover,
-header .layui-nav.layui-bg-white .layui-this a {
-    color: #777;
-}
-header .layui-nav.layui-bg-white .layui-nav-item a {
+.layui-nav.layui-bg-white .layui-nav-item a:hover,
+.layui-nav.layui-bg-white .layui-this a, {
     color: #333;
 }
-header .layui-nav.layui-bg-white .layui-nav-more {
+.layui-nav.layui-bg-white .layui-nav-item a {
+    color: #333;
+}
+.layui-nav.layui-bg-white .layui-nav-more {
     border-color: #333 transparent transparent;
 }
-header .layui-nav.layui-bg-white .layui-nav-mored {
+.layui-nav.layui-bg-white .layui-nav-mored {
     border-color: transparent transparent #333 ;
+}
+
+
+.layui-nav-tree.layui-bg-white {
+    background-color: #fff!important;
+    color: #ccc;
+}
+.layui-nav-itemed>a,
+.layui-bg-white.layui-nav-tree .layui-nav-title a,
+.layui-bg-white.layui-nav-tree .layui-nav-title a:hover {
+    color: #ccc!important;
+}
+.layui-bg-white.layui-nav-tree .layui-nav-item a:hover {
+    background-color: #f8f9fa!important;
+    color: #333;
 }
 
 footer.layui-bg-black a:hover,
@@ -39,3 +54,10 @@ footer {
     right: 0;
     bottom: 0;
 }
+
+#sidebar .layui-nav-tree {
+    width: 100%;
+}
+
+
+

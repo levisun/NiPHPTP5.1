@@ -25,22 +25,17 @@ Route::miss('abort/error');
 // 错误页面
 // code错误代码
 // 403 404
-Route::get('error/:code', 'abort/error');
 // 权限错误页
-Route::get('authority', 'abort/authority');
+Route::rule('error', 'abort/error');
+Route::rule('error/:code$', 'abort/error');
+Route::rule('authority', 'abort/authority');
 
 
 
 Route::domain(['www', 'm'], function(){
-
     Route::get('/', 'cms/index');
-
-
-    Route::get(':name/:cid$', 'cms/catalog');
-    Route::get(':name/:cid/:id$', 'cms/details');
-
-    // Route::get('/:name/:cid$', 'cms/index');
-
+    Route::get('list/:name/:cid$', 'cms/catalog');
+    Route::get('details/:name/:cid/:id$', 'cms/details');
 })
 ->bind('cms')
 ->ext('html');
@@ -49,7 +44,7 @@ Route::domain(['www', 'm'], function(){
 
 Route::domain('admin', function(){
     Route::get('/', 'admin/index');
-    Route::get('/:logic/:name$', 'admin/index');
+    Route::get('logic', 'admin/logic');
 })
 ->bind('admin')
 ->ext('html');
@@ -58,13 +53,13 @@ Route::domain('admin', function(){
 
 Route::domain('api', function(){
     Route::rule('/', function(){
-        throw new HttpException(404);
+        return '404';
+        // Route::redirect('error/:code', '');
     });
 
-    Route::miss('api/abort');
-    Route::rule(':name$', 'api/query');
-    Route::rule('handle/:name$', 'api/handle');
-    Route::rule('upload/:name$', 'api/upload');
+    Route::get(':name$', 'api/query');
+    Route::post('handle/:name$', 'api/handle');
+    Route::post('upload/:name$', 'api/upload');
 
     $headers = [
         'Access-Control-Allow-Origin'  => Request::server('HTTP_ORIGIN', '*'),

@@ -1,26 +1,35 @@
-<script>
-window.onload=function(){
-    layui.use(['jquery', 'np'], function(){
-        var jQuery = layui.jquery;
-        var np = layui.np;
+<div class="layui-row">
+    <aside id="sidebar" class="layui-col-md2 layui-hide-xs">
+        <ul class="layui-nav layui-nav-tree layui-bg-white" lay-filter="test">
+        <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
+            <li class="layui-nav-item layui-nav-itemed">
+                <a href="javascript:;">默认展开</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;">选项1</a></dd>
+                    <dd><a href="javascript:;">选项2</a></dd>
+                    <dd><a href="">跳转</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">解决方案</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">移动模块</a></dd>
+                    <dd><a href="">后台模版</a></dd>
+                    <dd><a href="">电商平台</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">产品</a></li>
+            <li class="layui-nav-item"><a href="">大数据</a></li>
+        </ul>
+    </aside>
+    <div class="layui-col-md8">
+        123
+    </div>
+    <div class="layui-col-md2">
+        123
+    </div>
+</div>
 
 
-        np.pjax({
-            url: NIPHP.api.url + '/cms.html',
-            method: 'get',
-            data: {
-                method: 'article.catalog.query',
-                cid: NIPHP.param.cid,
-                sign: np.sign({
-                    method: 'article.catalog.query'
-                })
-            },
-            success: function(result) {
-                if (result.code == 'SUCCESS') {
 
-                }
-            }
-        });
-    });
-}
-</script>
+

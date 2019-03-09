@@ -46,6 +46,7 @@ class Garbage
             Env::get('runtime_path') . 'cache' . Base64::flag() . DIRECTORY_SEPARATOR,
             Env::get('runtime_path') . 'log' . Base64::flag() . DIRECTORY_SEPARATOR,
             Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR,
+            Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR,
         ];
 
         $dirOrPath = [];
@@ -62,7 +63,7 @@ class Garbage
             $dirOrPath = array_slice($dirOrPath, 0, 1000);
 
             foreach ($dirOrPath as $path) {
-                if (is_file($path)) {
+                if (is_file($path) && strpos($path, '.SKL.') === false) {
                     @unlink($path);
                 } elseif (is_dir($path)) {
                     @rmdir($path);
@@ -81,7 +82,7 @@ class Garbage
      */
     private function getAll($_dirOrPath): array
     {
-        $days = APP_DEBUG ? strtotime('-3 hour') : strtotime('-7 days');
+        $days = APP_DEBUG ? strtotime('-1 hour') : strtotime('-7 days');
 
         $allFiles = [];
         foreach ($_dirOrPath as $key => $path) {

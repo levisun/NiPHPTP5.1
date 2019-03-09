@@ -60,7 +60,6 @@ class Breadcrumb
             ['c.id', '=', $_pid],
             ['c.lang', '=', Lang::detect()]
         ])
-        ->order('c.sort ASC, c.id DESC')
         ->cache(__METHOD__ . $_pid, null, 'NAV')
         ->find()
         ->toArray();
@@ -69,7 +68,7 @@ class Breadcrumb
             $result['image'] = imgUrl($result['image']);
             $result['flag'] = Base64::flag($result['id'], 7);
 
-            $result['url'] = url($result['action_name'] . '/' . $result['id']);
+            $result['url'] = url('list/' . $result['action_name'] . '/' . $result['id']);
             unset($result['action_name']);
 
             $this->bread[] = $result;

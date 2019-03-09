@@ -19,9 +19,11 @@ use think\Response;
 use think\exception\HttpResponseException;
 use think\facade\Config;
 use think\facade\Env;
+use think\facade\Lang;
 use think\facade\Request;
 use app\library\Siteinfo;
 use app\library\Template;
+use app\model\Category as ModelCategory;
 
 class Cms
 {

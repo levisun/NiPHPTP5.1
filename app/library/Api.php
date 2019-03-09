@@ -210,11 +210,11 @@ class Api
 
             if ($this->openVersion) {
                 $method = 'app\server\\' . $this->module . '\\' .
-                      'v' . $this->version['major'] . 'm' . $this->version['minor'] . '\\' .
-                      $logic . '\\' . ucfirst($class);
+                          'v' . $this->version['major'] . 'm' . $this->version['minor'] . '\\' .
+                          $logic . '\\' . ucfirst($class);
             } else {
                 $method = 'app\server\\' . $this->module . '\\' .
-                      $logic . '\\' . ucfirst($class);
+                          $logic . '\\' . ucfirst($class);
             }
 
 
@@ -231,12 +231,12 @@ class Api
 
             // 加载语言包
             if ($this->openVersion) {
-                $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
+                $lang = Env::get('app_path'). 'server' . DIRECTORY_SEPARATOR .
                     $this->module . DIRECTORY_SEPARATOR .
                     'v' . $this->version['major'] . 'm' . $this->version['minor'] . DIRECTORY_SEPARATOR .
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
             } else {
-                $lang = Env::get('app_path'). 'api' . DIRECTORY_SEPARATOR .
+                $lang = Env::get('app_path'). 'server' . DIRECTORY_SEPARATOR .
                     $this->module . DIRECTORY_SEPARATOR .
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
             }
@@ -425,7 +425,7 @@ class Api
      * @return void
      * @throws HttpResponseException
      */
-    protected function success(string $_msg, array $_data = [], string $_code = 'SUCCESS'): void
+    protected function success(string $_msg, $_data = [], string $_code = 'SUCCESS'): void
     {
         $this->result($_msg, $_data, $_code);
     }
@@ -451,7 +451,7 @@ class Api
      * @return void
      * @throws HttpResponseException
      */
-    protected function result(string $_msg, array $_data = [], string $_code = 'SUCCESS'): void
+    protected function result(string $_msg, $_data = [], string $_code = 'SUCCESS'): void
     {
         $result = [
             'code'    => $_code,

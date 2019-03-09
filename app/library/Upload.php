@@ -15,12 +15,13 @@ declare (strict_types = 1);
 
 namespace app\library;
 
+use think\Image;
 // use think\App;
 // use think\Response;
 // use think\exception\HttpException;
 // use think\exception\HttpResponseException;
 // use think\facade\Cache;
-// use think\facade\Config;
+use think\facade\Config;
 use think\facade\Env;
 // use think\facade\Lang;
 // use think\facade\Log;
@@ -32,76 +33,92 @@ use think\facade\Request;
 
 class Upload
 {
-    private $validate = [
-        'img' => [
-            'size' => 100*1024,
-            'ext'  => ['jpg', 'gif', 'png']
-        ],
-        'zip' => [
-            'size' => 100*1024,
-            'ext'  => ['zip', 'rar']
-        ],
-        'office' => [
-            'size' => 100*1024,
-            'ext'  => ['doc', 'ppt']
-        ]
+    private $rule = [
+        'size' => 200*1024,
+        'ext'  => ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'zip', 'rar', 'doc', 'ppt']
     ];
 
     private $savePath;
+    private $subDir;
 
     /**
      * 构造方法
      * @access public
-     * @param  App  $app  应用对象
+     * @param  string $_input_name
      * @return void
      */
     public function __construct()
     {
+        $this->subDir = date('Ym');
         $this->savePath = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                          'uploads' . DIRECTORY_SEPARATOR .
-                          date('Ym') . DIRECTORY_SEPARATOR;
-
-        $this->tempPath = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                          'temp' . DIRECTORY_SEPARATOR;
+                            'uploads' . DIRECTORY_SEPARATOR .
+                            $this->subDir . DIRECTORY_SEPARATOR;
     }
 
-    public function img()
+    /**
+     * 保存文件
+     * @access public
+     * @param  string $_input_name 表单名
+     * @return array  文件信息
+     */
+    public function save(string $_input_name = 'upload'): array
     {
-        $file = Request::file('upload');
-        $file->validate($this->validate['img'])->rule('uniqid');
-
-        if ($result = $file->move($this->tempPath)) {
-            # code...
+        $file = Request::file($_input_name);
+        // 多文件上传
+        if (is_array($file)) {
+            $result = [];
+            foreach ($file as $key => $object) {
+                $result[] = $this->saveFile($object);
+            }
         }
-    }
 
-    public function images()
-    {
-        $file = Request::file('upload');
-        $file->validate($this->validate['img'])->rule('uniqid');
-
-        if ($result = $file->move($this->tempPath)) {
-            # code...
+        // 单文件上传
+        elseif (is_object($file)) {
+            $result = $this->saveFile($file);
         }
-    }
 
-    public function zip()
-    {
-        $file = Request::file('upload');
-        $file->validate($this->validate['zip'])->rule('uniqid');
+        //
+        else {
 
-        if ($result = $file->move($this->tempPath)) {
-            # code...
         }
+
+
+        return $result;
     }
 
-    public function office()
+    /**
+     * 保存文件
+     * @param  object $_object
+     * @param  string $_type
+     * @return string
+     */
+    private function saveFile(object $_object)
     {
-        $file = Request::file('upload');
-        $file->validate($this->validate['office'])->rule('uniqid');
+        $_object->validate($this->rule);
+        $_object->rule('uniqid');
+        if ($result = $_object->move($this->savePath)) {
+            // 图片文件 压缩图片
+            if (in_array($result->getExtension(), ['gif', 'jpg', 'jpeg', 'bmp', 'png'])) {
+                $save_name = $result->getSaveName();
+                $image = Image::open($this->savePath . $save_name);
+                // 图片大于800像素
+                // 统一缩放到800像素
+                if ($image->width() > 800 || $image->height() > 800) {
+                    $image->thumb(800, 800, Image::THUMB_SCALING);
+                }
 
-        if ($result = $file->move($this->tempPath)) {
-            # code...
+                $image->save($this->savePath . $save_name, null, 40);
+            }
+
+            return [
+                'name'     => $result->getSaveName(),
+                'original' => $result->getBaseName('.' . $result->getExtension()),
+                'ext'      => $result->getExtension(),
+                'size'     => $result->getSize(),
+                'url'      => '/uploads/' . $this->subDir . '/' .  $result->getSaveName(),
+            ];
+        } else {
+            return $_object->getError();
         }
     }
 }

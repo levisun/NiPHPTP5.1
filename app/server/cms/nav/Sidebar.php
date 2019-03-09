@@ -53,7 +53,7 @@ class Sidebar
                 unset($result['child']);
             }
 
-            $result['url'] = url($result['action_name'] . '/' . $result['id']);
+            $result['url'] = url('list/' . $result['action_name'] . '/' . $result['id']);
             unset($result['action_name']);
 
             return [
@@ -97,7 +97,7 @@ class Sidebar
             $value['flag'] = Base64::flag($value['id'], 7);
             $value['child'] = $this->child($value['id']);
 
-            $value['url'] = url($value['action_name'] . '/' . $value['id']);
+            $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
             unset($value['action_name']);
 
             $result[$key] = $value;
