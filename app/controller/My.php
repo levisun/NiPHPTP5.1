@@ -35,8 +35,9 @@ class My
     public function __construct()
     {
         // 开启session
-        Config::set('session.auto_start', true);
-        session(Config::get('session.'));
+        $session = Config::get('session');
+        $session['auto_start'] = true;
+        Config::set($session, 'session');
 
         if (!in_array(Request::action(false), ['login', 'register', 'forget', 'logout'])) {
             if (!session('?member_auth_key')) {

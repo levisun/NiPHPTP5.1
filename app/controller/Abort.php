@@ -42,7 +42,8 @@ class Abort
         }
 
         $response = Response::create(file_get_contents($tpl), '', $code);
-        return $response->send();
+        throw new HttpResponseException($response);
+        // return $response->send();
         // throw new HttpException($code);
     }
 

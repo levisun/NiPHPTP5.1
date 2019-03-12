@@ -30,7 +30,7 @@ class Session implements SessionHandlerInterface
      */
     public function __construct($_config = [])
     {
-        $this->config = !empty($_config) ? $_config : Config::get('session.');
+        $this->config = !empty($_config) ? $_config : Config::get('session');
 
         $this->prefix = Config::get('session.prefix');
         $this->expire = Config::get('session.expire');

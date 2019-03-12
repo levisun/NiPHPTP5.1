@@ -29,8 +29,9 @@ class admin
     public function __construct()
     {
         // 开启session
-        Config::set('session.auto_start', true);
-        session(Config::get('session.'));
+        $session = Config::get('session');
+        $session['auto_start'] = true;
+        Config::set($session, 'session');
     }
 
     public function index(string $logic = 'account', string $name = 'login')

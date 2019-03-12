@@ -43,7 +43,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
             url: NIPHP.api.url + '/cms.html',
             method: 'get',
             data: {
-                method: 'article.catalog.query',
+                method: 'article.lists.query',
                 cid: NIPHP.param.cid
             },
             success: function(result) {

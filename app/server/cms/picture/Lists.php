@@ -2,10 +2,10 @@
 /**
  *
  * API接口层
- * 文章列表
+ * 相册列表
  *
  * @package   NiPHP
- * @category  app\server\cms\article
+ * @category  app\server\cms\picture
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -13,12 +13,12 @@
  */
 declare (strict_types = 1);
 
-namespace app\server\cms\article;
+namespace app\server\cms\picture;
 
 use think\facade\Lang;
 use app\server\cms\ArticleBase;
 
-class Catalog extends ArticleBase
+class Lists extends ArticleBase
 {
 
     /**
@@ -29,7 +29,7 @@ class Catalog extends ArticleBase
      */
     public function query(): array
     {
-        $list = $this->catalog();
+        $list = $this->lists();
 
         return [
             'debug' => false,

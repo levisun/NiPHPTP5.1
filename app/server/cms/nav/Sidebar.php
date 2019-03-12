@@ -33,7 +33,7 @@ class Sidebar
     {
         if ($cid = Request::param('cid/f', null)) {
             $result =
-            ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
+            ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'is_channel', 'access_id'])
             ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
             ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
             ->where([
@@ -54,6 +54,9 @@ class Sidebar
             }
 
             $result['url'] = url('list/' . $result['action_name'] . '/' . $result['id']);
+            if ($result['access_id']) {
+                $result['url'] = url('channel/' . $result['action_name'] . '/' . $result['id']);
+            }
             unset($result['action_name']);
 
             return [
@@ -79,7 +82,7 @@ class Sidebar
     private function child(int $_id)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
+        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'is_channel', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
         ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
@@ -98,6 +101,9 @@ class Sidebar
             $value['child'] = $this->child($value['id']);
 
             $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
+            if ($value['access_id']) {
+                $value['url'] = url('channel/' . $value['action_name'] . '/' . $value['id']);
+            }
             unset($value['action_name']);
 
             $result[$key] = $value;

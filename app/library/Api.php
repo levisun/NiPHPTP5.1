@@ -284,8 +284,11 @@ class Api
             if ($session_id) {
                 // 开启session
                 if (!session_id()) {
-                    Config::set('session.auto_start', true);
-                    Config::set('session.id', $this->sid);
+                    $session = Config::get('session');
+                    $session['auto_start'] = true;
+                    $session['id'] = $this->sid;
+                    Config::set($session, 'session');
+
                     session_id($this->sid);
                     session_start();
                     session_write_close();
@@ -462,12 +465,12 @@ class Api
         ];
         $result = array_filter($result);
 
+        // 调试模式记录日志
+        $this->debugLog($result);
+
         if ($this->debug === false) {
             unset($result['debug']);
         }
-
-        // 调试模式记录日志
-        $this->debugLog($result);
 
         $headers = [];
         if (APP_DEBUG === false && $this->expire && $this->cache === true && $_code == 'SUCCESS') {
@@ -490,13 +493,12 @@ class Api
      */
     private function debugLog(array $result)
     {
-        Log::record('[API] IP:' . Request::ip(), 'debug');
-        Log::record('[API] TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ', 'debug');
-        Log::record('[API] MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb', 'debug');
-        Log::record('[API] CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes', 'debug');
-        Log::record('[API] PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE), 'debug');
-        Log::record('[API] DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE), 'debug');
-
-        // if ($this->debug === true) Log::record('[API] RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE), 'debug');
+        Log::record('[API] IP:' . Request::ip(), 'alert');
+        Log::record('[API] TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ', 'alert');
+        Log::record('[API] MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb', 'alert');
+        Log::record('[API] CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes', 'alert');
+        Log::record('[API] PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE), 'alert');
+        APP_DEBUG and Log::record('[API] DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE), 'alert');
+        APP_DEBUG and Log::record('[API] RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE), 'alert');
     }
 }

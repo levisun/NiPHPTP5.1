@@ -64,9 +64,11 @@ class Upload
     public function save(string $_input_name = 'upload'): array
     {
         $file = Request::file($_input_name);
+
+        $result = [];
+
         // 多文件上传
         if (is_array($file)) {
-            $result = [];
             foreach ($file as $key => $object) {
                 $result[] = $this->saveFile($object);
             }
@@ -101,24 +103,26 @@ class Upload
             if (in_array($result->getExtension(), ['gif', 'jpg', 'jpeg', 'bmp', 'png'])) {
                 $save_name = $result->getSaveName();
                 $image = Image::open($this->savePath . $save_name);
-                // 图片大于800像素
-                // 统一缩放到800像素
-                if ($image->width() > 800 || $image->height() > 800) {
-                    $image->thumb(800, 800, Image::THUMB_SCALING);
+                // 图片大于800像素 统一缩放到800像素
+                $width = Request::param('width/f', 800);
+                $height = Request::param('height/f', 800);
+                if ($image->width() > $width || $image->height() > $height) {
+                    $image->thumb($width, $height, Image::THUMB_SCALING);
                 }
-
-                $image->save($this->savePath . $save_name, null, 40);
+                $image->save($this->savePath . $save_name, null, 60);
             }
 
             return [
+                'ext'      => $result->getExtension(),
                 'name'     => $result->getSaveName(),
                 'original' => $result->getBaseName('.' . $result->getExtension()),
-                'ext'      => $result->getExtension(),
                 'size'     => $result->getSize(),
                 'url'      => '/uploads/' . $this->subDir . '/' .  $result->getSaveName(),
             ];
         } else {
-            return $_object->getError();
+            return [
+                'error' => $_object->getError(),
+            ];
         }
     }
 }

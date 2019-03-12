@@ -31,7 +31,7 @@ class Main
     public function query(): array
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
+        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'is_channel', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
         ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
@@ -51,6 +51,9 @@ class Main
 
 
             $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
+            if ($value['access_id']) {
+                $value['url'] = url('channel/' . $value['action_name'] . '/' . $value['id']);
+            }
             unset($value['action_name']);
 
             $value['child'] = $this->child($value['id'], 2);
@@ -78,7 +81,7 @@ class Main
     private function child(int $_pid, int $_type_id)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'access_id'])
+        ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'is_channel', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
         ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
@@ -97,6 +100,9 @@ class Main
             $value['flag'] = Base64::flag($value['id'], 7);
 
             $value['url'] = url('list/' . $value['action_name'] . '/' . $value['id']);
+            if ($value['access_id']) {
+                $value['url'] = url('channel/' . $value['action_name'] . '/' . $value['id']);
+            }
             unset($value['action_name']);
 
             $value['child'] = $this->child($value['id'], 2);

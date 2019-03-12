@@ -26,9 +26,14 @@ class Auth
     protected $class;
     protected $action;
 
-    protected function authenticate($_logic, $_class, $_action)
+    protected function __authenticate($_logic, $_class, $_action)
     {
-
+        // 用户权限校验
+        if (session('?admin_auth_key')) {
+            (new Rbac)->authenticate('admin', __CLASS__)
+        } else {
+            return false;
+        }
     }
 
     /**

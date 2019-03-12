@@ -46,7 +46,7 @@ class Garbage
             Env::get('runtime_path') . 'cache' . Base64::flag() . DIRECTORY_SEPARATOR,
             Env::get('runtime_path') . 'log' . Base64::flag() . DIRECTORY_SEPARATOR,
             Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR,
-            Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR,
+            // Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR,
         ];
 
         $dirOrPath = [];

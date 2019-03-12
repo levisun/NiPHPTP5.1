@@ -52,7 +52,7 @@ class Breadcrumb
     private function parentCate($_pid)
     {
         $result =
-        ModelCategory::view('category c', ['id', 'name', 'pid', 'aliases', 'image', 'access_id'])
+        ModelCategory::view('category c', ['id', 'name', 'pid', 'aliases', 'image', 'is_channel', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
         ->view('level level', ['name' => 'level_name'], 'level.id=c.access_id', 'LEFT')
         ->where([
@@ -69,6 +69,9 @@ class Breadcrumb
             $result['flag'] = Base64::flag($result['id'], 7);
 
             $result['url'] = url('list/' . $result['action_name'] . '/' . $result['id']);
+            if ($result['access_id']) {
+                $result['url'] = url('channel/' . $result['action_name'] . '/' . $result['id']);
+            }
             unset($result['action_name']);
 
             $this->bread[] = $result;

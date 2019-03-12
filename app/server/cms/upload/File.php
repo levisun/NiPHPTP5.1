@@ -27,10 +27,10 @@ class File
 {
     public function save(): array
     {
-        $inputName = Request::param('input_name', 'upload');
+        $input_name = Request::param('input_name', 'upload');
 
         // 用户权限校验
-        if (session('?member_auth_key')) {
+        if (session_id() && session('?member_auth_key')) {
             $result = (new Upload)->save($input_name);
         } else {
             $result = 'not';

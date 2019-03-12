@@ -25,7 +25,7 @@ use app\library\Siteinfo;
 use app\library\Template;
 use app\model\Category as ModelCategory;
 
-class Cms
+class Cms extends Template
 {
 
     /**
@@ -36,6 +36,21 @@ class Cms
      */
     public function __construct()
     {
+        parent::__construct();
+        $this->theme = Request::controller(true) . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR;
+        $this->templateReplace = [
+            '{:__CSS__}'         => Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/css/',
+            '{:__IMG__}'         => Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/img/',
+            '{:__JS__}'          => Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/js/',
+            '{:__STATIC__}'      => Config::get('app.cdn_host') . '/static/',
+            '{:__TITLE__}'       => Siteinfo::title(),
+            '{:__KEYWORDS__}'    => Siteinfo::keywords(),
+            '{:__DESCRIPTION__}' => Siteinfo::description(),
+            '{:__BOTTOM_MSG__}'  => Siteinfo::bottom(),
+            '{:__COPYRIGHT__}'   => Siteinfo::copyright(),
+        ];
+
+
         if (isWechat() && Request::subDomain() !== 'wechat') {
             $url = Request::scheme() . '://wechat.' . Request::rootDomain() . Request::root();
             $response = Response::create($url, 'redirect', 302);
@@ -57,7 +72,8 @@ class Cms
      */
     public function index()
     {
-        return (new Template)->fetch('index');
+        (new \app\library\Image)->thumb('/uploads/201903/5c87775954ccc.jpg');
+        $this->fetch('index');
     }
 
     /**
@@ -69,7 +85,7 @@ class Cms
      */
     public function catalog(string $name = 'article', int $cid = 0)
     {
-        return (new Template)->fetch('list_' . $name);
+        $this->fetch('list_' . $name);
     }
 
     /**
@@ -82,6 +98,6 @@ class Cms
      */
     public function details(string $name = 'article', int $cid = 0, int $id = 0)
     {
-        return (new Template)->fetch('details_' . $name);
+        $this->fetch('details_' . $name);
     }
 }

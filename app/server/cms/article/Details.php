@@ -55,7 +55,7 @@ class Details extends ArticleBase
      */
     public function hits(): array
     {
-        $result = $this->upHits();
+        $result = parent::hits();
 
         return [
             'debug' => false,

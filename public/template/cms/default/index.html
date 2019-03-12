@@ -1,0 +1,43 @@
+
+<font style="font-size: 12px;">font</font>
+<a href="javascript:alert(123)"onclick = " alert(222);">de</a>
+
+
+
+
+<button type="button" class="layui-btn" id="test1">
+    <i class="layui-icon">&#xe67c;</i>上传图片
+</button>
+
+
+<script>
+window.onload=function(){
+    layui.use(['np', 'upload'], function(){
+        var np = layui.np;
+        var upload = layui.upload;
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test1', //绑定元素
+            url: NIPHP.api.url + '/upload/cms.html', //上传接口
+            data: {
+                method: 'upload.file.save',
+                input_name: 'file',
+                sign: np.sign({
+                    method: 'upload.file.save'
+                })
+            },
+            headers: {
+                Accept: 'application/vnd.' + NIPHP.api.root + '.v' + NIPHP.api.version + '+json',
+                Authorization: NIPHP.api.authorization
+            },
+            done: function(res){
+              //上传完毕回调
+            },
+            error: function(){
+                  //请求异常回调
+            }
+        });
+    });
+}
+</script>
