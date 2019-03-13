@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `np_user` (
   `portrait` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
   `gender` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '性别',
   `birthday` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '生日',
-  `level_id` smallint(6) unsigned NOT NULL DEFAULT '0' COMMENT '等级ID',
+  `level_id` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '等级ID',
   `province_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '省',
   `city_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '市',
   `area_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '区',
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `np_user_wechat` (
 
 DROP TABLE IF EXISTS `np_level`;
 CREATE TABLE IF NOT EXISTS `np_level` (
-  `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL DEFAULT '' COMMENT '组名',
   `credit` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '积分',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '状态',

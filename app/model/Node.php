@@ -22,10 +22,10 @@ class Node extends Model
     protected $updateTime = false;
     protected $pk = 'id';
     protected $type = [
-        'status' => 'integer',
-        'sort'   => 'integer',
-        'pid'    => 'integer',
-        'level'  => 'integer',
+        'status'     => 'integer',
+        'sort_order' => 'integer',
+        'pid'        => 'integer',
+        'level'      => 'integer',
     ];
     protected $field = [
         'id',
@@ -33,7 +33,7 @@ class Node extends Model
         'title',
         'status',
         'remark',
-        'sort',
+        'sort_order',
         'pid',
         'level',
     ];

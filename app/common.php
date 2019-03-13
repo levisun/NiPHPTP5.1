@@ -20,6 +20,7 @@ use think\facade\Session;
 use think\facade\Url;
 use app\library\Base64;
 use app\library\Filter;
+use app\library\Image;
 
 
 
@@ -51,9 +52,14 @@ function authorityUrl(int $_access_id, string $_url): string
  * @param  string $_img
  * @return string
  */
-function imgUrl(string $_img): string
+function imgUrl(string $_img, int $_width = 150, int $_height = 150): string
 {
-    return !empty($_img) ? Config::get('app.cdn_host') . $_img : '';
+    if (!empty($_img)) {
+        $_img = (new Image)->thumb($_img, $_width, $_height);
+        $_img = Config::get('app.cdn_host') . $_img;
+    }
+
+    return $_img;
 }
 
 /**

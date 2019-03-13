@@ -40,7 +40,7 @@ class Main
             ['c.pid', '=', 0],
             ['c.lang', '=', Lang::detect()]
         ])
-        ->order('c.sort ASC, c.id DESC')
+        ->order('c.sort_order ASC, c.id DESC')
         ->cache(__METHOD__, null, 'NAV')
         ->select()
         ->toArray();
@@ -90,7 +90,7 @@ class Main
             ['c.pid', '=', $_pid],
             ['c.lang', '=', Lang::detect()]
         ])
-        ->order('c.sort ASC, c.id DESC')
+        ->order('c.sort_order ASC, c.id DESC')
         ->cache(__METHOD__ . $_pid . $_type_id, null, 'NAV')
         ->select()
         ->toArray();

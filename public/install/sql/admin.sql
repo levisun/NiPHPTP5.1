@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `np_role_admin`;
 CREATE TABLE IF NOT EXISTS `np_role_admin` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '管理员ID',
-  `role_id` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '组ID',
+  `role_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '组ID',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`) USING BTREE,
   KEY `group_id` (`role_id`) USING BTREE
@@ -36,8 +36,8 @@ INSERT INTO `np_role_admin` (`id`, `user_id`, `role_id`) VALUES
 
 DROP TABLE IF EXISTS `np_role`;
 CREATE TABLE IF NOT EXISTS `np_role` (
-  `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pid` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父ID',
+  `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父ID',
   `name` varchar(20) NOT NULL DEFAULT '' COMMENT '组名',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '状态',
   `remark` varchar(100) NOT NULL DEFAULT '' COMMENT '描述',
@@ -52,12 +52,12 @@ INSERT INTO `np_role` (`id`, `pid`, `name`, `status`, `remark`) VALUES
 
 DROP TABLE IF EXISTS `np_access`;
 CREATE TABLE IF NOT EXISTS `np_access` (
-  `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `role_id` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '组ID',
-  `node_id` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `role_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '组ID',
+  `node_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '节点ID',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
   `level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '节点等级',
-  `module` varchar(50) NOT NULL DEFAULT '' COMMENT '节点名',
+  `module` varchar(20) NOT NULL DEFAULT '' COMMENT '节点名',
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`) USING BTREE,
   KEY `node_id` (`node_id`) USING BTREE,
@@ -68,13 +68,13 @@ CREATE TABLE IF NOT EXISTS `np_access` (
 
 DROP TABLE IF EXISTS `np_node`;
 CREATE TABLE IF NOT EXISTS `np_node` (
-  `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pid` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父ID',
+  `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父ID',
   `level` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '等级',
   `name` varchar(20) NOT NULL DEFAULT '' COMMENT '节点操作名',
   `title` varchar(50) NOT NULL DEFAULT '' COMMENT '节点说明',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
-  `sort` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
   `remark` varchar(100) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`) USING BTREE,
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `np_node` (
   KEY `name` (`name`) USING BTREE,
   KEY `status` (`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点表';
-INSERT INTO `np_node` (`id`, `pid`, `level`, `name`, `title`, `status`, `sort`, `remark`) VALUES
+INSERT INTO `np_node` (`id`, `pid`, `level`, `name`, `title`, `status`, `sort_order`, `remark`) VALUES
 (1, 0, 1, 'admin', '后台', 1, 0, '后台模块'),
 (2, 1, 2, 'settings', '设置', 1, 0, '设置控制器'),
 (3, 1, 2, 'theme', '界面', 1, 0, '界面控制器'),

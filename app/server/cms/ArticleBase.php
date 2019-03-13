@@ -68,12 +68,13 @@ class ArticleBase
         if (!Cache::has($cache_key)) {
             $result =
             ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
+            ->view('article_content article_content', ['thumb'], 'article_content.article_id=article.id', 'LEFT')
             ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
             ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
             ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
             ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
             ->where($map)
-            ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort DESC, article.id DESC')
+            ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort_order DESC, article.id DESC')
             ->paginate();
             $list = $result->toArray();
             $list['render'] = $result->render();
@@ -87,6 +88,22 @@ class ArticleBase
             $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
             $value['cat_url'] = url('list/' . $value['action_name'] . '/' . $value['category_id']);
             $value['url'] = url('details/' . $value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
+            $value['thumb'] = imgUrl($value['thumb']);
+
+
+            // 附加字段数据
+            // $fields =
+            // ModelArticleData::view('article_data data', ['data'])
+            // ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
+            // ->where([
+            //     ['data.main_id', '=', $value['id']],
+            // ])
+            // ->cache('modelarticledata' . $value['id'], null, 'CATALOG')
+            // ->select()
+            // ->toArray();
+            // foreach ($fields as $val) {
+            //    $value[$val['fields_name']] = $val['data'];
+            // }
 
 
             // 标签
@@ -96,7 +113,7 @@ class ArticleBase
             ->where([
                 ['article.article_id', '=', $value['id']],
             ])
-            ->cache('modeltagsarticle' . $value['id'], null, 'CATALOG')
+            ->cache(__METHOD__ . 'tags' . $value['id'], null, 'CATALOG')
             ->select()
             ->toArray();
 
@@ -133,11 +150,11 @@ class ArticleBase
 
         $result =
         ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
+        ->view('article_content article_content', ['thumb', 'content'], 'article_content.article_id=article.id', 'LEFT')
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
         ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
         ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
         ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
-        ->view('article_content article_content', ['content'], 'article_content.article_id=article.id', 'LEFT')
         ->where($map)
         ->cache(__METHOD__ . $id, null, 'DETAILS')
         ->find()
@@ -147,6 +164,23 @@ class ArticleBase
             $result['flag'] = Base64::flag($result['category_id'] . $result['id'], 7);
             $result['url'] = url('details/' . $result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
             $result['cat_url'] = url('list/' . $result['action_name'] . '/' . $result['category_id']);
+            $result['thumb'] = imgUrl($result['thumb']);
+            $result['content'] = htmlspecialchars_decode($result['content']);
+
+
+            // 附加字段数据
+            // $fields =
+            // ModelArticleData::view('article_data data', ['data'])
+            // ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
+            // ->where([
+            //     ['data.main_id', '=', $value['id']],
+            // ])
+            // ->cache('modelarticledata' . $value['id'], null, 'CATALOG')
+            // ->select()
+            // ->toArray();
+            // foreach ($fields as $val) {
+            //    $value[$val['fields_name']] = $val['data'];
+            // }
 
 
             // 上一篇
@@ -162,7 +196,7 @@ class ArticleBase
             ->where([
                 ['article.article_id', '=', $result['id']],
             ])
-            ->cache('modeltagsarticle' . $result['id'], null, 'DETAILS')
+            ->cache(__METHOD__ . 'tags' . $result['id'], null, 'DETAILS')
             ->select()
             ->toArray();
         }
@@ -222,7 +256,7 @@ class ArticleBase
             ['show_time', '<=', time()],
             ['id', '>', $_id]
         ])
-        ->order('is_top, is_hot, is_com, sort DESC, id DESC')
+        ->order('is_top, is_hot, is_com, sort_order DESC, id DESC')
         ->cache(__METHOD__ . 'min' . $_id, null, 'DETAILS')
         ->min('id');
 
@@ -261,7 +295,7 @@ class ArticleBase
             ['show_time', '<=', time()],
             ['id', '<', $_id]
         ])
-        ->order('is_top, is_hot, is_com, sort DESC, id DESC')
+        ->order('is_top, is_hot, is_com, sort_order DESC, id DESC')
         ->cache(__METHOD__ . 'max' . $_id, null, 'DETAILS')
         ->max('id');
 

@@ -26,7 +26,7 @@ class Category extends Model
         'model_id'   => 'integer',
         'is_show'    => 'integer',
         'is_channel' => 'integer',
-        'sort'       => 'integer',
+        'sort_order' => 'integer',
         'access_id'  => 'integer',
     ];
     protected $field = [
@@ -42,7 +42,7 @@ class Category extends Model
         'model_id',
         'is_show',
         'is_channel',
-        'sort',
+        'sort_order',
         'access_id',
         'url',
         'create_time',

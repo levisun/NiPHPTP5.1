@@ -182,7 +182,7 @@ class Accesslog
                '</url>' . PHP_EOL;
 
         $article =
-        ModelArticle::view('article article', ['id', 'category_id', 'url', 'update_time'])
+        ModelArticle::view('article article', ['id', 'category_id', 'update_time'])
         ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
         ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
         ->where([
@@ -197,7 +197,7 @@ class Accesslog
 
         $cat_url = '';
         foreach ($article as $key => $value) {
-            $value['cat_url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/' .
+            $value['cat_url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/list/' .
                                 $value['action_name'] . '/' . $value['category_id'] . '.html';
 
             if ($cat_url !== $value['cat_url']) {
@@ -210,7 +210,7 @@ class Accesslog
                 $cat_url = $value['cat_url'];
             }
 
-            $value['url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/' .
+            $value['url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/details/' .
                             $value['action_name'] . '/' . $value['category_id'] . '/' .
                             $value['id'] . '.html';
 

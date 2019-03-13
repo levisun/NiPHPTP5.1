@@ -28,6 +28,7 @@ class ArticleContent extends Model
     protected $field = [
         'id',
         'article_id',
-        'content'
+        'content',
+        'thumb'
     ];
 }

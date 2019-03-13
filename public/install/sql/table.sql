@@ -1,33 +1,3 @@
--- --------------------------------------------------------
-
---
--- 表的结构 `np_access`
---
-
-
-
--- --------------------------------------------------------
-
---
--- 表的结构 `np_admin`
---
-
-
-
--- --------------------------------------------------------
-
---
--- 表的结构 `np_article`
---
-
-
-
--- --------------------------------------------------------
-
---
--- 表的结构 `np_article_data`
---
-
 DROP TABLE IF EXISTS `np_article_data`;
 CREATE TABLE IF NOT EXISTS `np_article_data` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -39,50 +9,6 @@ CREATE TABLE IF NOT EXISTS `np_article_data` (
   KEY `fields_id` (`fields_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章扩展表';
 
--- --------------------------------------------------------
-
---
--- 表的结构 `np_category`
---
-
-
-
--- --------------------------------------------------------
-
---
--- 表的结构 `np_config`
---
-
-DROP TABLE IF EXISTS `np_config`;
-CREATE TABLE IF NOT EXISTS `np_config` (
-  `id` smallint(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '名称',
-  `value` varchar(500) NOT NULL DEFAULT '' COMMENT '值',
-  `lang` varchar(10) NOT NULL DEFAULT '' COMMENT '语言 niphp为全局设置',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  KEY `value` (`value`(191)),
-  KEY `lang` (`lang`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='设置表';
-
---
--- 转存表中的数据 `np_config`
---
-
-INSERT INTO `np_config` (`id`, `name`, `value`, `lang`) VALUES
-(1, 'index_theme', 'default', 'zh-cn'),
-(2, 'index_script', '', 'zh-cn'),
-(3, 'index_bottom', '&lt;a href=&quot;http://www.miitbeian.gov.cn&quot; target=&quot;_blank&quot;&gt;陕icp备15001502号-1&lt;/a&gt;', 'zh-cn'),
-(4, 'index_copyright', 'copyright &amp;copy; 2014-2015 &lt;a href=&quot;http://www.niphp.com&quot; target=&quot;_blank&quot;&gt;niphp.com&lt;/a&gt;版权所有', 'zh-cn'),
-(5, 'index_sitename', '腐朽的木屋', 'zh-cn'),
-(6, 'index_keywords', 'php, javascript, js, html, css, thinkphp, tp', 'zh-cn'),
-(7, 'index_description', '开发WEB应用时的笔记、问题和学习资料。', 'zh-cn');
-
--- --------------------------------------------------------
-
---
--- 表的结构 `np_feedback`
---
 
 DROP TABLE IF EXISTS `np_feedback`;
 CREATE TABLE IF NOT EXISTS `np_feedback` (
@@ -183,21 +109,7 @@ INSERT INTO `np_fields_type` (`id`, `name`, `description`, `regex`) VALUES
 -- 表的结构 `np_ipinfo`
 --
 
-DROP TABLE IF EXISTS `np_ipinfo`;
-CREATE TABLE IF NOT EXISTS `np_ipinfo` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ip` varchar(15) NOT NULL DEFAULT '' COMMENT 'IP',
-  `country_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '国家',
-  `province_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '省',
-  `city_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '市',
-  `area_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '区',
-  `isp` varchar(20) NOT NULL DEFAULT '' COMMENT '运营商',
-  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ip` (`ip`),
-  KEY `update_time` (`update_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IP地域信息';
+
 
 -- --------------------------------------------------------
 
@@ -288,51 +200,13 @@ CREATE TABLE IF NOT EXISTS `np_message_data` (
 
 
 
-
-
-DROP TABLE IF EXISTS `np_tags`;
-CREATE TABLE IF NOT EXISTS `np_tags` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL DEFAULT '' COMMENT '标签名',
-  `count` int(11) UNSIGNED NOT NULL DEFAULT '1' COMMENT '标签文章数量',
-  `lang` varchar(20) NOT NULL DEFAULT 'zh-cn' COMMENT '语言',
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `count` (`count`),
-  KEY `lang` (`lang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签表';
-
--- --------------------------------------------------------
-
---
--- 表的结构 `np_tags_article`
---
-
-DROP TABLE IF EXISTS `np_tags_article`;
-CREATE TABLE IF NOT EXISTS `np_tags_article` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tags_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '标签ID',
-  `article_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '文章ID',
-  PRIMARY KEY (`id`),
-  KEY `tags_id` (`tags_id`),
-  KEY `article_id` (`article_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签文章关联表';
-
 -- --------------------------------------------------------
 
 --
 -- 表的结构 `np_type`
 --
 
-DROP TABLE IF EXISTS `np_type`;
-CREATE TABLE IF NOT EXISTS `np_type` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category_id` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目ID',
-  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名',
-  `description` varchar(555) NOT NULL DEFAULT '' COMMENT '描述',
-  PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类';
+
 
 -- --------------------------------------------------------
 

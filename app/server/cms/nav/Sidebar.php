@@ -90,7 +90,7 @@ class Sidebar
             ['c.pid', '=', $_id],
             ['c.lang', '=', Lang::detect()]
         ])
-        ->order('c.sort ASC, c.id DESC')
+        ->order('c.sort_order ASC, c.id DESC')
         ->cache(__METHOD__ . $_id, null, 'NAV')
         ->select()
         ->toArray();
