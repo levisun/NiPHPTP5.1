@@ -22,7 +22,7 @@ return [
     // 缓存前缀
     'prefix'        => '',
     // 缓存有效期 0表示永久缓存
-    'expire'        => 1140,
+    'expire'        => APP_DEBUG ? 1440 : 14400,
     // 关闭子目录
     'cache_subdir'  => false,
     // 开启转义

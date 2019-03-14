@@ -19,18 +19,17 @@ window.onload=function(){
         //执行实例
         var uploadInst = upload.render({
             elem: '#test1', //绑定元素
-            url: NIPHP.api.url + '/upload/cms.html', //上传接口
+            url: NIPHP.api.url + '/upload/cms.do', //上传接口
             data: {
                 method: 'upload.file.save',
                 input_name: 'file',
+                width: 300,
+                height: 300,
                 sign: np.sign({
                     method: 'upload.file.save'
                 })
             },
-            headers: {
-                Accept: 'application/vnd.' + NIPHP.api.root + '.v' + NIPHP.api.version + '+json',
-                Authorization: NIPHP.api.authorization
-            },
+            headers: np.reqHeaders(),
             done: function(res){
               //上传完毕回调
             },

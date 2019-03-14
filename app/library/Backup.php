@@ -37,10 +37,11 @@ class Backup
     public function run(string $_tag = '')
     {
         $this->savePath = Env::get('runtime_path') . DIRECTORY_SEPARATOR .
-                          'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
-                          date('Ymd') . $_tag . DIRECTORY_SEPARATOR;
+                            'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
+                            date('Ymd') . $_tag . DIRECTORY_SEPARATOR;
         if (!is_dir($this->savePath)) {
-            mkdir($this->savePath, 777, true);
+            chmod(Env::get('runtime_path'), 0777);
+            mkdir($this->savePath, 0777, true);
         } else {
             return false;
         }

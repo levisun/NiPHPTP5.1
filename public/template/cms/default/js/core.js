@@ -9,7 +9,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
 
     // 初始化导航
     np.pjax({
-        url: NIPHP.api.url + '/cms.html',
+        url: NIPHP.api.url + '/cms.do',
         method: 'get',
         data: {
             method: 'nav.main.query'
@@ -31,7 +31,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
 
     if (NIPHP.param.cid) {
         np.pjax({
-            url: NIPHP.api.url + '/cms.html',
+            url: NIPHP.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'nav.sidebar.query',
@@ -40,7 +40,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
         });
 
         np.pjax({
-            url: NIPHP.api.url + '/cms.html',
+            url: NIPHP.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'article.lists.query',
@@ -54,7 +54,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
         });
 
         np.pjax({
-            url: NIPHP.api.url + '/cms.html',
+            url: NIPHP.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'nav.breadcrumb.query',
@@ -71,7 +71,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
 
 
     np.pjax({
-        url: NIPHP.api.url + '/cms.html',
+        url: NIPHP.api.url + '/cms.do',
         method: 'get',
         data: {
             method: 'article.details.query',
@@ -85,7 +85,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
     });
 
     np.pjax({
-        url: NIPHP.api.url + '/cms.html',
+        url: NIPHP.api.url + '/cms.do',
         method: 'get',
         data: {
             method: 'article.details.hits',
@@ -99,7 +99,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
     });
 
     // np.pjax({
-    //     url: NIPHP.api.url + '/upload/cms.html',
+    //     url: NIPHP.api.url + '/upload/cms.do',
     //     method: 'post',
     //     data: {
     //         method: 'upload.file.save'

@@ -104,9 +104,7 @@ class Upload
                 $save_name = $result->getSaveName();
                 $image = Image::open($this->savePath . $save_name);
                 // 图片大于800像素 统一缩放到800像素
-                $width = Request::param('width/f', 800);
-                $height = Request::param('height/f', 800);
-                if ($image->width() > $width || $image->height() > $height) {
+                if ($image->width() > 800 || $image->height() > 800) {
                     $image->thumb($width, $height, Image::THUMB_SCALING);
                 }
                 $image->save($this->savePath . $save_name, null, 60);

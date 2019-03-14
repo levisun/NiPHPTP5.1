@@ -256,7 +256,8 @@ class Template
         $url = implode('-', $url);
         $url = $url ? $url . '.html' : 'index.html';
 
-        if (is_file($this->buildPath . $url) && filemtime($this->buildPath . $url) >= time() - rand(3600, 3600*4)) {
+        $expire = Config::get('cache.expire');
+        if (is_file($this->buildPath . $url) && filemtime($this->buildPath . $url) >= time() - rand($expire, $expire*2)) {
             return file_get_contents($this->buildPath . $url);
         } else {
             return '';
@@ -272,7 +273,8 @@ class Template
     private function templateBuild(string $_content)
     {
         if (!is_dir($this->buildPath)) {
-            mkdir($this->buildPath, 777, true);
+            chmod(Env::get('runtime_path'), 0777);
+            mkdir($this->buildPath, 0777, true);
         }
 
         $url = explode('/', Request::path());
@@ -283,15 +285,25 @@ class Template
         APP_DEBUG or file_put_contents($this->buildPath . $url, $_content);
     }
 
+    /**
+     * 模板内容压缩
+     * @access private
+     * @param  string $_content
+     * @return array  content headers
+     */
     private function parseTemplateGZIP(string $_content): array
     {
         $headers = [];
-        if (!APP_DEBUG && !headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
+        if (APP_DEBUG === false &&
+            !headers_sent() &&
+            extension_loaded('zlib') &&
+            strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
             $_content = gzencode($_content, 4);
+            $expire = Config::get('cache.expire');
             $headers = [
-                'Cache-Control'    => 'max-age=3600,must-revalidate',
+                'Cache-Control'    => 'max-age=' . $expire . ',must-revalidate',
                 'Last-Modified'    => gmdate('D, d M Y H:i:s') . ' GMT',
-                'Expires'          => gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT',
+                'Expires'          => gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT',
                 'Content-Encoding' => 'gzip',
                 'Content-Length'   => strlen($_content),
             ];
@@ -396,6 +408,6 @@ class Template
             return $this->templatePath . $this->theme .  $_template;
         }
 
-        throw new HttpException(200, '模板不存在:', $_template);
+        throw new HttpException(200, '模板不存在:' . $this->theme . $_template);
     }
 }

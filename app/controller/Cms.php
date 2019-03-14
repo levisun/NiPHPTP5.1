@@ -51,17 +51,17 @@ class Cms extends Template
         ];
 
 
-        if (isWechat() && Request::subDomain() !== 'wechat') {
-            $url = Request::scheme() . '://wechat.' . Request::rootDomain() . Request::root();
-            $response = Response::create($url, 'redirect', 302);
-            throw new HttpResponseException($response);
-        }
+        // if (isWechat() && Request::subDomain() !== 'wechat') {
+        //     $url = Request::scheme() . '://wechat.' . Request::rootDomain() . Request::root();
+        //     $response = Response::create($url, 'redirect', 302);
+        //     throw new HttpResponseException($response);
+        // }
 
-        elseif (Request::isMobile() && Request::subDomain() !== 'm') {
-            $url = Request::scheme() . '://m.' . Request::rootDomain() . Request::root();
-            $response = Response::create($url, 'redirect', 302);
-            throw new HttpResponseException($response);
-        }
+        // elseif (Request::isMobile() && Request::subDomain() !== 'm') {
+        //     $url = Request::scheme() . '://m.' . Request::rootDomain() . Request::root();
+        //     $response = Response::create($url, 'redirect', 302);
+        //     throw new HttpResponseException($response);
+        // }
     }
 
     /**

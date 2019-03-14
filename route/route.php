@@ -32,7 +32,7 @@ Route::rule('authority', 'abort/authority');
 
 
 
-Route::domain(['www', 'm'], function(){
+Route::domain('www', function(){
     Route::get('/', 'cms/index');
     Route::get('list/:name/:cid$', 'cms/catalog');
     Route::get('details/:name/:cid/:id$', 'cms/details');
@@ -54,7 +54,6 @@ Route::domain('admin', function(){
 Route::domain('api', function(){
     Route::rule('/', function(){
         return '404';
-        // Route::redirect('error/:code', '');
     });
 
     Route::get(':name$', 'api/query');
@@ -63,7 +62,8 @@ Route::domain('api', function(){
 
     $headers = [
         'Access-Control-Allow-Origin'  => Request::server('HTTP_ORIGIN', '*'),
-        'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE',
+        // 'Access-Control-Allow-Methods' => 'GET, POST, PATCH, PUT, DELETE',
+        'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers' => 'Accept, Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-Requested-With'
     ];
     if (Request::isOptions()) {
@@ -73,4 +73,8 @@ Route::domain('api', function(){
     Route::allowCrossDomain(true, $headers);
 })
 ->bind('api')
-->ext('html');
+->ext('do');
+
+Route::domain('cdn', function(){
+
+});

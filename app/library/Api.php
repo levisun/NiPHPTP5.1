@@ -178,9 +178,10 @@ class Api
         // 当调试模式开启时关闭缓存
         $this->cache = $this->debug ? false : $this->cache;
 
-        // 浏览器缓存时间 返回数据没有指定默认1140秒
+        // 浏览器缓存时间
+        $this->expire = Config::get('cache.expire');
         $this->expire = isset($result['expire']) ? $result['expire'] : $this->expire;
-        $this->expire = $this->expire <= 0 ? 0 : $this->expire;
+        $this->expire = $this->expire <= 0 ? $this->expire : $this->expire;
 
         $this->success($result['msg'], isset($result['data']) ? $result['data'] : []);
     }
@@ -460,7 +461,7 @@ class Api
             'code'    => $_code,
             'data'    => $_data,
             'debug'   => $this->debugLog,
-            'expire'  => $this->cache ? date('Y-m-d H:i:s', time() + $this->expire + 30) : '0',
+            'expire'  => $this->cache ? date('Y-m-d H:i:s', time() + $this->expire + 60) : '0',
             'message' => $_msg
         ];
         $result = array_filter($result);

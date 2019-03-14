@@ -35,6 +35,7 @@ class File
         } else {
             $result = 'not';
         }
+            $result = (new Upload)->save($input_name);
 
         return [
             'debug' => false,

@@ -47,15 +47,20 @@ function authorityUrl(int $_access_id, string $_url): string
     return $url;
 }
 
+function filesUrl(string $_files)
+{
+    $ext = pathinfo($this->rootPath . $img_path, PATHINFO_EXTENSION);
+}
+
 /**
  * 拼接图片地址
  * @param  string $_img
  * @return string
  */
-function imgUrl(string $_img, int $_width = 150, int $_height = 150): string
+function imgUrl(string $_img, int $_width = 150, int $_height = 150, $_water = ''): string
 {
     if (!empty($_img)) {
-        $_img = (new Image)->thumb($_img, $_width, $_height);
+        $_img = (new Image)->thumb($_img, $_width, $_height, $_water);
         $_img = Config::get('app.cdn_host') . $_img;
     }
 

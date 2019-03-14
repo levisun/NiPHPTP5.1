@@ -6,6 +6,13 @@ layui.define('jquery', function(exports){
             return timestamp / 1000;
         },
 
+        reqHeaders: function () {
+            return {
+                Accept: 'application/vnd.' + NIPHP.api.root + '.v' + NIPHP.api.version + '+json',
+                Authorization: NIPHP.api.authorization
+            };
+        },
+
         sign: function(_params){
             // 先用Object内置类的keys方法获取要排序对象的属性名，再利用Array原型上的sort方法对获取的属性名进行排序，newkey是一个数组
             var newkey = Object.keys(_params).sort();

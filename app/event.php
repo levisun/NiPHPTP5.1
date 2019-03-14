@@ -20,7 +20,7 @@ return [
             // 'think\listener\RouteCheck',
         ],
         'AppBegin'     => [
-            // 'app\library\Concurrent',
+            'app\library\Concurrent',
             'think\listener\CheckRequestCache',
         ],
         'ActionBegin'  => [],

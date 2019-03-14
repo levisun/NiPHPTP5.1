@@ -88,7 +88,7 @@ class ArticleBase
             $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
             $value['cat_url'] = url('list/' . $value['action_name'] . '/' . $value['category_id']);
             $value['url'] = url('details/' . $value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
-            $value['thumb'] = imgUrl($value['thumb']);
+            $value['thumb'] = imgUrl($value['thumb'], 150, 150);
 
 
             // 附加字段数据
@@ -164,7 +164,7 @@ class ArticleBase
             $result['flag'] = Base64::flag($result['category_id'] . $result['id'], 7);
             $result['url'] = url('details/' . $result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
             $result['cat_url'] = url('list/' . $result['action_name'] . '/' . $result['category_id']);
-            $result['thumb'] = imgUrl($result['thumb']);
+            $result['thumb'] = imgUrl($result['thumb'], 150, 150);
             $result['content'] = htmlspecialchars_decode($result['content']);
 
 
