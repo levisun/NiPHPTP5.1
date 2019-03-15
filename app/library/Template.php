@@ -80,6 +80,7 @@ class Template
 
         $this->buildPath  = Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
         $this->buildPath .= Request::subDomain() . DIRECTORY_SEPARATOR;
+        $this->buildPath .= Lang::detect() . DIRECTORY_SEPARATOR;
     }
 
     public function fetch(string $_template = '')
@@ -117,7 +118,7 @@ class Template
                 'date'   => date('Y-m-d H:i:s')
             ]) . ' -->';
 
-            $this->templateBuild($content);
+            $this->templateBuildWrite($content);
         }
 
 
@@ -257,7 +258,9 @@ class Template
         $url = $url ? $url . '.html' : 'index.html';
 
         $expire = Config::get('cache.expire');
-        if (is_file($this->buildPath . $url) && filemtime($this->buildPath . $url) >= time() - rand($expire, $expire*2)) {
+        if (APP_DEBUG === true) {
+            return '';
+        } elseif (is_file($this->buildPath . $url) && filemtime($this->buildPath . $url) >= time() - rand($expire, $expire*2)) {
             return file_get_contents($this->buildPath . $url);
         } else {
             return '';
@@ -270,7 +273,7 @@ class Template
      * @param  string $_content
      * @return void
      */
-    private function templateBuild(string $_content)
+    private function templateBuildWrite(string $_content)
     {
         if (!is_dir($this->buildPath)) {
             chmod(Env::get('runtime_path'), 0777);

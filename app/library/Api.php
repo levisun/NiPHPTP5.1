@@ -466,7 +466,7 @@ class Api
         ];
         $result = array_filter($result);
 
-        // 调试模式记录日志
+        // 记录日志
         $this->debugLog($result);
 
         if ($this->debug === false) {

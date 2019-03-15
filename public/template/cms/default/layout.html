@@ -11,11 +11,11 @@
                     </li>
                     <template v-for="vo in main_nav">
                     <li class="layui-nav-item">
-                        <a v-html="vo.name" v-bind:href="vo.url"></a>
+                        <a v-text="vo.name" v-bind:href="vo.url"></a>
                         <template v-if="vo.child">
                         <dl class="layui-nav-child">
                             <dd v-for="ch in vo.child">
-                                <a v-html="ch.name" v-bind:href="ch.url"></a>
+                                <a v-text="ch.name" v-bind:href="ch.url"></a>
                             </dd>
                         </dl>
                         </template>

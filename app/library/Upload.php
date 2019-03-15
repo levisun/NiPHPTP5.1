@@ -16,26 +16,15 @@ declare (strict_types = 1);
 namespace app\library;
 
 use think\Image;
-// use think\App;
-// use think\Response;
-// use think\exception\HttpException;
-// use think\exception\HttpResponseException;
-// use think\facade\Cache;
 use think\facade\Config;
 use think\facade\Env;
-// use think\facade\Lang;
-// use think\facade\Log;
 use think\facade\Request;
-// use app\library\Accesslog;
-// use app\library\Base64;
-// use app\library\Filter;
-// use app\library\Siteinfo;
 
 class Upload
 {
     private $rule = [
         'size' => 200*1024,
-        'ext'  => ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'zip', 'rar', 'doc', 'ppt']
+        'ext'  => ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'zip', 'rar']
     ];
 
     private $savePath;
@@ -99,13 +88,14 @@ class Upload
         $_object->validate($this->rule);
         $_object->rule('uniqid');
         if ($result = $_object->move($this->savePath)) {
+
             // 图片文件 压缩图片
             if (in_array($result->getExtension(), ['gif', 'jpg', 'jpeg', 'bmp', 'png'])) {
                 $save_name = $result->getSaveName();
                 $image = Image::open($this->savePath . $save_name);
                 // 图片大于800像素 统一缩放到800像素
                 if ($image->width() > 800 || $image->height() > 800) {
-                    $image->thumb($width, $height, Image::THUMB_SCALING);
+                    $image->thumb(800, 800, Image::THUMB_SCALING);
                 }
                 $image->save($this->savePath . $save_name, null, 60);
             }

@@ -42,7 +42,7 @@ class Concurrent
                 mkdir($this->logPath, 0777, true);
             }
 
-            $this->name = md5(__DIR__ . Request::ip()) . '.php';
+            $this->name = md5(__DIR__ . Request::ip() . date('Ymd')) . '.php';
             $this->time = md5(Request::header('USER-AGENT') . date('YmdHi'));
 
             $this->record();

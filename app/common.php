@@ -33,34 +33,68 @@ use app\library\Image;
 function authorityUrl(int $_access_id, string $_url): string
 {
     if ($_access_id == 0) {
-        $url = url($_url, [], 'www');
+        $url = url($_url, []);
     }
 
     elseif (session('?member_level') && session('member_level') <= $_access_id) {
-        $url = url($_url, [], 'www');
+        $url = url($_url, []);
     }
 
     else {
-        $url = url('authority', ['level' => $_access_id], [], 'www');
+        $url = url('authority', ['level' => $_access_id], []);
     }
 
     return $url;
 }
 
-function filesUrl(string $_files)
+/**
+ * 拼接文件地址
+ * @param  string $_file 文件路径
+ * @return string
+ */
+function fileUrl(string $_file): string
 {
-    $ext = pathinfo($this->rootPath . $img_path, PATHINFO_EXTENSION);
+    $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+    $ext = pathinfo($root_path . $_file, PATHINFO_EXTENSION);
+    if (in_array($ext, ['gif', 'jpg', 'jpeg', 'bmp', 'png'])) {
+        return 'error';
+    } else {
+        return Config::get('app.cdn_host') . $_file;
+    }
 }
 
 /**
  * 拼接图片地址
- * @param  string $_img
+ * 生成缩略图
+ * @param  string      $_img    图片路径
+ * @param  int|integer $_width  缩略图宽
+ * @param  int|integer $_height 缩略图高
+ * @param  string      $_water  水印文字
  * @return string
  */
-function imgUrl(string $_img, int $_width = 150, int $_height = 150, $_water = ''): string
+function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_water = ''): string
 {
     if (!empty($_img)) {
-        $_img = (new Image)->thumb($_img, $_width, $_height, $_water);
+        $img_path = trim($_img, '/');
+        $img_path = str_replace('/', DIRECTORY_SEPARATOR, $img_path);
+
+        $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+        $font_path = $root_path . 'static' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'simhei.ttf';
+        $ext = pathinfo($root_path . $img_path, PATHINFO_EXTENSION);
+
+        // 缩略图不存在,生成缩略图
+        $thumb_path = str_replace('.' . $ext, '', $img_path) . '_skl_' . $_width . 'x' . $_height . '.' . $ext;
+        if (!is_file($root_path . $thumb_path) && is_file($root_path . $img_path)) {
+            $image = \think\Image::open($root_path . $img_path);
+            if ($image->width() > $_width || $image->height() > $_height) {
+                $image->thumb($_width, $_height, \think\Image::THUMB_FILLED);
+                $_water = $_water ? $_water : Request::rootDomain();
+                $image->text($_water, $font_path, rand(10, 20));
+                $image->save($root_path . $thumb_path);
+            }
+            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '\\', $thumb_path);
+        }
+
         $_img = Config::get('app.cdn_host') . $_img;
     }
 
@@ -74,17 +108,27 @@ function imgUrl(string $_img, int $_width = 150, int $_height = 150, $_water = '
  * @param  string  $_sub_domain 子域名
  * @return string
  */
-function url(string $_url = '', array $_vars = [], string $_sub_domain = 'www')
+function url(string $_url = '', array $_vars = [], string $_sub_domain = '')
 {
+    if (!$_sub_domain) {
+        if ($referer = Request::server('HTTP_REFERER')) {
+            $parse = parse_url($referer);
+            $_sub_domain = str_replace(Request::rootDomain(), '', $parse['host']);
+        } else {
+            $_sub_domain = 'www.';
+        }
+    }
+
+
     $_url = Url::build('/' . $_url, $_vars, true, true);
-    return str_replace('://api', '://' .$_sub_domain, $_url);
+    return str_replace('://api.', '://' . $_sub_domain, $_url);
 }
 
 /**
  * 获取语言变量值
- * @param string    $_name 语言变量名
- * @param array     $_vars 动态变量值
- * @param string    $_lang 语言
+ * @param  string $_name 语言变量名
+ * @param  array  $_vars 动态变量值
+ * @param  string $_lang 语言
  * @return mixed
  */
 function lang(string $_name, array $_vars = [], string $_lang = '')

@@ -36,6 +36,16 @@ layui.use(['jquery', 'laypage', 'np'], function(){
             data: {
                 method: 'nav.sidebar.query',
                 cid: NIPHP.param.cid
+            },
+            success: function(result) {
+                if (result.code == 'SUCCESS') {
+                    new Vue({
+                        el: '#sidebar',
+                        data: {
+                            sidebar: result.data
+                        }
+                    });
+                }
             }
         });
 

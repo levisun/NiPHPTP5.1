@@ -72,7 +72,6 @@ class Cms extends Template
      */
     public function index()
     {
-        // (new \app\library\Image)->thumb('/uploads/201903/5c87775954ccc.jpg');
         // imgUrl('/uploads/201903/5c87775954ccc.jpg');
         $this->fetch('index');
     }
