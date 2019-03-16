@@ -89,6 +89,7 @@ class Template
             $this->templateConfig = $this->parseTemplateConfig();
             $content = file_get_contents($this->parseTemplateFile($_template));
             $content = $this->parseTemplateLayout($content);
+            $content = $this->parseTemplateInclude($content);
 
             $content = $this->parseTemplateHead() .
                        $content .
@@ -316,6 +317,28 @@ class Template
             'content' => $_content,
             'headers' => $headers,
         ];
+    }
+
+
+
+    /**
+     * 解析模板引入文件
+     * @access private
+     * @param  string $_content 模板内容
+     * @return string
+     */
+    private function parseTemplateInclude(string $_content): string
+    {
+        if (preg_match_all('/({:include file=["|\'])(.*?)(["|\']})/si', $_content, $matches) !== false) {
+            foreach ($matches[2] as $key => $value) {
+                if ($value && is_file($this->templatePath . $this->theme . $value . '.html')) {
+                    $file = file_get_contents($this->templatePath . $this->theme . $value . '.html');
+                    $_content = str_replace($matches[0][$key], $file, $_content);
+                }
+            }
+        }
+
+        return $_content;
     }
 
     /**

@@ -64,7 +64,7 @@ class Garbage
             $dirOrPath = array_slice($dirOrPath, 0, 1000);
 
             foreach ($dirOrPath as $path) {
-                if (is_file($path) && strpos($path, '_skl_') === false) {
+                if (is_file($path) && stripos($path, '_skl_') === false) {
                     @unlink($path);
                 } elseif (is_dir($path)) {
                     @rmdir($path);

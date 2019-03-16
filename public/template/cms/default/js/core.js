@@ -30,6 +30,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
     });
 
     if (NIPHP.param.cid) {
+        // 侧导航
         np.pjax({
             url: NIPHP.api.url + '/cms.do',
             method: 'get',
@@ -49,20 +50,7 @@ layui.use(['jquery', 'laypage', 'np'], function(){
             }
         });
 
-        np.pjax({
-            url: NIPHP.api.url + '/cms.do',
-            method: 'get',
-            data: {
-                method: 'article.lists.query',
-                cid: NIPHP.param.cid
-            },
-            success: function(result) {
-                if (result.code == 'SUCCESS') {
-
-                }
-            }
-        });
-
+        // 面包屑
         np.pjax({
             url: NIPHP.api.url + '/cms.do',
             method: 'get',
@@ -80,33 +68,9 @@ layui.use(['jquery', 'laypage', 'np'], function(){
 
 
 
-    np.pjax({
-        url: NIPHP.api.url + '/cms.do',
-        method: 'get',
-        data: {
-            method: 'article.details.query',
-            id: 1
-        },
-        success: function(result) {
-            if (result.code == 'SUCCESS') {
 
-            }
-        }
-    });
 
-    np.pjax({
-        url: NIPHP.api.url + '/cms.do',
-        method: 'get',
-        data: {
-            method: 'article.details.hits',
-            id: 1
-        },
-        success: function(result) {
-            if (result.code == 'SUCCESS') {
 
-            }
-        }
-    });
 
     // np.pjax({
     //     url: NIPHP.api.url + '/upload/cms.do',

@@ -210,11 +210,11 @@ class Api
             list($logic, $class, $action) = explode('.', $this->method, 3);
 
             if ($this->openVersion) {
-                $method = 'app\server\\' . $this->module . '\\' .
+                $method = 'app\logic\\' . $this->module . '\\' .
                           'v' . $this->version['major'] . 'm' . $this->version['minor'] . '\\' .
                           $logic . '\\' . ucfirst($class);
             } else {
-                $method = 'app\server\\' . $this->module . '\\' .
+                $method = 'app\logic\\' . $this->module . '\\' .
                           $logic . '\\' . ucfirst($class);
             }
 

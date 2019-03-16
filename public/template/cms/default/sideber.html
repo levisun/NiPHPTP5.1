@@ -1,0 +1,12 @@
+<aside id="sidebar" class="layui-col-md2 layui-hide-xs">
+    <ul class="layui-nav layui-nav-tree layui-bg-white" lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+            <a v-bind:href="sidebar.url" v-text="sidebar.name"></a>
+            <dl class="layui-nav-child" v-if="sidebar.child">
+                <template v-for="vo in sidebar.child">
+                <dd><a v-bind:href="vo.url" v-text="vo.name"></a></dd>
+                </template>
+            </dl>
+        </li>
+    </ul>
+</aside>

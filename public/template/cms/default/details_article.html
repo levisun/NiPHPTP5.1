@@ -1,19 +1,49 @@
-<font style="font-size: 12px;">font</font>
+<div class="layui-row">
+
+    {:include file="bred"}
+
+    <div class="layui-col-md8">
+        <div id="article">
+            <h1 id="article-title" v-text="details.title"></h1>
+            <div id="article-content" v-html="details.content"></div>
+            <div id="article-oth"></div>
+        </div>
+    </div>
+    <div class="layui-col-md2">
+        123
+    </div>
+</div>
 <script>
 window.onload=function(){
-    layui.use(['jquery', 'np'], function(){
-        var jQuery = layui.jquery;
+    layui.use(['np'], function(){
+        // var jQuery = layui.jquery;
         var np = layui.np;
 
-
         np.pjax({
-            url: NIPHP.api.url + '/admin.html',
+            url: NIPHP.api.url + '/cms.do',
             method: 'get',
             data: {
-                method: 'account.login.login',
-                sign: np.sign({
-                    method: 'account.login.login'
-                })
+                method: 'article.details.query',
+                id: NIPHP.param.id
+            },
+            success: function(result) {
+                if (result.code == 'SUCCESS') {
+                    new Vue({
+                        el: "#article",
+                        data: {
+                            details: result.data
+                        }
+                    });
+                }
+            }
+        });
+
+        np.pjax({
+            url: NIPHP.api.url + '/cms.do',
+            method: 'get',
+            data: {
+                method: 'article.details.hits',
+                id: NIPHP.param.id
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {
@@ -21,6 +51,7 @@ window.onload=function(){
                 }
             }
         });
+
     });
 }
 </script>

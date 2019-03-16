@@ -74,7 +74,7 @@ function fileUrl(string $_file): string
  */
 function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_water = ''): string
 {
-    if (!empty($_img)) {
+    if (!empty($_img) && stripos($_img, 'http') === false) {
         $img_path = trim($_img, '/');
         $img_path = str_replace('/', DIRECTORY_SEPARATOR, $img_path);
 

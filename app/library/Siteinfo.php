@@ -19,6 +19,7 @@ use think\facade\Config;
 use think\facade\Lang;
 use think\facade\Request;
 use app\model\Config as ModelConfig;
+use app\model\Article as ModelArticle;
 use app\model\Category as ModelCategory;
 
 class Siteinfo
@@ -38,7 +39,11 @@ class Siteinfo
 
         // 文章描述
         if ($id = Request::param('id/f', null)) {
-            # code...
+            $result =
+            ModelArticle::where([
+                ['id', '=', $id]
+            ])
+            ->value('description', '');
         }
         // 栏目描述
         elseif ($cid = Request::param('cid/f', null)) {
@@ -74,7 +79,11 @@ class Siteinfo
 
         // 文章关键词
         if ($id = Request::param('id/f', false)) {
-            # code...
+            $result =
+            ModelArticle::where([
+                ['id', '=', $id]
+            ])
+            ->value('keywords', '');
         }
         // 栏目关键词
         elseif ($cid = Request::param('cid/f', false)) {
@@ -110,7 +119,11 @@ class Siteinfo
 
         // 文章名
         if ($id = Request::param('id/f', false)) {
-            # code...
+            $result =
+            ModelArticle::where([
+                ['id', '=', $id]
+            ])
+            ->value('title', '');
         }
         // 栏目名
         elseif ($cid = Request::param('cid/f', false)) {
