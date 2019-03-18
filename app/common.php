@@ -84,7 +84,14 @@ function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_wa
 
         // 缩略图不存在,生成缩略图
         $thumb_path = str_replace('.' . $ext, '', $img_path) . '_skl_' . $_width . 'x' . $_height . '.' . $ext;
-        if (!is_file($root_path . $thumb_path) && is_file($root_path . $img_path)) {
+
+        // 缩略图路径
+        if (is_file($root_path . $thumb_path)) {
+            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $thumb_path);
+        }
+
+        // 缩略图不存在,生成缩略图
+        elseif (!is_file($root_path . $thumb_path) && is_file($root_path . $img_path)) {
             $image = \think\Image::open($root_path . $img_path);
             if ($image->width() > $_width || $image->height() > $_height) {
                 $image->thumb($_width, $_height, \think\Image::THUMB_FILLED);
@@ -92,7 +99,7 @@ function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_wa
                 $image->text($_water, $font_path, rand(10, 20));
                 $image->save($root_path . $thumb_path);
             }
-            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '\\', $thumb_path);
+            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $thumb_path);
         }
 
         $_img = Config::get('app.cdn_host') . $_img;

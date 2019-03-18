@@ -34,7 +34,7 @@ class Concurrent
     public function handle($event, App $app): void
     {
         $controller = Request::controller(true);
-        if (!in_array($controller, ['abort', 'admin'])) {
+        if (rand(1, 3) === 1 && !in_array($controller, ['abort', 'admin'])) {
 
             $this->logPath = Env::get('runtime_path') . 'concurrent' . Base64::flag() . DIRECTORY_SEPARATOR;
             if (!is_dir($this->logPath)) {

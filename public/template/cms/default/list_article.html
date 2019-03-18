@@ -1,15 +1,29 @@
 <div class="layui-row">
     {:include file="sideber"}
-    <div class="layui-col-md8">
-        <ul id="lists" class="layui-table">
-            <template v-for="vo in lists">
-            <li>
-                <span class="layui-badge layui-bg-blue" v-text="vo.cat_name"></span>
-                <a v-bind:href="vo.url" v-text="vo.title"></a>
-                <time v-text="vo.update_time"></time>
-            </li>
+    <div id="lists" class="layui-col-md7">
+        <div id="breadcrumb" class="layui-breadcrumb">
+            <a href="/">
+                <i class="layui-icon layui-icon-home"></i>
+
+                首页
+            </a>
+            <template v-for="vo in breadcrumb">
+            <a v-bind:href="vo.url" v-text="vo.name"></a>
             </template>
-        </ul>
+        </div>
+        <table class="layui-table" lay-even lay-skin="nob">
+            <template v-for="vo in lists">
+            <tr>
+                <td>
+                    <span class="layui-badge layui-bg-blue" v-text="vo.cat_name"></span>
+                    <a v-bind:href="vo.url" v-text="vo.title"></a>
+                </td>
+                <td>
+                    <time v-text="vo.update_time"></time>
+                </td>
+            </tr>
+            </template>
+        </table>
     </div>
     <div class="layui-col-md2">
         123
@@ -18,8 +32,8 @@
 
 <script>
 window.onload=function(){
-    layui.use(['jquery', 'np', 'table'], function(){
-        var np = layui.np;
+    layui.use(['jquery', 'niphp', 'table'], function(){
+        var np = layui.niphp;
         var table = layui.table;
         np.pjax({
             url: NIPHP.api.url + '/cms.do',

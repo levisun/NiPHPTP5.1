@@ -1,11 +1,11 @@
 layui.config({
     dir: '/static/layui/' //layui.js 所在路径
 }).extend({
-    np: '{/}' + NIPHP.cdn.js + 'np', // {/}的意思即代表采用自有路径，即不跟随 base 路径
+    niphp: '{/}' + NIPHP.cdn.static + 'layui.niphp', // {/}的意思即代表采用自有路径，即不跟随 base 路径
 });
-layui.use(['jquery', 'laypage', 'np'], function(){
+layui.use(['jquery', 'laypage', 'niphp'], function(){
     var jQuery = layui.jquery;
-    var np = layui.np;
+    var np = layui.niphp;
 
     // 初始化导航
     np.pjax({
@@ -60,7 +60,12 @@ layui.use(['jquery', 'laypage', 'np'], function(){
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {
-
+                    new Vue({
+                        el: '#breadcrumb',
+                        data: {
+                            breadcrumb: result.data
+                        }
+                    });
                 }
             }
         });

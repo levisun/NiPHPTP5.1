@@ -23,7 +23,7 @@ use think\facade\Request;
 class Upload
 {
     private $rule = [
-        'size' => 200*1024,
+        'size' => 500*1024,
         'ext'  => ['gif', 'jpg', 'jpeg', 'bmp', 'png', 'zip', 'rar']
     ];
 
