@@ -1,3 +1,23 @@
+@charset "utf-8";
+body {
+    color: #595959;
+    cursor: default;
+    overflow: hidden;
+    overflow-y: auto;
+    line-height: 1.8rem;
+    font-family: Raleway,Arial,"Microsoft YaHei",sans-serif,"Inconsolata","Monaco","Consolas","Courier New",Courier,monospace;
+    font-weight: normal;
+    min-height: 100%;
+    letter-spacing: .1rem;
+    word-spacing: .1rem;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+p {
+    margin-bottom: .4rem;
+    text-indent: 2rem;
+}
+
 body {
     padding-bottom: 80px;
 }
@@ -31,7 +51,8 @@ header.layui-bg-white,
 }
 
 #sidebar,
-#lists {
+#lists,
+#article {
     padding-right: 25px;
 }
 #sidebar .layui-card {

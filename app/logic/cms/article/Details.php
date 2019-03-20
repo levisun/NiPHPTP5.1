@@ -15,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\logic\cms\article;
 
+use think\facade\Request;
 use think\facade\Lang;
 use app\logic\cms\ArticleBase;
 
@@ -29,9 +30,28 @@ class Details extends ArticleBase
      */
     public function query(): array
     {
-        $result = $this->details();
+        if ($result = $this->details()) {
+            $result['content'] = preg_replace('/(style=["|\'])(.*?)(["|\'])/si', '', $result['content']);
 
-        if ($result) {
+
+
+            if (Request::isMobile()) {
+                if (preg_match_all('/(src=["|\'])(.*?)(["|\'])/si', $result['content'], $matches) !== false) {
+                    foreach ($matches[2] as $key => $value) {
+                        // $thumb = imgUrl($value, 400, 400);
+
+
+
+
+                            // $result['content'] = str_replace($matches[0][$key], 'src="' . $thumb . '" data-src="' . domain() . trim($value, './') . '"', $result['content']);
+
+                    }
+                }
+            }
+            // $result['content']
+
+
+
             return [
                 'debug' => false,
                 'msg'   => Lang::get('success'),

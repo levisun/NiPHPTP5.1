@@ -1,11 +1,10 @@
 <div class="layui-row">
-
-    {:include file="bred"}
-
-    <div class="layui-col-md8">
-        <div id="article">
+    {:include file="sideber"}
+    <div id="article" class="layui-col-md7">
+        {:include file="breadcrumb"}
+        <div id="article-content">
             <h1 id="article-title" v-text="details.title"></h1>
-            <div id="article-content" v-html="details.content"></div>
+            <div id="article-details" v-html="details.content"></div>
             <div id="article-oth"></div>
         </div>
     </div>

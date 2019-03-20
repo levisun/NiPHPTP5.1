@@ -17,6 +17,7 @@ namespace app\library;
 
 use think\App;
 use think\facade\Env;
+use think\facade\Log;
 use think\facade\Request;
 use app\library\Base64;
 
@@ -32,7 +33,7 @@ class Garbage
      * 删除运行垃圾文件
      * @access public
      * @param
-     * @return void
+     * @return bool
      */
     public function remove(): bool
     {
@@ -41,18 +42,22 @@ class Garbage
             return false;
         }
 
+        $flag = Base64::flag();
+
         $files = [
-            Env::get('runtime_path') . 'backup' . Base64::flag() . DIRECTORY_SEPARATOR,
-            Env::get('runtime_path') . 'cache' . Base64::flag() . DIRECTORY_SEPARATOR,
-            Env::get('runtime_path') . 'concurrent' . Base64::flag() . DIRECTORY_SEPARATOR,
-            Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR,
-            Env::get('runtime_path') . 'log' . Base64::flag() . DIRECTORY_SEPARATOR,
-            // Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR,
+            // Env::get('runtime_path') . 'backup' . $flag,
+            Env::get('runtime_path') . 'cache' . $flag,
+            Env::get('runtime_path') . 'concurrent' . $flag,
+            Env::get('runtime_path') . 'html' . $flag,
+            Env::get('runtime_path') . 'log' . $flag,
+            // Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads',
         ];
 
         $dirOrPath = [];
         foreach ($files as $dir) {
-            $dirOrPath = array_merge($dirOrPath, (array) glob($dir. '*'));
+            if (is_dir($dir)) {
+                $dirOrPath = array_merge($dirOrPath, (array) glob($dir . DIRECTORY_SEPARATOR . '*'));
+            }
         }
 
         $dirOrPath = $this->getAll($dirOrPath);
@@ -70,6 +75,8 @@ class Garbage
                     @rmdir($path);
                 }
             }
+
+            Log::record('[GARBAGE] 删除垃圾信息!', 'alert');
         }
 
         return true;

@@ -11,6 +11,7 @@
  * @since     2019
  */
 
+use think\Image;
 use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Env;
@@ -20,7 +21,6 @@ use think\facade\Session;
 use think\facade\Url;
 use app\library\Base64;
 use app\library\Filter;
-use app\library\Image;
 
 
 
@@ -56,9 +56,15 @@ function fileUrl(string $_file): string
 {
     $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
     $ext = pathinfo($root_path . $_file, PATHINFO_EXTENSION);
+
     if (in_array($ext, ['gif', 'jpg', 'jpeg', 'bmp', 'png'])) {
         return 'error';
     } else {
+        // $ext = '.' . $ext;
+        // $newname = $root_path . str_replace($ext, '', $_file) . '_skl_' . $ext;
+        // if (!is_file($newname)) {
+        //     rename($root_path . $_file, $newname);
+        // }
         return Config::get('app.cdn_host') . $_file;
     }
 }
@@ -74,38 +80,79 @@ function fileUrl(string $_file): string
  */
 function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_water = ''): string
 {
-    if (!empty($_img) && stripos($_img, 'http') === false) {
+    $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+    $font_path = $root_path . 'static' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'simhei.ttf';
+
+    if ($_img && stripos($_img, 'http') === false) {
         $img_path = trim($_img, '/');
         $img_path = str_replace('/', DIRECTORY_SEPARATOR, $img_path);
 
-        $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
-        $font_path = $root_path . 'static' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'simhei.ttf';
-        $ext = pathinfo($root_path . $img_path, PATHINFO_EXTENSION);
+        if (is_file($root_path . $img_path)) {
+            $ext = '.' . pathinfo($root_path . $img_path, PATHINFO_EXTENSION);
+            $thumb_path = str_replace($ext, '', $img_path) . '_skl_' . $_width . 'x' . $_height . $ext;
 
-        // 缩略图不存在,生成缩略图
-        $thumb_path = str_replace('.' . $ext, '', $img_path) . '_skl_' . $_width . 'x' . $_height . '.' . $ext;
+            if (!is_file($root_path . $thumb_path)) {
 
-        // 缩略图路径
-        if (is_file($root_path . $thumb_path)) {
-            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $thumb_path);
-        }
+                // 修正原始图片名
+                $image = Image::open($root_path . $img_path);
+                $newname = str_replace($ext, '', $img_path) . '_skl_' . $image->width() . 'x' . $image->height() . $ext;
+                if (!is_file($root_path . $newname)) {
+                    $image->save($root_path . $newname);
+                }
+                unset($image);
 
-        // 缩略图不存在,生成缩略图
-        elseif (!is_file($root_path . $thumb_path) && is_file($root_path . $img_path)) {
-            $image = \think\Image::open($root_path . $img_path);
-            if ($image->width() > $_width || $image->height() > $_height) {
-                $image->thumb($_width, $_height, \think\Image::THUMB_FILLED);
+                // 原始尺寸大于指定缩略尺寸,生成缩略图
+                $image = Image::open($root_path . $img_path);
+                if ($image->width() > $_width) {
+                    $image->thumb($_width, $_height, Image::THUMB_FILLED);
+                }
+
+                // 添加水印
                 $_water = $_water ? $_water : Request::rootDomain();
-                $image->text($_water, $font_path, rand(10, 20));
-                $image->save($root_path . $thumb_path);
-            }
-            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $thumb_path);
-        }
+                $image->text($_water, $font_path, 15, '#00000000', 5);
 
-        $_img = Config::get('app.cdn_host') . $_img;
+                $image->save($root_path . $thumb_path);
+                unset($image);
+            }
+
+            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $thumb_path);
+        } else {
+            $_img = Config::get('app.default_img');
+        }
     }
 
-    return $_img;
+    return $_img ? Config::get('app.cdn_host') . $_img : '';
+}
+
+function formatNumber(int $_number, string $_type = 'date')
+{
+    if ($_type == 'date') {
+        if ($_number >= 31104000) {
+            $format = ceil($_number / 31104000) . '年前';
+        } elseif ($_number >= 2592000) {
+            $format = ceil($_number / 2592000) . '月前';
+        } elseif ($_number >= 86400) {
+            $format = ceil($_number / 86400) . '日前';
+        } elseif ($_number >= 3600) {
+            $format = ceil($_number / 3600) . '时前';
+        } else {
+            $format = ceil($_number / 60) . '分前';
+        }
+    }
+
+    elseif ($_type == 'number') {
+        if ($_number >= 10000000) {
+            $format = number_format($_number / 10000000, 2) . '千万';
+        } elseif ($_number >= 10000) {
+            $format = number_format($_number / 10000, 2) . '万';
+        } elseif ($_number >= 1000) {
+            $format = number_format($_number / 1000, 2) . '千';
+        } elseif ($_number >= 100) {
+            $format = number_format($_number / 100, 2) . '百';
+        } else {
+            $format = $_number;
+        }
+    }
 }
 
 /**
@@ -115,7 +162,7 @@ function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_wa
  * @param  string  $_sub_domain 子域名
  * @return string
  */
-function url(string $_url = '', array $_vars = [], string $_sub_domain = '')
+function url(string $_url = '', array $_vars = [], string $_sub_domain = ''): string
 {
     if (!$_sub_domain) {
         if ($referer = Request::server('HTTP_REFERER')) {
@@ -128,7 +175,8 @@ function url(string $_url = '', array $_vars = [], string $_sub_domain = '')
 
 
     $_url = Url::build('/' . $_url, $_vars, true, true);
-    return str_replace('://api.', '://' . $_sub_domain, $_url);
+    $_url = str_replace(Request::scheme(), '', $_url);
+    return str_replace('://api.', '//' . $_sub_domain, $_url);
 }
 
 /**
@@ -138,7 +186,7 @@ function url(string $_url = '', array $_vars = [], string $_sub_domain = '')
  * @param  string $_lang 语言
  * @return mixed
  */
-function lang(string $_name, array $_vars = [], string $_lang = '')
+function lang(string $_name, array $_vars = [], string $_lang = ''): string
 {
     return Lang::get($_name, $_vars, $_lang);
 }
@@ -148,7 +196,7 @@ function lang(string $_name, array $_vars = [], string $_lang = '')
  * @param
  * @return boolean
  */
-function isWechat()
+function isWechat(): bool
 {
     return strpos(Request::server('HTTP_USER_AGENT'), 'MicroMessenger') !== false ? true : false;
 }
@@ -168,7 +216,7 @@ function safeFilter($_data)
  * @param
  * @return string
  */
-function createAuthorization()
+function createAuthorization(): string
 {
     $authorization = Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd'));
     $authorization = sha1(Base64::encrypt($authorization, 'authorization'));

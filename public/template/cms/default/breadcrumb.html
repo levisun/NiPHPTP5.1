@@ -1,0 +1,9 @@
+<div id="breadcrumb" class="layui-breadcrumb">
+    <a href="/">
+        <i class="layui-icon layui-icon-home"></i>
+        首页
+    </a>
+    <template v-for="vo in breadcrumb">
+    <a v-bind:href="vo.url" v-text="vo.name"></a>
+    </template>
+</div>

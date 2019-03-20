@@ -21,6 +21,7 @@ use think\facade\Lang;
 use think\facade\Request;
 use app\library\Base64;
 use app\model\Article as ModelArticle;
+use app\model\ArticleContent as ModelArticleContent;
 use app\model\ArticleData as ModelArticleData;
 use app\model\TagsArticle as ModelTagsArticle;
 
@@ -64,7 +65,10 @@ class ArticleBase
             $map[] = ['article.type_id', '=', $type_id];
         }
 
-        $cache_key = md5(count($map) . $category_id . $com . $top . $hot . $type_id);
+        $query_limit = (int) Request::param('limit/f', 20);
+        $query_page = (int) Request::param('page/f', 1);
+
+        $cache_key = md5(count($map) . $category_id . $com . $top . $hot . $type_id . $query_limit . $query_page);
         if (!Cache::has($cache_key)) {
             $result =
             ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
@@ -75,7 +79,7 @@ class ArticleBase
             ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
             ->where($map)
             ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort_order DESC, article.id DESC')
-            ->paginate();
+            ->paginate($query_limit);
             $list = $result->toArray();
             $list['render'] = $result->render();
 
@@ -84,11 +88,14 @@ class ArticleBase
             $list = Cache::get($cache_key);
         }
 
+        $date_format = Request::param('date_format', 'Y-m-d');
+
         foreach ($list['data'] as $key => $value) {
             $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
             $value['cat_url'] = url('list/' . $value['action_name'] . '/' . $value['category_id']);
             $value['url'] = url('details/' . $value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
             $value['thumb'] = imgUrl($value['thumb'], 150, 150);
+            $value['update_time'] = date($date_format, $value['update_time']);
 
 
             // 附加字段数据
@@ -167,6 +174,9 @@ class ArticleBase
             $result['thumb'] = imgUrl($result['thumb'], 150, 150);
             $result['content'] = htmlspecialchars_decode($result['content']);
 
+            $date_format = Request::param('date_format', 'Y-m-d');
+            $result['update_time'] = date($date_format, $result['update_time']);
+
 
             // 附加字段数据
             // $fields =
@@ -229,9 +239,19 @@ class ArticleBase
             ];
         }
 
+        $time =
+        ModelArticleContent::where([
+            ['article_id', '=', $id]
+        ])
+        ->cache(__METHOD__ . 'articlecontent' . $id, null, 'DETAILS')
+        ->value('content');
+        $time = htmlspecialchars_decode($time);
+        $time = strip_tags($time);
+        $time = (int) ceil(strlen($time) / 40);
+
         // 更新浏览数
         ModelArticle::where($map)
-        ->inc('hits', 1)
+        ->inc('hits', 1, $time)
         ->update();
 
         $result =

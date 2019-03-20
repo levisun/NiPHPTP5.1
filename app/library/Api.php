@@ -467,7 +467,7 @@ class Api
         $result = array_filter($result);
 
         // 记录日志
-        $this->debugLog($result);
+        $this->writeLog($result);
 
         if ($this->debug === false) {
             unset($result['debug']);
@@ -492,14 +492,19 @@ class Api
      * @param
      * @return void
      */
-    private function debugLog(array $result)
+    private function writeLog(array $result)
     {
-        Log::record('[API] IP:' . Request::ip(), 'alert');
-        Log::record('[API] TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ', 'alert');
-        Log::record('[API] MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb', 'alert');
-        Log::record('[API] CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes', 'alert');
-        Log::record('[API] PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE), 'alert');
-        APP_DEBUG and Log::record('[API] DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE), 'alert');
-        APP_DEBUG and Log::record('[API] RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE), 'alert');
+        $log = '[API] IP:' . Request::ip() .
+                ' TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
+                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb' .
+                ' CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes';
+
+        if (APP_DEBUG) {
+            $log .= PHP_EOL . 'PARAM:' . json_encode(Request::param('', '', 'trim'), JSON_UNESCAPED_UNICODE);
+            $log .= PHP_EOL . 'DEBUG:' . json_encode($this->debugLog, JSON_UNESCAPED_UNICODE);
+            $log .= PHP_EOL . 'RESULT:' . json_encode($result, JSON_UNESCAPED_UNICODE);
+        }
+
+        Log::record($log, 'alert');
     }
 }

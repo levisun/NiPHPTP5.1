@@ -30,18 +30,39 @@ class Filter
             # code...
             return $_data;
         } else {
+            // 过滤多余空格与回车
+            $_data = trim($_data);
+            $_data = self::ENTER($_data);
             // XSS跨域攻击
             $_data = self::XSS($_data);
             // XXE实体扩展攻击
             $_data = self::XXE($_data, $_strict);
             // 过滤PHP危害函数方法
             $_data = self::FUN($_data);
-
-            // 过滤前后空格
-            $_data = trim($_data);
         }
 
         return $_data;
+    }
+
+    /**
+     * 过滤多余空格与回车
+     * @access public
+     * @param  string $_data
+     * @return string
+     */
+    public static function ENTER(string $_data): string
+    {
+        $pattern = [
+            '/( ){2,}/si'    => '',
+            '/>(\n|\r|\f)+/si' => '>',
+            '/(\n|\r|\f)+</si' => '<',
+
+            '/\}(\n|\r|\f)+/si' => '}',
+            '/\{(\n|\r|\f)+/si' => '{',
+            // '/;(\n|\r|\f)+/si' => ';',
+            '/\)(\n|\r|\f)+/si' => ')',
+        ];
+        return preg_replace(array_keys($pattern), array_values($pattern), $_data);
     }
 
     /**
@@ -120,15 +141,15 @@ class Filter
             '/(eval)/si'                 => 'ev&#97;l',
             '/(exec)/si'                 => 'ex&#101;c',
             '/(passthru)/si'             => 'pa&#115;sthru',
-            '/(php)/si'                  => 'ph&#112;',
+            // '/(php)/si'                  => 'ph&#112;',
             '/(phpinfo)/si'              => 'ph&#112;info',
             '/(proc_open)/si'            => 'pr&#111;c_open',
             '/(popen)/si'                => 'po&#112;en',
             '/(shell_exec)/si'           => 'sh&#101;ll_exec',
             '/(system)/si'               => 'sy&#115;tem',
 
-            '/(\()/si'                   => '&#40;',
-            '/(\))/si'                   => '&#41;',
+            // '/(\()/si'                   => '&#40;',
+            // '/(\))/si'                   => '&#41;',
         ];
         return preg_replace(array_keys($pattern), array_values($pattern), $_data);
     }

@@ -98,19 +98,9 @@ class Template
             $content = $this->parseTemplateReplace($content);
 
             // 去除html空格与换行
-            $replace = [
-                '~>\s+<~'       => '><',
-                '~>(\s+\n|\r)~' => '>',
-            ];
-            $content = preg_replace(array_keys($replace), array_values($replace), $content);
-
+            $content = Filter::ENTER($content);
             // PHP代码安全
-            $content = preg_replace([
-                '/<\?php(.*?)\?>/si',
-                '/<\?(.*?)\?>/si',
-                '/<%(.*?)%>/si',
-                '/<\?php|<\?|\?>|<%|%>/si',
-            ], '', $content);
+            $content = Filter::FUN($content);
 
             $content .= '<!-- ' . json_encode([
                 'static' => !APP_DEBUG ? 'open' : 'close',
