@@ -4,7 +4,7 @@ body {
     cursor: default;
     overflow: hidden;
     overflow-y: auto;
-    line-height: 1.8rem;
+    line-height: 1.5rem;
     font-family: Raleway,Arial,"Microsoft YaHei",sans-serif,"Inconsolata","Monaco","Consolas","Courier New",Courier,monospace;
     font-weight: normal;
     min-height: 100%;
@@ -13,7 +13,7 @@ body {
     word-wrap: break-word;
     word-break: break-all;
 }
-p {
+#article p {
     margin-bottom: .4rem;
     text-indent: 2rem;
 }

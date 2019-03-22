@@ -72,56 +72,71 @@ function fileUrl(string $_file): string
 /**
  * 拼接图片地址
  * 生成缩略图
- * @param  string      $_img    图片路径
- * @param  int|integer $_width  缩略图宽
- * @param  int|integer $_height 缩略图高
- * @param  string      $_water  水印文字
+ * @param  string      $_img   图片路径
+ * @param  int|integer $_size  缩略图宽高
+ * @param  string      $_water 水印文字
  * @return string
  */
-function imgUrl(string $_img, int $_width = 150, int $_height = 150, string $_water = ''): string
+function imgUrl(string $_img, int $_size = 200, string $_water = ''): string
 {
     $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
     $font_path = $root_path . 'static' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'simhei.ttf';
 
     if ($_img && stripos($_img, 'http') === false) {
+        // 规定缩略图大小
+        $_size = $_size >= 800 ? 800 : round($_size / 100) * 100;
+        $_size = (int) $_size;
+
+        // URL路径转换目录路径
         $img_path = trim($_img, '/');
         $img_path = str_replace('/', DIRECTORY_SEPARATOR, $img_path);
+        $img_ext = '.' . pathinfo($root_path . $img_path, PATHINFO_EXTENSION);
 
-        if (is_file($root_path . $img_path)) {
-            $ext = '.' . pathinfo($root_path . $img_path, PATHINFO_EXTENSION);
-            $thumb_path = str_replace($ext, '', $img_path) . '_skl_' . $_width . 'x' . $_height . $ext;
+        // 修正原始图片名
+        $new_img = str_replace($img_ext, '_skl_' . $img_ext, $img_path);
+        if (!is_file($root_path . $new_img)) {
+            rename($root_path . $img_path, $root_path . $new_img);
+        }
+        $img_path = $new_img;
+        unset($new_img);
 
+        if (is_file($root_path . $img_path) && $_size) {
+            $thumb_path = str_replace($img_ext, '', $img_path) . $_size . 'x' . $_size . $img_ext;
             if (!is_file($root_path . $thumb_path)) {
 
-                // 修正原始图片名
+                // 修正原始图片名带尺寸
                 $image = Image::open($root_path . $img_path);
-                $newname = str_replace($ext, '', $img_path) . '_skl_' . $image->width() . 'x' . $image->height() . $ext;
+                $newname = str_replace($img_ext, '', $img_path) . $image->width() . 'x' . $image->height() . $img_ext;
                 if (!is_file($root_path . $newname)) {
-                    $image->save($root_path . $newname);
+                    $_water = $_water ? $_water : Request::rootDomain();
+                    $image->text($_water, $font_path, 15, '#00000000', Image::WATER_SOUTHEAST);
+                    $image->save($root_path . $newname, null, 50);
                 }
                 unset($image);
 
                 // 原始尺寸大于指定缩略尺寸,生成缩略图
                 $image = Image::open($root_path . $img_path);
-                if ($image->width() > $_width) {
-                    $image->thumb($_width, $_height, Image::THUMB_FILLED);
+                if ($image->width() > $_size) {
+                    $image->thumb($_size, $_size, Image::THUMB_SCALING);
                 }
 
                 // 添加水印
                 $_water = $_water ? $_water : Request::rootDomain();
-                $image->text($_water, $font_path, 15, '#00000000', 5);
+                $image->text($_water, $font_path, 15, '#00000000', Image::WATER_SOUTHEAST);
 
-                $image->save($root_path . $thumb_path);
+                $image->save($root_path . $thumb_path, null, 40);
                 unset($image);
             }
 
             $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $thumb_path);
+        } elseif (is_file($root_path . $img_path)) {
+            $_img = '/' . str_replace(DIRECTORY_SEPARATOR, '/', $img_path);
         } else {
             $_img = Config::get('app.default_img');
         }
     }
 
-    return $_img ? Config::get('app.cdn_host') . $_img : '';
+    return Config::get('app.cdn_host') . $_img;
 }
 
 function formatNumber(int $_number, string $_type = 'date')

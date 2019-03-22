@@ -69,7 +69,8 @@ class ArticleBase
         $query_page = (int) Request::param('page/f', 1);
 
         $cache_key = md5(count($map) . $category_id . $com . $top . $hot . $type_id . $query_limit . $query_page);
-        if (!Cache::has($cache_key)) {
+        $cache_key .= Request::isMobile() ? 'mobile' : '';
+        if (!Cache::has($cache_key) || APP_DEBUG) {
             $result =
             ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
             ->view('article_content article_content', ['thumb'], 'article_content.article_id=article.id', 'LEFT')
@@ -83,49 +84,53 @@ class ArticleBase
             $list = $result->toArray();
             $list['render'] = $result->render();
 
+            $date_format = Request::param('date_format', 'Y-m-d');
+            $img_size = Request::isMobile() ? 200 : 300;
+
+            foreach ($list['data'] as $key => $value) {
+                $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
+                $value['cat_url'] = url('list/' . $value['action_name'] . '/' . $value['category_id']);
+                $value['url'] = url('details/' . $value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
+                $value['update_time'] = date($date_format, $value['update_time']);
+
+                $value['thumb'] = imgUrl($value['thumb'], $img_size);
+
+
+                // 附加字段数据
+                // $fields =
+                // ModelArticleData::view('article_data data', ['data'])
+                // ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
+                // ->where([
+                //     ['data.main_id', '=', $value['id']],
+                // ])
+                // ->cache('modelarticledata' . $value['id'], null, 'LISTS')
+                // ->select()
+                // ->toArray();
+                // foreach ($fields as $val) {
+                //    $value[$val['fields_name']] = $val['data'];
+                // }
+
+
+                // 标签
+                $value['tags'] =
+                ModelTagsArticle::view('tags_article article', ['tags_id'])
+                ->view('tags tags', ['name'], 'tags.id=article.tags_id')
+                ->where([
+                    ['article.article_id', '=', $value['id']],
+                ])
+                ->cache(__METHOD__ . 'tags' . $value['id'], null, 'LISTS')
+                ->select()
+                ->toArray();
+
+                $list['data'][$key] = $value;
+            }
+
             Cache::tag('catalog')->set($cache_key, $list);
         } else {
             $list = Cache::get($cache_key);
         }
 
-        $date_format = Request::param('date_format', 'Y-m-d');
 
-        foreach ($list['data'] as $key => $value) {
-            $value['flag'] = Base64::flag($value['category_id'] . $value['id'], 7);
-            $value['cat_url'] = url('list/' . $value['action_name'] . '/' . $value['category_id']);
-            $value['url'] = url('details/' . $value['action_name'] . '/' . $value['category_id'] . '/' . $value['id']);
-            $value['thumb'] = imgUrl($value['thumb'], 150, 150);
-            $value['update_time'] = date($date_format, $value['update_time']);
-
-
-            // 附加字段数据
-            // $fields =
-            // ModelArticleData::view('article_data data', ['data'])
-            // ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
-            // ->where([
-            //     ['data.main_id', '=', $value['id']],
-            // ])
-            // ->cache('modelarticledata' . $value['id'], null, 'LISTS')
-            // ->select()
-            // ->toArray();
-            // foreach ($fields as $val) {
-            //    $value[$val['fields_name']] = $val['data'];
-            // }
-
-
-            // 标签
-            $value['tags'] =
-            ModelTagsArticle::view('tags_article article', ['tags_id'])
-            ->view('tags tags', ['name'], 'tags.id=article.tags_id')
-            ->where([
-                ['article.article_id', '=', $value['id']],
-            ])
-            ->cache(__METHOD__ . 'tags' . $value['id'], null, 'LISTS')
-            ->select()
-            ->toArray();
-
-            $list['data'][$key] = $value;
-        }
 
         return $list;
     }
@@ -155,60 +160,80 @@ class ArticleBase
             ];
         }
 
-        $result =
-        ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
-        ->view('article_content article_content', ['thumb', 'content'], 'article_content.article_id=article.id', 'LEFT')
-        ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
-        ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
-        ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
-        ->where($map)
-        ->cache(__METHOD__ . $id, null, 'DETAILS')
-        ->find()
-        ->toArray();
-
-        if ($result) {
-            $result['flag'] = Base64::flag($result['category_id'] . $result['id'], 7);
-            $result['url'] = url('details/' . $result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
-            $result['cat_url'] = url('list/' . $result['action_name'] . '/' . $result['category_id']);
-            $result['thumb'] = imgUrl($result['thumb'], 150, 150);
-            $result['content'] = htmlspecialchars_decode($result['content']);
-
-            $date_format = Request::param('date_format', 'Y-m-d');
-            $result['update_time'] = date($date_format, $result['update_time']);
-
-
-            // 附加字段数据
-            // $fields =
-            // ModelArticleData::view('article_data data', ['data'])
-            // ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
-            // ->where([
-            //     ['data.main_id', '=', $value['id']],
-            // ])
-            // ->cache('modelarticledata' . $value['id'], null, 'LISTS')
-            // ->select()
-            // ->toArray();
-            // foreach ($fields as $val) {
-            //    $value[$val['fields_name']] = $val['data'];
-            // }
-
-
-            // 上一篇
-            // 下一篇
-            $result['next'] = $this->next($result['id']);
-            $result['prev'] = $this->prev($result['id']);
-
-
-            // 标签
-            $result['tags'] =
-            ModelTagsArticle::view('tags_article article', ['tags_id'])
-            ->view('tags tags', ['name'], 'tags.id=article.tags_id')
-            ->where([
-                ['article.article_id', '=', $result['id']],
-            ])
-            ->cache(__METHOD__ . 'tags' . $result['id'], null, 'DETAILS')
-            ->select()
+        $cache_key = md5($id);
+        $cache_key .= Request::isMobile() ? 'mobile' : '';
+        if (!Cache::has($cache_key) || APP_DEBUG) {
+            $result =
+            ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
+            ->view('article_content article_content', ['thumb', 'content'], 'article_content.article_id=article.id', 'LEFT')
+            ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
+            ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
+            ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
+            ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
+            ->where($map)
+            ->cache(__METHOD__ . $id, null, 'DETAILS')
+            ->find()
             ->toArray();
+
+            if ($result) {
+                $result['flag'] = Base64::flag($result['category_id'] . $result['id'], 7);
+                $result['url'] = url('details/' . $result['action_name'] . '/' . $result['category_id'] . '/' . $result['id']);
+                $result['cat_url'] = url('list/' . $result['action_name'] . '/' . $result['category_id']);
+
+                $date_format = Request::param('date_format', 'Y-m-d');
+                $result['update_time'] = date($date_format, $result['update_time']);
+
+                $img_size = Request::isMobile() ? 200 : 300;
+
+                $result['thumb'] = imgUrl($result['thumb'], $img_size);
+
+                $result['content'] = htmlspecialchars_decode($result['content']);
+
+                if (preg_match_all('/(src=["|\'])(.*?)(["|\'])/si', $result['content'], $matches) !== false) {
+                    foreach ($matches[2] as $key => $value) {
+                        $thumb = imgUrl($value, $img_size);
+                        $replace = 'src="' . $thumb . '" data-src="' . imgUrl($value, 0) . '"';
+                        $result['content'] = str_replace($matches[0][$key], $replace, $result['content']);
+                    }
+                }
+
+
+                // 附加字段数据
+                // $fields =
+                // ModelArticleData::view('article_data data', ['data'])
+                // ->view('fields fields', ['name' => 'fields_name'], 'fields.id=data.fields_id')
+                // ->where([
+                //     ['data.main_id', '=', $value['id']],
+                // ])
+                // ->cache('modelarticledata' . $value['id'], null, 'LISTS')
+                // ->select()
+                // ->toArray();
+                // foreach ($fields as $val) {
+                //    $value[$val['fields_name']] = $val['data'];
+                // }
+
+
+                // 上一篇
+                // 下一篇
+                $result['next'] = $this->next($result['id']);
+                $result['prev'] = $this->prev($result['id']);
+
+
+                // 标签
+                $result['tags'] =
+                ModelTagsArticle::view('tags_article article', ['tags_id'])
+                ->view('tags tags', ['name'], 'tags.id=article.tags_id')
+                ->where([
+                    ['article.article_id', '=', $result['id']],
+                ])
+                ->cache(__METHOD__ . 'tags' . $result['id'], null, 'DETAILS')
+                ->select()
+                ->toArray();
+            }
+
+            Cache::tag('details')->set($cache_key, $result);
+        } else {
+            $result = Cache::get($cache_key);
         }
 
         return $result;

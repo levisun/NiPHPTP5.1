@@ -50,6 +50,7 @@ class Cms extends Template
             '{:__COPYRIGHT__}'   => Siteinfo::copyright(),
         ];
 
+        // \app\library\Sitemap::category();
 
         // if (isWechat() && Request::subDomain() !== 'wechat') {
         //     $url = Request::scheme() . '://wechat.' . Request::rootDomain() . Request::root();
@@ -68,11 +69,10 @@ class Cms extends Template
      * CMS
      * @access public
      * @param
-     * @return mixed        HTML文档
+     * @return mixed HTML文档
      */
     public function index()
     {
-        // imgUrl('/uploads/201903/5c87775954ccc.jpg');
         $this->fetch('index');
     }
 

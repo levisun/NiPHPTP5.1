@@ -119,6 +119,13 @@ class Template
 
         $data = $this->parseTemplateGZIP($content);
 
+        if (APP_DEBUG === false) {
+            $expire = Config::get('cache.expire');
+            $data['headers']['Cache-Control'] = 'max-age=' . $expire . ',must-revalidate';
+            $data['headers']['Expires'] = gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT';
+            $data['headers']['Last-Modified'] = gmdate('D, d M Y H:i:s') . ' GMT';
+        }
+
         $response = Response::create($data['content'])->header($data['headers']);
         throw new HttpResponseException($response);
     }
@@ -149,7 +156,11 @@ class Template
                 'static:"' . $this->templateReplace['{:__STATIC__}'] . '",' .
             '},' .
             'url:"' . url() . '",' .
-            'param:' . json_encode(Request::param()) .
+            'param:' . json_encode(Request::param()) . ',' .
+            'window: {' .
+                'width:document.documentElement.clientWidth,' .
+                'height:document.documentElement.clientHeight' .
+            '}' .
         '};' .
         '</script>';
         unset($root);
@@ -288,19 +299,12 @@ class Template
     private function parseTemplateGZIP(string $_content): array
     {
         $headers = [];
-        if (APP_DEBUG === false &&
-            !headers_sent() &&
+        if (!headers_sent() &&
             extension_loaded('zlib') &&
             strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
             $_content = gzencode($_content, 4);
-            $expire = Config::get('cache.expire');
-            $headers = [
-                'Cache-Control'    => 'max-age=' . $expire . ',must-revalidate',
-                'Last-Modified'    => gmdate('D, d M Y H:i:s') . ' GMT',
-                'Expires'          => gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT',
-                'Content-Encoding' => 'gzip',
-                'Content-Length'   => strlen($_content),
-            ];
+            $headers['Content-Encoding'] = 'gzip';
+            $headers['Content-Length'] = strlen($_content);
         }
 
         return [

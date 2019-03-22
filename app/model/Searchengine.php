@@ -20,12 +20,12 @@ class Searchengine extends Model
     protected $name = 'searchengine';
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
-    protected $pk = 'id';
-     protected $type = [
+    // protected $pk = 'id';
+    protected $type = [
         'count' => 'integer',
     ];
     protected $field = [
-        'id',
+        // 'id',
         'date',
         'name',
         'user_agent',

@@ -42,24 +42,9 @@ class Garbage
             return false;
         }
 
-        $flag = Base64::flag();
-
-        $files = [
-            // Env::get('runtime_path') . 'backup' . $flag,
-            Env::get('runtime_path') . 'cache' . $flag,
-            Env::get('runtime_path') . 'concurrent' . $flag,
-            Env::get('runtime_path') . 'html' . $flag,
-            Env::get('runtime_path') . 'log' . $flag,
-            // Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads',
-        ];
-
         $dirOrPath = [];
-        foreach ($files as $dir) {
-            if (is_dir($dir)) {
-                $dirOrPath = array_merge($dirOrPath, (array) glob($dir . DIRECTORY_SEPARATOR . '*'));
-            }
-        }
-
+        $dirOrPath = array_merge($dirOrPath, (array) glob(Env::get('runtime_path') . '*'));
+        $dirOrPath = array_merge($dirOrPath, (array) glob(Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . '*'));
         $dirOrPath = $this->getAll($dirOrPath);
 
         // 为空

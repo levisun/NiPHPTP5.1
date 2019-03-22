@@ -20,9 +20,12 @@ class Visit extends Model
     protected $name = 'visit';
     protected $autoWriteTimestamp = false;
     protected $updateTime = false;
-    protected $pk = 'id';
+    // protected $pk = 'id';
+    protected $type = [
+        'count' => 'integer',
+    ];
     protected $field = [
-        'id',
+        // 'id',
         'date',
         'ip',
         'ip_attr',

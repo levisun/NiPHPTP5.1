@@ -19,7 +19,7 @@
 namespace think;
 
 define('APP_DEBUG', true);
-define('NP_VERSION', '1.5.2 CB 212');
+define('NP_VERSION', '1.5.3CB');
 define('TP_VERSION', '5.2.0RC1');
 
 version_compare(PHP_VERSION, '7.1.0', '>=') or die('系统需要PHP7.1以上版本! 当前PHP版本:' . PHP_VERSION . '.');

@@ -4,7 +4,7 @@
 User-agent: *
 Disallow: /install/
 Disallow: /static/
-Disallow: /theme/
+Disallow: /template/
 Disallow: /uploads/
 
 Disallow: /router.php
