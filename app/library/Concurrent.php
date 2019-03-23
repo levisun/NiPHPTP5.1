@@ -122,6 +122,5 @@ class Concurrent
             $result[$this->time] = empty($result[$this->time]) ? 1 : $result[$this->time]+1;
             file_put_contents($this->logPath . $this->name, '<?php return ' . var_export($result, true) . ';');
         }
-
     }
 }

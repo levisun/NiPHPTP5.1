@@ -34,7 +34,7 @@ Route::rule('authority', 'abort/authority');
 
 Route::domain('www', function(){
     Route::get('/', 'cms/index');
-    Route::get('list/:name/:cid$', 'cms/catalog');
+    Route::get('list/:name/:cid$', 'cms/lists');
     Route::get('details/:name/:cid/:id$', 'cms/details');
 })
 ->bind('cms')

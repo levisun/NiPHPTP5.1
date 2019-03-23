@@ -119,7 +119,7 @@ class Accesslog
             ->delete();
         }
 
-        $this->sitemap();
+        // $this->sitemap();
     }
 
 
@@ -153,79 +153,5 @@ class Accesslog
             }
         }
         return false;
-    }
-
-    /**
-     * 生成网站地图
-     * @access private
-     * @param
-     * @return boolean
-     */
-    private function sitemap(): bool
-    {
-        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
-        clearstatcache();
-        if (is_file($path) && filemtime($path) >= strtotime('-1 days')) {
-            return false;
-        }
-
-        // 第一次生成查询10万条数据,其后每次更新查询100条数据
-        $limit = is_file($path) ? 100 : 10000;
-
-        $xml =  '<?xml version="1.0" encoding="UTF-8" ?>' . PHP_EOL .
-                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL .
-                '<url>' . PHP_EOL .
-                '<loc>' . Request::scheme() . '://www.' . Request::rootDomain() . '</loc>' . PHP_EOL .
-                '<lastmod>' . date('Y-m-d H:i:s') . '</lastmod>' . PHP_EOL .
-                '<changefreq>daily</changefreq>' . PHP_EOL .
-                '<priority>1.00</priority>' . PHP_EOL .
-                '</url>' . PHP_EOL;
-
-        $article =
-        ModelArticle::view('article article', ['id', 'category_id', 'update_time'])
-        ->view('category category', ['name' => 'cat_name'], 'category.id=article.category_id')
-        ->view('model model', ['name' => 'action_name'], 'model.id=category.model_id and model.id=1')
-        ->where([
-            ['article.is_pass', '=', '1'],
-            ['article.show_time', '<=', time()],
-            ['article.lang', '=', Lang::detect()]
-        ])
-        ->order('article.id DESC')
-        ->limit($limit)
-        ->select()
-        ->toArray();
-
-        $cat_url = '';
-        foreach ($article as $key => $value) {
-            $value['cat_url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/list/' .
-                                $value['action_name'] . '/' . $value['category_id'] . '.html';
-
-            if ($cat_url !== $value['cat_url']) {
-                $xml .= '<url>' . PHP_EOL .
-                        '<loc>' . $value['cat_url'] . '</loc>' . PHP_EOL .
-                        '<lastmod>' . date('Y-m-d H:i:s', $value['update_time']) . '</lastmod>' . PHP_EOL .
-                        '<changefreq>daily</changefreq>' . PHP_EOL .
-                        '<priority>1.0</priority>' . PHP_EOL .
-                        '</url>' . PHP_EOL;
-                $cat_url = $value['cat_url'];
-            }
-
-            $value['url'] = Request::scheme() . '://www.' . Request::rootDomain() . '/details/' .
-                            $value['action_name'] . '/' . $value['category_id'] . '/' .
-                            $value['id'] . '.html';
-
-            $xml .= '<url>' . PHP_EOL .
-                    '<loc>' . $value['url'] . '</loc>' . PHP_EOL .
-                    '<lastmod>' . date('Y-m-d H:i:s', $value['update_time']) . '</lastmod>' . PHP_EOL .
-                    '<changefreq>weekly</changefreq>' . PHP_EOL .
-                    '<priority>0.8</priority>' . PHP_EOL .
-                    '</url>' . PHP_EOL;
-        }
-
-        $xml .= '</urlset>';
-
-        file_put_contents($path, $xml);
-
-        return true;
     }
 }

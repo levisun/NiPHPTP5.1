@@ -37,17 +37,21 @@ class Cms extends Template
     public function __construct()
     {
         parent::__construct();
+
         $this->theme = Request::controller(true) . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR;
+        $tpl_path = Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/';
+
         $this->templateReplace = [
-            '{:__CSS__}'         => Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/css/',
-            '{:__IMG__}'         => Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/img/',
-            '{:__JS__}'          => Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/js/',
+            '{:__CSS__}'         => $tpl_path . 'css/',
+            '{:__IMG__}'         => $tpl_path . 'img/',
+            '{:__JS__}'          => $tpl_path . 'js/',
             '{:__STATIC__}'      => Config::get('app.cdn_host') . '/static/',
             '{:__TITLE__}'       => Siteinfo::title(),
             '{:__KEYWORDS__}'    => Siteinfo::keywords(),
             '{:__DESCRIPTION__}' => Siteinfo::description(),
             '{:__BOTTOM_MSG__}'  => Siteinfo::bottom(),
             '{:__COPYRIGHT__}'   => Siteinfo::copyright(),
+            '{:__SCRIPT__}'      => Siteinfo::script(),
         ];
 
         // \app\library\Sitemap::category();
@@ -73,6 +77,8 @@ class Cms extends Template
      */
     public function index()
     {
+        (new \app\library\Backup)->run();
+        $this->assign(['home'=>['bare'=>'shouye']]);
         $this->fetch('index');
     }
 
@@ -83,7 +89,7 @@ class Cms extends Template
      * @param  int    $cid  栏目ID
      * @return mixed        HTML文档
      */
-    public function catalog(string $name = 'article', int $cid = 0)
+    public function lists(string $name = 'article', int $cid = 0)
     {
         $this->fetch('list_' . $name);
     }

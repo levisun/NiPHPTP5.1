@@ -1,7 +1,13 @@
+{:$home.bare}
+{:$const.NP_VERSION}
+{:$cookie.bare}
+
+{tag:foreach $list as $key => $vo}
+<a href="$key">$vo</a>
+{/tag}
 
 <font style="font-size: 12px;">font</font>
 <a href="javascript:alert(123)"onclick = " alert(222);">de</a>
-
 
 
 
@@ -20,6 +26,9 @@ window.onload=function(){
         var uploadInst = upload.render({
             elem: '#test1', //绑定元素
             url: NIPHP.api.url + '/upload/cms.do', //上传接口
+            accept: 'file',
+            exts: 'gif|jpg|png|zip|rar',
+            size: 300,
             data: {
                 method: 'upload.file.save',
                 input_name: 'file',

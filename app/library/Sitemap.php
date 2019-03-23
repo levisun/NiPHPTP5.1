@@ -15,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\library;
 
+use think\App;
 use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
@@ -24,13 +25,13 @@ use app\model\Category as ModelCategory;
 class Sitemap
 {
 
-    public function FunctionName($value='')
+    public function handle($event, App $app)
     {
-        # code...
-    }
+        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
+        if (is_file($path) && filemtime($path) >= strtotime('-1 days')) {
+            return false;
+        }
 
-    public static function category()
-    {
         $category =
         ModelCategory::view('category c', ['id', 'name', 'aliases', 'image', 'is_channel', 'access_id'])
         ->view('model m', ['name' => 'action_name'], 'm.id=c.model_id')
@@ -43,8 +44,8 @@ class Sitemap
         ->select()
         ->toArray();
 
-        $category_xml = [];
-        foreach ($category as $value) {
+        $sitemap_xml = [];
+        foreach ($category as $vo_cate) {
             $article =
             ModelArticle::view('article article', ['id', 'category_id', 'title', 'keywords', 'description', 'access_id', 'update_time'])
             ->view('article_content article_content', ['thumb'], 'article_content.article_id=article.id', 'LEFT')
@@ -53,45 +54,59 @@ class Sitemap
             ->view('level level', ['name' => 'level_name'], 'level.id=article.access_id', 'LEFT')
             ->view('type type', ['id' => 'type_id', 'name' => 'type_name'], 'type.id=article.type_id', 'LEFT')
             ->where([
-                ['article.category_id', '=', $value['id']],
+                ['article.category_id', '=', $vo_cate['id']],
                 ['article.is_pass', '=', '1'],
                 ['article.show_time', '<=', time()],
             ])
-            ->order('article.is_top DESC, article.is_hot DESC , article.is_com DESC, article.sort_order DESC, article.id DESC')
+            ->order('article.id DESC')
+            ->limit(100)
             ->select()
             ->toArray();
             $article_xml = [];
-            foreach ($article as $val) {
+            $category_xml = [];
+            foreach ($article as $vo_art) {
                 $article_xml[]['url'] = [
-                    'loc' => url('details/' . $val['action_name'] . '/' . $val['category_id'] . '/' . $val['id']),
-                    'lastmod' => date('Y-m-d H:i:s', $val['update_time']),
+                    'loc'        => url('details/' . $vo_art['action_name'] . '/' . $vo_art['category_id'] . '/' . $vo_art['id']),
+                    'lastmod'    => date('Y-m-d H:i:s', $vo_art['update_time']),
                     'changefreq' => 'weekly',
-                    'priority' => '0.8',
+                    'priority'   => '0.8',
+                ];
+
+                $category_xml[]['url'] = [
+                    'loc'        => url('list/' . $vo_cate['action_name'] . '/' . $vo_cate['id']),
+                    'lastmod'    => date('Y-m-d H:i:s', $vo_art['update_time']),
+                    'changefreq' => 'daily',
+                    'priority'   => '1.0',
                 ];
             }
             if ($article_xml) {
-                self::create($article_xml, 'sitemaps/list-' . $value['action_name'] . '-' . $value['id'] . '.xml');
+                self::create($article_xml, 'sitemaps/details-' . $vo_cate['action_name'] . '-' . $vo_cate['id'] . '.xml');
+                self::create($category_xml, 'sitemaps/list-' . $vo_cate['action_name'] . '-' . $vo_cate['id'] . '.xml');
 
-                $category_xml[]['sitemap'] = [
-                    'loc' => Request::domain() . 'sitemaps/list-' . $value['action_name'] . '-' . $value['id'] . '.xml',
+                $sitemap_xml[]['sitemap'] = [
+                    'loc'     => Request::domain() . 'sitemaps/details-' . $vo_cate['action_name'] . '-' . $vo_cate['id'] . '.xml',
+                    'lastmod' => date('Y-m-d H:i:s')
+                ];
+                $sitemap_xml[]['sitemap'] = [
+                    'loc'     => Request::domain() . 'sitemaps/list-' . $vo_cate['action_name'] . '-' . $vo_cate['id'] . '.xml',
                     'lastmod' => date('Y-m-d H:i:s')
                 ];
             }
         }
-        self::create($category_xml, 'sitemap.xml');
+        self::create($sitemap_xml, 'sitemap.xml');
     }
 
     /**
      * 创建XML文件
      * @access private
-     * @static
      * @param  array  $_data
      * @return string
      */
-    public static function create(array $_data, string $_path)
+    private function create(array $_data, string $_path): void
     {
-        $xml =  '<?xml version="1.0" encoding="UTF-8" ?>' . PHP_EOL .
-                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . PHP_EOL .
+               '<!-- generated-on="' . date('Y-m-d H:i:s') . '" -->' . PHP_EOL .
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
         $xml .= self::toXml($_data) . PHP_EOL;
         $xml .= '</urlset>';
         file_put_contents(Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . $_path, $xml);
@@ -100,11 +115,11 @@ class Sitemap
     /**
      * 数组转XML
      * @access private
-     * @static
      * @param  array  $_data
      * @return string
      */
-    private static function toXml(array $_data) {
+    private function toXml(array $_data): string
+    {
         $xml = '';
         foreach ($_data as $key => $value) {
             if (is_string($key)) {
@@ -112,7 +127,7 @@ class Sitemap
             }
 
             if (is_array($value)) {
-                $xml .= PHP_EOL . self::toXml($value);
+                $xml .= PHP_EOL . self::toXml($value) . PHP_EOL;
             } else {
                 $xml .= $value;
             }

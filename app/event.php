@@ -26,7 +26,8 @@ return [
         'ActionBegin'  => [],
         'AppEnd'       => [
             'app\library\Garbage',
-            'app\library\Accesslog'
+            'app\library\Accesslog',
+            'app\library\Sitemap'
         ],
         'LogLevel'     => [],
         'LogWrite'     => [],

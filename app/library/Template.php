@@ -68,6 +68,8 @@ class Template
      */
     private $config = [];
 
+    public $varData = [];
+
     /**
      * 架构函数
      * @access public
@@ -83,6 +85,12 @@ class Template
         $this->buildPath .= Lang::detect() . DIRECTORY_SEPARATOR;
     }
 
+    public function assign(array $_vars = [])
+    {
+        $this->varData = array_merge($this->varData, $_vars);
+        return $this;
+    }
+
     public function fetch(string $_template = '')
     {
         if (!$content = $this->templateBuildRead()) {
@@ -90,17 +98,17 @@ class Template
             $content = file_get_contents($this->parseTemplateFile($_template));
             $content = $this->parseTemplateLayout($content);
             $content = $this->parseTemplateInclude($content);
+            $content = $this->parseTemplateReplace($content);
+            $content = $this->parseTemplateVars($content);
+            // $content = $this->parseTemplateTags($content);
+
+            // 去除html空格与换行与PHP代码安全
+            $content = Filter::ENTER($content);
+            $content = Filter::FUN($content);
 
             $content = $this->parseTemplateHead() .
                        $content .
                        $this->parseTemplateFoot();
-
-            $content = $this->parseTemplateReplace($content);
-
-            // 去除html空格与换行
-            $content = Filter::ENTER($content);
-            // PHP代码安全
-            $content = Filter::FUN($content);
 
             $content .= '<!-- ' . json_encode([
                 'static' => !APP_DEBUG ? 'open' : 'close',
@@ -114,8 +122,8 @@ class Template
 
 
         $content = str_replace('{:__AUTHORIZATION__}', createAuthorization(), $content);
-        $content .= '<!-- ' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
-        number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb' . ' -->';
+        $content .= '<!-- Time:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's Memory:' .
+        number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'mb' . ' -->';
 
         $data = $this->parseTemplateGZIP($content);
 
@@ -177,7 +185,7 @@ class Template
         // 插件加载
 
         // 底部JS脚本
-        $foot .= Siteinfo::script();
+        $foot .= $this->templateReplace['{:__SCRIPT__}'];
 
         return $foot . '</body></html>';
     }
@@ -219,9 +227,9 @@ class Template
         '<link href="' . Config::get('app.cdn_host') . '/favicon.ico" rel="shortcut icon" type="image/x-icon" />';
 
         // 网站标题 关键词 描述
-        $head .= '<title>{:__TITLE__}</title>';
-        $head .= '<meta name="keywords" content="{:__KEYWORDS__}" />';
-        $head .= '<meta name="description" content="{:__DESCRIPTION__}" />';
+        $head .= '<title>' . $this->templateReplace['{:__TITLE__}'] . '</title>';
+        $head .= '<meta name="keywords" content="' . $this->templateReplace['{:__KEYWORDS__}'] . '" />';
+        $head .= '<meta name="description" content="' . $this->templateReplace['{:__DESCRIPTION__}'] . '" />';
 
         if (!empty($this->templateConfig['meta'])) {
             foreach ($this->templateConfig['meta'] as $m) {
@@ -313,7 +321,100 @@ class Template
         ];
     }
 
+    /**
+     * 解析模板变量
+     * @access private
+     * @param  string $_content
+     * @return string content
+     */
+    private function parseTemplateTags(string $_content): string
+    {
+        if (preg_match_all('/({tag:[a-zA-Z_$=> ]+})(.*?)({\/tag})/si', $_content, $matches) !== false) {
+            foreach ($matches[2] as $key => $tags) {
+                print_r($matches[1][$key]);
 
+                print_r($tags);
+                print_r($matches[3][$key]);
+            }
+        }die();
+        return $_content;
+    }
+
+    /**
+     * 解析模板变量
+     * @access private
+     * @param  string $_content
+     * @return string content
+     */
+    private function parseTemplateVars(string $_content): string
+    {
+        if (preg_match_all('/({:\$)([a-zA-Z_.]+)(})/si', $_content, $matches) !== false) {
+            foreach ($matches[2] as $key => $var_name) {
+                list($var_type, $vars) = explode('.', $var_name, 2);
+                $var_type = strtoupper(trim($var_type));
+                switch ($var_type) {
+                    case 'SERVER':
+                        $var_type = '$_SERVER';
+                        $var_name = $vars;
+                        break;
+
+                    case 'GET':
+                        $var_type = '$_GET';
+                        $var_name = $vars;
+                        break;
+
+                    case 'POST':
+                        $var_type = '$_POST';
+                        $var_name = $vars;
+                        break;
+
+                    case 'COOKIE':
+                        $var_type = '$_COOKIE';
+                        $var_name = $vars;
+                        break;
+
+                    case 'SESSION':
+                        $var_type = '$_SESSION';
+                        $var_name = $vars;
+                        break;
+
+                    case 'ENV':
+                        $var_type = '$_ENV';
+                        $var_name = $vars;
+                        break;
+
+                    case 'REQUEST':
+                        $var_type = '$_REQUEST';
+                        $var_name = $vars;
+                        break;
+
+                    case 'CONST':
+                        $var_type = 'CONST';
+                        $var_name = strtoupper($vars);
+                        break;
+
+                    default:
+                        $var_type = '$this->varData';
+                        break;
+                }
+                unset($vars);
+
+                if ($var_type === 'CONST') {
+                    eval('$var_name = defined(\'' . $var_name . '\') ? ' . $var_name . ' : null;');
+                } else {
+                    $var_name = $var_type . '[\'' . str_replace('.', '\'][\'', $var_name) . '\']';
+                    eval('$var_name = isset(' . $var_name . ') ? ' . $var_name . ' : null;');
+                }
+                if (is_null($var_name)) {
+                    // throw new HttpException(200, '未定义!');
+                }
+                $_content = str_replace($matches[0][$key], $var_name, $_content);
+                unset($var_type);
+            }
+        }
+
+        return $_content;
+    }
 
     /**
      * 解析模板引入文件
@@ -323,7 +424,7 @@ class Template
      */
     private function parseTemplateInclude(string $_content): string
     {
-        if (preg_match_all('/({:include file=["|\'])(.*?)(["|\']})/si', $_content, $matches) !== false) {
+        if (preg_match_all('/({:include file=["|\'])([a-zA-Z_]+)(["|\']})/si', $_content, $matches) !== false) {
             foreach ($matches[2] as $key => $value) {
                 if ($value && is_file($this->templatePath . $this->theme . $value . '.html')) {
                     $file = file_get_contents($this->templatePath . $this->theme . $value . '.html');

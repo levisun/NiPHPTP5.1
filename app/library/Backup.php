@@ -38,7 +38,7 @@ class Backup
     {
         $this->savePath = Env::get('runtime_path') . DIRECTORY_SEPARATOR .
                             'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
-                            date('Ymd') . $_tag . DIRECTORY_SEPARATOR;
+                            date('ymdH') . $_tag . DIRECTORY_SEPARATOR;
         if (!is_dir($this->savePath)) {
             chmod(Env::get('runtime_path'), 0777);
             mkdir($this->savePath, 0777, true);

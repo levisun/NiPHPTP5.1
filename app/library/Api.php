@@ -496,7 +496,7 @@ class Api
     {
         $log = '[API] IP:' . Request::ip() .
                 ' TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
-                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024, 2) . 'kb' .
+                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'mb' .
                 ' CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes';
 
         if (APP_DEBUG) {
