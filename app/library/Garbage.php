@@ -16,7 +16,6 @@ declare (strict_types = 1);
 namespace app\library;
 
 use think\App;
-use think\facade\Env;
 use think\facade\Log;
 use think\facade\Request;
 use app\library\Base64;
@@ -43,8 +42,8 @@ class Garbage
         }
 
         $dirOrPath = [];
-        $dirOrPath = array_merge($dirOrPath, (array) glob(Env::get('runtime_path') . '*'));
-        $dirOrPath = array_merge($dirOrPath, (array) glob(Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . '*'));
+        $dirOrPath = array_merge($dirOrPath, (array) glob(app()->getRuntimePath() . '*'));
+        $dirOrPath = array_merge($dirOrPath, (array) glob(app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . '*'));
         $dirOrPath = $this->getAll($dirOrPath);
 
         // 为空

@@ -17,7 +17,6 @@ namespace app\library;
 
 use think\Image;
 use think\facade\Config;
-use think\facade\Env;
 use think\facade\Request;
 
 class Upload
@@ -39,7 +38,7 @@ class Upload
     public function __construct()
     {
         $this->subDir = date('Ym');
-        $this->savePath = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
+        $this->savePath = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR .
                             'uploads' . DIRECTORY_SEPARATOR .
                             $this->subDir . DIRECTORY_SEPARATOR;
     }

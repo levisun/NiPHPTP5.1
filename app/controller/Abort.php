@@ -16,6 +16,7 @@ declare (strict_types = 1);
 namespace app\controller;
 
 use think\Response;
+use think\exception\HttpResponseException;
 use think\facade\Env;
 use app\library\Siteinfo;
 
@@ -25,26 +26,12 @@ class Abort
     /**
      * 错误页
      * @access public
-     * @param  int   $code 错误代码
+     * @param
      * @return mixed
      */
-    public function error(int $code = 404)
+    public function error()
     {
-        $tpl = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                'theme' . DIRECTORY_SEPARATOR . 'abort' . DIRECTORY_SEPARATOR .
-                Siteinfo::theme() . DIRECTORY_SEPARATOR .
-                $code . '.html';
-
-        if (!is_file($tpl)) {
-            $tpl = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                    'theme' . DIRECTORY_SEPARATOR . 'abort' . DIRECTORY_SEPARATOR .
-                    $code . '.html';
-        }
-
-        $response = Response::create(file_get_contents($tpl), '', $code);
-        throw new HttpResponseException($response);
-        // return $response->send();
-        // throw new HttpException($code);
+        $this->tpl(404);
     }
 
     /**
@@ -55,18 +42,26 @@ class Abort
      */
     public function authority()
     {
-        $tpl = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                'theme' . DIRECTORY_SEPARATOR . 'abort' . DIRECTORY_SEPARATOR .
+        $response = Response::create($this->tpl($code), '', $code);
+        return $response->send();
+    }
+
+
+    private function tpl(int $_code)
+    {
+        $tpl = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR .
+                'template' . DIRECTORY_SEPARATOR .
                 Siteinfo::theme() . DIRECTORY_SEPARATOR .
-                'authority.html';
+                $_code . '.html';
 
         if (!is_file($tpl)) {
-            $tpl = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR .
-                    'theme' . DIRECTORY_SEPARATOR . 'abort' . DIRECTORY_SEPARATOR .
-                    'authority.html';
+            $tpl = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR .
+                    'template' . DIRECTORY_SEPARATOR .
+                    $_code . '.html';
         }
 
-        $response = Response::create(file_get_contents($tpl), '', $code);
-        return $response->send();
+        $tpl = file_get_contents($tpl);
+        $response = Response::create($tpl, '', $_code);
+        throw new HttpResponseException($response);
     }
 }

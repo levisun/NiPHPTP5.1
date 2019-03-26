@@ -31,7 +31,8 @@ header('X-Powered-By: CB');
 
 require __DIR__ . '/../vendor/autoload.php';
 
-version_compare(App::VERSION, TP_VERSION, '>=') or die('系统需要 ThinkPHP' . TP_VERSION . '以上版本! 当前ThinkPHP版本:' . App::VERSION . '.');
+// version_compare(App::VERSION, TP_VERSION, '>=') or die('系统需要 ThinkPHP' . TP_VERSION . '以上版本! 当前ThinkPHP版本:' . App::VERSION . '.');
 
 // 执行应用并响应
-(new App())->debug(APP_DEBUG)->run()->send();
+// (new App())->debug(APP_DEBUG)->run()->send();
+(new App())->debug(APP_DEBUG)->http->run()->send();

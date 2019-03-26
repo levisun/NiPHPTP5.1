@@ -16,7 +16,6 @@ declare (strict_types = 1);
 namespace app\library;
 
 use think\App;
-use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
 use app\library\Ip;
@@ -64,7 +63,7 @@ class Accesslog
                     ['user_agent', '=', $this->user_agent],
                     ['date', '=', strtotime(date('Y-m-d'))]
                 ])
-                ->inc('count')
+                ->inc('count', 1, 60)
                 ->update();
             } else {
                 ModelSearchengine::insert([
@@ -92,7 +91,7 @@ class Accesslog
                     ['user_agent', '=', $this->user_agent],
                     ['date', '=', strtotime(date('Y-m-d'))]
                 ])
-                ->inc('count')
+                ->inc('count', 1, 60)
                 ->update();
             } else {
                 ModelVisit::insert([
@@ -118,8 +117,6 @@ class Accesslog
             ->limit(100)
             ->delete();
         }
-
-        // $this->sitemap();
     }
 
 

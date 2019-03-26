@@ -38,8 +38,8 @@ class Cms extends Template
     {
         parent::__construct();
 
-        $this->theme = Request::controller(true) . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR;
-        $tpl_path = Config::get('app.cdn_host') . '/template/' . Request::controller(true) . '/' . Siteinfo::theme() . '/';
+        $this->theme = 'cms' . DIRECTORY_SEPARATOR . Siteinfo::theme() . DIRECTORY_SEPARATOR;
+        $tpl_path = Config::get('app.cdn_host') . '/template/' . 'cms' . '/' . Siteinfo::theme() . '/';
 
         $this->templateReplace = [
             '{:__CSS__}'         => $tpl_path . 'css/',
@@ -77,8 +77,8 @@ class Cms extends Template
      */
     public function index()
     {
-        (new \app\library\Backup)->run();
-        $this->assign(['home'=>['bare'=>'shouye']]);
+        // (new \app\library\Backup)->run();
+        // $this->assign(['home'=>['bare'=>'shouye']]);
         $this->fetch('index');
     }
 

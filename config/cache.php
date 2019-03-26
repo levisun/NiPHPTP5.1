@@ -11,14 +11,13 @@
  * @since     2019
  */
 
-use think\facade\Env;
 use app\library\Base64;
 
 return [
     // 驱动方式
     'type'          => 'File',
     // 缓存保存目录
-    'path'          => Env::get('runtime_path') . 'cache' . Base64::flag(),
+    'path'          => app()->getRuntimePath() . 'cache' . Base64::flag(),
     // 缓存前缀
     'prefix'        => '',
     // 缓存有效期 0表示永久缓存

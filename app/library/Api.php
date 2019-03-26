@@ -232,12 +232,12 @@ class Api
 
             // 加载语言包
             if ($this->openVersion) {
-                $lang = Env::get('app_path'). 'server' . DIRECTORY_SEPARATOR .
+                $lang = app()->getAppPath(). 'server' . DIRECTORY_SEPARATOR .
                     $this->module . DIRECTORY_SEPARATOR .
                     'v' . $this->version['major'] . 'm' . $this->version['minor'] . DIRECTORY_SEPARATOR .
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
             } else {
-                $lang = Env::get('app_path'). 'server' . DIRECTORY_SEPARATOR .
+                $lang = app()->getAppPath(). 'server' . DIRECTORY_SEPARATOR .
                     $this->module . DIRECTORY_SEPARATOR .
                     'lang' . DIRECTORY_SEPARATOR . Lang::detect() . '.php';
             }
@@ -366,7 +366,7 @@ class Api
 
             // 校验token合法性
             $referer = Request::header('USER-AGENT') . Request::ip() .
-                       Env::get('root_path') . strtotime(date('Ymd'));
+                       app()->getRootPath() . strtotime(date('Ymd'));
             if (!hash_equals(sha1(Base64::encrypt($referer, 'authorization')), $this->token)) {
                 $this->debugLog['referer'] = $referer;
                 $this->debugLog['referer::sha1'] = sha1(Base64::encrypt($referer, 'authorization'));

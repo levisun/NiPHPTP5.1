@@ -54,7 +54,7 @@ function authorityUrl(int $_access_id, string $_url): string
  */
 function fileUrl(string $_file): string
 {
-    $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+    $root_path = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR;
     $ext = pathinfo($root_path . $_file, PATHINFO_EXTENSION);
 
     if (in_array($ext, ['gif', 'jpg', 'jpeg', 'bmp', 'png'])) {
@@ -79,7 +79,7 @@ function fileUrl(string $_file): string
  */
 function imgUrl(string $_img, int $_size = 200, string $_water = ''): string
 {
-    $root_path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+    $root_path = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR;
     $font_path = $root_path . 'static' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR . 'simhei.ttf';
 
     if ($_img && stripos($_img, 'http') === false) {
@@ -190,8 +190,8 @@ function url(string $_url = '', array $_vars = [], string $_sub_domain = ''): st
 
 
     $_url = Url::build('/' . $_url, $_vars, true, true);
-    $_url = str_replace(Request::scheme(), '', $_url);
-    return str_replace('://api.', '//' . $_sub_domain, $_url);
+    $_url = str_replace(Request::scheme() . ':', '', $_url);
+    return str_replace('//api.', '//' . $_sub_domain, $_url);
 }
 
 /**
@@ -233,7 +233,7 @@ function safeFilter($_data)
  */
 function createAuthorization(): string
 {
-    $authorization = Request::header('USER-AGENT') . Request::ip() . Env::get('root_path') . strtotime(date('Ymd'));
+    $authorization = Request::header('USER-AGENT') . Request::ip() . app()->getRootPath() . strtotime(date('Ymd'));
     $authorization = sha1(Base64::encrypt($authorization, 'authorization'));
     $authorization .= session_id() ? '.' . session_id() : '';
     return Base64::encrypt($authorization, 'authorization');

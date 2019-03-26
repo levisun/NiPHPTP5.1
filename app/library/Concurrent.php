@@ -34,93 +34,57 @@ class Concurrent
     public function handle($event, App $app): void
     {
         $controller = Request::controller(true);
-        if (rand(1, 3) === 1 && !in_array($controller, ['abort', 'admin'])) {
 
-            $this->logPath = Env::get('runtime_path') . 'concurrent' . Base64::flag() . DIRECTORY_SEPARATOR;
+        // 千分几率跳转至并发错误页
+        if (rand(1, 999) === 1 && !in_array($controller, ['abort', 'admin'])) {
+            Log::record('[并发]' . Request::ip(), 'alert');
+            $url = url('error');
+            $response = Response::create($url, 'redirect', 302);
+            throw new HttpResponseException($response);
+        }
+
+
+        if (rand(1, 3) === 1 && !in_array($controller, ['abort', 'admin'])) {
+            $this->logPath = app()->getRuntimePath() . 'concurrent' . Base64::flag() . DIRECTORY_SEPARATOR;
             if (!is_dir($this->logPath)) {
-                chmod(Env::get('runtime_path'), 0777);
+                chmod(app()->getRuntimePath(), 0777);
                 mkdir($this->logPath, 0777, true);
             }
 
             $this->name = md5(__DIR__ . Request::ip() . date('Ymd')) . '.php';
             $this->time = md5(Request::header('USER-AGENT') . date('YmdHi'));
 
-            $this->record();
 
-            $this->lock();
+            // 记录访问次数
+            if (is_file($this->logPath . $this->name)) {
+            $result = include $this->logPath . $this->name;
+            } else {
+                $result = [
+                    $this->time => 1
+                ];
+            }
+            if (is_array($result)) {
+                $result[$this->time] = empty($result[$this->time]) ? 1 : $result[$this->time]+1;
+                file_put_contents($this->logPath . $this->name, '<?php return ' . var_export($result, true) . ';');
+            }
 
-            if ($this->check()) {
-                if (rand(1, 999) === 1) {
-                    Log::record('[并发]' . Request::ip(), 'alert');
-                    $url = url('error/502');
-                    $response = Response::create($url, 'redirect', 302);
-                    throw new HttpResponseException($response);
+
+            // 锁定IP请求
+            if (is_file($this->name . '.lock')) {
+                Log::record('频繁请求锁定IP:' . Request::ip(), 'alert');
+                $url = url('error');
+                $response = Response::create($url, 'redirect', 302);
+                throw new HttpResponseException($response);
+            }
+
+
+            // 校验请求次数
+            if (is_file($this->logPath . $this->name)) {
+                $data = include $this->logPath . $this->name;
+                if (!empty($data[$this->time]) && $data[$this->time] >= 50) {
+                    file_put_contents($this->logPath . $this->name . '.lock', date('YmdHis'));
                 }
             }
-        }
-    }
-
-    /**
-     * 锁定IP地址
-     * @access private
-     * @param
-     * @return void
-     */
-    private function lock()
-    {
-        if (is_file($this->name . '.lock')) {
-            Log::record('频繁请求锁定IP:' . Request::ip(), 'alert');
-            $url = url('error/502');
-            $response = Response::create($url, 'redirect', 302);
-            throw new HttpResponseException($response);
-        }
-    }
-
-    /**
-     * 校验请求次数
-     * @access private
-     * @param
-     * @return bool
-     */
-    private function check()
-    {
-        if (is_file($this->logPath . $this->name)) {
-            $data = include $this->logPath . $this->name;
-
-            if (empty($data[$this->time])) {
-                $result = false;
-            } elseif ($data[$this->time] >= 50) {
-                file_put_contents($this->logPath . $this->name . '.lock', date('YmdHis'));
-                $result = true;
-            } else {
-                $result = false;
-            }
-        } else {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * 记录访问
-     * @access private
-     * @param
-     * @return void
-     */
-    private function record(): void
-    {
-        if (is_file($this->logPath . $this->name)) {
-            $result = include $this->logPath . $this->name;
-        } else {
-            $result = [
-                $this->time => 1
-            ];
-        }
-
-        if (is_array($result)) {
-            $result[$this->time] = empty($result[$this->time]) ? 1 : $result[$this->time]+1;
-            file_put_contents($this->logPath . $this->name, '<?php return ' . var_export($result, true) . ';');
         }
     }
 }

@@ -264,19 +264,9 @@ class ArticleBase
             ];
         }
 
-        $time =
-        ModelArticleContent::where([
-            ['article_id', '=', $id]
-        ])
-        ->cache(__METHOD__ . 'articlecontent' . $id, null, 'DETAILS')
-        ->value('content');
-        $time = htmlspecialchars_decode($time);
-        $time = strip_tags($time);
-        $time = (int) ceil(strlen($time) / 40);
-
         // 更新浏览数
         ModelArticle::where($map)
-        ->inc('hits', 1, $time)
+        ->inc('hits', 1, 60)
         ->update();
 
         $result =

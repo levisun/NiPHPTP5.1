@@ -8,32 +8,33 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-use think\exception\HttpException;
-use think\facade\Config;
+
 use think\facade\Request;
 use think\facade\Route;
 
+Route::pattern([
+    'cid' => '\d+',
+    'id' => '\d+',
+    'code' => '\d+',
+]);
 
 Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
 
+// Request::server('HTTP_IF_MODIFIED_SINCE', gmdate('D, d M Y H:i:s') . ' GMT');
+// print_r($_SERVER);die();
 
 
-Route::miss('abort/error');
 
 // 错误页面
-// code错误代码
-// 403 404
-// 权限错误页
+Route::miss('abort/error');
 Route::rule('error', 'abort/error');
-Route::rule('error/:code$', 'abort/error');
-Route::rule('authority', 'abort/authority');
-
-
+// Route::rule('authority', 'abort/authority');
 
 Route::domain('www', function(){
     Route::get('/', 'cms/index');
+    Route::get('index', 'cms/index');
     Route::get('list/:name/:cid$', 'cms/lists');
     Route::get('details/:name/:cid/:id$', 'cms/details');
 })

@@ -17,7 +17,6 @@ namespace app\library;
 
 use think\facade\Config;
 use think\facade\Db;
-use think\facade\Env;
 use app\library\Base64;
 
 class Backup
@@ -36,11 +35,12 @@ class Backup
 
     public function run(string $_tag = '')
     {
-        $this->savePath = Env::get('runtime_path') . DIRECTORY_SEPARATOR .
+        $this->savePath = app()->getRuntimePath() . DIRECTORY_SEPARATOR .
                             'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
                             date('ymdH') . $_tag . DIRECTORY_SEPARATOR;
+
         if (!is_dir($this->savePath)) {
-            chmod(Env::get('runtime_path'), 0777);
+            chmod(app()->getRuntimePath(), 0777);
             mkdir($this->savePath, 0777, true);
         } else {
             return false;

@@ -16,7 +16,6 @@ declare (strict_types = 1);
 namespace app\library;
 
 use think\App;
-use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
 use app\model\Article as ModelArticle;
@@ -27,7 +26,7 @@ class Sitemap
 
     public function handle($event, App $app)
     {
-        $path = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
+        $path = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
         if (is_file($path) && filemtime($path) >= strtotime('-1 days')) {
             return false;
         }
@@ -109,7 +108,7 @@ class Sitemap
                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
         $xml .= self::toXml($_data) . PHP_EOL;
         $xml .= '</urlset>';
-        file_put_contents(Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR . $_path, $xml);
+        file_put_contents(app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . $_path, $xml);
     }
 
     /**

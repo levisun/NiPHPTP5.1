@@ -20,7 +20,6 @@ use think\Response;
 use think\exception\HttpException;
 use think\exception\HttpResponseException;
 use think\facade\Config;
-use think\facade\Env;
 use think\facade\Lang;
 use think\facade\Request;
 use app\library\Base64;
@@ -51,15 +50,15 @@ class Template
      * @var string
      */
     public $templateReplace = [
-        // '{:__CSS__}'         => '',
-        // '{:__IMG__}'         => '',
-        // '{:__JS__}'          => '',
-        // '{:__STATIC___}'     => '',
-        // '{:__TITLE__}'       => '',
-        // '{:__KEYWORDS__}'    => '',
-        // '{:__DESCRIPTION__}' => '',
-        // '{:__BOTTOM_MSG__}'  => '',
-        // '{:__COPYRIGHT__}'   => '',
+        '{:__CSS__}'         => '',
+        '{:__IMG__}'         => '',
+        '{:__JS__}'          => '',
+        '{:__STATIC___}'     => '',
+        '{:__TITLE__}'       => '',
+        '{:__KEYWORDS__}'    => '',
+        '{:__DESCRIPTION__}' => '',
+        '{:__BOTTOM_MSG__}'  => '',
+        '{:__COPYRIGHT__}'   => '',
     ];
 
     /**
@@ -77,10 +76,10 @@ class Template
      */
     public function __construct()
     {
-        $this->templatePath  = Env::get('root_path') . 'public' . DIRECTORY_SEPARATOR;
+        $this->templatePath  = app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR;
         $this->templatePath .= 'template' . DIRECTORY_SEPARATOR;
 
-        $this->buildPath  = Env::get('runtime_path') . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
+        $this->buildPath  = app()->getRuntimePath() . 'html' . Base64::flag() . DIRECTORY_SEPARATOR;
         $this->buildPath .= Request::subDomain() . DIRECTORY_SEPARATOR;
         $this->buildPath .= Lang::detect() . DIRECTORY_SEPARATOR;
     }
@@ -127,15 +126,17 @@ class Template
 
         $data = $this->parseTemplateGZIP($content);
 
-        if (APP_DEBUG === false) {
-            $expire = Config::get('cache.expire');
-            $data['headers']['Cache-Control'] = 'max-age=' . $expire . ',must-revalidate';
-            $data['headers']['Expires'] = gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT';
-            $data['headers']['Last-Modified'] = gmdate('D, d M Y H:i:s') . ' GMT';
-        }
+        // if (APP_DEBUG === false) {
+        //     $expire = Config::get('cache.expire');
+        //     $data['headers']['Cache-Control'] = 'max-age=' . $expire . ',must-revalidate';
+        //     $data['headers']['Expires'] = gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT';
+        //     $data['headers']['Last-Modified'] = gmdate('D, d M Y H:i:s') . ' GMT';
+        // }
 
-        $response = Response::create($data['content'])->header($data['headers']);
-        throw new HttpResponseException($response);
+        $response = Response::create($data['content'], '', 200)->header($data['headers']);
+        $response->allowCache(true);
+        $response->send();
+        // throw new HttpResponseException($response);
     }
 
     /**
@@ -286,7 +287,7 @@ class Template
     private function templateBuildWrite(string $_content)
     {
         if (!is_dir($this->buildPath)) {
-            chmod(Env::get('runtime_path'), 0777);
+            chmod(app()->getRuntimePath(), 0777);
             mkdir($this->buildPath, 0777, true);
         }
 
@@ -485,7 +486,7 @@ class Template
             }
         }
 
-        throw new HttpException(200, '1模板配置文件错误.');
+        throw new HttpException(200, '模板配置文件错误.' . $this->theme);
     }
 
     /**
