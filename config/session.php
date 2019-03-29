@@ -18,14 +18,10 @@ return [
     // SESSION_ID的提交变量,解决flash上传跨域
     'var_session_id' => '',
     // 驱动方式 支持redis memcache memcached
-    'type'           => 'app\server\Session',
+    'type'           => 'app\library\Session',
     // 是否自动开启 SESSION
     'auto_start'     => false,
-
-    // 'use_lock'       => false,
     // Session配置参数
     'options'        => [
-        // 'domain' => '.' . Request::rootDomain(),
-        // 'expire' => 0,
     ],
 ];

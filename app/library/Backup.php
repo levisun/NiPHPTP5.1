@@ -15,6 +15,7 @@ declare (strict_types = 1);
 
 namespace app\library;
 
+use think\App;
 use think\facade\Config;
 use think\facade\Db;
 use app\library\Base64;
@@ -23,14 +24,9 @@ class Backup
 {
     private $savePath;
 
-    /**
-     * 构造方法
-     * @access public
-     * @param
-     * @return void
-     */
-    public function __construct()
+    public function handle($event, App $app): void
     {
+        Log::record('backup', 'alert');
     }
 
     public function run(string $_tag = '')

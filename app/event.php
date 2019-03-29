@@ -15,18 +15,14 @@ return [
     'bind'      => [
     ],
     'listen'    => [
-        'AppInit'      => [
-            'think\listener\LoadLangPack',
-            // 'think\listener\RouteCheck',
-        ],
+        'AppInit'      => [],
         'AppBegin'     => [
-            'app\library\Concurrent',
-            'think\listener\CheckRequestCache',
+            'app\library\Concurrent'
         ],
-        'ActionBegin'  => [],
         'AppEnd'       => [
             'app\library\Garbage',
             'app\library\Accesslog',
+            'app\library\Backup',
             'app\library\Sitemap'
         ],
         'LogLevel'     => [],

@@ -9,6 +9,7 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+use think\facade\Config;
 use think\facade\Request;
 use think\facade\Route;
 
@@ -39,6 +40,7 @@ Route::domain('www', function(){
     Route::get('details/:name/:cid/:id$', 'cms/details');
 })
 ->bind('cms')
+->cache(Config::get('cache.expire'))
 ->ext('html');
 
 

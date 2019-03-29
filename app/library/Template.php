@@ -124,18 +124,21 @@ class Template
         $content .= '<!-- Time:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's Memory:' .
         number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'mb' . ' -->';
 
-        $data = $this->parseTemplateGZIP($content);
 
-        // if (APP_DEBUG === false) {
-        //     $expire = Config::get('cache.expire');
-        //     $data['headers']['Cache-Control'] = 'max-age=' . $expire . ',must-revalidate';
-        //     $data['headers']['Expires'] = gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT';
-        //     $data['headers']['Last-Modified'] = gmdate('D, d M Y H:i:s') . ' GMT';
-        // }
+        $headers = [];
+        if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
+            $content = gzencode($content, 4);
+            $headers = [
+                'Content-Encoding' => 'gzip',
+                'Content-Length' => strlen($content)
+            ];
+        }
 
-        $response = Response::create($data['content'], '', 200)->header($data['headers']);
-        $response->allowCache(true);
-        $response->send();
+        Response::create($content)
+        ->header($headers)
+        ->allowCache(true)
+        ->send();
+
         // throw new HttpResponseException($response);
     }
 
@@ -297,29 +300,6 @@ class Template
         $url = $url ? $url . '.html' : 'index.html';
 
         APP_DEBUG or file_put_contents($this->buildPath . $url, $_content);
-    }
-
-    /**
-     * 模板内容压缩
-     * @access private
-     * @param  string $_content
-     * @return array  content headers
-     */
-    private function parseTemplateGZIP(string $_content): array
-    {
-        $headers = [];
-        if (!headers_sent() &&
-            extension_loaded('zlib') &&
-            strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
-            $_content = gzencode($_content, 4);
-            $headers['Content-Encoding'] = 'gzip';
-            $headers['Content-Length'] = strlen($_content);
-        }
-
-        return [
-            'content' => $_content,
-            'headers' => $headers,
-        ];
     }
 
     /**

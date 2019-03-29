@@ -474,7 +474,7 @@ class Api
         }
 
         $headers = [];
-        if (APP_DEBUG === false && $this->expire && $this->cache === true && $_code == 'SUCCESS') {
+        if (APP_DEBUG === false && $this->cache === true && $this->expire && $_code == 'SUCCESS') {
             $headers = [
                 'Cache-Control' => 'max-age=' . $this->expire . ',must-revalidate',
                 'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
@@ -482,7 +482,7 @@ class Api
             ];
         }
 
-        $response = Response::create($result, $this->format, 200)->header($headers);
+        $response = Response::create($result, $this->format)->header($headers);
         throw new HttpResponseException($response);
     }
 
