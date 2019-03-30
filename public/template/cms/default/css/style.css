@@ -4,7 +4,7 @@ body {
     cursor: default;
     overflow: hidden;
     overflow-y: auto;
-    line-height: 1.5rem;
+    line-height: 1.1rem;
     font-family: Raleway,Arial,"Microsoft YaHei",sans-serif,"Inconsolata","Monaco","Consolas","Courier New",Courier,monospace;
     font-weight: normal;
     min-height: 100%;

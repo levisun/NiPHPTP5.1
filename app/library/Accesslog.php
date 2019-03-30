@@ -17,6 +17,7 @@ namespace app\library;
 
 use think\App;
 use think\facade\Lang;
+use think\facade\Log;
 use think\facade\Request;
 use app\library\Ip;
 use app\model\Article as ModelArticle;
@@ -31,6 +32,7 @@ class Accesslog
     public function handle($event, App $app): void
     {
         if (Request::isGet() && !in_array(Request::subDomain(), ['admin', 'api', 'cdn'])) {
+            Log::record('accesslog', 'alert');
             $this->record();
         }
     }

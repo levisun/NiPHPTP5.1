@@ -17,18 +17,25 @@ return [
     'listen'    => [
         'AppInit'      => [],
         'AppBegin'     => [
-            'app\library\Concurrent'
+            // 'app\library\Concurrent'
         ],
         'AppEnd'       => [
+            // 'app\library\Garbage',
+            // 'app\library\Accesslog',
+            // 'app\library\Backup',
+            // 'app\library\Sitemap'
+        ],
+        'LogLevel'     => [],
+        'LogWrite'     => [],
+        'ResponseSend' => [
+            'app\library\Concurrent'
+        ],
+        'ResponseEnd'  => [
             'app\library\Garbage',
             'app\library\Accesslog',
             'app\library\Backup',
             'app\library\Sitemap'
         ],
-        'LogLevel'     => [],
-        'LogWrite'     => [],
-        'ResponseSend' => [],
-        'ResponseEnd'  => [],
     ],
     'subscribe' => [
     ],

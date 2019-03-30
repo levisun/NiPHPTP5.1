@@ -92,6 +92,10 @@ class Template
 
     public function fetch(string $_template = '')
     {
+        // 页面缓存
+        ob_start();
+        ob_implicit_flush(0);
+
         if (!$content = $this->templateBuildRead()) {
             $this->templateConfig = $this->parseTemplateConfig();
             $content = file_get_contents($this->parseTemplateFile($_template));
@@ -120,26 +124,15 @@ class Template
         }
 
 
-        $content = str_replace('{:__AUTHORIZATION__}', createAuthorization(), $content);
-        $content .= '<!-- Time:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's Memory:' .
-        number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'mb' . ' -->';
+        echo str_replace('{:__AUTHORIZATION__}', createAuthorization(), $content);
 
+        echo '<!-- Time:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ';
+        echo 'Memory:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'mb' . ' -->';
 
-        $headers = [];
-        if (!headers_sent() && extension_loaded('zlib') && strpos(Request::server('HTTP_ACCEPT_ENCODING'), 'gzip') !== false) {
-            $content = gzencode($content, 4);
-            $headers = [
-                'Content-Encoding' => 'gzip',
-                'Content-Length' => strlen($content)
-            ];
-        }
+        // 获取并清空缓存
+        $content = ob_get_clean();
 
-        Response::create($content)
-        ->header($headers)
-        ->allowCache(true)
-        ->send();
-
-        // throw new HttpResponseException($response);
+        echo $content;
     }
 
     /**
