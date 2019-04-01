@@ -59,7 +59,7 @@ class Garbage
                     @rmdir($path);
                 }
             }
-
+            clearstatcache();
             Log::record('[GARBAGE] 删除垃圾信息!', 'alert');
         }
 

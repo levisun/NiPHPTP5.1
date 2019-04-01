@@ -133,6 +133,8 @@ class Template
         $content = ob_get_clean();
 
         echo $content;
+
+        clearstatcache();
     }
 
     /**

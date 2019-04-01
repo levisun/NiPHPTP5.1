@@ -34,22 +34,53 @@ class Backup
             $this->savePath = app()->getRuntimePath() . DIRECTORY_SEPARATOR .
                                 'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
                                 'sys_auto' . DIRECTORY_SEPARATOR;
+
             if (!is_dir($this->savePath)) {
                 chmod(app()->getRuntimePath(), 0777);
                 mkdir($this->savePath, 0777, true);
             }
 
-            $result = $this->queryTableName();
-            foreach ($result as $key => $name) {
-                if (is_file($this->savePath . $name) && filemtime($path) >= strtotime('-1 days')) {
-                    $this->queryTableStructure($name);
-                    $this->queryTableInsert($name);
-                    break;
-                } else {
-                    $this->queryTableStructure($name);
-                    $this->queryTableInsert($name);
+            if (!is_file($this->savePath . 'backup.lock')) {
+                ignore_user_abort(true);
+                file_put_contents($this->savePath . 'backup.lock', 'lock');
+                $result = $this->queryTableName();
+                foreach ($result as $key => $name) {
+                    if (rand(1, 2) === 1) {
+                        continue;
+                    }
+                    if (is_file($this->savePath . $name) && filemtime($path) >= strtotime('-3 days')) {
+                        $this->queryTableStructure($name);
+                        $this->queryTableInsert($name);
+                        break;
+                    } else {
+                        $this->queryTableStructure($name);
+                        $this->queryTableInsert($name);
+                    }
                 }
+
+                unlink($this->savePath . 'backup.lock');
             }
+
+
+            // $this->savePath = app()->getRuntimePath() . DIRECTORY_SEPARATOR .
+            //                     'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
+            //                     'sys_auto' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR;
+
+            // if (!is_dir($this->savePath)) {
+            //     chmod(app()->getRuntimePath(), 0777);
+            //     mkdir($this->savePath, 0777, true);
+            // }
+
+            // $template = (array) glob(app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . '*');
+
+            // foreach ($template as $key => $path) {
+            //     if (is_file($path) && filemtime($path) >= strtotime('-3 days')) {
+            //         file_put_contents($this->savePath . pathinfo($path, PATHINFO_BASENAME), file_get_contents($path));
+            //     }
+            // }
+
+            ignore_user_abort(false);
+            clearstatcache();
         }
     }
 
@@ -63,15 +94,15 @@ class Backup
         if (!is_dir($this->savePath)) {
             chmod(app()->getRuntimePath(), 0777);
             mkdir($this->savePath, 0777, true);
-        } else {
-            return false;
+
+            $result = $this->queryTableName();
+            foreach ($result as $key => $name) {
+                $this->queryTableStructure($name);
+                $this->queryTableInsert($name);
+            }
         }
 
-        $result = $this->queryTableName();
-        foreach ($result as $key => $name) {
-            $this->queryTableStructure($name);
-            $this->queryTableInsert($name);
-        }
+        clearstatcache();
     }
 
     /**
@@ -94,8 +125,12 @@ class Backup
         $total = Db::table($_table_name)->count();
         $total = ceil($total / $_num);
 
-        $size = 0;
         $num = 1;
+        $sql_file = $this->savePath . $_table_name . '_' . sprintf('%07d', $num) . '.sql';
+        $insert_into  = '/* ' . date('Y-m-d H:i:s') . ' */' . PHP_EOL;
+        $insert_into .= 'INSERT INTO `' . $_table_name . '` (' . $field . ') VALUES' . PHP_EOL;
+        $insert_data = '';
+
         for ($i = 0; $i < $total; $i++) {
             $first_row = $i * $_num;
             $data = Db::table($_table_name)
@@ -103,44 +138,35 @@ class Backup
             ->limit($first_row, $_num)
             ->select();
 
-            foreach ($data as $value) {
-                $sql_file = $this->savePath . $_table_name . '_' . $num . '.sql';
-                if (!is_file($sql_file)) {
-                    $insert = 'INSERT INTO `' . $_table_name . '` (' . $field . ') VALUES' . PHP_EOL;
-                    file_put_contents($sql_file, $insert);
-                } elseif (is_file($sql_file) && filesize($sql_file) >= 1024 * 1024 * 3) {
-                    $insert = file_get_contents($sql_file);
-                    $insert = trim($insert, ',' . PHP_EOL) . ';' . PHP_EOL;
-                    file_put_contents($sql_file, $insert);
-
-                    $num++;
-                    $sql_file = $this->savePath . $_table_name . '_' . $num . '.sql';
-                    $insert = 'INSERT INTO `' . $_table_name . '` (' . $field . ') VALUES' . PHP_EOL;
-                    file_put_contents($sql_file, $insert, FILE_APPEND);
-                }
-                clearstatcache();
-
-                $insert = '';
+            foreach ($data as $key => $value) {
                 foreach ($value as $vo) {
                     if (is_integer($vo)) {
-                        $insert .= $vo . ',';
+                        $insert_data .= $vo . ',';
                     } elseif (is_null($vo) || $vo == 'null' || $vo == 'NULL') {
-                        $insert .= 'NULL,';
+                        $insert_data .= 'NULL,';
                     } else {
-                        $insert .= '\'' . addslashes($vo) . '\',';
+                        $insert_data .= '\'' . addslashes($vo) . '\',';
                     }
                 }
-                $insert = '(' . trim($insert, ',') . '),' . PHP_EOL;
+                $insert_data = trim($insert_data, ',') . '),' . PHP_EOL . '(';
 
-                file_put_contents($sql_file, $insert, FILE_APPEND);
+                if ($key % 10 == 0 && strlen($insert_data) >= 1024 * 1024 * 3) {
+                    if ($insert_data) {
+                        $insert_data = '(' . trim($insert_data, ',' . PHP_EOL . '(') . ';' . PHP_EOL;
+                        file_put_contents($sql_file, $insert_into . $insert_data);
+                        $num++;
+                        $sql_file = $this->savePath . $_table_name . '_' . sprintf('%07d', $num) . '.sql';
+                        $insert_data = '';
+                    }
+                }
             }
         }
 
-        if (!empty($sql_file) && is_file($sql_file)) {
-            $insert = file_get_contents($sql_file);
-            $insert = trim($insert, ',' . PHP_EOL) . ';' . PHP_EOL;
-            file_put_contents($sql_file, $insert);
+        if ($insert_data) {
+            $insert_data = '(' . trim($insert_data, ',' . PHP_EOL . '(') . ';' . PHP_EOL;
+            file_put_contents($sql_file, $insert_into . $insert_data);
         }
+        unset($sql_file, $insert_data, $num, $data, $result);
     }
 
     /**
@@ -154,9 +180,9 @@ class Backup
         set_time_limit(0);
 
         $tableRes = Db::query('SHOW CREATE TABLE `' . $_table_name . '`');
-        $structure = '';
+        $structure = '/* ' . date('Y-m-d H:i:s') . ' */' . PHP_EOL;
         if (!empty($tableRes[0]['Create Table'])) {
-            $structure = 'DROP TABLE IF EXISTS `' . $_table_name . '`;' . PHP_EOL;
+            $structure .= 'DROP TABLE IF EXISTS `' . $_table_name . '`;' . PHP_EOL;
             $structure .= $tableRes[0]['Create Table'] . ';';
             file_put_contents($this->savePath . $_table_name . '.sql', $structure);
         }

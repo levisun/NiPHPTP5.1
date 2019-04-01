@@ -77,9 +77,9 @@ class Cms extends Template
      */
     public function index()
     {
-        (new \app\library\Backup)->run();die();
+        // (new \app\library\Backup)->run();die();
         // $this->assign(['home'=>['bare'=>'shouye']]);
-        // $this->fetch('index');
+        $this->fetch('index');
     }
 
     /**
