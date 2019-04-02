@@ -9,4 +9,4 @@ Disallow: /uploads/
 
 Disallow: /router.php
 
-Sitemap: http://127.0.0.1/sitemap.xml
+Sitemap: http://www.tp5.com/sitemap.xml

@@ -4,7 +4,7 @@
  * 服务层
  * 模板类
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -148,7 +148,7 @@ class Template
         list($root) = explode('.', Request::rootDomain(), 2);
 
         $foot = '<script type="text/javascript">' .
-        'var NIPHP = {' .
+        'var NICMS = {' .
             'domain:"' . '//' . Request::rootDomain() . Request::root() . '",' .
             'api:{' .
                 'url:"' . Config::get('app.api_host') . '",'.

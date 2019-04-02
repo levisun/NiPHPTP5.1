@@ -18,25 +18,25 @@
 
 <script>
 window.onload=function(){
-    layui.use(['niphp', 'upload'], function(){
-        var np = layui.niphp;
+    layui.use(['nicms', 'upload'], function(){
+        var nc = layui.nicms;
         var upload = layui.upload;
 
         //执行实例
         var uploadInst = upload.render({
             elem: '#test1', //绑定元素
-            url: NIPHP.api.url + '/upload/cms.do', //上传接口
+            url: NICMS.api.url + '/upload/cms.do', //上传接口
             accept: 'file',
             exts: 'gif|jpg|png|zip|rar',
             size: 300,
             data: {
                 method: 'upload.file.save',
                 input_name: 'file',
-                sign: np.sign({
+                sign: nc.sign({
                     method: 'upload.file.save'
                 })
             },
-            headers: np.reqHeaders(),
+            headers: nc.reqHeaders(),
             done: function(res){
               //上传完毕回调
             },

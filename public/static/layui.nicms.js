@@ -5,8 +5,8 @@ layui.define('jquery', function(exports){
 
         reqHeaders: function () {
             return {
-                Accept: 'application/vnd.' + NIPHP.api.root + '.v' + NIPHP.api.version + '+json',
-                Authorization: NIPHP.api.authorization
+                Accept: 'application/vnd.' + NICMS.api.root + '.v' + NICMS.api.version + '+json',
+                Authorization: NICMS.api.authorization
             };
         },
 
@@ -27,8 +27,8 @@ layui.define('jquery', function(exports){
 
             // 设置头部
             _params.beforeSend = function (xhr) {
-                xhr.setRequestHeader('Accept', 'application/vnd.' + NIPHP.api.root + '.v' + NIPHP.api.version + '+json');
-                xhr.setRequestHeader('Authorization', NIPHP.api.authorization);
+                xhr.setRequestHeader('Accept', 'application/vnd.' + NICMS.api.root + '.v' + NICMS.api.version + '+json');
+                xhr.setRequestHeader('Authorization', NICMS.api.authorization);
             }
 
             var xhr = jQuery.ajax(_params);
@@ -76,5 +76,5 @@ layui.define('jquery', function(exports){
         }
     };
 
-    exports('niphp', obj);
+    exports('nicms', obj);
 });

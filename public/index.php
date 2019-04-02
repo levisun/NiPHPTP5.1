@@ -3,7 +3,7 @@
  *
  * 应用入口文件
  *
- * @package   NiPHPCMS
+ * @package   NICMS
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com
@@ -27,7 +27,7 @@ extension_loaded('pdo') or die('请开启 pdo 模块!');
 extension_loaded('pdo_mysql') or die('请开启 pdo_mysql 模块!');
 set_time_limit(30);
 ini_set('memory_limit', '32M');
-header('X-Powered-By: CB');
+header('X-Powered-By: NICMS');
 
 require __DIR__ . '/../vendor/autoload.php';
 

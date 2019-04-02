@@ -4,7 +4,7 @@
  * 控制层
  * CMS
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -54,8 +54,6 @@ class Cms extends Template
             '{:__SCRIPT__}'      => Siteinfo::script(),
         ];
 
-        // \app\library\Sitemap::category();
-
         // if (isWechat() && Request::subDomain() !== 'wechat') {
         //     $url = Request::scheme() . '://wechat.' . Request::rootDomain() . Request::root();
         //     $response = Response::create($url, 'redirect', 302);
@@ -77,8 +75,6 @@ class Cms extends Template
      */
     public function index()
     {
-        // (new \app\library\Backup)->run();die();
-        // $this->assign(['home'=>['bare'=>'shouye']]);
         $this->fetch('index');
     }
 

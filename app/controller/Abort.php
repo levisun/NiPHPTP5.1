@@ -4,7 +4,7 @@
  * 控制层
  * 错误
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\controller
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -30,6 +30,11 @@ class Abort
      * @return mixed
      */
     public function error()
+    {
+        $this->tpl(404);
+    }
+
+    public function _404()
     {
         $this->tpl(404);
     }
@@ -60,8 +65,20 @@ class Abort
                     $_code . '.html';
         }
 
-        $tpl = file_get_contents($tpl);
-        $response = Response::create($tpl, '', $_code);
-        throw new HttpResponseException($response);
+        clearstatcache();
+
+        // 页面缓存
+        ob_start();
+        ob_implicit_flush(0);
+
+        echo file_get_contents($tpl);
+
+        // 获取并清空缓存
+        $content = ob_get_clean();
+
+        echo $content;
+
+        // $response = Response::create($tpl, '', $_code);
+        // throw new HttpResponseException($response);
     }
 }

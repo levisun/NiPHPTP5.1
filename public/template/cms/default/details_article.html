@@ -14,16 +14,16 @@
 </div>
 <script>
 window.onload=function(){
-    layui.use(['niphp'], function(){
+    layui.use(['nicms'], function(){
         // var jQuery = layui.jquery;
-        var np = layui.niphp;
+        var nc = layui.nicms;
 
-        np.pjax({
-            url: NIPHP.api.url + '/cms.do',
+        nc.pjax({
+            url: NICMS.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'article.details.query',
-                id: NIPHP.param.id
+                id: NICMS.param.id
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {
@@ -37,12 +37,12 @@ window.onload=function(){
             }
         });
 
-        np.pjax({
-            url: NIPHP.api.url + '/cms.do',
+        nc.pjax({
+            url: NICMS.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'article.details.hits',
-                id: NIPHP.param.id
+                id: NICMS.param.id
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {

@@ -4,7 +4,7 @@
  * 服务层
  * 备份类
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -29,8 +29,7 @@ class Backup
     public function handle($event, App $app): void
     {
         if (Request::isGet() && !in_array(Request::subDomain(), ['admin', 'api', 'cdn'])) {
-            Log::record('backup', 'alert');
-
+            Log::record('[BACKUP] 备份', 'alert');
             $this->savePath = app()->getRuntimePath() . DIRECTORY_SEPARATOR .
                                 'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
                                 'sys_auto' . DIRECTORY_SEPARATOR;
@@ -48,37 +47,20 @@ class Backup
                     if (rand(1, 2) === 1) {
                         continue;
                     }
-                    if (is_file($this->savePath . $name) && filemtime($path) >= strtotime('-3 days')) {
+                    file_put_contents($this->savePath . 'backup.lock', $name);
+                    if (is_file($this->savePath . $name . '.sql') && filemtime($this->savePath . $name . '.sql') < strtotime('-3 days')) {
+                        Log::record('backup:' . $name, 'alert');
                         $this->queryTableStructure($name);
                         $this->queryTableInsert($name);
                         break;
-                    } else {
+                    } elseif (!is_file($this->savePath . $name . '.sql')) {
+                        Log::record('backup:' . $name, 'alert');
                         $this->queryTableStructure($name);
                         $this->queryTableInsert($name);
                     }
                 }
-
-                unlink($this->savePath . 'backup.lock');
             }
-
-
-            // $this->savePath = app()->getRuntimePath() . DIRECTORY_SEPARATOR .
-            //                     'backup' . Base64::flag() . DIRECTORY_SEPARATOR .
-            //                     'sys_auto' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR;
-
-            // if (!is_dir($this->savePath)) {
-            //     chmod(app()->getRuntimePath(), 0777);
-            //     mkdir($this->savePath, 0777, true);
-            // }
-
-            // $template = (array) glob(app()->getRootPath() . 'public' . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . '*');
-
-            // foreach ($template as $key => $path) {
-            //     if (is_file($path) && filemtime($path) >= strtotime('-3 days')) {
-            //         file_put_contents($this->savePath . pathinfo($path, PATHINFO_BASENAME), file_get_contents($path));
-            //     }
-            // }
-
+            unlink($this->savePath . 'backup.lock');
             ignore_user_abort(false);
             clearstatcache();
         }

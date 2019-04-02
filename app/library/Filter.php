@@ -4,7 +4,7 @@
  * 服务层
  * 数据安全过滤类
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

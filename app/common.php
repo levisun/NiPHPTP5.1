@@ -3,7 +3,7 @@
  *
  * 应用公共文件
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -168,6 +168,42 @@ function formatNumber(int $_number, string $_type = 'date')
             $format = $_number;
         }
     }
+}
+
+/**
+ * Emoji原形转换为String
+ * @param  string $_str
+ * @return string
+ */
+function emojiEncode($_str): string
+{
+    return json_decode(preg_replace_callback("/(\\\u[ed][0-9a-f]{3})/i", function ($string) {
+        return addslashes($string[0]);
+    }, json_encode($_str)));
+}
+
+/**
+ * Emoji字符串转换为原形
+ * @param  string $_str
+ * @return string
+ */
+function emojiDecode($_str): string
+{
+    return json_decode(preg_replace_callback('/\\\\\\\\/i', function () {
+        return '\\';
+    }, json_encode($_str)));
+}
+
+/**
+ * Emoji字符串清清理
+ * @param string $_str
+ * @return string
+ */
+function emojiClear($_str): string
+{
+    return preg_replace_callback('/./u', function (array $match) {
+        return strlen($match[0]) >= 4 ? '' : $match[0];
+    }, $_str);
 }
 
 /**

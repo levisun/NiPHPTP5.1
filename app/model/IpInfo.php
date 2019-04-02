@@ -4,8 +4,8 @@
  * 数据层
  * IP地域信息表
  *
- * @package   NiPHP
- * @category  ap\model
+ * @package   NICMS
+ * @category  app\model
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
  * @link      www.NiPHP.com

@@ -29,8 +29,8 @@ Route::get('think', function () {
 
 
 // 错误页面
-Route::miss('abort/error');
-Route::rule('error', 'abort/error');
+// Route::miss('abort/error');
+Route::rule('404', 'abort/_404');
 // Route::rule('authority', 'abort/authority');
 
 Route::domain('www', function(){
@@ -47,7 +47,8 @@ Route::domain('www', function(){
 
 Route::domain('admin', function(){
     Route::get('/', 'admin/index');
-    Route::get('logic', 'admin/logic');
+    Route::get(':logic/:controller$', 'admin/index');
+    Route::get(':logic/:controller/:action/:id$', 'admin/index');
 })
 ->bind('admin')
 ->ext('html');
@@ -55,10 +56,6 @@ Route::domain('admin', function(){
 
 
 Route::domain('api', function(){
-    Route::rule('/', function(){
-        return '404';
-    });
-
     Route::get(':name$', 'api/query');
     Route::post('handle/:name$', 'api/handle');
     Route::post('upload/:name$', 'api/upload');
@@ -77,7 +74,3 @@ Route::domain('api', function(){
 })
 ->bind('api')
 ->ext('do');
-
-Route::domain('cdn', function(){
-
-});

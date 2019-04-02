@@ -23,15 +23,15 @@
 
 <script>
 window.onload=function(){
-    layui.use(['jquery', 'niphp', 'table'], function(){
-        var np = layui.niphp;
+    layui.use(['jquery', 'nicms', 'table'], function(){
+        var nc = layui.nicms;
         var table = layui.table;
-        np.pjax({
-            url: NIPHP.api.url + '/cms.do',
+        nc.pjax({
+            url: NICMS.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'article.lists.query',
-                cid: NIPHP.param.cid
+                cid: NICMS.param.cid
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {

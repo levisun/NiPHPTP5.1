@@ -4,7 +4,7 @@
  * 服务层
  * 访问日志
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -32,7 +32,7 @@ class Accesslog
     public function handle($event, App $app): void
     {
         if (Request::isGet() && !in_array(Request::subDomain(), ['admin', 'api', 'cdn'])) {
-            Log::record('accesslog', 'alert');
+            Log::record('[ACCESSLOG] 访问记录', 'alert');
             $this->record();
         }
     }

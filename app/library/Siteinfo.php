@@ -4,7 +4,7 @@
  * 服务层
  * 网站信息
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -131,7 +131,7 @@ class Siteinfo
             ModelCategory::where([
                 ['id', '=', $cid]
             ])
-            ->value('name', 'NIPHP CMS');
+            ->value('name', 'NICMS');
         }
         else {
             $result .=
@@ -140,7 +140,7 @@ class Siteinfo
                 ['lang', '=', Lang::detect()]
             ])
             ->cache(__METHOD__ . Request::controller(true) . '_sitename' . Lang::detect(), null, 'SITEINFO')
-            ->value('value', 'NIPHP CMS');
+            ->value('value', 'NICMS');
         }
 
         return strip_tags($result);

@@ -4,7 +4,7 @@
  * API接口层
  * 历史记录
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\logic\cms\history
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.

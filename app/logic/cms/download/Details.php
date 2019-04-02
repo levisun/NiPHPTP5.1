@@ -4,7 +4,7 @@
  * API接口层
  * 文章内容
  *
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\logic\cms\download
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -29,9 +29,7 @@ class Details extends ArticleBase
      */
     public function query(): array
     {
-        $result = $this->details();
-
-        if ($result) {
+        if ($result = $this->details()) {
             return [
                 'debug' => false,
                 'msg'   => Lang::get('success'),

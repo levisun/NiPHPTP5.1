@@ -4,7 +4,7 @@
  * 服务层
  * 异步请求实现
  * Async
- * @package   NiPHP
+ * @package   NICMS
  * @category  app\library
  * @author    失眠小枕头 [levisun.mail@gmail.com]
  * @copyright Copyright (c) 2013, 失眠小枕头, All rights reserved.
@@ -495,8 +495,8 @@ class Api
     private function writeLog(array $result)
     {
         $log = '[API] IP:' . Request::ip() .
-                ' TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's ' .
-                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'mb' .
+                ' TIME:' . number_format(microtime(true) - Container::pull('app')->getBeginTime(), 6) . 's' .
+                ' MEMORY:' . number_format((memory_get_usage() - Container::pull('app')->getBeginMem()) / 1024 / 1024, 2) . 'MB' .
                 ' CACHE:' . Container::pull('cache')->getReadTimes() . ' reads,' . Container::pull('cache')->getWriteTimes() . ' writes';
 
         if (APP_DEBUG) {

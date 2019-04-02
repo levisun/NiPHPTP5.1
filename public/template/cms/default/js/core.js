@@ -1,15 +1,15 @@
 layui.config({
     dir: '/static/layui/' //layui.js 所在路径
 }).extend({
-    niphp: '{/}' + NIPHP.cdn.static + 'layui.niphp', // {/}的意思即代表采用自有路径，即不跟随 base 路径
+    nicms: '{/}' + NICMS.cdn.static + 'layui.nicms', // {/}的意思即代表采用自有路径，即不跟随 base 路径
 });
-layui.use(['jquery', 'laypage', 'niphp'], function(){
+layui.use(['jquery', 'laypage', 'nicms'], function(){
     var jQuery = layui.jquery;
-    var np = layui.niphp;
+    var nc = layui.nicms;
 
     // 初始化导航
-    np.pjax({
-        url: NIPHP.api.url + '/cms.do',
+    nc.pjax({
+        url: NICMS.api.url + '/cms.do',
         method: 'get',
         data: {
             method: 'nav.main.query'
@@ -29,14 +29,14 @@ layui.use(['jquery', 'laypage', 'niphp'], function(){
         }
     });
 
-    if (NIPHP.param.cid) {
+    if (NICMS.param.cid) {
         // 侧导航
-        np.pjax({
-            url: NIPHP.api.url + '/cms.do',
+        nc.pjax({
+            url: NICMS.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'nav.sidebar.query',
-                cid: NIPHP.param.cid
+                cid: NICMS.param.cid
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {
@@ -51,12 +51,12 @@ layui.use(['jquery', 'laypage', 'niphp'], function(){
         });
 
         // 面包屑
-        np.pjax({
-            url: NIPHP.api.url + '/cms.do',
+        nc.pjax({
+            url: NICMS.api.url + '/cms.do',
             method: 'get',
             data: {
                 method: 'nav.breadcrumb.query',
-                cid: NIPHP.param.cid
+                cid: NICMS.param.cid
             },
             success: function(result) {
                 if (result.code == 'SUCCESS') {
@@ -77,8 +77,8 @@ layui.use(['jquery', 'laypage', 'niphp'], function(){
 
 
 
-    // np.pjax({
-    //     url: NIPHP.api.url + '/upload/cms.do',
+    // nicms.pjax({
+    //     url: NICMS.api.url + '/upload/cms.do',
     //     method: 'post',
     //     data: {
     //         method: 'upload.file.save'

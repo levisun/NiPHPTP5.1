@@ -1,2 +1,2 @@
-composer create-project topthink/think tp5 5.2.*-dev
+composer create-project topthink/think NiPHPTP5.1 5.2.*-dev
 composer update topthink/framework
